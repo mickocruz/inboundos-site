@@ -810,7 +810,7 @@ body::after {
 /* DM Sans body */
 :root{--font-body:'DM Sans',sans-serif;}
 html,body{font-family:'DM Sans',sans-serif!important;}
-</style></head>
+</style><link rel="stylesheet" href="settings-panel.css"/><script src="settings-panel.js"></script></head>
 <body>
 <div class="amb amb-1"></div>
 <div class="amb amb-2"></div>
@@ -838,7 +838,7 @@ html,body{font-family:'DM Sans',sans-serif!important;}
       <div class="nav-item" onclick="location.href='/sops'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>SOPs</div>
       <div class="nav-item" onclick="location.href='/org-chart'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><path d="M12 7v3M12 10l-5 7M12 10l5 7"/></svg>Org Chart</div>
     </div>
-    <div class="sidebar-bottom"><div class="mk-avatar-wrap"><img src="mk-avatar.jpg" alt="MK" style="width:32px;height:32px;object-fit:cover;border-radius:50%;border:1px solid rgba(79,195,247,0.2);"/><div><div class="mk-name">Micko Cruz</div><div class="mk-role">Founder · InboundOS</div></div></div></div>
+    <div class="sidebar-bottom"><div class="mk-avatar-wrap" onclick="window.__settingsOpen()" style="cursor:pointer;"><img src="mk-avatar.jpg" alt="MK" style="width:32px;height:32px;object-fit:cover;border-radius:50%;border:1px solid rgba(79,195,247,0.2);"/><div><div class="mk-name">Micko Cruz</div><div class="mk-role">Founder · InboundOS</div></div></div></div>
   </nav>
 
   <!-- ── MAIN ── -->

@@ -4,6 +4,7 @@
     { "source": "/landing", "destination": "/landing.html" },
     { "source": "/client-wins", "destination": "/client-wins.html" },
     { "source": "/dashboard", "destination": "/dashboard/clients.html" },
+    { "source": "/dashboard/", "destination": "/dashboard/clients.html" },
     { "source": "/dashboard/:page", "destination": "/dashboard/:page" }
   ]
 }

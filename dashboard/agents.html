@@ -584,12 +584,13 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
   fill: none;
   stroke-width: 1.5;
   rx: 14; ry: 14;
-  stroke-dasharray: 30 300;
-  animation: trace-travel 2.5s linear infinite;
+  stroke-dasharray: 40 176;
+  stroke-dashoffset: 0;
+  animation: trace-travel 6s linear infinite;
 }
 @keyframes trace-travel {
-  from { stroke-dashoffset: 0; }
-  to   { stroke-dashoffset: -330; }
+  from { stroke-dashoffset: 216; }
+  to   { stroke-dashoffset: 0; }
 }
 </style></head>
 <body>

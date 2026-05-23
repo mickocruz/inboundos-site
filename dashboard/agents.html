@@ -243,13 +243,10 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 
 
 
-/* ══ PREMIUM v2 ══════════════════════════════════════════════ */
+/* ══ PREMIUM v3 — Apple-feel ══════════════════════════════════ */
 
-/* Font enforcement */
 :root { --font-body: 'DM Sans', sans-serif; }
 html, body { font-family: 'DM Sans', sans-serif !important; }
-
-
 
 /* ── Header ── */
 .header-left h1 {
@@ -265,64 +262,117 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
   letter-spacing: 0.02em !important;
   margin-top: 6px !important;
 }
-.pill {
-  font-family: 'DM Sans', sans-serif !important;
-  font-size: 11px !important;
-  font-weight: 600 !important;
-}
+.pill { font-family: 'DM Sans', sans-serif !important; font-size: 11px !important; font-weight: 600 !important; }
 
-/* ── Agent cards ── */
+/* ── Agent cards — frosted glass ── */
 .agents-row { gap: 10px !important; }
 
+.card.agent-exp {
+  background: rgba(255,255,255,0.028) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  border-top-width: 2px !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 4px 24px rgba(0,0,0,0.3) !important;
+  transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.22s ease, border-color 0.22s ease !important;
+  /* stagger set via JS */
+  opacity: 0;
+  transform: translateY(16px);
+}
+.card.agent-exp.visible {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.34,1.2,0.64,1), box-shadow 0.22s ease !important;
+}
+.card.agent-exp:hover {
+  transform: translateY(-3px) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.09),
+    0 12px 40px rgba(0,0,0,0.45),
+    0 0 0 1px rgba(79,195,247,0.1) !important;
+}
+
 .agent-exp {
-  padding: 18px 14px 14px !important;
+  padding: 20px 14px 16px !important;
   align-items: center !important;
   text-align: center !important;
   position: relative !important;
 }
 
-/* Avatar — centered, rounded square, bigger */
+/* ── Avatar — rounded square, SVG icon ── */
 .agent-avatar-lg {
-  width: 52px !important; height: 52px !important;
+  width: 52px !important;
+  height: 52px !important;
   border-radius: 14px !important;
   margin: 0 auto 12px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  border: 1.5px solid transparent !important;
-  
+  border: none !important;
+  position: relative !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+}
+.agent-avatar-lg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  background: conic-gradient(from 0deg, transparent 0%, currentColor 18%, transparent 36%, transparent 100%);
+  opacity: 0.2;
+  animation: radar-spin 9s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+.agent-avatar-lg > svg {
+  position: relative;
+  z-index: 1;
+  width: 22px;
+  height: 22px;
+  stroke: #ffffff;
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.92;
+}
+@keyframes radar-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
 }
 
-  40%  { box-shadow: 0 0 10px 3px currentColor; opacity: 1; }
-  60%  { box-shadow: 0 0 18px 6px currentColor; opacity: 0.85; }
-  100% { box-shadow: 0 0 0px 0px currentColor; opacity: 1; }
-}
-.agent-avatar-lg > span {
-  font-size: 20px !important;
-  line-height: 1 !important;
-}
-
-/* Status badge — centered below avatar, always visible */
+/* ── Status badge — dot + text, no pill ── */
 .agent-status-badge {
   display: inline-flex !important;
   align-items: center !important;
-  justify-content: center !important;
-  font-size: 8px !important;
-  letter-spacing: 1.2px !important;
-  padding: 3px 9px !important;
-  margin: 0 auto 10px !important;
-  border-radius: 20px !important;
+  gap: 5px !important;
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 9px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.3px !important;
+  padding: 0 !important;
+  margin: 0 auto 12px !important;
+  border-radius: 0 !important;
+  border: none !important;
+  background: none !important;
+  text-transform: uppercase !important;
 }
-/* Idle pulse animation on badge border */
-.agent-status-badge.st-idle {
-  animation: idle-pulse 3s ease-in-out infinite !important;
+.agent-status-badge::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: inline-block;
 }
-@keyframes idle-pulse {
-  0%, 100% { border-color: rgba(255,255,255,0.08); }
-  50% { border-color: rgba(255,255,255,0.18); }
-}
+.agent-status-badge.st-idle { color: rgba(255,255,255,0.25) !important; }
+.agent-status-badge.st-idle::before { background: rgba(255,255,255,0.18); }
+.agent-status-badge.st-active { color: #4ade80 !important; }
+.agent-status-badge.st-active::before { background: #4ade80; box-shadow: 0 0 6px rgba(74,222,128,0.7); }
+.agent-status-badge.st-error { color: #f87171 !important; }
+.agent-status-badge.st-error::before { background: #f87171; }
 
-/* agent-top: just avatar centered, no flex row */
+/* agent-top */
 .agent-top {
   display: flex !important;
   flex-direction: column !important;
@@ -347,44 +397,42 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
 .agent-role-lg {
   font-family: 'DM Sans', sans-serif !important;
   font-size: 10px !important;
-  color: rgba(255,255,255,0.35) !important;
-  margin-bottom: 16px !important;
+  color: rgba(255,255,255,0.32) !important;
+  margin-bottom: 18px !important;
   min-height: auto !important;
-  line-height: 1.45 !important;
+  line-height: 1.5 !important;
   text-align: center !important;
   width: 100% !important;
 }
 
-/* Progress bar */
+/* Progress bar — hide when 0% */
 .agent-prog-bar {
   height: 2px !important;
   margin-bottom: 6px !important;
   background: rgba(255,255,255,0.04) !important;
   border-radius: 2px !important;
   width: 100% !important;
+  display: none !important;
 }
+.agent-prog-bar.active { display: block !important; }
 
-/* Percentage — hide 0% when idle, show as dim dash */
 .agent-prog-pct {
   font-family: 'NHGrotesk', 'Arial Black', sans-serif !important;
   font-size: 11px !important;
   font-weight: 900 !important;
-  letter-spacing: 0 !important;
   margin-bottom: 12px !important;
-  color: rgba(255,255,255,0.12) !important;
+  color: rgba(255,255,255,0.1) !important;
   text-align: center !important;
+  display: none !important;
 }
+.agent-prog-pct.active { display: block !important; }
 
 /* Action items */
-.agent-actions-list {
-  margin-bottom: 12px !important;
-  gap: 0 !important;
-  width: 100% !important;
-}
+.agent-actions-list { margin-bottom: 14px !important; gap: 0 !important; width: 100% !important; }
 .agent-action-item {
   font-family: 'DM Sans', sans-serif !important;
-  font-size: 11px !important;
-  color: rgba(255,255,255,0.45) !important;
+  font-size: 10.5px !important;
+  color: rgba(255,255,255,0.4) !important;
   line-height: 1.5 !important;
   padding: 5px 0 !important;
   border-bottom: 1px solid rgba(255,255,255,0.04) !important;
@@ -396,7 +444,7 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
 .agent-action-item:last-child { border-bottom: none !important; }
 .agent-action-item::before {
   content: '→' !important;
-  color: rgba(79,195,247,0.4) !important;
+  color: rgba(79,195,247,0.35) !important;
   font-size: 9px !important;
   flex-shrink: 0 !important;
   margin-top: 2px !important;
@@ -409,16 +457,9 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
   border-radius: 8px !important;
   letter-spacing: 1px !important;
   font-weight: 700 !important;
+  transition: transform 0.1s ease, box-shadow 0.18s ease !important;
 }
-
-/* Card hover — premium glow */
-.card:hover {
-  border-color: rgba(79,195,247,0.2) !important;
-  box-shadow:
-    0 0 0 1px rgba(79,195,247,0.06),
-    0 8px 32px rgba(0,0,0,0.45),
-    inset 0 1px 0 rgba(255,255,255,0.04) !important;
-}
+.agent-dispatch:active { transform: scale(0.95) !important; }
 
 /* ── Section labels ── */
 .section-label {
@@ -433,161 +474,44 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
 #col-queued { border-left: 2px solid rgba(251,191,36,0.5) !important; }
 #col-running { border-left: 2px solid rgba(79,195,247,0.5) !important; }
 #col-completed { border-left: 2px solid rgba(74,222,128,0.5) !important; }
-
-.kanban-col-head > span:first-child {
-  font-family: 'NHGrotesk', 'Arial Black', sans-serif !important;
-  font-size: 9px !important; letter-spacing: 2.5px !important;
-}
-.kanban-card-task {
-  font-family: 'DM Sans', sans-serif !important;
-  font-size: 12px !important;
-  color: rgba(255,255,255,0.8) !important;
-  line-height: 1.5 !important;
-}
-
-/* Kanban empty state */
-.kanban-cards:empty::after {
-  content: '— empty —';
-  display: block;
-  padding: 28px 16px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 10px;
-  color: rgba(255,255,255,0.1);
-  text-align: center;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
+.kanban-col-head > span:first-child { font-family: 'NHGrotesk', 'Arial Black', sans-serif !important; font-size: 9px !important; letter-spacing: 2.5px !important; }
+.kanban-card-task { font-family: 'DM Sans', sans-serif !important; font-size: 12px !important; color: rgba(255,255,255,0.8) !important; line-height: 1.5 !important; }
+.kanban-cards:empty::after { content: '— empty —'; display: block; padding: 28px 16px; font-family: 'DM Sans', sans-serif; font-size: 10px; color: rgba(255,255,255,0.1); text-align: center; letter-spacing: 2px; text-transform: uppercase; }
 
 /* ── Activity log ── */
-.log-text {
-  font-family: 'DM Sans', sans-serif !important;
-  font-size: 12px !important;
-  color: rgba(255,255,255,0.7) !important;
-  line-height: 1.5 !important;
-}
-.log-time {
-  font-size: 10px !important;
-  color: rgba(255,255,255,0.18) !important;
-  letter-spacing: 0.02em !important;
-}
-/* Activity log empty state */
-#logList .log-list:empty::after {
-  content: 'No activity recorded yet';
-  display: block;
-  padding: 24px 16px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 11px;
-  color: rgba(255,255,255,0.12);
-  text-align: center;
-  letter-spacing: 0.5px;
-}
+.log-text { font-family: 'DM Sans', sans-serif !important; font-size: 12px !important; color: rgba(255,255,255,0.7) !important; line-height: 1.5 !important; }
+.log-time { font-size: 10px !important; color: rgba(255,255,255,0.18) !important; }
+#logList .log-list:empty::after { content: 'No activity recorded yet'; display: block; padding: 24px 16px; font-family: 'DM Sans', sans-serif; font-size: 11px; color: rgba(255,255,255,0.12); text-align: center; }
 
 /* ── Ideas queue ── */
-.idea-title {
-  font-family: 'NHGrotesk', 'Arial Black', sans-serif !important;
-  font-size: 13px !important; letter-spacing: -0.3px !important;
-  line-height: 1.3 !important;
-}
-.idea-angle {
-  font-family: 'DM Sans', sans-serif !important;
-  font-size: 12px !important;
-  color: rgba(255,255,255,0.45) !important;
-  line-height: 1.5 !important;
-}
-.idea-script-text {
-  font-family: 'DM Sans', sans-serif !important;
-  font-size: 13px !important; line-height: 1.7 !important;
-  color: rgba(255,255,255,0.6) !important;
-  max-height: 80px !important;
-}
+.idea-title { font-family: 'NHGrotesk', 'Arial Black', sans-serif !important; font-size: 13px !important; letter-spacing: -0.3px !important; line-height: 1.3 !important; }
+.idea-angle { font-family: 'DM Sans', sans-serif !important; font-size: 12px !important; color: rgba(255,255,255,0.45) !important; line-height: 1.5 !important; }
+.idea-script-text { font-family: 'DM Sans', sans-serif !important; font-size: 13px !important; line-height: 1.7 !important; color: rgba(255,255,255,0.6) !important; max-height: 80px !important; }
 .idea-script-text.expanded { max-height: 800px !important; }
 
-/* Ideas empty/error state — replace red text */
-#ideasQueueLoading, #ideasQueueEmpty {
-  font-family: 'DM Sans', sans-serif !important;
-  font-size: 11px !important;
-  color: rgba(255,255,255,0.18) !important;
-  letter-spacing: 0.5px !important;
-  padding: 20px 0 !important;
+/* Ideas loading — shimmer skeleton */
+#ideasQueueLoading {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+  padding: 4px 0 !important;
 }
+.ideas-shimmer-row {
+  height: 80px;
+  border-radius: 10px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.07) 50%, rgba(255,255,255,0.03) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.8s ease-in-out infinite;
+}
+@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
 /* ── Control panel sidebar ── */
-.ds-title {
-  font-family: 'NHGrotesk', 'Arial Black', sans-serif !important;
-  font-size: 9px !important; letter-spacing: 3px !important;
-}
-.ds-section {
-  font-family: 'NHGrotesk', 'Arial Black', sans-serif !important;
-  font-size: 8px !important; letter-spacing: 2.5px !important;
-  color: rgba(255,255,255,0.18) !important;
-}
-.ds-stat-val {
-  font-family: 'NHGrotesk', 'Arial Black', sans-serif !important;
-  font-size: 26px !important; letter-spacing: -1px !important;
-  line-height: 1 !important;
-}
-.ds-stat-lbl {
-  font-family: 'DM Sans', sans-serif !important;
-  font-size: 9px !important;
-  color: rgba(255,255,255,0.28) !important;
-  letter-spacing: 0.5px !important;
-  margin-top: 4px !important;
-}
-.ds-agent-name {
-  font-family: 'DM Sans', sans-serif !important;
-  font-size: 12px !important; font-weight: 600 !important;
-}
-.ds-agent-status {
-  font-family: 'DM Sans', sans-serif !important;
-  font-size: 10px !important;
-  color: rgba(255,255,255,0.28) !important;
-}
-
-  50%      { box-shadow: 0 0 14px 4px rgba(79,195,247,0.45); border-color: rgba(79,195,247,0.6); }
-}
-  50%      { box-shadow: 0 0 14px 4px rgba(251,191,36,0.45); border-color: rgba(251,191,36,0.6); }
-}
-  50%      { box-shadow: 0 0 14px 4px rgba(74,222,128,0.45); border-color: rgba(74,222,128,0.6); }
-}
-  50%      { box-shadow: 0 0 14px 4px rgba(244,114,182,0.45); border-color: rgba(244,114,182,0.6); }
-}
-  50%      { box-shadow: 0 0 14px 4px rgba(74,222,128,0.45); border-color: rgba(74,222,128,0.6); }
-}
-  50%      { box-shadow: 0 0 14px 4px rgba(56,189,248,0.45); border-color: rgba(56,189,248,0.6); }
-}
-  50%      { box-shadow: 0 0 14px 4px rgba(232,121,249,0.45); border-color: rgba(232,121,249,0.6); }
-}
-}
-
-  to   { stroke-dashoffset: 0; }
-}
-
-/* ── Avatar radar spin — subtle, slow ── */
-.agent-avatar-lg {
-  position: relative !important;
-  box-shadow: none !important;
-  overflow: hidden !important;
-}
-.agent-avatar-lg::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: conic-gradient(from 0deg, transparent 0%, currentColor 20%, transparent 40%, transparent 100%);
-  opacity: 0.22;
-  animation: radar-spin 8s linear infinite;
-  pointer-events: none;
-  z-index: 0;
-}
-.agent-avatar-lg > span {
-  position: relative;
-  z-index: 1;
-  color: #ffffff !important;
-}
-@keyframes radar-spin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
+.ds-title { font-family: 'NHGrotesk', 'Arial Black', sans-serif !important; font-size: 9px !important; letter-spacing: 3px !important; }
+.ds-section { font-family: 'NHGrotesk', 'Arial Black', sans-serif !important; font-size: 8px !important; letter-spacing: 2.5px !important; color: rgba(255,255,255,0.18) !important; }
+.ds-stat-val { font-family: 'NHGrotesk', 'Arial Black', sans-serif !important; font-size: 26px !important; letter-spacing: -1px !important; line-height: 1 !important; }
+.ds-stat-lbl { font-family: 'DM Sans', sans-serif !important; font-size: 9px !important; color: rgba(255,255,255,0.28) !important; letter-spacing: 0.5px !important; margin-top: 4px !important; }
+.ds-agent-name { font-family: 'DM Sans', sans-serif !important; font-size: 12px !important; font-weight: 600 !important; }
+.ds-agent-status { font-family: 'DM Sans', sans-serif !important; font-size: 10px !important; color: rgba(255,255,255,0.28) !important; }
 </style></head>
 <body>
 <div class="layout">
@@ -631,7 +555,7 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
       <!-- Scout -->
       <div class="card agent-exp" style="border-top:2px solid #4FC3F7;">
         <div class="agent-top">
-          <div class="agent-avatar-lg" style="background:rgba(79,195,247,0.1);color:#4FC3F7;"><span style="font-family:var(--font-head);font-size:17px;font-weight:900;color:#4FC3F7;">S</span><div class="agent-dot" style="background:rgba(255,255,255,0.15);"></div></div>
+          <div class="agent-avatar-lg" style="background:rgba(79,195,247,0.1);color:#4FC3F7;"><!-- Scout: crosshair --><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg></div>
           <span class="agent-status-badge st-idle">Idle</span>
         </div>
         <div class="agent-name-lg">Scout</div>
@@ -647,7 +571,7 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
       <!-- Quill -->
       <div class="card agent-exp" style="border-top:2px solid #fbbf24;">
         <div class="agent-top">
-          <div class="agent-avatar-lg" style="background:rgba(251,191,36,0.1);color:#fbbf24;"><span style="font-family:var(--font-head);font-size:17px;font-weight:900;color:#fbbf24;">Q</span><div class="agent-dot" style="background:rgba(255,255,255,0.15);"></div></div>
+          <div class="agent-avatar-lg" style="background:rgba(251,191,36,0.1);color:#fbbf24;"><!-- Quill: pen nib --><svg viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></div>
           <span class="agent-status-badge st-idle">Idle</span>
         </div>
         <div class="agent-name-lg">Quill</div>
@@ -664,7 +588,7 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
       <!-- Pulse -->
       <div class="card agent-exp" id="pulseAgentCard" style="border-top:2px solid #4ade80;">
         <div class="agent-top">
-          <div class="agent-avatar-lg" style="background:rgba(74,222,128,0.1);color:#4ade80;"><span style="font-family:var(--font-head);font-size:17px;font-weight:900;color:#4ade80;">P</span><div class="agent-dot" style="background:rgba(255,255,255,0.15);"></div></div>
+          <div class="agent-avatar-lg" style="background:rgba(74,222,128,0.1);color:#4ade80;"><!-- Pulse: waveform --><svg viewBox="0 0 24 24"><polyline points="2,12 6,12 8,4 10,20 12,12 14,16 16,10 18,12 22,12"/></svg></div>
           <span class="agent-status-badge st-idle">Idle</span>
         </div>
         <div class="agent-name-lg">Pulse</div>
@@ -681,7 +605,7 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
       <!-- Hunter -->
       <div class="card agent-exp" style="border-top:2px solid #f472b6;">
         <div class="agent-top">
-          <div class="agent-avatar-lg" style="background:rgba(244,114,182,0.1);color:#f472b6;"><span style="font-family:var(--font-head);font-size:17px;font-weight:900;color:#f472b6;">H</span><div class="agent-dot" style="background:rgba(255,255,255,0.15);"></div></div>
+          <div class="agent-avatar-lg" style="background:rgba(244,114,182,0.1);color:#f472b6;"><!-- Hunter: target --><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/></svg></div>
           <span class="agent-status-badge st-idle">Idle</span>
         </div>
         <div class="agent-name-lg">Hunter</div>
@@ -697,7 +621,7 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
       <!-- Echo -->
       <div class="card agent-exp" style="border-top:2px solid #34d399;">
         <div class="agent-top">
-          <div class="agent-avatar-lg" style="background:rgba(74,222,128,0.1);color:#4ade80;"><span style="font-family:var(--font-head);font-size:17px;font-weight:900;color:#4ade80;">E</span><div class="agent-dot" style="background:rgba(255,255,255,0.15);"></div></div>
+          <div class="agent-avatar-lg" style="background:rgba(74,222,128,0.1);color:#4ade80;"><!-- Echo: sound waves --><svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></div>
           <span class="agent-status-badge st-idle">Idle</span>
         </div>
         <div class="agent-name-lg">Echo</div>
@@ -713,7 +637,7 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
       <!-- Pilot -->
       <div class="card agent-exp" style="border-top:2px solid #38bdf8;">
         <div class="agent-top">
-          <div class="agent-avatar-lg" style="background:rgba(56,189,248,0.1);color:#38bdf8;"><span style="font-family:var(--font-head);font-size:17px;font-weight:900;color:#38bdf8;">Pi</span><div class="agent-dot" style="background:rgba(255,255,255,0.15);"></div></div>
+          <div class="agent-avatar-lg" style="background:rgba(56,189,248,0.1);color:#38bdf8;"><!-- Pilot: compass --><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24,7.76 14.12,14.12 7.76,16.24 9.88,9.88 16.24,7.76" fill="currentColor" stroke="none" opacity="0.7"/><circle cx="12" cy="12" r="1.5" fill="#ffffff" stroke="none"/></svg></div>
           <span class="agent-status-badge st-idle">Idle</span>
         </div>
         <div class="agent-name-lg">Pilot</div>
@@ -729,7 +653,7 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
       <!-- Forge -->
       <div class="card agent-exp" style="border-top:2px solid #e879f9;">
         <div class="agent-top">
-          <div class="agent-avatar-lg" style="background:rgba(232,121,249,0.1);color:#e879f9;"><span style="font-family:var(--font-head);font-size:17px;font-weight:900;color:#e879f9;">F</span><div class="agent-dot" style="background:rgba(255,255,255,0.15);"></div></div>
+          <div class="agent-avatar-lg" style="background:rgba(232,121,249,0.1);color:#e879f9;"><!-- Forge: wrench --><svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
           <span class="agent-status-badge st-idle">Idle</span>
         </div>
         <div class="agent-name-lg">Forge</div>
@@ -773,7 +697,7 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
       <button id="refreshIdeasBtn" onclick="generateFreshIdeas(this)" style="background:var(--accent-dim);border:1px solid rgba(79,195,247,0.2);border-radius:6px;padding:4px 12px;font-family:var(--font-data);font-size:9px;font-weight:600;color:var(--accent);cursor:pointer;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">↺ Generate Ideas</button>
     </div>
     <div class="">
-      <div id="ideasQueueLoading" style="font-family:var(--font-data);font-size:11px;color:var(--text-dim);padding:8px 0;">Loading ideas…</div>
+      <div id="ideasQueueLoading"><div class="ideas-shimmer-row"></div><div class="ideas-shimmer-row"></div><div class="ideas-shimmer-row"></div></div>
       <div id="ideasQueueEmpty" style="display:none;font-family:var(--font-data);font-size:11px;color:var(--text-dim);padding:8px 0;">No ideas queued — click Generate Ideas to pull from content bucket.</div>
       <div class="ideas-grid" id="ideasGrid"></div>
     </div>
@@ -823,6 +747,15 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
   </div>
 </div>
 
+<script>
+// Staggered card entrance
+document.addEventListener('DOMContentLoaded', () => {
+  const cards = document.querySelectorAll('.card.agent-exp');
+  cards.forEach((card, i) => {
+    setTimeout(() => card.classList.add('visible'), 60 + i * 80);
+  });
+});
+</script>
 <script>
 const AGENT_PRESETS = {
   Scout: [

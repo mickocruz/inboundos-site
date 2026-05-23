@@ -221,7 +221,20 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .modal-assign:hover{box-shadow:0 0 16px rgba(79,195,247,0.35);}
 @keyframes spin{to{transform:rotate(360deg);}}
 </style>
-</head>
+<style>
+@media(max-width:768px){
+  .layout{flex-direction:column;}
+  .sidebar{width:100%!important;min-width:0!important;height:auto;border-right:none;border-bottom:1px solid rgba(255,255,255,0.07);flex-direction:row;flex-wrap:wrap;padding:8px 0;overflow-x:auto;overflow-y:hidden;}
+  .sidebar-logo-wrap{padding:10px 12px;border-bottom:none;margin-bottom:0;flex-shrink:0;}
+  .nav-section{display:contents;}
+  .nav-section-label{display:none;}
+  .nav-item{padding:6px 10px;font-size:11px;white-space:nowrap;border-left:none!important;border-bottom:2px solid transparent;}
+  .nav-item.active{border-bottom-color:#4FC3F7;background:none;}
+  .sidebar-bottom{display:none;}
+  .main{padding:16px 12px 60px;overflow-x:hidden;}
+  html,body{overflow:auto!important;}
+}
+</style></head>
 <body>
 <div class="layout">
   <nav class="sidebar">

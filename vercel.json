@@ -1,18 +1,64 @@
 {
   "rewrites": [
-    { "source": "/", "destination": "/landing.html" },
-    { "source": "/landing", "destination": "/landing.html" },
-    { "source": "/client-wins", "destination": "/client-wins.html" },
-    { "source": "/login", "destination": "/login.html" },
-    { "source": "/dashboard", "destination": "/dashboard/dashboard.html" },
-    { "source": "/dashboard/", "destination": "/dashboard/dashboard.html" },
-    { "source": "/clients", "destination": "/dashboard/clients.html" },
-    { "source": "/sops", "destination": "/dashboard/sops.html" },
-    { "source": "/org-chart", "destination": "/dashboard/org-chart.html" },
-    { "source": "/sales-calls", "destination": "/dashboard/sales-calls.html" },
-    { "source": "/research", "destination": "/dashboard/research.html" },
-    { "source": "/performance", "destination": "/dashboard/performance.html" },
-    { "source": "/agents", "destination": "/dashboard/agents.html" },
-    { "source": "/pipeline", "destination": "/dashboard/pipeline.html" }
+    {
+      "source": "/",
+      "destination": "/landing.html"
+    },
+    {
+      "source": "/landing",
+      "destination": "/landing.html"
+    },
+    {
+      "source": "/client-wins",
+      "destination": "/client-wins.html"
+    },
+    {
+      "source": "/about",
+      "destination": "/about.html"
+    },
+    {
+      "source": "/login",
+      "destination": "/login.html"
+    },
+    {
+      "source": "/dashboard",
+      "destination": "/dashboard/dashboard.html"
+    },
+    {
+      "source": "/dashboard/",
+      "destination": "/dashboard/dashboard.html"
+    },
+    {
+      "source": "/clients",
+      "destination": "/dashboard/clients.html"
+    },
+    {
+      "source": "/sops",
+      "destination": "/dashboard/sops.html"
+    },
+    {
+      "source": "/org-chart",
+      "destination": "/dashboard/org-chart.html"
+    },
+    {
+      "source": "/sales-calls",
+      "destination": "/dashboard/sales-calls.html"
+    },
+    {
+      "source": "/research",
+      "destination": "/dashboard/research.html"
+    },
+    {
+      "source": "/performance",
+      "destination": "/dashboard/performance.html"
+    },
+    {
+      "source": "/agents",
+      "destination": "/dashboard/agents.html"
+    },
+    {
+      "source": "/pipeline",
+      "destination": "/dashboard/pipeline.html"
+    }
   ]
 }

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — InboundOS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:#0D1117;color:#ffffff;font-family:'DM Sans',sans-serif;font-size:16px;line-height:1.7;}
+a{color:inherit;text-decoration:none;}
+
+nav{display:flex;align-items:center;justify-content:space-between;padding:20px 40px;border-bottom:1px solid rgba(255,255,255,0.06);}
+.logo{font-size:20px;font-weight:900;letter-spacing:-0.02em;}
+.logo span{color:#4FC3F7;}
+.nav-links{display:flex;gap:28px;font-size:13px;color:rgba(255,255,255,0.5);}
+.nav-links a:hover{color:#fff;}
+.nav-cta{background:#4FC3F7;color:#0D1117;font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:9px 20px;border-radius:8px;}
+.nav-cta:hover{filter:brightness(1.1);}
+
+.hero{max-width:900px;margin:0 auto;padding:80px 40px 60px;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;}
+.hero-photo{position:relative;}
+.hero-photo img{width:100%;border-radius:20px;object-fit:cover;aspect-ratio:3/4;filter:grayscale(15%);}
+.photo-badge{position:absolute;bottom:-16px;right:-16px;background:#0D1117;border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;}
+.badge-label{font-size:9px;text-transform:uppercase;letter-spacing:0.15em;color:rgba(255,255,255,0.4);}
+.badge-val{font-size:18px;font-weight:700;color:#4FC3F7;line-height:1.2;}
+
+.hero-text .eyebrow{font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#4FC3F7;margin-bottom:16px;}
+.hero-text h1{font-size:42px;font-weight:900;letter-spacing:-0.03em;line-height:1.1;margin-bottom:20px;}
+.hero-text p{font-size:15px;color:rgba(255,255,255,0.6);margin-bottom:12px;}
+
+.section{max-width:900px;margin:0 auto;padding:60px 40px;}
+.section-label{font-size:10px;font-weight:700;letter-spacing:0.25em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:32px;display:flex;align-items:center;gap:12px;}
+.section-label::after{content:'';flex:1;height:1px;background:rgba(255,255,255,0.07);}
+
+.timeline{display:flex;flex-direction:column;gap:0;}
+.tl-item{display:grid;grid-template-columns:120px 1fr;gap:24px;padding:28px 0;border-bottom:1px solid rgba(255,255,255,0.05);}
+.tl-item:last-child{border-bottom:none;}
+.tl-year{font-size:12px;font-weight:700;color:#4FC3F7;padding-top:3px;}
+.tl-content h3{font-size:16px;font-weight:700;margin-bottom:6px;}
+.tl-content p{font-size:14px;color:rgba(255,255,255,0.55);line-height:1.6;}
+
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:48px;}
+.stat-box{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:24px;}
+.stat-val{font-size:32px;font-weight:900;color:#4FC3F7;letter-spacing:-0.02em;line-height:1;}
+.stat-label{font-size:11px;color:rgba(255,255,255,0.4);margin-top:6px;text-transform:uppercase;letter-spacing:0.1em;}
+
+.quote-block{background:rgba(79,195,247,0.04);border:1px solid rgba(79,195,247,0.12);border-radius:16px;padding:32px 36px;margin:48px 0;}
+.quote-text{font-size:20px;font-weight:600;letter-spacing:-0.01em;line-height:1.5;color:#fff;}
+.quote-text em{color:#4FC3F7;font-style:normal;}
+.quote-attr{font-size:12px;color:rgba(255,255,255,0.4);margin-top:16px;}
+
+.cta-section{text-align:center;padding:80px 40px;border-top:1px solid rgba(255,255,255,0.06);}
+.cta-section h2{font-size:32px;font-weight:900;letter-spacing:-0.02em;margin-bottom:12px;}
+.cta-section p{font-size:15px;color:rgba(255,255,255,0.5);margin-bottom:28px;}
+.cta-btn{display:inline-block;background:#4FC3F7;color:#0D1117;font-size:13px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:14px 32px;border-radius:10px;}
+.cta-btn:hover{filter:brightness(1.1);}
+
+@media(max-width:700px){
+  nav{padding:16px 20px;}
+  .nav-links{display:none;}
+  .hero{grid-template-columns:1fr;gap:32px;padding:40px 20px;}
+  .hero-photo{max-width:280px;margin:0 auto;}
+  .hero-text h1{font-size:28px;}
+  .section{padding:40px 20px;}
+  .tl-item{grid-template-columns:80px 1fr;gap:12px;}
+  .stats-row{grid-template-columns:1fr 1fr;}
+  .quote-text{font-size:16px;}
+  .quote-block{padding:24px 20px;}
+  .cta-section{padding:48px 20px;}
+  .cta-section h2{font-size:24px;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">Inbound<span>OS</span></a>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/about" style="color:#fff;">About</a>
+    <a href="/client-wins">Client Wins</a>
+  </div>
+  <a href="/" class="nav-cta">Get My Plan →</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-photo">
+    <img src="/micko.jpg" alt="Micko Cruz — Founder of InboundOS">
+    <div class="photo-badge">
+      <div class="badge-label">Content output</div>
+      <div class="badge-val">2 hrs/wk</div>
+    </div>
+  </div>
+  <div class="hero-text">
+    <div class="eyebrow">Founder & Builder</div>
+    <h1>Hey, I'm Micko.</h1>
+    <p>Filipino founder, solo operator, and the person who built InboundOS — not as a product idea, but out of pure necessity.</p>
+    <p>I spent years running a done-for-you social media agency. VAs, video editors, graphic designers, ops managers — the whole team. I learned the hard way that more people means more problems, not more results.</p>
+    <p>So I replaced the team with AI. And it worked better than the team ever did.</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">The Story</div>
+
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-year">Before</div>
+      <div class="tl-content">
+        <h3>Done-For-You Agency</h3>
+        <p>Started as a DFY social media agency serving business owners. Built a team — VAs, video editors, graphic designers, an ops manager. Spent 15+ hours a week on content alone. Margins were tight. Quality was inconsistent. Every client felt custom.</p>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-year">The shift</div>
+      <div class="tl-content">
+        <h3>The AI Moment</h3>
+        <p>"I thought AI was a hype train — but missing AI right now is like missing Bitcoin in 2011." That realization changed everything. I started replacing team members with AI agents, one by one. Scout for research. Quill for scripts. Pulse for scheduling. The output got better. The cost dropped. The stress disappeared.</p>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-year">Now</div>
+      <div class="tl-content">
+        <h3>InboundOS is Born</h3>
+        <p>InboundOS is the system I built for myself — now packaged for agency owners and coaches who are still doing it the old way. We map your company's knowledge base, build custom AI agents, and install a content flywheel that runs 24/7. You film, we handle everything else.</p>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-year">Next</div>
+      <div class="tl-content">
+        <h3>The Coaching Model</h3>
+        <p>Now offering 1:1 DWY (Done-With-You) coaching at $5K — a 90-day installation where I sit with agency owners, map their business, and build their AI content system from scratch. You don't hire a team. You build a machine.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quote-block">
+    <div class="quote-text">"Before the system, I was spending <em>15+ hours a week</em> on content. After? <em>2 hours.</em> Same output. Better quality. No team."</div>
+    <div class="quote-attr">— Micko Cruz, Founder of InboundOS</div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-box">
+      <div class="stat-val">15h → 2h</div>
+      <div class="stat-label">Weekly content time</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val">4 wks</div>
+      <div class="stat-label">Content batched in one session</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val">7</div>
+      <div class="stat-label">AI agents running the system</div>
+    </div>
+  </div>
+</div>
+
+<div class="cta-section">
+  <h2>Ready to install your system?</h2>
+  <p>90-day done-with-you installation. Limited spots. Application required.</p>
+  <a href="/" class="cta-btn">Get My Content Flywheel Plan →</a>
+</div>
+
+</body>
+</html>

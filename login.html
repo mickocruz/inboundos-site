@@ -38,9 +38,13 @@ button:disabled{opacity:0.4;cursor:not-allowed;}
   </div>
   <div class="card-body">
     <div class="field">
+      <div class="field-label">Username</div>
+      <input type="text" id="username" placeholder="your-username" autofocus autocapitalize="none" autocorrect="off">
+    </div>
+    <div class="field">
       <div class="field-label">Password</div>
       <div class="input-wrap">
-        <input type="password" id="password" placeholder="Enter password" autofocus>
+        <input type="password" id="password" placeholder="Enter password">
         <button type="button" class="eye-btn" onclick="togglePw()" tabindex="-1" id="eyebtn">
           <svg id="eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
         </button>
@@ -63,9 +67,8 @@ function getCookie(name) {
 if (getCookie('ctrl_auth') === 'ok') {
   window.location.href = '/dashboard';
 }
-document.getElementById('password').addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') login();
-});
+document.getElementById('username').addEventListener('keydown', function(e) { if (e.key === 'Enter') document.getElementById('password').focus(); });
+document.getElementById('password').addEventListener('keydown', function(e) { if (e.key === 'Enter') login(); });
 function togglePw() {
   const inp = document.getElementById('password');
   const icon = document.getElementById('eye-icon');
@@ -78,10 +81,11 @@ function togglePw() {
   }
 }
 function login() {
+  const un = document.getElementById('username').value.trim().toLowerCase();
   const pw = document.getElementById('password').value;
   const err = document.getElementById('error');
   const btn = document.getElementById('btn');
-  if (pw === 'ringotwo764') {
+  if (un === 'micko-cruz' && pw === 'ringotwo764') {
     setCookie('ctrl_auth', 'ok', 90);
     btn.textContent = 'Signing in...';
     btn.disabled = true;
@@ -91,6 +95,7 @@ function login() {
     err.style.display = 'block';
     document.getElementById('password').value = '';
     document.getElementById('password').focus();
+    err.textContent = un !== 'micko-cruz' ? 'Incorrect username' : 'Incorrect password';
   }
 }
 </script>

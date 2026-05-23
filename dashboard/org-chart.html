@@ -41,7 +41,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .mk-role{font-family:var(--font-data);font-size:10px;color:rgba(255,255,255,0.42);}
 .main{flex:1;overflow-y:auto;overflow-x:hidden;padding:24px 28px 40px;display:flex;flex-direction:column;gap:20px;scrollbar-width:thin;scrollbar-color:rgba(79,195,247,0.12) transparent;}
 .main::-webkit-scrollbar{width:3px;}.main::-webkit-scrollbar-thumb{background:rgba(79,195,247,0.15);border-radius:3px;}
-.header-title{font-family:var(--font-head);font-size:28px;font-weight:900;letter-spacing:-1px;line-height:1;}
+.header-title{font-family:var(--font-head);font-size:30px;font-weight:900;letter-spacing:-1.5px;line-height:1;}
 .header-sub{font-family:var(--font-data);font-size:11px;color:var(--text-muted);margin-top:5px;}
 .section-label{font-family:var(--font-head);font-size:10px;font-weight:900;letter-spacing:2.5px;text-transform:uppercase;color:var(--text-muted);display:flex;align-items:center;gap:10px;}
 .section-label::after{content:'';flex:1;height:1px;background:var(--border);}
@@ -103,34 +103,9 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 /* Titles: NHGrotesk — already set. Body: DM Sans — already set. Sidebar/titles: original. */
 /* Only boost main content body text */
 
-/* kill Outfit — use DM Sans everywhere as body */
+/* DM Sans body */
 :root{--font-body:'DM Sans',sans-serif;}
 html,body{font-family:'DM Sans',sans-serif!important;}
-
-/* ─ CONTENT BODY TEXT: 2x original (~28px) ─ */
-.sop-step,.sop-steps li{font-size:24px!important;line-height:1.7!important;}
-.sop-body{font-size:22px!important;}
-.sop-meta{font-size:20px!important;}
-
-/* agent cards / subscription text */
-.agent-desc,.agent-sub,.agent-task,.task-item,.sub-item,.capability,.cap-item{font-size:22px!important;line-height:1.7!important;}
-.agent-next,.agent-last,.agent-schedule,.schedule-text,.next-text{font-size:20px!important;}
-.agent-pct,.pct-val{font-size:22px!important;}
-
-/* pipeline / client / research body text */
-td,th{font-size:20px!important;}
-.cell-text,.row-label,.row-val{font-size:20px!important;}
-
-/* expanded script/detail cards */
-.detail-body,.script-body,.sop-detail-body,.modal-body{font-size:26px!important;line-height:1.8!important;}
-.detail-label,.script-label{font-size:20px!important;}
-
-/* performance / sales body */
-.metric-label,.kpi-label{font-size:18px!important;}
-.metric-val,.kpi-val{font-size:26px!important;}
-
-/* generic paragraph/list text in main */
-.main p,.main li,.main span:not(.section-label *){font-size:20px!important;}
 </style></head>
 <body>
 <div class="amb amb-1"></div>

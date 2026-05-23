@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InboundOS - Sales Calls</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:'NHGrotesk';src:url('./fonts/NHGrotesk-Black.otf') format('opentype');font-weight:900;}
+:root{
+  --bg:#0D1117;--surface:rgba(255,255,255,0.015);--card:rgba(255,255,255,0.02);--card-hover:rgba(255,255,255,0.035);
+  --border:rgba(255,255,255,0.07);--border-glow:rgba(79,195,247,0.2);
+  --accent:#4FC3F7;--accent-dim:rgba(79,195,247,0.07);
+  --text:#ffffff;--text-muted:rgba(255,255,255,0.3);--text-dim:rgba(255,255,255,0.22);
+  --green:#4ade80;--yellow:#fbbf24;--red:#f87171;--purple:#a78bfa;
+  --sidebar-w:180px;
+  --font-head:'NHGrotesk','Arial Black',Arial,sans-serif;
+  --font-data:'DM Sans',sans-serif;--font-body:'Outfit',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:14px;overflow:hidden;}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;}
+body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 70% 40% at 50% -5%,rgba(79,195,247,0.06) 0%,transparent 70%);pointer-events:none;z-index:0;}
+.layout{display:flex;height:100vh;position:relative;z-index:1;}
+.sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);background:rgba(7,11,18,0.97);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:0 0 16px;backdrop-filter:blur(24px);z-index:10;overflow-y:auto;scrollbar-width:none;}
+.sidebar::-webkit-scrollbar{display:none;}
+.sidebar-logo-wrap{padding:18px 16px 14px;border-bottom:1px solid var(--border);margin-bottom:8px;cursor:pointer;}
+.sidebar-logo-wrap img{width:100%;height:auto;max-height:36px;object-fit:contain;object-position:left center;}
+.sidebar-logo-text{font-family:var(--font-head);font-size:17px;font-weight:900;letter-spacing:-0.5px;line-height:1;user-select:none;}
+.nav-section{padding:10px 0 4px;}
+.nav-section-label{font-family:var(--font-data);font-size:9px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--text-dim);padding:0 16px;margin-bottom:4px;}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 16px;cursor:pointer;transition:all 0.15s ease;color:var(--text-muted);position:relative;user-select:none;font-family:var(--font-data);font-size:12.5px;font-weight:500;border-left:2px solid transparent;}
+.nav-item svg{width:14px;height:14px;flex-shrink:0;opacity:0.7;}
+.nav-item:hover{background:rgba(79,195,247,0.04);color:rgba(255,255,255,0.75);}
+.nav-item.active{color:#4FC3F7;border-left-color:#4FC3F7;background:rgba(79,195,247,0.06);}
+.nav-item.active svg{opacity:1;}
+.sidebar-bottom{margin-top:auto;padding:12px 16px 0;border-top:1px solid var(--border);}
+.mk-avatar-wrap{display:flex;align-items:center;gap:10px;}
+.mk-name{font-family:var(--font-data);font-size:12px;font-weight:600;color:#ffffff;line-height:1.2;}
+.mk-role{font-family:var(--font-data);font-size:10px;color:rgba(255,255,255,0.42);}
+.main{flex:1;overflow-y:auto;overflow-x:hidden;padding:24px 28px 40px;display:flex;flex-direction:column;gap:20px;scrollbar-width:thin;scrollbar-color:rgba(79,195,247,0.12) transparent;}
+.main::-webkit-scrollbar{width:3px;}.main::-webkit-scrollbar-thumb{background:rgba(79,195,247,0.15);border-radius:3px;}
+.header{display:flex;align-items:flex-start;justify-content:space-between;}
+.header-title{font-family:var(--font-head);font-size:28px;font-weight:900;letter-spacing:-1px;line-height:1;}
+.header-sub{font-family:var(--font-data);font-size:11px;color:var(--text-muted);margin-top:5px;}
+.section-label{font-family:var(--font-head);font-size:10px;font-weight:900;letter-spacing:2.5px;text-transform:uppercase;color:var(--text-muted);display:flex;align-items:center;gap:10px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-family:var(--font-head);font-size:10px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all 0.15s;border:none;}
+.btn-accent{background:rgba(79,195,247,0.12);border:1px solid rgba(79,195,247,0.3);color:#4FC3F7;}
+.btn-accent:hover{background:rgba(79,195,247,0.2);}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;gap:10px;text-align:center;}
+.empty-icon{font-size:32px;opacity:0.3;}
+.empty-text{font-family:var(--font-data);font-size:13px;color:var(--text-muted);}
+.empty-sub{font-family:var(--font-data);font-size:11px;color:var(--text-dim);}
+.calls-table{width:100%;border-collapse:collapse;}
+.calls-table th{font-family:var(--font-head);font-size:9px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);padding:10px 16px;text-align:left;border-bottom:1px solid var(--border);}
+.calls-table td{font-family:var(--font-data);font-size:12px;color:var(--text-muted);padding:12px 16px;border-bottom:1px solid rgba(79,195,247,0.05);}
+.calls-table tr:last-child td{border-bottom:none;}
+.calls-table tr:hover td{background:rgba(79,195,247,0.02);color:var(--text);}
+.stage-badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:4px;font-family:var(--font-head);font-size:8px;font-weight:900;letter-spacing:1px;text-transform:uppercase;}
+.stage-prospect{background:rgba(255,255,255,0.06);color:var(--text-muted);}
+.stage-qualified{background:rgba(251,191,36,0.1);color:#fbbf24;}
+.stage-closed{background:rgba(74,222,128,0.1);color:#4ade80;}
+.stage-lost{background:rgba(248,113,113,0.1);color:#f87171;}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;}
+.stat-num{font-family:var(--font-head);font-size:28px;font-weight:900;letter-spacing:-1px;color:var(--text);}
+.stat-label{font-family:var(--font-data);font-size:10px;color:var(--text-muted);margin-top:3px;}
+</style>
+</head>
+<body>
+<div class="layout">
+  <nav class="sidebar">
+    <div class="sidebar-logo-wrap" onclick="location.href='CTRL-dashboard.html'"><div class="sidebar-logo-text"><span style="color:#ffffff;">Inbound</span><span style="color:#4FC3F7;">OS</span></div></div>
+    <div class="nav-section"><div class="nav-section-label">Command</div>
+      <div class="nav-item" onclick="location.href='CTRL-dashboard.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>Dashboard</div>
+      <div class="nav-item" onclick="location.href='agents.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="10" width="20" height="12" rx="2"/><path d="M12 2a5 5 0 0 1 5 5v3H7V7a5 5 0 0 1 5-5z"/><circle cx="12" cy="16" r="1.2" fill="currentColor" stroke="none"/></svg>Agents</div>
+      <div class="nav-item" id="nav-chat-item" style="opacity:0.35;cursor:not-allowed;pointer-events:none;" title="Chat requires an Anthropic API key"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Chat</div>
+    </div>
+    <div class="nav-section"><div class="nav-section-label">Content</div>
+      <div class="nav-item" onclick="location.href='performance.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="4" height="20" rx="1"/><rect x="10" y="8" width="4" height="14" rx="1"/><rect x="18" y="4" width="4" height="18" rx="1"/></svg>Instagram</div>
+      <div class="nav-item" onclick="location.href='pipeline.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Content Pipeline</div>
+      <div class="nav-item" onclick="location.href='research.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Research</div>
+    </div>
+    <div class="nav-section"><div class="nav-section-label">Revenue</div>
+      <div class="nav-item" onclick="location.href='clients.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Clients</div>
+      <div class="nav-item active" onclick="location.href='sales-calls.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.74 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.66 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Sales Calls</div>
+    </div>
+    <div class="nav-section"><div class="nav-section-label">Intelligence</div>
+      <div class="nav-item" onclick="location.href='sops.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>SOPs</div>
+      <div class="nav-item" onclick="location.href='org-chart.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><path d="M12 7v3M12 10l-5 7M12 10l5 7"/></svg>Org Chart</div>
+    </div>
+    <div class="sidebar-bottom"><div class="mk-avatar-wrap"><img src="mk-avatar.jpg" alt="MK" style="width:32px;height:32px;object-fit:cover;border-radius:50%;border:1px solid rgba(79,195,247,0.2);"/><div><div class="mk-name">Micko Cruz</div><div class="mk-role">Founder · InboundOS</div></div></div></div>
+  </nav>
+
+  <main class="main">
+    <div class="header">
+      <div>
+        <div class="header-title">SALES CALLS</div>
+        <div class="header-sub">Track discovery calls, outcomes, and pipeline movement</div>
+      </div>
+      <button class="btn btn-accent" onclick="alert('Log call — coming soon')">+ Log Call</button>
+    </div>
+
+    <div class="stats-row" id="statsRow">
+      <div class="stat-card"><div class="stat-num" id="statTotal">—</div><div class="stat-label">Total Calls</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:#fbbf24;" id="statQualified">—</div><div class="stat-label">Qualified</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:#4ade80;" id="statClosed">—</div><div class="stat-label">Closed</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:#4FC3F7;" id="statRate">—</div><div class="stat-label">Close Rate</div></div>
+    </div>
+
+    <div class="section-label">Call Log</div>
+    <div class="card" id="callsCard">
+      <div class="empty-state">
+        <div class="empty-icon">📞</div>
+        <div class="empty-text" id="callsEmptyText">Loading…</div>
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+const SB_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co';
+const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
+const SB_HEADERS = { 'apikey': SB_ANON, 'Authorization': `Bearer ${SB_ANON}` };
+
+function escH(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+const OUTCOME_CLASS = { prospect:'stage-prospect', qualified:'stage-qualified', closed:'stage-closed', lost:'stage-lost' };
+
+async function loadCalls() {
+  try {
+    const res = await fetch(`${SB_URL}/rest/v1/sales_calls?select=*&order=call_date.desc`, { headers: SB_HEADERS });
+    if (!res.ok) throw new Error(res.status);
+    const calls = await res.json();
+
+    const total = calls.length;
+    const qualified = calls.filter(c => c.outcome === 'qualified' || c.outcome === 'closed').length;
+    const closed = calls.filter(c => c.outcome === 'closed').length;
+    const rate = total ? Math.round(closed/total*100) : 0;
+
+    document.getElementById('statTotal').textContent = total;
+    document.getElementById('statQualified').textContent = qualified;
+    document.getElementById('statClosed').textContent = closed;
+    document.getElementById('statRate').textContent = rate + '%';
+
+    const card = document.getElementById('callsCard');
+    if (!calls.length) {
+      card.innerHTML = `<div class="empty-state"><div class="empty-icon">📞</div><div class="empty-text">No calls logged yet</div><div class="empty-sub">Click "+ Log Call" to add your first sales call</div></div>`;
+      return;
+    }
+    card.innerHTML = `<table class="calls-table">
+      <thead><tr>
+        <th>Prospect</th><th>Handle</th><th>Niche</th><th>Date</th><th>Outcome</th><th>MRR</th><th>Next Step</th>
+      </tr></thead>
+      <tbody>${calls.map(c => `<tr>
+        <td style="color:var(--text);font-weight:500;">${escH(c.prospect_name)}</td>
+        <td>${c.instagram_handle ? `@${escH(c.instagram_handle)}` : '—'}</td>
+        <td>${escH(c.niche||'—')}</td>
+        <td>${c.call_date ? new Date(c.call_date).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '—'}</td>
+        <td><span class="stage-badge ${OUTCOME_CLASS[c.outcome]||'stage-prospect'}">${escH(c.outcome||'prospect')}</span></td>
+        <td>${c.mrr_value ? '$'+c.mrr_value.toLocaleString() : '—'}</td>
+        <td>${escH(c.next_step||'—')}</td>
+      </tr>`).join('')}</tbody>
+    </table>`;
+  } catch(e) {
+    document.getElementById('callsCard').innerHTML = `<div class="empty-state"><div class="empty-icon">📞</div><div class="empty-text">Run schema SQL first</div></div>`;
+    document.getElementById('statTotal').textContent = '0';
+    document.getElementById('statQualified').textContent = '0';
+    document.getElementById('statClosed').textContent = '0';
+    document.getElementById('statRate').textContent = '0%';
+  }
+}
+
+loadCalls();
+</script>
+<script>
+(function() {
+  fetch('http://localhost:3001/agent/chat', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ agent: '_check', messages: [] }),
+  }).then(res => res.json()).then(data => {
+    if (!data.error) {
+      const el = document.getElementById('nav-chat-item');
+      if (!el) return;
+      el.onclick = function() { location.href = 'chat.html'; };
+      el.style.opacity = ''; el.style.cursor = ''; el.style.pointerEvents = '';
+      el.removeAttribute('title');
+    }
+  }).catch(() => {});
+})();
+</script>
+</body>
+</html>

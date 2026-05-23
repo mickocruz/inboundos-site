@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InboundOS - Research</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+@font-face {
+  font-family: 'NHGrotesk';
+  src: url('./fonts/NHGrotesk-Black.otf') format('opentype');
+  font-weight: 900;
+}
+:root {
+  --bg: #0D1117; --surface: rgba(255,255,255,0.015); --card: rgba(255,255,255,0.02); --card-hover: rgba(255,255,255,0.035);
+  --border: rgba(79,195,247,0.1); --border-glow: rgba(79,195,247,0.28);
+  --accent: #4FC3F7; --accent-dim: rgba(79,195,247,0.07); --accent-mid: rgba(79,195,247,0.18);
+  --text: #ffffff; --text-muted: rgba(255,255,255,0.42); --text-dim: rgba(255,255,255,0.22);
+  --green: #4ade80; --yellow: #fbbf24; --red: #f87171; --purple: #a78bfa;
+  --sidebar-w:180px; --font-head: 'NHGrotesk','Arial Black',Arial,sans-serif;
+  --font-data: 'DM Sans',sans-serif; --font-body: 'Outfit',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:14px;overflow:hidden;}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;}
+body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 70% 40% at 50% -5%,rgba(79,195,247,0.07) 0%,transparent 70%),radial-gradient(ellipse 30% 50% at 100% 50%,rgba(79,195,247,0.03) 0%,transparent 60%);pointer-events:none;z-index:0;}
+.layout{display:flex;height:100vh;position:relative;z-index:1;}
+/* SIDEBAR */
+.sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);background:rgba(7,11,18,0.97);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:0 0 16px;backdrop-filter:blur(24px);z-index:10;overflow-y:auto;scrollbar-width:none;}
+.sidebar::-webkit-scrollbar{display:none;}
+.sidebar-logo-wrap{padding:18px 16px 14px;border-bottom:1px solid var(--border);margin-bottom:8px;cursor:pointer;}
+.sidebar-logo-wrap img{width:100%;height:auto;max-height:36px;object-fit:contain;object-position:left center;}
+.sidebar-logo-text{font-family:var(--font-head);font-size:17px;font-weight:900;letter-spacing:-0.5px;line-height:1;user-select:none;}
+.nav-section{padding:10px 0 4px;}
+.nav-section-label{font-family:var(--font-data);font-size:9px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--text-dim);padding:0 16px;margin-bottom:4px;}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 16px;cursor:pointer;transition:all 0.15s ease;color:var(--text-muted);position:relative;user-select:none;font-family:var(--font-data);font-size:12.5px;font-weight:500;border-left:2px solid transparent;}
+.nav-item svg{width:14px;height:14px;flex-shrink:0;opacity:0.7;}
+.nav-item:hover{background:rgba(79,195,247,0.04);color:rgba(255,255,255,0.75);}
+.nav-item.active{color:#4FC3F7;border-left-color:#4FC3F7;background:rgba(79,195,247,0.06);}
+.nav-item.active svg{opacity:1;}
+.sidebar-bottom{margin-top:auto;padding:12px 16px 0;border-top:1px solid var(--border);}
+.mk-avatar-wrap{display:flex;align-items:center;gap:10px;}
+.mk-name{font-family:var(--font-data);font-size:12px;font-weight:600;color:#ffffff;line-height:1.2;}
+.mk-role{font-family:var(--font-data);font-size:10px;color:rgba(255,255,255,0.42);}
+/* MAIN */
+.main{flex:1;overflow-y:auto;overflow-x:hidden;padding:22px 20px 22px 24px;display:flex;flex-direction:column;gap:18px;scrollbar-width:thin;scrollbar-color:rgba(79,195,247,0.12) transparent;}
+.main::-webkit-scrollbar{width:3px;}.main::-webkit-scrollbar-thumb{background:rgba(79,195,247,0.15);border-radius:3px;}
+/* HEADER */
+.header{display:flex;align-items:center;justify-content:space-between;}
+.header-left h1{font-family:var(--font-head);font-size:30px;font-weight:900;letter-spacing:-1.5px;line-height:1;}
+.header-left h1 span{color:var(--accent);}
+.header-left .date{font-family:var(--font-data);font-size:11px;color:var(--text-muted);margin-top:5px;}
+.header-right{display:flex;align-items:center;gap:10px;}
+.status-pill{display:flex;align-items:center;gap:6px;background:rgba(74,222,128,0.07);border:1px solid rgba(74,222,128,0.18);border-radius:20px;padding:5px 12px;font-family:var(--font-data);font-size:11px;color:var(--green);font-weight:500;}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse-green 2s infinite;}
+@keyframes pulse-green{0%,100%{box-shadow:0 0 0 0 rgba(74,222,128,0.5);}50%{box-shadow:0 0 0 4px rgba(74,222,128,0);}}
+/* CARD */
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;position:relative;overflow:hidden;transition:border-color 0.25s,box-shadow 0.25s;}
+.card:hover{border-color:var(--border-glow);box-shadow:0 0 22px rgba(79,195,247,0.06),0 4px 24px rgba(0,0,0,0.35);}
+.card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(79,195,247,0.025) 0%,transparent 55%);pointer-events:none;}
+.section-label{font-family:var(--font-head);font-size:10px;font-weight:900;letter-spacing:2.5px;text-transform:uppercase;color:var(--text-muted);display:flex;align-items:center;gap:10px;margin-bottom:-4px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+
+/* ── PAGE-SPECIFIC ── */
+/* Competitor Cards */
+.competitor-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.comp-card{padding:16px;}
+.comp-header{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;}
+.comp-avatar{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.comp-handle{font-family:var(--font-head);font-size:13px;font-weight:900;letter-spacing:-0.3px;}
+.comp-niche{font-family:var(--font-data);font-size:10px;color:var(--text-muted);margin-top:1px;line-height:1.35;max-height:none;}
+.comp-metrics{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;}
+.comp-metric{background:rgba(255,255,255,0.025);border:1px solid var(--border);border-radius:7px;padding:8px 10px;}
+.comp-metric-val{font-family:var(--font-head);font-size:14px;font-weight:900;letter-spacing:-0.5px;line-height:1;}
+.comp-metric-lbl{font-family:var(--font-data);font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-top:2px;}
+.comp-latest{background:rgba(79,195,247,0.04);border:1px solid rgba(79,195,247,0.1);border-radius:7px;padding:8px 10px;}
+.comp-latest-label{font-family:var(--font-data);font-size:9px;color:var(--accent);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:3px;}
+.comp-latest-link{display:flex;gap:8px;align-items:center;color:inherit;text-decoration:none;}
+.comp-thumb{width:42px;height:56px;border-radius:6px;object-fit:cover;background:rgba(255,255,255,0.05);border:1px solid var(--border);flex-shrink:0;}
+.comp-latest-text{font-family:var(--font-data);font-size:10.5px;color:var(--text);line-height:1.4;}
+.comp-latest-link:hover .comp-latest-text{color:var(--accent);}
+/* SCOUT INTEL */
+.scout-competitor-block{margin-bottom:14px;padding:16px;}
+.scout-comp-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.scout-comp-avatar-sm{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.scout-comp-handle{font-family:var(--font-head);font-size:13px;font-weight:900;letter-spacing:-0.3px;}
+.scout-group-label{font-family:var(--font-head);font-size:8.5px;font-weight:900;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;margin-top:14px;display:flex;align-items:center;gap:8px;}
+.scout-group-label::after{content:'';flex:1;height:1px;background:var(--border);}
+.reel-row{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;scrollbar-width:thin;scrollbar-color:rgba(79,195,247,0.12) transparent;}
+.reel-row::-webkit-scrollbar{height:3px;}.reel-row::-webkit-scrollbar-thumb{background:rgba(79,195,247,0.15);border-radius:3px;}
+.reel-card{flex-shrink:0;width:220px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;transition:border-color 0.2s,box-shadow 0.2s;}
+.reel-card:hover{border-color:var(--border-glow);box-shadow:0 0 14px rgba(79,195,247,0.06);}
+.reel-thumb-wrap{position:relative;width:100%;height:240px;background:rgba(79,195,247,0.04);flex-shrink:0;display:block;text-decoration:none;}
+.reel-thumb{width:100%;height:100%;object-fit:cover;display:block;}
+.reel-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.28);opacity:0;transition:opacity 0.2s;}
+.reel-thumb-wrap:hover .reel-play{opacity:1;}
+.reel-play-icon{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.92);display:flex;align-items:center;justify-content:center;font-size:12px;color:#000;padding-left:3px;}
+.reel-body{padding:10px 12px;display:flex;flex-direction:column;gap:6px;flex:1;}
+.reel-caption{font-family:var(--font-data);font-size:9.5px;color:var(--text-muted);line-height:1.5;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;}
+.reel-transcript-toggle{font-family:var(--font-data);font-size:8.5px;color:var(--accent);cursor:pointer;background:none;border:none;padding:0;text-align:left;letter-spacing:0.3px;}
+.reel-transcript-toggle:hover{opacity:0.8;}
+.reel-transcript-body{font-family:var(--font-data);font-size:8.5px;color:var(--text-dim);line-height:1.5;max-height:80px;overflow-y:auto;background:rgba(79,195,247,0.03);border:1px solid rgba(79,195,247,0.08);border-radius:5px;padding:6px 8px;display:none;}
+.reel-transcript-body.open{display:block;}
+.reel-metrics{display:flex;gap:5px;flex-wrap:wrap;}
+.reel-metric{font-family:var(--font-data);font-size:9px;color:var(--text-dim);}
+.reel-metric b{color:var(--text);font-weight:600;}
+.add-queue-btn{margin-top:auto;padding:5px 8px;background:transparent;border:1px solid var(--border);border-radius:6px;font-family:var(--font-data);font-size:9px;font-weight:600;color:var(--text-muted);cursor:pointer;transition:all 0.18s;width:100%;letter-spacing:0.3px;}
+.add-queue-btn:hover{background:var(--accent-dim);border-color:rgba(79,195,247,0.3);color:var(--accent);}
+.add-queue-btn.added{color:var(--green);border-color:rgba(74,222,128,0.3);background:rgba(74,222,128,0.05);cursor:default;}
+@keyframes skeleton-pulse{0%,100%{border-color:rgba(79,195,247,0.1);}50%{border-color:rgba(79,195,247,0.35);box-shadow:0 0 14px rgba(79,195,247,0.1);}}
+.comp-card.loading{animation:skeleton-pulse 1.4s ease-in-out infinite;pointer-events:none;}
+.comp-card.loading .comp-metric-val,.comp-card.loading .comp-niche,.comp-card.loading .comp-latest-text{color:rgba(79,195,247,0.25)!important;}
+/* SWIPE FILE */
+.swipe-filter{padding:3px 10px;border-radius:20px;font-family:var(--font-data);font-size:10px;font-weight:600;background:rgba(255,255,255,0.03);color:var(--text-muted);border:1px solid var(--border);cursor:pointer;transition:all 0.15s;letter-spacing:0.3px;}
+.swipe-filter:hover{border-color:rgba(79,195,247,0.3);color:var(--accent);}
+.swipe-filter.active{background:rgba(79,195,247,0.08);color:var(--accent);border-color:rgba(79,195,247,0.3);}
+.swipe-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;transition:border-color 0.2s,box-shadow 0.2s;}
+.swipe-card:hover{border-color:rgba(79,195,247,0.2);box-shadow:0 0 16px rgba(79,195,247,0.05);}
+.swipe-hook{font-family:var(--font-data);font-size:11.5px;color:var(--text);line-height:1.5;font-weight:500;}
+.swipe-meta{display:flex;flex-wrap:wrap;gap:5px;align-items:center;}
+.swipe-tag{font-family:var(--font-data);font-size:8.5px;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:0.5px;text-transform:uppercase;}
+.swipe-tag-tofu{background:rgba(79,195,247,0.1);color:var(--accent);}
+.swipe-tag-mofu{background:rgba(251,191,36,0.1);color:var(--yellow);}
+.swipe-tag-bofu{background:rgba(74,222,128,0.1);color:var(--green);}
+.swipe-tag-steal{background:rgba(167,139,250,0.1);color:var(--purple);}
+.swipe-tag-neutral{background:rgba(255,255,255,0.05);color:var(--text-muted);}
+.swipe-views{font-family:var(--font-data);font-size:9px;color:var(--text-dim);margin-left:auto;}
+.swipe-empty{font-family:var(--font-data);font-size:12px;color:var(--text-dim);padding:24px;text-align:center;grid-column:1/-1;}
+</style>
+</head>
+<body>
+<div class="layout">
+  <nav class="sidebar">
+    <div class="sidebar-logo-wrap" onclick="location.href='CTRL-dashboard.html'"><div class="sidebar-logo-text"><span style="color:#ffffff;">Inbound</span><span style="color:#4FC3F7;">OS</span></div></div>
+    <div class="nav-section"><div class="nav-section-label">Command</div>
+      <div class="nav-item" onclick="location.href='CTRL-dashboard.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>Dashboard</div>
+      <div class="nav-item" onclick="location.href='agents.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="10" width="20" height="12" rx="2"/><path d="M12 2a5 5 0 0 1 5 5v3H7V7a5 5 0 0 1 5-5z"/><circle cx="12" cy="16" r="1.2" fill="currentColor" stroke="none"/></svg>Agents</div>
+      <div class="nav-item" id="nav-chat-item" style="opacity:0.35;cursor:not-allowed;pointer-events:none;" title="Chat requires an Anthropic API key"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Chat</div>
+    </div>
+    <div class="nav-section"><div class="nav-section-label">Content</div>
+      <div class="nav-item" onclick="location.href='performance.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="4" height="20" rx="1"/><rect x="10" y="8" width="4" height="14" rx="1"/><rect x="18" y="4" width="4" height="18" rx="1"/></svg>Instagram</div>
+      <div class="nav-item" onclick="location.href='pipeline.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Content Pipeline</div>
+      <div class="nav-item active" onclick="location.href='research.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Research</div>
+    </div>
+    <div class="nav-section"><div class="nav-section-label">Revenue</div>
+      <div class="nav-item" onclick="location.href='clients.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Clients</div>
+      <div class="nav-item" onclick="location.href='sales-calls.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.74 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.66 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Sales Calls</div>
+    </div>
+    <div class="nav-section"><div class="nav-section-label">Intelligence</div>
+      <div class="nav-item" onclick="location.href='sops.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>SOPs</div>
+      <div class="nav-item" onclick="location.href='org-chart.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><path d="M12 7v3M12 10l-5 7M12 10l5 7"/></svg>Org Chart</div>
+    </div>
+    <div class="sidebar-bottom"><div class="mk-avatar-wrap"><img src="mk-avatar.jpg" alt="MK" style="width:32px;height:32px;object-fit:cover;border-radius:50%;border:1px solid rgba(79,195,247,0.2);"/><div><div class="mk-name">Micko Cruz</div><div class="mk-role">Founder · InboundOS</div></div></div></div>
+  </nav>
+
+  <main class="main">
+    <div class="header">
+      <div class="header-left">
+        <h1>RESEARCH<span>.</span></h1>
+        <div class="date">Content Intelligence · May 5, 2026 · Updated 8 min ago</div>
+      </div>
+      <div class="header-right">
+        <div class="status-pill"><div class="status-dot"></div>Scout Active</div>
+      </div>
+    </div>
+
+    <!-- COMPETITOR PULSE -->
+    <div class="section-label" style="display:flex;align-items:center;gap:10px;">
+      Competitor Pulse
+      <button id="comp-refresh-btn" onclick="refreshCompetitors()" style="font-size:10px;font-family:var(--font-data);font-weight:600;letter-spacing:0.5px;padding:3px 10px;border-radius:20px;background:rgba(79,195,247,0.07);color:var(--accent);border:1px solid rgba(79,195,247,0.22);cursor:pointer;">↻ Refresh</button>
+      <button onclick="openCompetitorEditor()" style="font-size:10px;font-family:var(--font-data);font-weight:600;letter-spacing:0.5px;padding:3px 10px;border-radius:20px;background:rgba(255,255,255,0.03);color:var(--text-muted);border:1px solid var(--border);cursor:pointer;">✎ Edit</button>
+      <span id="comp-status" style="font-size:10px;font-family:var(--font-data);color:var(--text-dim);"></span>
+    </div>
+    <div class="competitor-grid" id="comp-grid"></div>
+
+    <!-- SCOUT INTEL -->
+    <div class="section-label" id="scoutSectionLabel" style="display:none;">
+      Scout Intel
+      <span id="scoutSavedAt" style="font-size:9px;color:var(--text-dim);letter-spacing:0;text-transform:none;font-family:var(--font-data);font-weight:400;margin-left:4px;"></span>
+    </div>
+    <div id="scoutIntelContainer" class=""></div>
+    <!-- SWIPE FILE -->
+    <div class="section-label" id="swipeSectionLabel">
+      Swipe File
+      <span id="swipeCount" style="font-size:9px;color:var(--text-dim);letter-spacing:0;text-transform:none;font-family:var(--font-data);font-weight:400;margin-left:4px;"></span>
+      <span id="swipeStatus" style="font-size:10px;font-family:var(--font-data);color:var(--text-dim);margin-left:auto;letter-spacing:0;text-transform:none;font-weight:400;"></span>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px;" id="swipeFilters">
+      <button class="swipe-filter active" data-stage="">All</button>
+      <button class="swipe-filter" data-stage="TOFU">TOFU</button>
+      <button class="swipe-filter" data-stage="MOFU">MOFU</button>
+      <button class="swipe-filter" data-stage="BOFU">BOFU</button>
+      <button class="swipe-filter" data-steal="true">⭐ Steal-Worthy</button>
+    </div>
+    <div id="swipeGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;"></div>
+
+    <div style="height:32px;"></div>
+  </main>
+</div>
+<!-- COMPETITOR EDITOR MODAL -->
+<div id="compEditorOverlay" style="position:fixed;inset:0;z-index:300;background:rgba(0,0,0,0.72);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.2s;" onclick="if(event.target===this)closeCompetitorEditor()">
+  <div style="background:#0f1824;border:1px solid rgba(79,195,247,0.28);border-radius:16px;width:400px;max-width:calc(100vw - 40px);padding:24px;box-shadow:0 0 60px rgba(79,195,247,0.1),0 24px 60px rgba(0,0,0,0.6);transform:translateY(12px);transition:transform 0.2s;" id="compEditorBox">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+      <div style="font-family:var(--font-head);font-size:14px;font-weight:900;letter-spacing:-0.3px;">Edit <span style="color:var(--accent);">Competitors</span></div>
+      <button onclick="closeCompetitorEditor()" style="background:none;border:none;color:var(--text-muted);font-size:18px;cursor:pointer;padding:2px 6px;border-radius:4px;line-height:1;">✕</button>
+    </div>
+    <div style="font-family:var(--font-head);font-size:8.5px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">Current Handles</div>
+    <div id="compHandleList" style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px;max-height:200px;overflow-y:auto;"></div>
+    <div style="display:flex;gap:8px;margin-bottom:18px;">
+      <input id="compNewHandle" type="text" placeholder="@newhandle" style="flex:1;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:7px;padding:8px 10px;font-family:var(--font-body);font-size:11.5px;color:var(--text);outline:none;transition:border-color 0.2s;" onkeydown="if(event.key==='Enter')addCompHandle()">
+      <button onclick="addCompHandle()" style="background:var(--accent-dim);border:1px solid rgba(79,195,247,0.22);border-radius:7px;padding:8px 14px;font-family:var(--font-data);font-size:10px;font-weight:600;color:var(--accent);cursor:pointer;white-space:nowrap;">+ Add</button>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;">
+      <button onclick="closeCompetitorEditor()" style="background:transparent;border:1px solid var(--border);border-radius:7px;padding:7px 16px;font-family:var(--font-data);font-size:10px;font-weight:600;color:var(--text-muted);cursor:pointer;">Cancel</button>
+      <button onclick="saveCompetitors()" id="compSaveBtn" style="background:var(--accent);border:none;border-radius:7px;padding:7px 18px;font-family:var(--font-data);font-size:10px;font-weight:700;color:#0D1117;cursor:pointer;letter-spacing:0.3px;">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const PROXY = 'http://localhost:3001';
+const COMP_CACHE = 'ctrl_competitors_v1';
+const DEFAULT_HANDLES = ['chriswesst', 'innovalos', 'chatto.gpt'];
+function proxyImg(url) { return url ? `${PROXY}/proxy-image?url=${encodeURIComponent(url)}` : ''; }
+const AVATAR_STYLES = ['background:rgba(79,195,247,0.1);','background:rgba(251,191,36,0.1);','background:rgba(74,222,128,0.1);','background:rgba(167,139,250,0.1);','background:rgba(248,113,113,0.1);'];
+const AVATAR_EMOJIS = ['🏔️','⚡','🎯','🔥','💎'];
+let _compHandles = [...DEFAULT_HANDLES];
+
+function fmtNum(n) {
+  if (!n && n !== 0) return '—';
+  if (n >= 1000000) return (n/1000000).toFixed(1)+'M';
+  if (n >= 1000) return (n/1000).toFixed(1)+'K';
+  return String(n);
+}
+function escapeHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function escapeAttr(str) { return escapeHtml(str).replace(/'/g,'&#39;'); }
+
+function renderCompetitorCards(handles) {
+  const grid = document.getElementById('comp-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  handles.forEach((handle, i) => {
+    const h = handle.replace('@','');
+    const div = document.createElement('div');
+    div.className = 'card comp-card';
+    div.dataset.handle = h;
+    div.innerHTML = `
+      <div class="comp-header">
+        <div class="comp-avatar" style="${AVATAR_STYLES[i % AVATAR_STYLES.length]}">${AVATAR_EMOJIS[i % AVATAR_EMOJIS.length]}</div>
+        <div>
+          <div class="comp-handle">@${escapeHtml(h)}</div>
+          <div class="comp-niche" style="color:var(--text-dim);">Loading…</div>
+        </div>
+      </div>
+      <div class="comp-metrics">
+        <div class="comp-metric"><div class="comp-metric-val">—</div><div class="comp-metric-lbl">Followers</div></div>
+        <div class="comp-metric"><div class="comp-metric-val">—</div><div class="comp-metric-lbl">Views/mo</div></div>
+        <div class="comp-metric"><div class="comp-metric-val">—</div><div class="comp-metric-lbl">Eng. Rate</div></div>
+      </div>
+      <div class="comp-latest">
+        <div class="comp-latest-label">Latest Viral</div>
+        <div class="comp-latest-text" style="color:var(--text-dim);">Click ↻ Refresh to load</div>
+      </div>`;
+    grid.appendChild(div);
+  });
+}
+
+function applyCompetitorData(profiles, latestViral = {}) {
+  profiles.forEach(p => {
+    if (!p) return;
+    const handle = (p.username || '').replace('@','');
+    const card = document.querySelector(`.comp-card[data-handle="${handle}"]`);
+    if (!card) return;
+    const followers = p.followersCount || p.followers || 0;
+    const avgLikes = p.avgLikes || p.avgLikesCount || p.likesCount || 0;
+    const avgViews = p.avgViews || p.avgVideoViewCount || p.videoPlayCount || p.videoViewCount || 0;
+    const er = (followers && avgLikes) ? (avgLikes / followers * 100).toFixed(1)+'%' : '—';
+    const vals = card.querySelectorAll('.comp-metric-val');
+    if (vals[0]) vals[0].textContent = fmtNum(followers);
+    if (vals[1]) vals[1].textContent = avgViews ? fmtNum(avgViews) : '—';
+    if (vals[2]) vals[2].textContent = er;
+    const handleEl = card.querySelector('.comp-handle');
+    if (handleEl && p.username) handleEl.textContent = '@' + p.username;
+    const nicheEl = card.querySelector('.comp-niche');
+    if (nicheEl) { nicheEl.textContent = p.biography || p.bio || p.fullName || ''; nicheEl.style.color = ''; }
+    if (p.profilePicUrl) {
+      const avatarEl = card.querySelector('.comp-avatar');
+      if (avatarEl) avatarEl.innerHTML = `<img src="${escapeAttr(proxyImg(p.profilePicUrl))}" style="width:100%;height:100%;object-fit:cover;border-radius:10px;" onerror="this.parentElement.textContent='👤'">`;
+    }
+    const reel = latestViral[handle] || null;
+    const latest = card.querySelector('.comp-latest');
+    if (latest && reel) {
+      const caption = reel.caption || 'Open latest viral reel';
+      latest.innerHTML = `
+        <div class="comp-latest-label">Latest Viral</div>
+        <a class="comp-latest-link" href="${escapeAttr(reel.url||'#')}" target="_blank" rel="noopener">
+          ${reel.thumbnail ? `<img class="comp-thumb" src="${escapeAttr(proxyImg(reel.thumbnail))}" alt="">` : '<div class="comp-thumb"></div>'}
+          <div class="comp-latest-text">${escapeHtml(caption.slice(0,90))}${caption.length>90?'…':''} — ${fmtNum(reel.views||0)} views</div>
+        </a>`;
+    }
+  });
+}
+
+async function refreshCompetitors() {
+  const btn = document.getElementById('comp-refresh-btn');
+  const status = document.getElementById('comp-status');
+  btn.disabled = true; status.textContent = 'Scraping…';
+  document.querySelectorAll('.comp-card').forEach(c => c.classList.add('loading'));
+  try {
+    const data = await fetch(`${PROXY}/apify/instagram`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mode: 'competitors', handles: _compHandles }),
+    }).then(r => r.json());
+    if (data.error) throw new Error(data.error);
+    localStorage.setItem(COMP_CACHE, JSON.stringify({ profiles: data.profiles||[], latestViral: data.latestViral||{}, ts: Date.now() }));
+    applyCompetitorData(data.profiles||[], data.latestViral||{});
+    status.textContent = 'Updated just now';
+    loadScoutIntel();
+  } catch(e) {
+    status.textContent = 'Failed — ' + e.message;
+  } finally { btn.disabled = false; document.querySelectorAll('.comp-card').forEach(c => c.classList.remove('loading')); }
+}
+
+function renderHandleList() {
+  const list = document.getElementById('compHandleList');
+  if (!list) return;
+  list.innerHTML = _compHandles.length ? _compHandles.map((h, i) => `
+    <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.025);border:1px solid var(--border);border-radius:7px;padding:8px 10px;">
+      <span style="font-family:var(--font-data);font-size:11px;color:var(--text);">@${escapeHtml(h)}</span>
+      <button onclick="removeCompHandle(${i})" style="background:transparent;border:none;color:var(--text-dim);font-size:13px;cursor:pointer;padding:0 4px;line-height:1;transition:color 0.15s;" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text-dim)'">✕</button>
+    </div>`).join('') : `<div style="font-family:var(--font-data);font-size:11px;color:var(--text-dim);padding:8px 0;">No competitors added yet</div>`;
+}
+
+async function openCompetitorEditor() {
+  try {
+    const data = await fetch(`${PROXY}/config`).then(r => r.json());
+    if (Array.isArray(data.competitors)) _compHandles = data.competitors.map(h => h.replace('@',''));
+  } catch(e) {}
+  renderHandleList();
+  const overlay = document.getElementById('compEditorOverlay');
+  const box = document.getElementById('compEditorBox');
+  overlay.style.opacity = '1'; overlay.style.pointerEvents = 'all';
+  box.style.transform = 'translateY(0)';
+  setTimeout(() => document.getElementById('compNewHandle').focus(), 200);
+}
+
+function closeCompetitorEditor() {
+  const overlay = document.getElementById('compEditorOverlay');
+  const box = document.getElementById('compEditorBox');
+  overlay.style.opacity = '0'; overlay.style.pointerEvents = 'none';
+  box.style.transform = 'translateY(12px)';
+}
+
+function addCompHandle() {
+  const input = document.getElementById('compNewHandle');
+  const val = input.value.trim().replace(/^@/,'');
+  if (!val || _compHandles.includes(val)) { input.value = ''; return; }
+  _compHandles.push(val);
+  renderHandleList();
+  input.value = '';
+}
+
+function removeCompHandle(index) {
+  _compHandles.splice(index, 1);
+  renderHandleList();
+}
+
+async function saveCompetitors() {
+  const btn = document.getElementById('compSaveBtn');
+  btn.disabled = true; btn.textContent = 'Saving…';
+  try {
+    await fetch(`${PROXY}/config`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ competitors: _compHandles }),
+    });
+    closeCompetitorEditor();
+    localStorage.setItem('ctrl_comp_handles', JSON.stringify(_compHandles));
+    renderCompetitorCards(_compHandles);
+    const status = document.getElementById('comp-status');
+    if (status) status.textContent = `Saved ${_compHandles.length} handle${_compHandles.length !== 1 ? 's' : ''}`;
+  } catch(e) {
+    btn.textContent = 'Error — retry';
+  } finally { btn.disabled = false; btn.textContent = 'Save'; }
+}
+
+// Init: /config first (source of truth) → fallback localStorage → fallback DEFAULT_HANDLES
+(async function initCompetitors() {
+  try {
+    const data = await fetch(`${PROXY}/config`).then(r => r.json());
+    if (Array.isArray(data.competitors) && data.competitors.length) {
+      _compHandles = data.competitors.map(h => h.replace('@',''));
+      localStorage.setItem('ctrl_comp_handles', JSON.stringify(_compHandles));
+    }
+  } catch(e) {
+    try {
+      const saved = localStorage.getItem('ctrl_comp_handles');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length) _compHandles = parsed;
+      }
+    } catch(e2) {}
+  }
+  renderCompetitorCards(_compHandles);
+  loadScoutIntel();
+  try {
+    const raw = localStorage.getItem(COMP_CACHE);
+    if (!raw) return;
+    const { profiles, latestViral, ts } = JSON.parse(raw);
+    applyCompetitorData(profiles||[], latestViral||{});
+    const age = Math.round((Date.now()-ts)/60000);
+    const status = document.getElementById('comp-status');
+    if (status) status.textContent = `Cached · ${age}m ago`;
+  } catch(e) {}
+})();
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCompetitorEditor(); });
+
+async function loadScoutIntel() {
+  try {
+    const data = await fetch(`${PROXY}/scout/results`).then(r => r.json());
+    if (data.error || !data.result) return;
+    renderScoutIntel(data.result, data.savedAt);
+  } catch(e) {}
+}
+
+function renderScoutIntel(result, savedAt) {
+  const container = document.getElementById('scoutIntelContainer');
+  const label = document.getElementById('scoutSectionLabel');
+  const savedEl = document.getElementById('scoutSavedAt');
+  if (!container) return;
+  const handles = Object.keys(result);
+  if (!handles.length) return;
+  label.style.display = 'flex';
+  if (savedAt && savedEl) {
+    const age = Math.round((Date.now() - new Date(savedAt).getTime()) / 60000);
+    savedEl.textContent = `· ${age < 1 ? 'just now' : age + 'm ago'}`;
+  }
+  container.innerHTML = '';
+  handles.forEach((handle, idx) => {
+    const d = result[handle];
+    const profile = d.profile || {};
+    const block = document.createElement('div');
+    block.className = 'card scout-competitor-block';
+    block.innerHTML = `
+      <div class="scout-comp-header">
+        <div class="scout-comp-avatar-sm" style="${AVATAR_STYLES[idx % AVATAR_STYLES.length]}">${AVATAR_EMOJIS[idx % AVATAR_EMOJIS.length]}</div>
+        <div class="scout-comp-handle">@${escapeHtml(handle)}</div>
+        ${profile.followers ? `<span style="font-family:var(--font-data);font-size:10px;color:var(--text-dim);">${fmtNum(profile.followers)} followers</span>` : ''}
+      </div>
+      <div class="scout-group-label" style="color:var(--accent);">Top Views</div>
+      <div class="reel-row" id="row-v-${idx}"></div>
+      <div class="scout-group-label" style="color:var(--yellow);">Top Likes</div>
+      <div class="reel-row" id="row-l-${idx}"></div>
+      <div class="scout-group-label" style="color:var(--green);">Top Comments</div>
+      <div class="reel-row" id="row-c-${idx}"></div>`;
+    container.appendChild(block);
+    (d.tofu || []).forEach(r => document.getElementById(`row-v-${idx}`).appendChild(buildReelCard(r)));
+    (d.mofu || []).forEach(r => document.getElementById(`row-l-${idx}`).appendChild(buildReelCard(r)));
+    (d.bofu || []).forEach(r => document.getElementById(`row-c-${idx}`).appendChild(buildReelCard(r)));
+  });
+}
+
+function buildReelCard(reel) {
+  const div = document.createElement('div');
+  div.className = 'reel-card';
+  const url = reel.url || '#';
+  const thumb = reel.thumbnail || '';
+  const caption = reel.caption || '';
+  const transcript = reel.transcript || '';
+  const reelData = {
+    id: 'reel-' + Math.random().toString(36).slice(2) + '-' + Date.now(),
+    title: caption.split(/[.!?\n]/)[0].slice(0, 70) || `Reel from @${reel.username || 'competitor'}`,
+    url: reel.url || '',
+    thumbnail: reel.thumbnail || '',
+    username: reel.username || '',
+    views: reel.views || 0,
+    likes: reel.likes || 0,
+    comments: reel.comments || 0,
+    saves: reel.saves || 0,
+    caption,
+    transcript,
+  };
+  div.innerHTML = `
+    <a class="reel-thumb-wrap" href="${escapeAttr(url)}" target="_blank" rel="noopener">
+      ${thumb
+        ? `<img class="reel-thumb" src="${escapeAttr(proxyImg(thumb))}" alt="" loading="lazy" onerror="this.style.display='none'">`
+        : `<div class="reel-thumb" style="background:rgba(79,195,247,0.05);width:100%;height:100%;"></div>`}
+      <div class="reel-play"><div class="reel-play-icon">▶</div></div>
+    </a>
+    <div class="reel-body">
+      <div class="reel-caption">${escapeHtml(caption)}</div>
+      ${transcript
+        ? `<button class="reel-transcript-toggle" data-open="0">▸ Transcript</button>
+           <div class="reel-transcript-body">${escapeHtml(transcript)}</div>`
+        : `<span style="font-family:var(--font-data);font-size:8px;color:var(--text-dim);opacity:0.5;">No transcript</span>`}
+      <div class="reel-metrics">
+        <span class="reel-metric">👁 <b>${fmtNum(reel.views)}</b></span>
+        <span class="reel-metric">❤️ <b>${fmtNum(reel.likes)}</b></span>
+        <span class="reel-metric">💬 <b>${fmtNum(reel.comments)}</b></span>
+        ${reel.saves ? `<span class="reel-metric">🔖 <b>${fmtNum(reel.saves)}</b></span>` : ''}
+      </div>
+      <button class="add-queue-btn">+ Add to Ideas</button>
+    </div>`;
+  if (transcript) {
+    const toggle = div.querySelector('.reel-transcript-toggle');
+    const body = div.querySelector('.reel-transcript-body');
+    toggle.addEventListener('click', () => {
+      const open = toggle.dataset.open === '1';
+      toggle.dataset.open = open ? '0' : '1';
+      toggle.textContent = open ? '▸ Transcript' : '▾ Transcript';
+      body.classList.toggle('open', !open);
+    });
+  }
+  div.querySelector('.add-queue-btn')._reelData = reelData;
+  div.querySelector('.add-queue-btn').addEventListener('click', function() { addReelToQueue(this); });
+  return div;
+}
+
+function addReelToQueue(btn) {
+  const reel = btn._reelData;
+  if (!reel) return;
+  try {
+    const raw = localStorage.getItem('ctrl_pipeline_board');
+    const board = raw ? JSON.parse(raw) : {};
+    if (!Array.isArray(board.ideas)) board.ideas = [];
+    if (reel.url && board.ideas.some(item => item.url === reel.url)) {
+      btn.textContent = 'Already Added';
+      btn.className = 'add-queue-btn added';
+      return;
+    }
+    board.ideas.unshift({
+      id: reel.id,
+      title: reel.title,
+      url: reel.url,
+      thumbnail: reel.thumbnail,
+      scripted: false,
+      tagText: `◈ @${reel.username}`,
+      tagStyle: 'background:rgba(225,48,108,0.09);color:#e1306c;',
+    });
+    localStorage.setItem('ctrl_pipeline_board', JSON.stringify(board));
+    btn.textContent = 'Added ✓';
+    btn.className = 'add-queue-btn added';
+    btn.disabled = true;
+  } catch(e) {
+    btn.textContent = 'Error — retry';
+  }
+}
+</script>
+<script>
+// Unlock chat nav if API key is available
+(function() {
+  fetch('http://localhost:3001/agent/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ agent: '_check', messages: [] }),
+  }).then(res => res.json()).then(data => {
+    if (!data.error) {
+      const el = document.getElementById('nav-chat-item');
+      if (!el) return;
+      el.onclick = function() { location.href = 'chat.html'; };
+      el.style.opacity = '';
+      el.style.cursor = '';
+      el.style.pointerEvents = '';
+      el.removeAttribute('title');
+      el.innerHTML = el.innerHTML.replace('🔒 Chat', 'Chat');
+    }
+  }).catch(() => { /* server offline — stay locked */ });
+})();
+</script>
+<script>
+// ── SWIPE FILE — Supabase content_bucket ──
+const SB_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co';
+const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
+
+let _swipeAll = [];
+let _activeStage = '';
+let _activeSteal = false;
+
+async function loadSwipeFile() {
+  const status = document.getElementById('swipeStatus');
+  if (status) status.textContent = 'Loading…';
+  try {
+    const res = await fetch(
+      `${SB_URL}/rest/v1/content_bucket?select=id,reel_title,hook,hook_type,funnel_stage,competitor,views,likes,comments,steal_worthy,threat_level,emotional_trigger&order=views.desc&limit=60`,
+      { headers: { 'apikey': SB_ANON, 'Authorization': `Bearer ${SB_ANON}` } }
+    );
+    if (!res.ok) throw new Error(res.status);
+    _swipeAll = await res.json();
+    if (status) status.textContent = `${_swipeAll.length} entries`;
+    renderSwipeFile();
+  } catch(e) {
+    if (status) status.textContent = 'Failed to load';
+    const grid = document.getElementById('swipeGrid');
+    if (grid) grid.innerHTML = `<div class="swipe-empty">Could not load swipe file — check Supabase grant</div>`;
+  }
+}
+
+function renderSwipeFile() {
+  const grid = document.getElementById('swipeGrid');
+  const countEl = document.getElementById('swipeCount');
+  if (!grid) return;
+
+  let rows = _swipeAll;
+  if (_activeStage) rows = rows.filter(r => r.funnel_stage === _activeStage);
+  if (_activeSteal) rows = rows.filter(r => r.steal_worthy);
+
+  if (countEl) countEl.textContent = `· ${rows.length} shown`;
+
+  if (!rows.length) {
+    grid.innerHTML = `<div class="swipe-empty">No entries match filter</div>`;
+    return;
+  }
+
+  grid.innerHTML = rows.map(r => {
+    const stage = r.funnel_stage || '';
+    const stageClass = stage === 'TOFU' ? 'swipe-tag-tofu' : stage === 'MOFU' ? 'swipe-tag-mofu' : stage === 'BOFU' ? 'swipe-tag-bofu' : 'swipe-tag-neutral';
+    const hookType = r.hook_type ? `<span class="swipe-tag swipe-tag-neutral">${escapeHtml(r.hook_type)}</span>` : '';
+    const steal = r.steal_worthy ? `<span class="swipe-tag swipe-tag-steal">⭐ Steal</span>` : '';
+    const competitor = r.competitor ? `<span class="swipe-tag swipe-tag-neutral">${escapeHtml(r.competitor)}</span>` : '';
+    const views = r.views ? fmtNum(r.views) + ' views' : '';
+    const displayText = r.hook || r.reel_title || '—';
+    return `<div class="swipe-card">
+      <div class="swipe-hook">${escapeHtml(displayText)}</div>
+      <div class="swipe-meta">
+        ${stage ? `<span class="swipe-tag ${stageClass}">${stage}</span>` : ''}
+        ${hookType}${steal}${competitor}
+        <span class="swipe-views">${views}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+document.getElementById('swipeFilters').addEventListener('click', function(e) {
+  const btn = e.target.closest('.swipe-filter');
+  if (!btn) return;
+  if (btn.dataset.steal) {
+    _activeSteal = !btn.classList.contains('active');
+    btn.classList.toggle('active', _activeSteal);
+  } else {
+    _activeStage = btn.dataset.stage;
+    document.querySelectorAll('.swipe-filter:not([data-steal])').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  renderSwipeFile();
+});
+
+loadSwipeFile();
+</script>
+</body>
+</html>

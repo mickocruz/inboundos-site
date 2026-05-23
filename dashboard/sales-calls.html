@@ -6,7 +6,7 @@
 <title>InboundOS - Sales Calls</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
 <style>
 @font-face{font-family:'NHGrotesk';src:url('/dashboard/fonts/NHGrotesk-Black.otf') format('opentype');font-weight:900;}
 :root{
@@ -17,7 +17,7 @@
   --green:#4ade80;--yellow:#fbbf24;--red:#f87171;--purple:#a78bfa;
   --sidebar-w:180px;
   --font-head:'NHGrotesk','Arial Black',Arial,sans-serif;
-  --font-data:'DM Sans',sans-serif;--font-body:'Outfit',sans-serif;
+  --font-data:'DM Sans',sans-serif;--font-body:'DM Sans',sans-serif;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:14px;overflow:hidden;}
@@ -87,33 +87,47 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
   .main{flex:none!important;width:100%!important;padding:16px 14px 60px;overflow-x:hidden;}
 }
 
-/* ── FONT SCALE UP ── */
-html,body{font-size:16px!important;}
-.header-title{font-size:36px!important;}
-.header-sub{font-size:14px!important;}
-.section-label{font-size:13px!important;}
-.nav-item{font-size:15px!important;}
-.nav-section-label{font-size:11px!important;}
-.mk-name{font-size:14px!important;}
-.mk-role{font-size:12px!important;}
-/* table / card content */
-td,th,.cell,.value,.metric-val,.kpi-val{font-size:15px!important;}
-.metric-label,.kpi-label,.col-header{font-size:13px!important;}
-/* sops */
-.sop-title{font-size:18px!important;}
-.sop-meta{font-size:14px!important;}
-.sop-num{font-size:14px!important;}
-.sop-step{font-size:15px!important;}
-.step-num{font-size:12px!important;}
-.sop-owner-label{font-size:11px!important;}
-.owner-badge{font-size:11px!important;}
-/* script/detail cards */
-.detail-title,.script-title,.sop-detail-title,.modal-title{font-size:22px!important;}
-.detail-body,.script-body,.sop-detail-body,.modal-body{font-size:16px!important;line-height:1.8!important;}
-.detail-label,.script-label,.sop-detail-label{font-size:13px!important;}
 
-.sop-body{font-size:16px!important;}
-.sop-steps li,.sop-steps{font-size:16px!important;}
+/* ── FONT SCALE + FONT FIX ── */
+/* Force only NHGrotesk (titles) and DM Sans (body) */
+html,body{font-family:'DM Sans',sans-serif!important;font-size:28px!important;}
+
+/* ─ SIDEBAR: 1.5x (base 14px → 21px) ─ */
+.sidebar,.sidebar *{font-size:inherit;}
+.sidebar-logo-text{font-family:'NHGrotesk','Arial Black',sans-serif!important;font-size:26px!important;}
+.nav-section-label{font-family:'DM Sans',sans-serif!important;font-size:13px!important;}
+.nav-item{font-family:'DM Sans',sans-serif!important;font-size:19px!important;}
+.mk-name{font-family:'DM Sans',sans-serif!important;font-size:18px!important;}
+.mk-role{font-family:'DM Sans',sans-serif!important;font-size:15px!important;}
+
+/* ─ MAIN CONTENT: 2x ─ */
+.header-title{font-family:'NHGrotesk','Arial Black',sans-serif!important;font-size:56px!important;}
+.header-sub{font-family:'DM Sans',sans-serif!important;font-size:22px!important;}
+.section-label{font-family:'NHGrotesk','Arial Black',sans-serif!important;font-size:20px!important;}
+
+/* cards / tables */
+td,th{font-family:'DM Sans',sans-serif!important;font-size:22px!important;}
+.metric-val,.kpi-val,.value,.cell{font-family:'NHGrotesk','Arial Black',sans-serif!important;font-size:28px!important;}
+.metric-label,.kpi-label,.col-header{font-family:'DM Sans',sans-serif!important;font-size:20px!important;}
+
+/* SOPs */
+.sop-title{font-family:'NHGrotesk','Arial Black',sans-serif!important;font-size:28px!important;}
+.sop-meta{font-family:'DM Sans',sans-serif!important;font-size:22px!important;}
+.sop-num{font-family:'NHGrotesk','Arial Black',sans-serif!important;font-size:22px!important;}
+.sop-step,.sop-steps li{font-family:'DM Sans',sans-serif!important;font-size:24px!important;line-height:1.7!important;}
+.step-num{font-family:'NHGrotesk','Arial Black',sans-serif!important;font-size:18px!important;}
+.sop-owner-label{font-family:'NHGrotesk','Arial Black',sans-serif!important;font-size:16px!important;}
+.owner-badge{font-family:'NHGrotesk','Arial Black',sans-serif!important;font-size:16px!important;}
+.sop-body{font-family:'DM Sans',sans-serif!important;font-size:24px!important;}
+
+/* script/detail expanded cards */
+.detail-title,.script-title,.sop-detail-title,.modal-title{font-family:'NHGrotesk','Arial Black',sans-serif!important;font-size:40px!important;}
+.detail-body,.script-body,.sop-detail-body,.modal-body{font-family:'DM Sans',sans-serif!important;font-size:28px!important;line-height:1.8!important;}
+.detail-label,.script-label,.sop-detail-label{font-family:'DM Sans',sans-serif!important;font-size:22px!important;}
+
+/* kill Outfit font everywhere */
+*{font-family:inherit;}
+[style*="Outfit"],[class*="outfit"]{font-family:'DM Sans',sans-serif!important;}
 </style></head>
 <body>
 <div class="layout">

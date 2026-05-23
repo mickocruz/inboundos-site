@@ -61,7 +61,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .pipe-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;flex-shrink:0;}
 .pipe-stat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px;text-align:center;}
 .pipe-stat-val{font-family:var(--font-head);font-size:22px;font-weight:900;letter-spacing:-0.5px;line-height:1;}
-.pipe-stat-lbl{font-family:var(--font-data);font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-top:3px;}
+.pipe-stat-lbl{font-family:var(--font-data);font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-top:3px;}
 
 /* KANBAN BOARD */
 .board{flex:1;overflow:hidden;display:grid;grid-template-columns:repeat(5,1fr);gap:10px;min-height:0;}
@@ -71,14 +71,15 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .col-count{font-family:var(--font-data);font-size:9.5px;color:var(--text-dim);background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;padding:1px 7px;}
 .col-body{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:7px;padding:2px;scrollbar-width:none;border-radius:10px;transition:background 0.2s;}
 .col-body::-webkit-scrollbar{display:none;}
-.col-body.drag-over{background:rgba(79,195,247,0.05);outline:1px dashed rgba(79,195,247,0.25);outline-offset:-4px;}
-.kcard{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:10px;cursor:grab;transition:all 0.18s;user-select:none;}
+.col-body.drag-over{background:rgba(79,195,247,0.06);outline:1px dashed rgba(79,195,247,0.3);outline-offset:-4px;transform:scale(1.01);transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1),background 0.2s;border-radius:10px;}
+.kcard{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;padding:11px 12px;cursor:grab;transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.25s,border-color 0.2s,background 0.2s;user-select:none;opacity:0;transform:translateY(8px);}
+.kcard.visible{opacity:1;transform:translateY(0);}
 .kcard:active{cursor:grabbing;}
-.kcard:hover{border-color:var(--border-glow);background:rgba(79,195,247,0.04);transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,0,0,0.3);}
-.kcard.dragging{opacity:0.4;transform:rotate(1.5deg);box-shadow:0 8px 24px rgba(0,0,0,0.5);}
-.kcard-title{font-family:var(--font-data);font-size:11px;font-weight:500;color:var(--text);margin-bottom:7px;line-height:1.35;}
+.kcard:hover{border-color:var(--border-glow);background:rgba(79,195,247,0.04);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.35);}
+.kcard.dragging{opacity:0.45;transform:scale(1.04) rotate(1.5deg);box-shadow:0 16px 40px rgba(0,0,0,0.55);transition:none;}
+.kcard-title{font-family:var(--font-data);font-size:13px;font-weight:500;color:var(--text);margin-bottom:7px;line-height:1.4;}
 .kcard-meta{display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
-.ktag{font-family:var(--font-data);font-size:9px;padding:2px 6px;border-radius:4px;font-weight:500;}
+.ktag{font-family:var(--font-data);font-size:10px;padding:2px 6px;border-radius:4px;font-weight:500;}
 .kcard-platform{font-family:var(--font-data);font-size:9px;color:var(--text-dim);margin-left:auto;}
 
 /* REPURPOSE SUGGESTIONS */
@@ -101,57 +102,49 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 /* SCRIPTED CARD STATE */
 .kcard.scripted{border-color:rgba(74,222,128,0.22);cursor:pointer;}
 .kcard.scripted:hover{border-color:rgba(74,222,128,0.45);background:rgba(74,222,128,0.03);}
-/* SCRIPT DRAWER */
-.script-drawer{position:fixed;top:0;right:-520px;width:480px;height:100vh;background:#080e17;border-left:1px solid var(--border-glow);z-index:300;display:flex;flex-direction:column;transition:right 0.32s cubic-bezier(0.4,0,0.2,1);box-shadow:-24px 0 60px rgba(0,0,0,0.6);}
-.script-drawer.open{right:0;}
-.drawer-header{display:flex;align-items:center;justify-content:space-between;padding:18px 22px 14px;border-bottom:1px solid var(--border);flex-shrink:0;}
-.drawer-title{font-family:var(--font-head);font-size:14px;font-weight:900;letter-spacing:-0.5px;}
-.drawer-title span{color:var(--accent);}
-.drawer-close{background:transparent;border:1px solid var(--border);color:var(--text-muted);font-size:12px;cursor:pointer;padding:4px 8px;border-radius:5px;transition:all 0.15s;line-height:1;}
-.drawer-close:hover{border-color:var(--border-glow);color:var(--text);}
-.drawer-card-name{padding:12px 22px 0;font-family:var(--font-data);font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;line-height:1.4;}
-.drawer-body{flex:1;padding:12px 22px 18px;display:flex;flex-direction:column;gap:10px;min-height:0;}
-.drawer-loading{display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:var(--accent);font-family:var(--font-data);font-size:12px;flex:1;}
-.drawer-loading.active{display:flex;}
-.drawer-spinner{width:32px;height:32px;border:2px solid rgba(79,195,247,0.12);border-top-color:var(--accent);border-radius:50%;animation:spin 0.9s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg);}}
-.drawer-loading-sub{font-size:10px;color:var(--text-dim);margin-top:4px;}
-.drawer-content{flex:1;display:flex;flex-direction:column;gap:10px;min-height:0;}
-.drawer-content.hidden{display:none;}
-.drawer-textarea{flex:1;width:100%;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;padding:14px;font-family:var(--font-body);font-size:12px;color:var(--text);line-height:1.65;resize:none;outline:none;transition:border-color 0.2s;}
-.drawer-textarea:focus{border-color:var(--border-glow);}
-.drawer-textarea::placeholder{color:var(--text-dim);}
-.drawer-actions{display:flex;gap:8px;flex-shrink:0;}
-.drawer-btn{flex:1;padding:10px;border-radius:8px;font-family:var(--font-data);font-size:11px;font-weight:600;cursor:pointer;transition:all 0.18s;letter-spacing:0.5px;border:1px solid transparent;}
-.drawer-btn-save{background:rgba(74,222,128,0.1);border-color:rgba(74,222,128,0.3);color:var(--green);}
-.drawer-btn-save:hover{background:rgba(74,222,128,0.18);}
-.drawer-btn-discard{background:transparent;border-color:var(--border);color:var(--text-muted);}
-.drawer-btn-discard:hover{border-color:var(--red);color:var(--red);}
-.drawer-overlay-bg{position:fixed;inset:0;z-index:299;display:none;}
-.drawer-overlay-bg.active{display:block;}
 /* CAPTION BTN on kcard */
-.caption-btn{background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.22);color:var(--purple);border-radius:4px;padding:2px 7px;font-family:var(--font-data);font-size:9px;font-weight:600;cursor:pointer;transition:all 0.15s;letter-spacing:0.3px;white-space:nowrap;flex-shrink:0;}
+.caption-btn{background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.22);color:var(--purple);border-radius:4px;padding:2px 7px;font-family:var(--font-data);font-size:10px;font-weight:600;cursor:pointer;transition:all 0.15s;letter-spacing:0.3px;white-space:nowrap;flex-shrink:0;}
 .caption-btn:hover{background:rgba(167,139,250,0.18);border-color:rgba(167,139,250,0.45);}
-/* DRAWER TABS */
-.drawer-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);flex-shrink:0;}
-.drawer-tab{flex:1;padding:10px;font-family:var(--font-data);font-size:10px;font-weight:600;color:var(--text-muted);background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;letter-spacing:0.5px;text-transform:uppercase;transition:all 0.15s;}
-.drawer-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
-.drawer-tab:hover:not(.active){color:var(--text);}
-/* CAPTION PANEL */
-.caption-panel{flex:1;display:flex;flex-direction:column;gap:10px;min-height:0;}
-.caption-panel.hidden{display:none;}
-.caption-section-label{font-family:var(--font-head);font-size:8.5px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:5px;}
-.caption-box{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:12px;font-family:var(--font-body);font-size:12px;color:var(--text);line-height:1.65;flex:1;overflow-y:auto;white-space:pre-wrap;cursor:pointer;transition:border-color 0.2s;}
-.caption-box:hover{border-color:var(--border-glow);}
-.caption-meta-row{display:flex;flex-direction:column;gap:8px;flex-shrink:0;}
-.caption-keywords{display:flex;flex-wrap:wrap;gap:5px;}
-.caption-keyword{font-family:var(--font-data);font-size:9px;padding:3px 8px;border-radius:4px;background:rgba(79,195,247,0.09);border:1px solid rgba(79,195,247,0.18);color:var(--accent);}
-.caption-hashtags{font-family:var(--font-data);font-size:10px;color:rgba(167,139,250,0.8);line-height:1.6;}
-.caption-copy-row{display:flex;gap:6px;flex-shrink:0;}
-.caption-copy-btn{flex:1;padding:9px;border-radius:7px;font-family:var(--font-data);font-size:10px;font-weight:600;cursor:pointer;transition:all 0.18s;letter-spacing:0.3px;border:1px solid rgba(167,139,250,0.3);background:rgba(167,139,250,0.08);color:var(--purple);}
-.caption-copy-btn:hover{background:rgba(167,139,250,0.18);}
-.caption-regen-btn{padding:9px 14px;border-radius:7px;font-family:var(--font-data);font-size:10px;font-weight:600;cursor:pointer;transition:all 0.18s;letter-spacing:0.3px;border:1px solid var(--border);background:transparent;color:var(--text-muted);}
-.caption-regen-btn:hover{border-color:var(--border-glow);color:var(--text);}
+@keyframes spin{to{transform:rotate(360deg);}}
+/* SCRIPT MODAL */
+.script-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);z-index:400;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.25s ease;}
+.script-modal-overlay.open{opacity:1;pointer-events:all;}
+.script-modal-box{width:70vw;height:85vh;background:rgba(12,20,32,0.88);backdrop-filter:blur(32px) saturate(160%);-webkit-backdrop-filter:blur(32px) saturate(160%);border:1px solid rgba(255,255,255,0.1);border-radius:20px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.12),0 32px 80px rgba(0,0,0,0.7);display:flex;flex-direction:column;transform:scale(0.88) translateY(16px);opacity:0;transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1),opacity 0.25s ease;overflow:hidden;}
+.script-modal-overlay.open .script-modal-box{transform:scale(1) translateY(0);opacity:1;}
+.script-modal-overlay.closing .script-modal-box{transform:scale(0.92) translateY(8px);opacity:0;transition:transform 0.2s ease-in,opacity 0.2s ease-in;}
+.script-modal-header{display:flex;align-items:center;justify-content:space-between;padding:18px 24px 14px;border-bottom:1px solid rgba(255,255,255,0.07);flex-shrink:0;}
+.script-modal-title{font-family:var(--font-head);font-size:16px;font-weight:900;letter-spacing:-0.5px;}
+.script-modal-title span{color:var(--accent);}
+.script-modal-card-name{font-family:var(--font-data);font-size:12px;color:var(--text-muted);margin-top:3px;}
+.script-modal-close{background:transparent;border:1px solid rgba(255,255,255,0.1);color:var(--text-muted);font-size:13px;cursor:pointer;padding:6px 12px;border-radius:7px;transition:all 0.15s;font-family:var(--font-data);}
+.script-modal-close:hover{border-color:rgba(255,255,255,0.25);color:var(--text);}
+.script-modal-loading{display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;flex:1;color:var(--accent);font-family:var(--font-data);font-size:13px;}
+.script-modal-loading.active{display:flex;}
+.script-modal-spinner{width:36px;height:36px;border:2px solid rgba(79,195,247,0.12);border-top-color:var(--accent);border-radius:50%;animation:spin 0.9s linear infinite;}
+.script-modal-body{flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:16px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,0.08) transparent;}
+.script-modal-body::-webkit-scrollbar{width:4px;}
+.script-modal-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08);border-radius:4px;}
+.script-section-label{font-family:var(--font-head);font-size:9px;font-weight:900;letter-spacing:2.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;display:block;}
+.script-section-label.hook{color:var(--accent);}
+.script-section-label.body-lbl{color:var(--green);}
+.script-section-label.cta{color:var(--yellow);}
+.script-section-label.caption-lbl{color:var(--purple);}
+.script-section-ta{width:100%;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px;font-family:var(--font-data);font-size:14px;color:var(--text);line-height:1.7;resize:none;outline:none;transition:border-color 0.2s;}
+.script-section-ta:focus{border-color:var(--border-glow);}
+.script-section-ta::placeholder{color:var(--text-dim);}
+.script-section-ta.hook-ta{min-height:80px;}
+.script-section-ta.body-ta{min-height:140px;}
+.script-section-ta.cta-ta{min-height:60px;}
+.script-section-ta.caption-ta{min-height:100px;}
+.script-modal-footer{display:flex;gap:10px;padding:14px 24px 18px;border-top:1px solid rgba(255,255,255,0.07);flex-shrink:0;}
+.script-modal-btn{padding:11px 18px;border-radius:9px;font-family:var(--font-data);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.18s;letter-spacing:0.4px;border:1px solid transparent;}
+.script-modal-btn-save{flex:1;background:rgba(74,222,128,0.1);border-color:rgba(74,222,128,0.3);color:var(--green);}
+.script-modal-btn-save:hover{background:rgba(74,222,128,0.18);}
+.script-modal-btn-copy{background:rgba(79,195,247,0.08);border-color:rgba(79,195,247,0.2);color:var(--accent);}
+.script-modal-btn-copy:hover{background:rgba(79,195,247,0.15);}
+.script-modal-btn-discard{background:transparent;border-color:rgba(255,255,255,0.08);color:var(--text-muted);}
+.script-modal-btn-discard:hover{border-color:var(--red);color:var(--red);}
+@media(max-width:768px){.script-modal-box{width:96vw;height:92vh;}}
 /* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);z-index:100;display:none;align-items:center;justify-content:center;}
 .modal-overlay.open{display:flex;}
@@ -180,7 +173,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 @keyframes ab1{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(60px,40px) scale(1.08);}}
 @keyframes ab2{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(-50px,-30px) scale(1.06);}}
 @keyframes ab3{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(40px,-50px) scale(0.94);}}
-@media(prefers-reduced-motion:reduce){.amb{animation:none!important;}}
+@media(prefers-reduced-motion:reduce){.amb{animation:none!important;}.kcard{opacity:1!important;transform:none!important;transition:none!important;}}
 </style>
 <style>
 @media(max-width:768px){
@@ -318,29 +311,43 @@ html,body{font-family:'DM Sans',sans-serif!important;}
   </main>
 </div>
 
-<!-- DRAWER BACKGROUND OVERLAY -->
-<div class="drawer-overlay-bg" id="drawer-overlay-bg" onclick="closeDrawer()"></div>
-
-<!-- SCRIPT DRAWER -->
-<div class="script-drawer" id="script-drawer">
-  <div class="drawer-header">
-    <div class="drawer-title">Script<span>.</span></div>
-    <button class="drawer-close" onclick="closeDrawer()">✕ Close</button>
-  </div>
-  <div class="drawer-card-name" id="drawer-card-name">—</div>
-  <div class="drawer-body">
-    <div class="drawer-loading" id="drawer-loading">
-      <div class="drawer-spinner"></div>
-      <span id="drawer-loading-text">GENERATING SCRIPT…</span>
-      <span class="drawer-loading-sub" id="drawer-loading-sub">Claude is writing your reel via claude -p</span>
-    </div>
-    <div class="drawer-content hidden" id="drawer-content">
-      <textarea class="drawer-textarea" id="drawer-textarea" placeholder="Your generated script will appear here. You can edit it before saving."></textarea>
-      <div class="drawer-actions">
-        <button class="drawer-btn drawer-btn-save" onclick="saveScript()">✓ Save &amp; Move to Scripting</button>
-        <button class="drawer-btn" onclick="copyFullScript()" style="background:rgba(79,195,247,0.08);border-color:rgba(79,195,247,0.2);color:var(--accent);">⎘ Copy All</button>
-        <button class="drawer-btn drawer-btn-discard" onclick="closeDrawer()">Discard</button>
+<!-- SCRIPT MODAL -->
+<div class="script-modal-overlay" id="script-modal-overlay" onclick="onScriptModalOverlayClick(event)">
+  <div class="script-modal-box" id="script-modal-box">
+    <div class="script-modal-header">
+      <div>
+        <div class="script-modal-title">Script<span>.</span></div>
+        <div class="script-modal-card-name" id="script-modal-card-name">—</div>
       </div>
+      <button class="script-modal-close" onclick="closeScriptModal()">✕ Close</button>
+    </div>
+    <div class="script-modal-loading" id="script-modal-loading">
+      <div class="script-modal-spinner"></div>
+      <span id="script-modal-loading-text">GENERATING SCRIPT…</span>
+      <span style="font-size:11px;color:var(--text-dim);margin-top:2px;" id="script-modal-loading-sub">Quill is writing your reel</span>
+    </div>
+    <div class="script-modal-body" id="script-modal-body" style="display:none;">
+      <div>
+        <span class="script-section-label hook">Hook</span>
+        <textarea class="script-section-ta hook-ta" id="smt-hook" placeholder="Opening line that stops the scroll…"></textarea>
+      </div>
+      <div>
+        <span class="script-section-label body-lbl">Body</span>
+        <textarea class="script-section-ta body-ta" id="smt-body" placeholder="The value, story, or explanation…"></textarea>
+      </div>
+      <div>
+        <span class="script-section-label cta">CTA</span>
+        <textarea class="script-section-ta cta-ta" id="smt-cta" placeholder="What you want them to do next…"></textarea>
+      </div>
+      <div>
+        <span class="script-section-label caption-lbl">Caption</span>
+        <textarea class="script-section-ta caption-ta" id="smt-caption" placeholder="Instagram caption + hashtags…"></textarea>
+      </div>
+    </div>
+    <div class="script-modal-footer">
+      <button class="script-modal-btn script-modal-btn-save" onclick="saveScriptModal()">✓ Save &amp; Move to Scripting</button>
+      <button class="script-modal-btn script-modal-btn-copy" onclick="copyScriptModal()">⎘ Copy All</button>
+      <button class="script-modal-btn script-modal-btn-discard" onclick="closeScriptModal()">Discard</button>
     </div>
   </div>
 </div>
@@ -692,50 +699,142 @@ function discardCard(e, btn) {
   serializeBoard();
 }
 
-// ── SCRIPT DRAWER ─────────────────────────────────────────────
+// ── SCRIPT MODAL ─────────────────────────────────────────────
 const PROXY = 'http://localhost:3001';
 const SCRIPT_NS = 'ctrl_script_';
 
-let drawerCard = null;
+let scriptModalCard = null;
 
 function cardKey(card) {
   const id = card.dataset.id || card.querySelector('.kcard-title').textContent.trim();
   return SCRIPT_NS + id;
 }
 
-function openDrawer(card, loading = false) {
-  drawerCard = card;
+function scriptModalKeyNs(card) {
+  return SCRIPT_NS + (card.dataset.id || card.querySelector('.kcard-title').textContent.trim());
+}
+
+function openScriptModal(card, loading = false) {
+  scriptModalCard = card;
   const title = card.querySelector('.kcard-title').textContent.trim();
-  document.getElementById('drawer-card-name').textContent = title;
-  const loadEl    = document.getElementById('drawer-loading');
-  const contentEl = document.getElementById('drawer-content');
-  loadEl.classList.toggle('active', loading);
-  contentEl.classList.toggle('hidden', loading);
-  if (!loading) document.getElementById('drawer-textarea').focus();
-  document.getElementById('script-drawer').classList.add('open');
-  document.getElementById('drawer-overlay-bg').classList.add('active');
+  document.getElementById('script-modal-card-name').textContent = title;
+  const loadEl = document.getElementById('script-modal-loading');
+  const bodyEl = document.getElementById('script-modal-body');
+  loadEl.style.display = loading ? 'flex' : 'none';
+  bodyEl.style.display = loading ? 'none' : 'flex';
+  document.getElementById('script-modal-overlay').classList.remove('closing');
+  document.getElementById('script-modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
 }
 
-function closeDrawer() {
-  document.getElementById('script-drawer').classList.remove('open');
-  document.getElementById('drawer-overlay-bg').classList.remove('active');
-  drawerCard = null;
+function closeScriptModal() {
+  const overlay = document.getElementById('script-modal-overlay');
+  overlay.classList.add('closing');
+  setTimeout(() => {
+    overlay.classList.remove('open', 'closing');
+    document.body.style.overflow = '';
+    scriptModalCard = null;
+  }, 220);
 }
 
-function populateDrawer(script) {
-  document.getElementById('drawer-loading').classList.remove('active');
-  document.getElementById('drawer-content').classList.remove('hidden');
-  document.getElementById('drawer-textarea').value = script;
+function onScriptModalOverlayClick(e) {
+  if (e.target === document.getElementById('script-modal-overlay')) closeScriptModal();
 }
+
+function populateScriptModal(scriptRaw) {
+  const hookMatch    = scriptRaw.match(/HOOK[:\s]+([\s\S]*?)(?=\n(?:BODY|CTA|CAPTION)[:\s]|$)/i);
+  const bodyMatch    = scriptRaw.match(/BODY[:\s]+([\s\S]*?)(?=\n(?:CTA|CAPTION)[:\s]|$)/i);
+  const ctaMatch     = scriptRaw.match(/CTA[:\s]+([\s\S]*?)(?=\n(?:CAPTION)[:\s]|$)/i);
+  const captionMatch = scriptRaw.match(/CAPTION[:\s]+([\s\S]*?)$/i);
+
+  document.getElementById('smt-hook').value    = hookMatch    ? hookMatch[1].trim()    : scriptRaw.slice(0, 120).trim();
+  document.getElementById('smt-body').value    = bodyMatch    ? bodyMatch[1].trim()    : scriptRaw.slice(120, 600).trim();
+  document.getElementById('smt-cta').value     = ctaMatch     ? ctaMatch[1].trim()     : '';
+  document.getElementById('smt-caption').value = captionMatch ? captionMatch[1].trim() : '';
+
+  if (scriptModalCard) {
+    const ns = scriptModalKeyNs(scriptModalCard);
+    const savedHook    = localStorage.getItem(ns + '_hook');
+    const savedBody    = localStorage.getItem(ns + '_body');
+    const savedCta     = localStorage.getItem(ns + '_cta');
+    const savedCaption = localStorage.getItem(ns + '_caption');
+    if (savedHook)    document.getElementById('smt-hook').value    = savedHook;
+    if (savedBody)    document.getElementById('smt-body').value    = savedBody;
+    if (savedCta)     document.getElementById('smt-cta').value     = savedCta;
+    if (savedCaption) document.getElementById('smt-caption').value = savedCaption;
+  }
+
+  document.getElementById('script-modal-loading').style.display = 'none';
+  document.getElementById('script-modal-body').style.display    = 'flex';
+  document.getElementById('smt-hook').focus();
+}
+
+function saveScriptModal() {
+  if (!scriptModalCard) return;
+  const hook    = document.getElementById('smt-hook').value.trim();
+  const body    = document.getElementById('smt-body').value.trim();
+  const cta     = document.getElementById('smt-cta').value.trim();
+  const caption = document.getElementById('smt-caption').value.trim();
+  if (!hook && !body) return;
+
+  const ns   = scriptModalKeyNs(scriptModalCard);
+  const full = [hook && 'HOOK:\n'+hook, body && 'BODY:\n'+body, cta && 'CTA:\n'+cta, caption && 'CAPTION:\n'+caption].filter(Boolean).join('\n\n');
+  localStorage.setItem(ns, full);
+  localStorage.setItem(ns + '_hook',    hook);
+  localStorage.setItem(ns + '_body',    body);
+  localStorage.setItem(ns + '_cta',     cta);
+  localStorage.setItem(ns + '_caption', caption);
+
+  const _saved = scriptModalCard;
+  _saved.classList.add('scripted');
+  _saved.onclick = (e) => { if (!e.target.closest('.discard-btn,.caption-btn')) openSavedScriptModal(_saved); };
+
+  const meta = _saved.querySelector('.kcard-meta');
+  const oldBtn = meta.querySelector('.script-btn');
+  if (oldBtn) oldBtn.remove();
+  if (!meta.querySelector('.ktag[data-scripted]')) {
+    const badge = document.createElement('span');
+    badge.className = 'ktag';
+    badge.setAttribute('data-scripted', '1');
+    badge.style.cssText = 'background:rgba(74,222,128,0.09);color:var(--green);';
+    badge.textContent = '✓ Scripted';
+    const discard = meta.querySelector('.discard-btn');
+    if (discard) meta.insertBefore(badge, discard);
+    else meta.appendChild(badge);
+  }
+
+  closeScriptModal();
+}
+
+function copyScriptModal() {
+  const parts = [
+    document.getElementById('smt-hook').value,
+    document.getElementById('smt-body').value,
+    document.getElementById('smt-cta').value,
+    document.getElementById('smt-caption').value,
+  ].filter(Boolean);
+  navigator.clipboard.writeText(parts.join('\n\n')).catch(() => {});
+}
+
+function openSavedScriptModal(card) {
+  if (card.classList.contains('dragging')) return;
+  openScriptModal(card, false);
+  const ns  = scriptModalKeyNs(card);
+  const raw = localStorage.getItem(ns) || '';
+  populateScriptModal(raw);
+}
+
+// ── DRAWER TABS (no-op kept for compat) ──────────────────────
+function switchDrawerTab(tab) {}
 
 // Called when "✦ Script it" is clicked on an idea card
 async function generateScript(btn, funnelCtx = {}) {
   const card  = btn.closest('.kcard');
   const title = card.querySelector('.kcard-title').textContent.trim();
 
-  openDrawer(card, true);
-  document.getElementById('drawer-loading-text').textContent = 'GENERATING SCRIPT…';
-  document.getElementById('drawer-loading-sub').textContent = 'Quill is writing your reel via claude -p';
+  openScriptModal(card, true);
+  document.getElementById('script-modal-loading-text').textContent = 'GENERATING SCRIPT…';
+  document.getElementById('script-modal-loading-sub').textContent = 'Quill is writing your reel via claude -p';
 
   btn.disabled = true;
   btn.classList.add('generating');
@@ -779,13 +878,13 @@ async function generateScript(btn, funnelCtx = {}) {
       body: JSON.stringify({ cards: [{ id: cardId, title, script: scriptText, label }] }),
     }).catch(() => {});
 
-    populateDrawer(scriptText);
+    populateScriptModal(scriptText);
 
   } catch (err) {
     const msg = err.message.includes('Failed to fetch')
       ? `Proxy offline.\n\nRun: node proxy.js\nThen reload.`
       : `Error: ${err.message}`;
-    populateDrawer(msg);
+    populateScriptModal(msg);
   } finally {
     btn.disabled = false;
     btn.classList.remove('generating');
@@ -802,125 +901,13 @@ function captionKey(card) {
   return 'ctrl_caption_' + (card.dataset.id || card.querySelector('.kcard-title').textContent.trim());
 }
 
-async function generateCaptionForCard(card) {
-  const title = card.querySelector('.kcard-title').textContent.trim();
-  const savedCaption = localStorage.getItem(captionKey(card));
-  const captionEl = document.getElementById('caption-panel');
-
-  if (savedCaption) {
-    try {
-      const data = JSON.parse(savedCaption);
-      renderCaption(data);
-      captionEl.dataset.loaded = '1';
-      return;
-    } catch(e) {}
-  }
-
-  document.getElementById('caption-text').textContent = 'Generating caption…';
-  document.getElementById('caption-keywords').innerHTML = '';
-  document.getElementById('caption-hashtags').textContent = '';
-
-  const scriptText = localStorage.getItem(cardKey(card)) || title;
-  const prompt = `You are writing an Instagram Reel caption for InboundOS — a personal brand helping agency owners get inbound leads via content.
-
-Reel title: "${title}"
-Script excerpt: ${scriptText.slice(0, 400)}
-
-Write:
-1. CAPTION: 2–4 short punchy lines. Hook first line. Conversational. No emojis overload. End with a soft CTA or question. Max 150 chars.
-2. KEYWORDS: 5 SEO-friendly keywords (single words or short phrases, comma-separated) relevant to the topic
-3. HASHTAGS: 10–15 relevant hashtags (mix of niche + broad). Format as a single line starting with #.
-
-Output format (exactly):
-CAPTION:
-[caption text]
-
-KEYWORDS:
-[keyword1, keyword2, keyword3, keyword4, keyword5]
-
-HASHTAGS:
-[#tag1 #tag2 #tag3 ...]`;
-
-  try {
-    const res = await fetch(`${PROXY}/generate`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt, system: 'You are a concise Instagram caption writer. Follow the output format exactly.' }),
-    });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const { script } = await res.json();
-    const parsed = parseCaption(script);
-    localStorage.setItem(captionKey(card), JSON.stringify(parsed));
-    renderCaption(parsed);
-    captionEl.dataset.loaded = '1';
-  } catch(err) {
-    document.getElementById('caption-text').textContent = `Error: ${err.message}. Make sure proxy is running (node proxy.js).`;
-  }
-}
-
-function parseCaption(raw) {
-  const captionMatch = raw.match(/CAPTION:\s*([\s\S]*?)(?=KEYWORDS:|$)/i);
-  const keywordsMatch = raw.match(/KEYWORDS:\s*([\s\S]*?)(?=HASHTAGS:|$)/i);
-  const hashtagsMatch = raw.match(/HASHTAGS:\s*([\s\S]*?)$/i);
-  return {
-    caption: captionMatch ? captionMatch[1].trim() : raw.trim(),
-    keywords: keywordsMatch ? keywordsMatch[1].trim().split(',').map(k => k.trim()).filter(Boolean) : [],
-    hashtags: hashtagsMatch ? hashtagsMatch[1].trim() : '',
-  };
-}
-
-function renderCaption(data) {
-  document.getElementById('caption-text').textContent = data.caption || '—';
-  const kwEl = document.getElementById('caption-keywords');
-  kwEl.innerHTML = (data.keywords || []).map(k => `<span class="caption-keyword">${k}</span>`).join('');
-  document.getElementById('caption-hashtags').textContent = data.hashtags || '';
-}
-
-function copyCaption(el) {
-  navigator.clipboard.writeText(el.textContent).then(() => {
-    const orig = el.title; el.title = 'Copied!';
-    setTimeout(() => el.title = orig, 1500);
-  });
-}
-
-function copyFullCaption() {
-  const caption = document.getElementById('caption-text').textContent;
-  const hashtags = document.getElementById('caption-hashtags').textContent;
-  navigator.clipboard.writeText(caption + '\n\n' + hashtags);
-}
-
-function regenerateCaption() {
-  if (!drawerCard) return;
-  localStorage.removeItem(captionKey(drawerCard));
-  delete document.getElementById('caption-panel').dataset.loaded;
-  generateCaptionForCard(drawerCard);
-}
-
 function openCaptionDrawer(card) {
-  openSavedScript(card);
+  openSavedScriptModal(card);
 }
 
-// Called when a card already in Scripting column is clicked
+// Called when a card already in Scripting column is clicked (compat)
 function openSavedScript(card) {
-  if (card.classList.contains('dragging')) return;
-  const saved = localStorage.getItem(cardKey(card)) || '';
-  // Pull pre-cached caption from localStorage
-  let captionBlock = '';
-  try {
-    const raw = localStorage.getItem('ctrl_caption_' + (card.dataset.id || card.querySelector('.kcard-title').textContent.trim()));
-    if (raw) {
-      const c = JSON.parse(raw);
-      const parts = [c.caption, c.hashtags].filter(Boolean);
-      if (parts.length) captionBlock = '\n\n---\nCAPTION:\n' + parts.join('\n');
-    }
-  } catch(e) {}
-  openDrawer(card, false);
-  document.getElementById('drawer-textarea').value = (saved || '(No script saved yet)') + captionBlock;
-}
-
-function copyFullScript() {
-  const text = document.getElementById('drawer-textarea').value;
-  navigator.clipboard.writeText(text).catch(() => {});
+  openSavedScriptModal(card);
 }
 
 // Save script to localStorage and move card to Scripting column
@@ -1104,7 +1091,19 @@ async function loadFromSupabase() {
   });
   updateCounts();
   serializeBoard();
+
+  // Staggered card entrance
+  document.querySelectorAll('.kcard').forEach((card, i) => {
+    setTimeout(() => card.classList.add('visible'), 60 + i * 80);
+  });
 })();
+
+// Escape closes script modal
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && document.getElementById('script-modal-overlay').classList.contains('open')) {
+    closeScriptModal();
+  }
+});
 </script>
 </body>
 </html>

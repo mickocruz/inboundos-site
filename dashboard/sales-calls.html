@@ -31,7 +31,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .sidebar-logo-text{font-family:var(--font-head);font-size:17px;font-weight:900;letter-spacing:-0.5px;line-height:1;user-select:none;}
 .nav-section{padding:10px 0 4px;}
 .nav-section-label{font-family:var(--font-data);font-size:9px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--text-dim);padding:0 16px;margin-bottom:4px;}
-.nav-item{display:flex;align-items:center;gap:9px;padding:8px 16px;cursor:pointer;transition:all 0.15s ease;color:var(--text-muted);position:relative;user-select:none;font-family:var(--font-data);font-size:12.5px;font-weight:500;border-left:2px solid transparent;}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 16px;cursor:pointer;transition:all 0.15s ease;color:var(--text-muted);position:relative;user-select:none;font-family:var(--font-data);font-size:13px;font-weight:500;border-left:2px solid transparent;}
 .nav-item svg{width:14px;height:14px;flex-shrink:0;opacity:0.7;}
 .nav-item:hover{background:rgba(79,195,247,0.04);color:rgba(255,255,255,0.75);}
 .nav-item.active{color:#4FC3F7;border-left-color:#4FC3F7;background:rgba(79,195,247,0.06);}
@@ -50,7 +50,8 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-family:var(--font-head);font-size:10px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all 0.15s;border:none;}
 .btn-accent{background:rgba(79,195,247,0.12);border:1px solid rgba(79,195,247,0.3);color:#4FC3F7;}
 .btn-accent:hover{background:rgba(79,195,247,0.2);}
-.card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1),border-color 0.25s,box-shadow 0.25s;}
+.card:hover{border-color:rgba(79,195,247,0.18);box-shadow:0 8px 28px rgba(0,0,0,0.4);transform:translateY(-2px);}
 .empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;gap:10px;text-align:center;}
 .empty-icon{font-size:32px;opacity:0.3;}
 .empty-text{font-family:var(--font-data);font-size:13px;color:var(--text-muted);}

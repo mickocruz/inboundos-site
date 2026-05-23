@@ -557,44 +557,39 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
 }
   50%      { box-shadow: 0 0 14px 4px rgba(232,121,249,0.45); border-color: rgba(232,121,249,0.6); }
 }
-/* ── Avatar border trace — single line circling ── */
+}
+
+/* ── Avatar border trace — line traveling around square perimeter ── */
 .agent-avatar-lg {
   position: relative !important;
-  z-index: 0 !important;
-  /* Remove any leftover box-shadow glow */
+  isolation: isolate !important;
   box-shadow: none !important;
+  border: none !important;
 }
-.agent-avatar-lg::before {
-  content: '' !important;
-  position: absolute !important;
-  inset: -2px !important;
-  border-radius: 16px !important;
-  background: conic-gradient(
-    from var(--angle, 0deg),
-    transparent 0deg,
-    transparent 300deg,
-    currentColor 330deg,
-    currentColor 360deg
-  ) !important;
-  animation: border-trace 3s linear infinite !important;
-  z-index: -1 !important;
-  opacity: 0.7 !important;
+.border-trace {
+  position: absolute;
+  inset: -2px;
+  border-radius: 16px;
+  pointer-events: none;
+  z-index: 2;
+  overflow: hidden;
 }
-.agent-avatar-lg::after {
-  content: '' !important;
-  position: absolute !important;
-  inset: 1.5px !important;
-  border-radius: 13px !important;
-  background: inherit !important;
-  z-index: -1 !important;
+.border-trace svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
 }
-@property --angle {
-  syntax: '<angle>';
-  initial-value: 0deg;
-  inherits: false;
+.border-trace rect {
+  fill: none;
+  stroke-width: 1.5;
+  rx: 14; ry: 14;
+  stroke-dasharray: 30 300;
+  animation: trace-travel 2.5s linear infinite;
 }
-@keyframes border-trace {
-  to { --angle: 360deg; }
+@keyframes trace-travel {
+  from { stroke-dashoffset: 0; }
+  to   { stroke-dashoffset: -330; }
 }
 </style></head>
 <body>
@@ -924,7 +919,7 @@ let _currentAgent = '';
 let _currentFunnelStage = 'MOFU';
 
 function escapeText(str) {
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/><span class="border-trace"><svg viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="1" width="54" height="54" rx="14" ry="14" stroke="#e879f9"/></svg></span><span class="border-trace"><svg viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="1" width="54" height="54" rx="14" ry="14" stroke="#38bdf8"/></svg></span><span class="border-trace"><svg viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="1" width="54" height="54" rx="14" ry="14" stroke="#4ade80"/></svg></span><span class="border-trace"><svg viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="1" width="54" height="54" rx="14" ry="14" stroke="#f472b6"/></svg></span><span class="border-trace"><svg viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="1" width="54" height="54" rx="14" ry="14" stroke="#4ade80"/></svg></span><span class="border-trace"><svg viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="1" width="54" height="54" rx="14" ry="14" stroke="#fbbf24"/></svg></span><span class="border-trace"><svg viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="1" width="54" height="54" rx="14" ry="14" stroke="#4FC3F7"/></svg></span>/g,'&gt;').replace(/"/g,'&quot;');
 }
 function loadTasks() {
   try { return JSON.parse(localStorage.getItem(TASK_STORE) || '{}'); } catch(e) { return {}; }

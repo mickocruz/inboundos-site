@@ -88,46 +88,39 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 }
 
 
+
 /* ── FONT SCALE + FONT FIX ── */
-/* Force only NHGrotesk (titles) and DM Sans (body) */
-html,body{font-family:'DM Sans',sans-serif!important;font-size:28px!important;}
+/* Titles: NHGrotesk — already set. Body: DM Sans — already set. Sidebar/titles: original. */
+/* Only boost main content body text */
 
-/* ─ SIDEBAR: 1.5x (base 14px → 21px) ─ */
-.sidebar,.sidebar *{font-size:inherit;}
-.sidebar-logo-text{font-family:'NHGrotesk','Arial Black',sans-serif!important;font-size:26px!important;}
-.nav-section-label{font-family:'DM Sans',sans-serif!important;font-size:13px!important;}
-.nav-item{font-family:'DM Sans',sans-serif!important;font-size:19px!important;}
-.mk-name{font-family:'DM Sans',sans-serif!important;font-size:18px!important;}
-.mk-role{font-family:'DM Sans',sans-serif!important;font-size:15px!important;}
+/* kill Outfit — use DM Sans everywhere as body */
+:root{--font-body:'DM Sans',sans-serif;}
+html,body{font-family:'DM Sans',sans-serif!important;}
 
-/* ─ MAIN CONTENT: 2x ─ */
-.header-title{font-family:'NHGrotesk','Arial Black',sans-serif!important;font-size:56px!important;}
-.header-sub{font-family:'DM Sans',sans-serif!important;font-size:22px!important;}
-.section-label{font-family:'NHGrotesk','Arial Black',sans-serif!important;font-size:20px!important;}
+/* ─ CONTENT BODY TEXT: 2x original (~28px) ─ */
+.sop-step,.sop-steps li{font-size:24px!important;line-height:1.7!important;}
+.sop-body{font-size:22px!important;}
+.sop-meta{font-size:20px!important;}
 
-/* cards / tables */
-td,th{font-family:'DM Sans',sans-serif!important;font-size:22px!important;}
-.metric-val,.kpi-val,.value,.cell{font-family:'NHGrotesk','Arial Black',sans-serif!important;font-size:28px!important;}
-.metric-label,.kpi-label,.col-header{font-family:'DM Sans',sans-serif!important;font-size:20px!important;}
+/* agent cards / subscription text */
+.agent-desc,.agent-sub,.agent-task,.task-item,.sub-item,.capability,.cap-item{font-size:22px!important;line-height:1.7!important;}
+.agent-next,.agent-last,.agent-schedule,.schedule-text,.next-text{font-size:20px!important;}
+.agent-pct,.pct-val{font-size:22px!important;}
 
-/* SOPs */
-.sop-title{font-family:'NHGrotesk','Arial Black',sans-serif!important;font-size:28px!important;}
-.sop-meta{font-family:'DM Sans',sans-serif!important;font-size:22px!important;}
-.sop-num{font-family:'NHGrotesk','Arial Black',sans-serif!important;font-size:22px!important;}
-.sop-step,.sop-steps li{font-family:'DM Sans',sans-serif!important;font-size:24px!important;line-height:1.7!important;}
-.step-num{font-family:'NHGrotesk','Arial Black',sans-serif!important;font-size:18px!important;}
-.sop-owner-label{font-family:'NHGrotesk','Arial Black',sans-serif!important;font-size:16px!important;}
-.owner-badge{font-family:'NHGrotesk','Arial Black',sans-serif!important;font-size:16px!important;}
-.sop-body{font-family:'DM Sans',sans-serif!important;font-size:24px!important;}
+/* pipeline / client / research body text */
+td,th{font-size:20px!important;}
+.cell-text,.row-label,.row-val{font-size:20px!important;}
 
-/* script/detail expanded cards */
-.detail-title,.script-title,.sop-detail-title,.modal-title{font-family:'NHGrotesk','Arial Black',sans-serif!important;font-size:40px!important;}
-.detail-body,.script-body,.sop-detail-body,.modal-body{font-family:'DM Sans',sans-serif!important;font-size:28px!important;line-height:1.8!important;}
-.detail-label,.script-label,.sop-detail-label{font-family:'DM Sans',sans-serif!important;font-size:22px!important;}
+/* expanded script/detail cards */
+.detail-body,.script-body,.sop-detail-body,.modal-body{font-size:26px!important;line-height:1.8!important;}
+.detail-label,.script-label{font-size:20px!important;}
 
-/* kill Outfit font everywhere */
-*{font-family:inherit;}
-[style*="Outfit"],[class*="outfit"]{font-family:'DM Sans',sans-serif!important;}
+/* performance / sales body */
+.metric-label,.kpi-label{font-size:18px!important;}
+.metric-val,.kpi-val{font-size:26px!important;}
+
+/* generic paragraph/list text in main */
+.main p,.main li,.main span:not(.section-label *){font-size:20px!important;}
 </style></head>
 <body>
 <div class="layout">

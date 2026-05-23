@@ -249,16 +249,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 :root { --font-body: 'DM Sans', sans-serif; }
 html, body { font-family: 'DM Sans', sans-serif !important; }
 
-/* ── Subtle grid background ── */
-body::before {
-  content: '' !important;
-  position: fixed !important; inset: 0 !important;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px) !important;
-  background-size: 40px 40px !important;
-  pointer-events: none !important; z-index: 0 !important;
-}
+
 
 /* ── Header ── */
 .header-left h1 {
@@ -298,6 +289,14 @@ body::before {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
+  border: 1.5px solid transparent !important;
+  
+}
+@keyframes avatar-glow-loop {
+  0%   { box-shadow: 0 0 0px 0px currentColor; opacity: 1; }
+  40%  { box-shadow: 0 0 10px 3px currentColor; opacity: 1; }
+  60%  { box-shadow: 0 0 18px 6px currentColor; opacity: 0.85; }
+  100% { box-shadow: 0 0 0px 0px currentColor; opacity: 1; }
 }
 .agent-avatar-lg > span {
   font-size: 20px !important;
@@ -544,7 +543,35 @@ body::before {
   font-size: 10px !important;
   color: rgba(255,255,255,0.28) !important;
 }
-</style></head>
+
+@keyframes avatar-glow-loop-scout {
+  0%,100% { box-shadow: 0 0 0px 0px rgba(79,195,247,0); border-color: rgba(79,195,247,0.15); }
+  50%      { box-shadow: 0 0 14px 4px rgba(79,195,247,0.45); border-color: rgba(79,195,247,0.6); }
+}
+@keyframes avatar-glow-loop-quill {
+  0%,100% { box-shadow: 0 0 0px 0px rgba(251,191,36,0); border-color: rgba(251,191,36,0.15); }
+  50%      { box-shadow: 0 0 14px 4px rgba(251,191,36,0.45); border-color: rgba(251,191,36,0.6); }
+}
+@keyframes avatar-glow-loop-pulse {
+  0%,100% { box-shadow: 0 0 0px 0px rgba(74,222,128,0); border-color: rgba(74,222,128,0.15); }
+  50%      { box-shadow: 0 0 14px 4px rgba(74,222,128,0.45); border-color: rgba(74,222,128,0.6); }
+}
+@keyframes avatar-glow-loop-hunter {
+  0%,100% { box-shadow: 0 0 0px 0px rgba(244,114,182,0); border-color: rgba(244,114,182,0.15); }
+  50%      { box-shadow: 0 0 14px 4px rgba(244,114,182,0.45); border-color: rgba(244,114,182,0.6); }
+}
+@keyframes avatar-glow-loop-echo {
+  0%,100% { box-shadow: 0 0 0px 0px rgba(74,222,128,0); border-color: rgba(74,222,128,0.15); }
+  50%      { box-shadow: 0 0 14px 4px rgba(74,222,128,0.45); border-color: rgba(74,222,128,0.6); }
+}
+@keyframes avatar-glow-loop-pilot {
+  0%,100% { box-shadow: 0 0 0px 0px rgba(56,189,248,0); border-color: rgba(56,189,248,0.15); }
+  50%      { box-shadow: 0 0 14px 4px rgba(56,189,248,0.45); border-color: rgba(56,189,248,0.6); }
+}
+@keyframes avatar-glow-loop-forge {
+  0%,100% { box-shadow: 0 0 0px 0px rgba(232,121,249,0); border-color: rgba(232,121,249,0.15); }
+  50%      { box-shadow: 0 0 14px 4px rgba(232,121,249,0.45); border-color: rgba(232,121,249,0.6); }
+}</style></head>
 <body>
 <div class="layout">
   <nav class="sidebar">
@@ -587,7 +614,7 @@ body::before {
       <!-- Scout -->
       <div class="card agent-exp" style="border-top:2px solid #4FC3F7;">
         <div class="agent-top">
-          <div class="agent-avatar-lg" style="background:rgba(79,195,247,0.1);"><span style="font-family:var(--font-head);font-size:17px;font-weight:900;color:#4FC3F7;">S</span><div class="agent-dot" style="background:rgba(255,255,255,0.15);"></div></div>
+          <div class="agent-avatar-lg" style="background:rgba(79,195,247,0.1);animation:avatar-glow-loop-scout 2.8s ease-in-out infinite;"><span style="font-family:var(--font-head);font-size:17px;font-weight:900;color:#4FC3F7;">S</span><div class="agent-dot" style="background:rgba(255,255,255,0.15);"></div></div>
           <span class="agent-status-badge st-idle">Idle</span>
         </div>
         <div class="agent-name-lg">Scout</div>
@@ -603,7 +630,7 @@ body::before {
       <!-- Quill -->
       <div class="card agent-exp" style="border-top:2px solid #fbbf24;">
         <div class="agent-top">
-          <div class="agent-avatar-lg" style="background:rgba(251,191,36,0.1);"><span style="font-family:var(--font-head);font-size:17px;font-weight:900;color:#fbbf24;">Q</span><div class="agent-dot" style="background:rgba(255,255,255,0.15);"></div></div>
+          <div class="agent-avatar-lg" style="background:rgba(251,191,36,0.1);animation:avatar-glow-loop-quill 2.8s ease-in-out infinite;"><span style="font-family:var(--font-head);font-size:17px;font-weight:900;color:#fbbf24;">Q</span><div class="agent-dot" style="background:rgba(255,255,255,0.15);"></div></div>
           <span class="agent-status-badge st-idle">Idle</span>
         </div>
         <div class="agent-name-lg">Quill</div>
@@ -620,7 +647,7 @@ body::before {
       <!-- Pulse -->
       <div class="card agent-exp" id="pulseAgentCard" style="border-top:2px solid #4ade80;">
         <div class="agent-top">
-          <div class="agent-avatar-lg" style="background:rgba(74,222,128,0.1);"><span style="font-family:var(--font-head);font-size:17px;font-weight:900;color:#4ade80;">P</span><div class="agent-dot" style="background:rgba(255,255,255,0.15);"></div></div>
+          <div class="agent-avatar-lg" style="background:rgba(74,222,128,0.1);animation:avatar-glow-loop-pulse 2.8s ease-in-out infinite;"><span style="font-family:var(--font-head);font-size:17px;font-weight:900;color:#4ade80;">P</span><div class="agent-dot" style="background:rgba(255,255,255,0.15);"></div></div>
           <span class="agent-status-badge st-idle">Idle</span>
         </div>
         <div class="agent-name-lg">Pulse</div>
@@ -637,7 +664,7 @@ body::before {
       <!-- Hunter -->
       <div class="card agent-exp" style="border-top:2px solid #f472b6;">
         <div class="agent-top">
-          <div class="agent-avatar-lg" style="background:rgba(244,114,182,0.1);"><span style="font-family:var(--font-head);font-size:17px;font-weight:900;color:#f472b6;">H</span><div class="agent-dot" style="background:rgba(255,255,255,0.15);"></div></div>
+          <div class="agent-avatar-lg" style="background:rgba(244,114,182,0.1);animation:avatar-glow-loop-hunter 2.8s ease-in-out infinite;"><span style="font-family:var(--font-head);font-size:17px;font-weight:900;color:#f472b6;">H</span><div class="agent-dot" style="background:rgba(255,255,255,0.15);"></div></div>
           <span class="agent-status-badge st-idle">Idle</span>
         </div>
         <div class="agent-name-lg">Hunter</div>
@@ -653,7 +680,7 @@ body::before {
       <!-- Echo -->
       <div class="card agent-exp" style="border-top:2px solid #34d399;">
         <div class="agent-top">
-          <div class="agent-avatar-lg" style="background:rgba(74,222,128,0.1);"><span style="font-family:var(--font-head);font-size:17px;font-weight:900;color:#4ade80;">E</span><div class="agent-dot" style="background:rgba(255,255,255,0.15);"></div></div>
+          <div class="agent-avatar-lg" style="background:rgba(74,222,128,0.1);animation:avatar-glow-loop-echo 2.8s ease-in-out infinite;"><span style="font-family:var(--font-head);font-size:17px;font-weight:900;color:#4ade80;">E</span><div class="agent-dot" style="background:rgba(255,255,255,0.15);"></div></div>
           <span class="agent-status-badge st-idle">Idle</span>
         </div>
         <div class="agent-name-lg">Echo</div>
@@ -669,7 +696,7 @@ body::before {
       <!-- Pilot -->
       <div class="card agent-exp" style="border-top:2px solid #38bdf8;">
         <div class="agent-top">
-          <div class="agent-avatar-lg" style="background:rgba(56,189,248,0.1);"><span style="font-family:var(--font-head);font-size:17px;font-weight:900;color:#38bdf8;">Pi</span><div class="agent-dot" style="background:rgba(255,255,255,0.15);"></div></div>
+          <div class="agent-avatar-lg" style="background:rgba(56,189,248,0.1);animation:avatar-glow-loop-pilot 2.8s ease-in-out infinite;"><span style="font-family:var(--font-head);font-size:17px;font-weight:900;color:#38bdf8;">Pi</span><div class="agent-dot" style="background:rgba(255,255,255,0.15);"></div></div>
           <span class="agent-status-badge st-idle">Idle</span>
         </div>
         <div class="agent-name-lg">Pilot</div>
@@ -685,7 +712,7 @@ body::before {
       <!-- Forge -->
       <div class="card agent-exp" style="border-top:2px solid #e879f9;">
         <div class="agent-top">
-          <div class="agent-avatar-lg" style="background:rgba(232,121,249,0.1);"><span style="font-family:var(--font-head);font-size:17px;font-weight:900;color:#e879f9;">F</span><div class="agent-dot" style="background:rgba(255,255,255,0.15);"></div></div>
+          <div class="agent-avatar-lg" style="background:rgba(232,121,249,0.1);animation:avatar-glow-loop-forge 2.8s ease-in-out infinite;"><span style="font-family:var(--font-head);font-size:17px;font-weight:900;color:#e879f9;">F</span><div class="agent-dot" style="background:rgba(255,255,255,0.15);"></div></div>
           <span class="agent-status-badge st-idle">Idle</span>
         </div>
         <div class="agent-name-lg">Forge</div>

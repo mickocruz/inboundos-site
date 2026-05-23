@@ -24,7 +24,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;}
 body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 70% 40% at 50% -5%,rgba(79,195,247,0.06) 0%,transparent 70%);pointer-events:none;z-index:0;}
 .layout{display:flex;height:100vh;position:relative;z-index:1;}
-.sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);background:rgba(7,11,18,0.97);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:0 0 16px;backdrop-filter:blur(24px);z-index:10;overflow-y:auto;scrollbar-width:none;}
+.sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);background:rgba(7,11,18,0.82);border-right:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column;padding:0 0 16px;backdrop-filter:blur(32px) saturate(160%);-webkit-backdrop-filter:blur(32px) saturate(160%);z-index:10;overflow-y:auto;scrollbar-width:none;box-shadow:inset -1px 0 0 rgba(255,255,255,0.04);}
 .sidebar::-webkit-scrollbar{display:none;}
 .sidebar-logo-wrap{padding:18px 16px 14px;border-bottom:1px solid var(--border);margin-bottom:8px;cursor:pointer;}
 .sidebar-logo-wrap img{width:100%;height:auto;max-height:36px;object-fit:contain;object-position:left center;}
@@ -50,7 +50,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-family:var(--font-head);font-size:10px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all 0.15s;border:none;}
 .btn-accent{background:rgba(79,195,247,0.12);border:1px solid rgba(79,195,247,0.3);color:#4FC3F7;}
 .btn-accent:hover{background:rgba(79,195,247,0.2);}
-.card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
 .empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;gap:10px;text-align:center;}
 .empty-icon{font-size:32px;opacity:0.3;}
 .empty-text{font-family:var(--font-data);font-size:13px;color:var(--text-muted);}
@@ -69,6 +69,15 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .stat-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;}
 .stat-num{font-family:var(--font-head);font-size:28px;font-weight:900;letter-spacing:-1px;color:var(--text);}
 .stat-label{font-family:var(--font-data);font-size:10px;color:var(--text-muted);margin-top:3px;}
+/* Ambient blobs */
+.amb{position:fixed;border-radius:50%;filter:blur(110px);pointer-events:none;z-index:0;}
+.amb-1{width:700px;height:500px;top:-100px;left:10%;background:rgba(79,195,247,0.055);animation:ab1 20s ease-in-out infinite;}
+.amb-2{width:500px;height:500px;bottom:5%;right:5%;background:rgba(74,222,128,0.04);animation:ab2 26s ease-in-out infinite;}
+.amb-3{width:400px;height:400px;top:40%;left:40%;background:rgba(168,139,250,0.03);animation:ab3 32s ease-in-out infinite;}
+@keyframes ab1{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(60px,40px) scale(1.08);}}
+@keyframes ab2{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(-50px,-30px) scale(1.06);}}
+@keyframes ab3{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(40px,-50px) scale(0.94);}}
+@media(prefers-reduced-motion:reduce){.amb{animation:none!important;}}
 </style>
 <style>
 @media(max-width:768px){
@@ -123,6 +132,9 @@ td,th{font-size:20px!important;}
 .main p,.main li,.main span:not(.section-label *){font-size:20px!important;}
 </style></head>
 <body>
+<div class="amb amb-1"></div>
+<div class="amb amb-2"></div>
+<div class="amb amb-3"></div>
 <div class="layout">
   <nav class="sidebar">
     <div class="sidebar-logo-wrap" onclick="location.href='/'"><div class="sidebar-logo-text"><span style="color:#ffffff;">Inbound</span><span style="color:#4FC3F7;">OS</span></div></div>

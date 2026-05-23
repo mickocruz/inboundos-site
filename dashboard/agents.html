@@ -566,17 +566,23 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
 .agent-avatar-lg {
   position: relative !important;
   box-shadow: none !important;
-  overflow: visible !important;
+  overflow: hidden !important;
 }
 .agent-avatar-lg::before {
   content: '';
   position: absolute;
-  inset: -3px;
+  inset: 0;
   border-radius: 50%;
-  background: conic-gradient(from 0deg, transparent 0%, currentColor 15%, transparent 30%, transparent 100%);
-  opacity: 0.18;
+  background: conic-gradient(from 0deg, transparent 0%, currentColor 20%, transparent 40%, transparent 100%);
+  opacity: 0.22;
   animation: radar-spin 8s linear infinite;
   pointer-events: none;
+  z-index: 0;
+}
+.agent-avatar-lg > span {
+  position: relative;
+  z-index: 1;
+  color: #ffffff !important;
 }
 @keyframes radar-spin {
   from { transform: rotate(0deg); }

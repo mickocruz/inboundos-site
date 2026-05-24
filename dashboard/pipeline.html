@@ -133,10 +133,10 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .script-section-ta{width:100%;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px;font-family:var(--font-data);font-size:14px;color:var(--text);line-height:1.7;resize:none;outline:none;transition:border-color 0.2s;overflow:hidden;box-sizing:border-box;}
 .script-section-ta:focus{border-color:var(--border-glow);}
 .script-section-ta::placeholder{color:var(--text-dim);}
-.script-section-ta.hook-ta{min-height:80px;}
-.script-section-ta.body-ta{min-height:140px;}
-.script-section-ta.cta-ta{min-height:60px;}
-.script-section-ta.caption-ta{min-height:100px;}
+.script-section-ta.hook-ta{min-height:0;}
+.script-section-ta.body-ta{min-height:0;}
+
+.script-section-ta.caption-ta{min-height:0;}
 .script-modal-footer{display:flex;gap:10px;padding:14px 24px 18px;border-top:1px solid rgba(255,255,255,0.07);flex-shrink:0;}
 .script-modal-btn{padding:11px 18px;border-radius:9px;font-family:var(--font-data);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.18s;letter-spacing:0.4px;border:1px solid transparent;}
 .script-modal-btn-save{flex:1;background:rgba(74,222,128,0.1);border-color:rgba(74,222,128,0.3);color:var(--green);}
@@ -335,10 +335,6 @@ html,body{font-family:'DM Sans',sans-serif!important;}
       <div>
         <span class="script-section-label body-lbl">Body</span>
         <textarea class="script-section-ta body-ta" id="smt-body" placeholder="The value, story, or explanation…"></textarea>
-      </div>
-      <div>
-        <span class="script-section-label cta">CTA</span>
-        <textarea class="script-section-ta cta-ta" id="smt-cta" placeholder="What you want them to do next…"></textarea>
       </div>
       <div>
         <span class="script-section-label caption-lbl">Caption</span>
@@ -787,7 +783,6 @@ function onScriptModalOverlayClick(e) {
 function populateScriptFields(hook, body, cta, caption) {
   document.getElementById('smt-hook').value    = hook;
   document.getElementById('smt-body').value    = body;
-  document.getElementById('smt-cta').value     = cta;
   document.getElementById('smt-caption').value = caption;
 }
 
@@ -808,7 +803,7 @@ function populateScriptModal(scriptRaw) {
   document.getElementById('script-modal-body').style.display    = 'flex';
 
   // Auto-resize all textareas to fit content
-  ['smt-hook','smt-body','smt-cta','smt-caption'].forEach(id => {
+  ['smt-hook','smt-body','smt-caption'].forEach(id => {
     const ta = document.getElementById(id);
     ta.style.height = 'auto';
     ta.style.height = ta.scrollHeight + 'px';
@@ -859,7 +854,6 @@ function copyScriptModal() {
   const parts = [
     document.getElementById('smt-hook').value,
     document.getElementById('smt-body').value,
-    document.getElementById('smt-cta').value,
     document.getElementById('smt-caption').value,
   ].filter(Boolean);
   navigator.clipboard.writeText(parts.join('\n\n')).catch(() => {});

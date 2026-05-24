@@ -71,12 +71,13 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .col-count{font-family:var(--font-data);font-size:9.5px;color:var(--text-dim);background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;padding:1px 7px;}
 .col-body{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:7px;padding:2px;scrollbar-width:none;border-radius:10px;transition:background 0.2s;}
 .col-body::-webkit-scrollbar{display:none;}
-.col-body.drag-over{background:rgba(79,195,247,0.06);outline:1px dashed rgba(79,195,247,0.3);outline-offset:-4px;transform:scale(1.01);transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1),background 0.2s;border-radius:10px;}
+.col-body.drag-over{background:rgba(79,195,247,0.07);border-radius:10px;}
+.col-body.drop-ready{transition:box-shadow 0.4s ease;box-shadow:0 0 0 1px rgba(79,195,247,0.1);}
 .kcard{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;padding:11px 12px;cursor:grab;transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.25s,border-color 0.2s,background 0.2s;user-select:none;opacity:0;transform:translateY(8px);}
 .kcard.visible{opacity:1;transform:translateY(0);}
 .kcard:active{cursor:grabbing;}
 .kcard:hover{border-color:var(--border-glow);background:rgba(79,195,247,0.04);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.35);}
-.kcard.dragging{opacity:0.45;transform:scale(1.04) rotate(1.5deg);box-shadow:0 16px 40px rgba(0,0,0,0.55);transition:none;}
+.kcard.dragging{opacity:0.35;transform:scale(1.06) rotate(1.8deg);box-shadow:0 24px 60px rgba(0,0,0,0.65),0 0 0 1px rgba(79,195,247,0.2);filter:blur(0.4px);}
 .kcard-title{font-family:var(--font-data);font-size:13px;font-weight:500;color:var(--text);margin-bottom:7px;line-height:1.4;}
 .kcard-meta{display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
 .ktag{font-family:var(--font-data);font-size:10px;padding:2px 6px;border-radius:4px;font-weight:500;}
@@ -129,7 +130,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .script-section-label.body-lbl{color:var(--green);}
 .script-section-label.cta{color:var(--yellow);}
 .script-section-label.caption-lbl{color:var(--purple);}
-.script-section-ta{width:100%;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px;font-family:var(--font-data);font-size:14px;color:var(--text);line-height:1.7;resize:none;outline:none;transition:border-color 0.2s;}
+.script-section-ta{width:100%;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px;font-family:var(--font-data);font-size:14px;color:var(--text);line-height:1.7;resize:none;outline:none;transition:border-color 0.2s;overflow:hidden;box-sizing:border-box;}
 .script-section-ta:focus{border-color:var(--border-glow);}
 .script-section-ta::placeholder{color:var(--text-dim);}
 .script-section-ta.hook-ta{min-height:80px;}
@@ -465,32 +466,74 @@ let dragFromCol = null;
 function onDragStart(e, el) {
   dragCard = el;
   dragFromCol = el.closest('.col-body').dataset.col;
-  setTimeout(() => el.classList.add('dragging'), 0);
   e.dataTransfer.effectAllowed = 'move';
+  // iOS 26: lift with spring scale + tilt + glass shadow
+  setTimeout(() => {
+    el.classList.add('dragging');
+    el.style.transition = 'transform 0.35s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease, opacity 0.25s ease';
+  }, 0);
+  // Haptic-style pulse on all drop zones
+  document.querySelectorAll('.col-body').forEach(col => col.classList.add('drop-ready'));
 }
 
 document.addEventListener('dragend', (e) => {
-  e.target.classList.remove('dragging');
+  const card = e.target;
+  card.classList.remove('dragging');
+  // Spring land: brief overshoot then settle
+  card.style.transition = 'transform 0.5s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.35s ease, opacity 0.2s ease';
+  card.style.transform = 'scale(1.04)';
+  card.style.boxShadow = '0 8px 32px rgba(79,195,247,0.18)';
+  setTimeout(() => {
+    card.style.transform = '';
+    card.style.boxShadow = '';
+    card.style.transition = '';
+  }, 420);
   document.querySelectorAll('.col-body.drag-over').forEach(c => c.classList.remove('drag-over'));
+  document.querySelectorAll('.col-body.drop-ready').forEach(c => c.classList.remove('drop-ready'));
 });
 
 function onDragOver(e) {
   e.preventDefault();
-  e.currentTarget.classList.add('drag-over');
+  const col = e.currentTarget;
+  if (!col.classList.contains('drag-over')) {
+    col.classList.add('drag-over');
+    // Magnetic snap pulse
+    col.style.transition = 'transform 0.3s cubic-bezier(0.34,1.56,0.64,1), background 0.2s, box-shadow 0.25s';
+    col.style.transform = 'scale(1.025)';
+    col.style.boxShadow = '0 0 0 1.5px rgba(79,195,247,0.35), inset 0 0 24px rgba(79,195,247,0.06)';
+  }
 }
 function onDragLeave(e) {
-  e.currentTarget.classList.remove('drag-over');
+  const col = e.currentTarget;
+  col.classList.remove('drag-over');
+  col.style.transform = '';
+  col.style.boxShadow = '';
 }
 
 function onDrop(e, colId) {
   e.preventDefault();
   const col = document.getElementById('col-' + colId);
   col.classList.remove('drag-over');
+  col.style.transform = '';
+  col.style.boxShadow = '';
   if (!dragCard) return;
 
+  // Spring insert: card enters from slight scale-down
+  dragCard.style.transition = 'none';
+  dragCard.style.transform = 'scale(0.92) translateY(8px)';
+  dragCard.style.opacity = '0.6';
   col.appendChild(dragCard);
+
+  requestAnimationFrame(() => {
+    dragCard.style.transition = 'transform 0.45s cubic-bezier(0.34,1.56,0.64,1), opacity 0.25s ease';
+    dragCard.style.transform = 'scale(1.03)';
+    dragCard.style.opacity = '1';
+    setTimeout(() => {
+      if (dragCard) { dragCard.style.transform = ''; dragCard.style.transition = ''; }
+    }, 450);
+  });
+
   updateCounts();
-  // Persist to Supabase if this is a Supabase-backed card
   const supaId = dragCard.dataset.supaId;
   const newStatus = COL_STATUS[colId];
   if (supaId && newStatus) supaUpdateStatus(supaId, newStatus);
@@ -766,6 +809,15 @@ function populateScriptModal(scriptRaw) {
 
   document.getElementById('script-modal-loading').style.display = 'none';
   document.getElementById('script-modal-body').style.display    = 'flex';
+
+  // Auto-resize all textareas to fit content
+  ['smt-hook','smt-body','smt-cta','smt-caption'].forEach(id => {
+    const ta = document.getElementById(id);
+    ta.style.height = 'auto';
+    ta.style.height = ta.scrollHeight + 'px';
+    ta.addEventListener('input', function(){ this.style.height='auto'; this.style.height=this.scrollHeight+'px'; }, {once:false});
+  });
+
   document.getElementById('smt-hook').focus();
 }
 

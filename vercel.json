@@ -29,6 +29,42 @@
       "destination": "/dashboard/dashboard.html"
     },
     {
+      "source": "/:client/dashboard",
+      "destination": "/dashboard/dashboard.html"
+    },
+    {
+      "source": "/:client/clients",
+      "destination": "/dashboard/clients.html"
+    },
+    {
+      "source": "/:client/sops",
+      "destination": "/dashboard/sops.html"
+    },
+    {
+      "source": "/:client/org-chart",
+      "destination": "/dashboard/org-chart.html"
+    },
+    {
+      "source": "/:client/sales-calls",
+      "destination": "/dashboard/sales-calls.html"
+    },
+    {
+      "source": "/:client/research",
+      "destination": "/dashboard/research.html"
+    },
+    {
+      "source": "/:client/performance",
+      "destination": "/dashboard/performance.html"
+    },
+    {
+      "source": "/:client/agents",
+      "destination": "/dashboard/agents.html"
+    },
+    {
+      "source": "/:client/pipeline",
+      "destination": "/dashboard/pipeline.html"
+    },
+    {
       "source": "/clients",
       "destination": "/dashboard/clients.html"
     },

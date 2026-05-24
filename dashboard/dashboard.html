@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script>if(!(document.cookie.match("(^|;) ?ctrl_auth=([^;]*)(;|\$)")||[])[2])window.location.href="/login?from="+encodeURIComponent(window.location.pathname);</script>
+<head><script>(function(){function gc(n){var v=document.cookie.match("(^|;) ?"+n+"=([^;]*)(;|$)");return v?v[2]:null;}var auth=gc("ctrl_auth"),slug=gc("ctrl_slug");if(!auth||!slug){window.location.href="/login?from="+encodeURIComponent(window.location.pathname);return;}var seg=window.location.pathname.split("/").filter(Boolean)[0];if(seg&&seg!==slug){window.location.href="/login?from="+encodeURIComponent(window.location.pathname);}})();</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>InboundOS - Dashboard</title>
@@ -1713,6 +1713,7 @@ loadContentBucket();
 <script>
 // ── SUPABASE LIVE STATS ───────────────────────────────────────
 (async function() {
+  const clientId = (document.cookie.match('(^|;) ?ctrl_client=([^;]*)(;|$)')||[])[2] || 'micko_cruz';
   const SUPA_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co';
   const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
   const H = { 'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_KEY}` };
@@ -1720,7 +1721,7 @@ loadContentBucket();
   try {
     const weekAgo = new Date(Date.now() - 7*24*60*60*1000).toISOString();
     const [items, runs] = await Promise.all([
-      fetch(`${SUPA_URL}/rest/v1/agent_items?client_id=eq.micko_cruz&agent=eq.quill&created_at=gte.${weekAgo}&select=id,status`, { headers: H }).then(r => r.ok ? r.json() : []),
+      fetch(`${SUPA_URL}/rest/v1/agent_items?client_id=eq.${clientId}&agent=eq.quill&created_at=gte.${weekAgo}&select=id,status`, { headers: H }).then(r => r.ok ? r.json() : []),
       fetch(`${SUPA_URL}/rest/v1/agent_runs?select=*&order=agent`, { headers: H }).then(r => r.ok ? r.json() : []),
     ]);
 

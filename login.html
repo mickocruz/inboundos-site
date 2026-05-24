@@ -64,8 +64,8 @@ function getCookie(name) {
   const v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
   return v ? v[2] : null;
 }
-if (getCookie('ctrl_auth') === 'ok') {
-  window.location.href = '/dashboard';
+if (getCookie('ctrl_auth') === 'ok' && getCookie('ctrl_slug')) {
+  window.location.href = '/' + getCookie('ctrl_slug') + '/dashboard';
 }
 document.getElementById('username').addEventListener('keydown', function(e) { if (e.key === 'Enter') document.getElementById('password').focus(); });
 document.getElementById('password').addEventListener('keydown', function(e) { if (e.key === 'Enter') login(); });
@@ -80,22 +80,48 @@ function togglePw() {
     icon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>';
   }
 }
-function login() {
+const EDGE_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co/functions/v1/login';
+
+async function login() {
   const un = document.getElementById('username').value.trim().toLowerCase();
   const pw = document.getElementById('password').value;
   const err = document.getElementById('error');
   const btn = document.getElementById('btn');
-  if (un === 'micko-cruz' && pw === 'ringotwo764') {
+
+  err.style.display = 'none';
+  btn.textContent = 'Signing in...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(EDGE_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: un, password: pw }),
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      err.style.display = 'block';
+      err.textContent = data.error || 'Login failed';
+      btn.textContent = 'Sign In';
+      btn.disabled = false;
+      document.getElementById('password').value = '';
+      document.getElementById('password').focus();
+      return;
+    }
+
     setCookie('ctrl_auth', 'ok', 90);
-    btn.textContent = 'Signing in...';
-    btn.disabled = true;
+    setCookie('ctrl_client', data.client_id, 90);
+    setCookie('ctrl_slug', data.client_slug, 90);
+
     const params = new URLSearchParams(window.location.search);
-    window.location.href = params.get('from') || '/dashboard';
-  } else {
+    const from = params.get('from');
+    window.location.href = from || '/' + data.client_slug + '/dashboard';
+  } catch (e) {
     err.style.display = 'block';
-    document.getElementById('password').value = '';
-    document.getElementById('password').focus();
-    err.textContent = un !== 'micko-cruz' ? 'Incorrect username' : 'Incorrect password';
+    err.textContent = 'Network error. Try again.';
+    btn.textContent = 'Sign In';
+    btn.disabled = false;
   }
 }
 </script>

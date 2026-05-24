@@ -130,7 +130,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .script-section-label.body-lbl{color:var(--green);}
 .script-section-label.cta{color:var(--yellow);}
 .script-section-label.caption-lbl{color:var(--purple);}
-.script-section-ta{width:100%;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px;font-family:var(--font-data);font-size:14px;color:var(--text);line-height:1.7;resize:none;outline:none;transition:border-color 0.2s;overflow:hidden;box-sizing:border-box;}
+.script-section-ta{width:100%;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px;font-family:var(--font-data);font-size:14px;color:var(--text);line-height:1.7;resize:none;outline:none;transition:border-color 0.2s;overflow:hidden;box-sizing:border-box;height:auto;}
 .script-section-ta:focus{border-color:var(--border-glow);}
 .script-section-ta::placeholder{color:var(--text-dim);}
 .script-section-ta.hook-ta{min-height:0;}
@@ -802,13 +802,15 @@ function populateScriptModal(scriptRaw) {
   document.getElementById('script-modal-loading').style.display = 'none';
   document.getElementById('script-modal-body').style.display    = 'flex';
 
-  // Auto-resize all textareas to fit content
-  ['smt-hook','smt-body','smt-caption'].forEach(id => {
-    const ta = document.getElementById(id);
-    ta.style.height = 'auto';
-    ta.style.height = ta.scrollHeight + 'px';
-    ta.addEventListener('input', function(){ this.style.height='auto'; this.style.height=this.scrollHeight+'px'; }, {once:false});
-  });
+  // Auto-resize after browser paints
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    ['smt-hook','smt-body','smt-caption'].forEach(id => {
+      const ta = document.getElementById(id);
+      ta.style.height = 'auto';
+      ta.style.height = ta.scrollHeight + 'px';
+      ta.addEventListener('input', function(){ this.style.height='auto'; this.style.height=this.scrollHeight+'px'; });
+    });
+  }));
 
   document.getElementById('smt-hook').focus();
 }
@@ -859,6 +861,16 @@ function copyScriptModal() {
   navigator.clipboard.writeText(parts.join('\n\n')).catch(() => {});
 }
 
+function resizeScriptTextareas() {
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    ['smt-hook','smt-body','smt-caption'].forEach(id => {
+      const ta = document.getElementById(id);
+      ta.style.height = 'auto';
+      ta.style.height = ta.scrollHeight + 'px';
+    });
+  }));
+}
+
 function openSavedScriptModal(card) {
   if (card.classList.contains('dragging')) return;
   openScriptModal(card, false);
@@ -867,7 +879,10 @@ function openSavedScriptModal(card) {
   const body    = localStorage.getItem(ns + '_body')    || '';
   const cta     = localStorage.getItem(ns + '_cta')     || '';
   const caption = localStorage.getItem(ns + '_caption') || '';
+  document.getElementById('script-modal-loading').style.display = 'none';
+  document.getElementById('script-modal-body').style.display    = 'flex';
   populateScriptFields(hook, body, cta, caption);
+  resizeScriptTextareas();
 }
 
 // ── DRAWER TABS (no-op kept for compat) ──────────────────────

@@ -163,7 +163,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 /* DM Sans body */
 :root{--font-body:'DM Sans',sans-serif;}
 html,body{font-family:'DM Sans',sans-serif!important;}
-</style><link rel="stylesheet" href="/dashboard/settings-panel.css"/><script src="/dashboard/settings-panel.js"></script></head>
+</style><link rel="stylesheet" href="/dashboard/spring-animations.css"/><link rel="stylesheet" href="/dashboard/settings-panel.css"/><script src="/dashboard/settings-panel.js"></script></head>
 <body>
 <div class="amb amb-1"></div>
 <div class="amb amb-2"></div>
@@ -689,5 +689,5 @@ document.getElementById('swipeFilters').addEventListener('click', function(e) {
 
 loadSwipeFile();
 </script>
-</body>
+<script>(function(){var sel=".card,.cs-card,.client-profile,.checklist-panel,.agent-card,.ops-card,.ov-card,.insight-card,.reel-card,.stat-card,.kcard,.sop-card,.swipe-card";function stagger(els){[].forEach.call(els,function(el,i){if(!el.classList.contains("s-visible")){setTimeout(function(){el.classList.add("s-visible");},60+i*70);}});}document.addEventListener("DOMContentLoaded",function(){stagger(document.querySelectorAll(sel));});var ob=new MutationObserver(function(ms){ms.forEach(function(m){m.addedNodes.forEach(function(n){if(n.nodeType===1){var found=n.matches&&n.matches(sel)?[n]:[];[].push.apply(found,n.querySelectorAll?n.querySelectorAll(sel):[]);stagger(found);}});});});ob.observe(document.body||document.documentElement,{childList:true,subtree:true});})();</script></body>
 </html>

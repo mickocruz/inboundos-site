@@ -785,15 +785,44 @@ function onScriptModalOverlayClick(e) {
 }
 
 function populateScriptModal(scriptRaw) {
-  const hookMatch    = scriptRaw.match(/HOOK[:\s]+([\s\S]*?)(?=\n(?:BODY|CTA|CAPTION)[:\s]|$)/i);
-  const bodyMatch    = scriptRaw.match(/BODY[:\s]+([\s\S]*?)(?=\n(?:CTA|CAPTION)[:\s]|$)/i);
-  const ctaMatch     = scriptRaw.match(/CTA[:\s]+([\s\S]*?)(?=\n(?:CAPTION)[:\s]|$)/i);
-  const captionMatch = scriptRaw.match(/CAPTION[:\s]+([\s\S]*?)$/i);
+  let hook = '', body = '', cta = '', caption = '';
 
-  document.getElementById('smt-hook').value    = hookMatch    ? hookMatch[1].trim()    : scriptRaw.slice(0, 120).trim();
-  document.getElementById('smt-body').value    = bodyMatch    ? bodyMatch[1].trim()    : scriptRaw.slice(120, 600).trim();
-  document.getElementById('smt-cta').value     = ctaMatch     ? ctaMatch[1].trim()     : '';
-  document.getElementById('smt-caption').value = captionMatch ? captionMatch[1].trim() : '';
+  const hasLabels = /^(HOOK|BODY|CTA|CAPTION)[:\s]/im.test(scriptRaw);
+
+  if (hasLabels) {
+    // Labeled format
+    const hookMatch    = scriptRaw.match(/HOOK[:\s]+([\s\S]*?)(?=\n[ \t]*(BODY|CTA|CAPTION)[:\s]|$)/i);
+    const bodyMatch    = scriptRaw.match(/BODY[:\s]+([\s\S]*?)(?=\n[ \t]*(CTA|CAPTION)[:\s]|$)/i);
+    const ctaMatch     = scriptRaw.match(/CTA[:\s]+([\s\S]*?)(?=\n[ \t]*CAPTION[:\s]|$)/i);
+    const captionMatch = scriptRaw.match(/CAPTION[:\s]+([\s\S]*?)$/i);
+    hook    = hookMatch    ? hookMatch[1].trim()    : '';
+    body    = bodyMatch    ? bodyMatch[1].trim()    : '';
+    cta     = ctaMatch     ? ctaMatch[1].trim()     : '';
+    caption = captionMatch ? captionMatch[1].trim() : '';
+  } else {
+    // Plain paragraph format — split on blank lines or inline CTA: label
+    const ctaInline = scriptRaw.match(/\n\n?CTA[:\s]+([\s\S]*)$/i);
+    const captionInline = scriptRaw.match(/\n\n?CAPTION[:\s]+([\s\S]*)$/i);
+
+    let main = scriptRaw;
+    if (captionInline) { caption = captionInline[1].trim(); main = main.slice(0, captionInline.index).trim(); }
+    if (ctaInline)     { cta     = ctaInline[1].trim();     main = main.slice(0, ctaInline.index).trim(); }
+
+    // Also check for inline "CTA:" at end of last paragraph
+    if (!cta) {
+      const ctaEnd = main.match(/\n\nCTA:\s*([\s\S]+)$/i);
+      if (ctaEnd) { cta = ctaEnd[1].trim(); main = main.slice(0, ctaEnd.index).trim(); }
+    }
+
+    const paras = main.split(/\n\n+/).map(p => p.trim()).filter(Boolean);
+    hook = paras[0] || '';
+    body = paras.slice(1).join('\n\n') || '';
+  }
+
+  document.getElementById('smt-hook').value    = hook;
+  document.getElementById('smt-body').value    = body;
+  document.getElementById('smt-cta').value     = cta;
+  document.getElementById('smt-caption').value = caption;
 
   if (scriptModalCard) {
     const ns = scriptModalKeyNs(scriptModalCard);

@@ -8,12 +8,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
 <style>
-@font-face { font-family:'NHGrotesk'; src:url('/dashboard/fonts/NHGrotesk-Black.otf') format('opentype'); font-weight:900; }
+@font-face { font-family:'DM Sans'; src:url('/dashboard/fonts/NHGrotesk-Black.otf') format('opentype'); font-weight:900; }
 :root {
   --bg:#0D1117; --surface:rgba(255,255,255,0.015); --card:rgba(255,255,255,0.02); --border:rgba(255,255,255,0.07); --border-glow:rgba(79,195,247,0.2);
   --accent:#4FC3F7; --accent-dim:rgba(79,195,247,0.07); --text:#ffffff; --text-muted:rgba(255,255,255,0.3); --text-dim:rgba(255,255,255,0.22);
   --green:#4ade80; --yellow:#fbbf24; --red:#f87171; --purple:#a78bfa;
-  --sidebar-w:180px; --font-head:'NHGrotesk','Arial Black',Arial,sans-serif; --font-data:'NHGrotesk','Arial Black',Arial,sans-serif; --font-body:'NHGrotesk','Arial Black',Arial,sans-serif;
+  --sidebar-w:180px; --font-head:'NHGrotesk','Arial Black',Arial,sans-serif; --font-data:'DM Sans',sans-serif; --font-body:'DM Sans',sans-serif;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:14px;overflow:hidden;}
@@ -211,8 +211,8 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 /* Only boost main content body text */
 
 /* DM Sans body */
-:root{--font-body:'NHGrotesk','Arial Black',Arial,sans-serif;}
-html,body{font-family:'NHGrotesk','Arial Black',Arial,sans-serif!important;}
+:root{--font-body:'DM Sans',sans-serif;}
+html,body{font-family:'DM Sans',sans-serif!important;}
 </style><link rel="stylesheet" href="/dashboard/spring-animations.css"/><link rel="stylesheet" href="/dashboard/settings-panel.css"/><script src="/dashboard/settings-panel.js"></script></head>
 <body>
 <div class="amb amb-1"></div>

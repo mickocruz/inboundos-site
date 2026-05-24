@@ -43,7 +43,7 @@
   border-bottom: 1px solid rgba(255,255,255,0.06);
 }
 #settings-title {
-  font-family: 'NHGrotesk', sans-serif;
+  font-family: 'DM Sans', sans-serif;
   font-size: 14px;
   font-weight: 900;
   letter-spacing: -0.3px;
@@ -85,7 +85,7 @@
   margin-top: 18px;
 }
 .sp-section-label {
-  font-family: 'NHGrotesk', sans-serif;
+  font-family: 'DM Sans', sans-serif;
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 1.8px;
@@ -109,14 +109,14 @@
   background: rgba(255,255,255,0.06);
 }
 .sp-avatar-name {
-  font-family: 'NHGrotesk', sans-serif;
+  font-family: 'DM Sans', sans-serif;
   font-size: 15px;
   font-weight: 900;
   color: #fff;
   line-height: 1.2;
 }
 .sp-avatar-company {
-  font-family: 'NHGrotesk', sans-serif;
+  font-family: 'DM Sans', sans-serif;
   font-size: 11px;
   color: rgba(255,255,255,0.4);
   margin-top: 2px;
@@ -126,7 +126,7 @@
   margin-bottom: 12px;
 }
 .sp-field-label {
-  font-family: 'NHGrotesk', sans-serif;
+  font-family: 'DM Sans', sans-serif;
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.5px;
@@ -134,7 +134,7 @@
   margin-bottom: 5px;
 }
 .sp-field-value {
-  font-family: 'NHGrotesk', sans-serif;
+  font-family: 'DM Sans', sans-serif;
   font-size: 12px;
   color: rgba(255,255,255,0.75);
   background: rgba(255,255,255,0.04);
@@ -146,7 +146,7 @@
 
 .sp-badge {
   display: inline-block;
-  font-family: 'NHGrotesk', sans-serif;
+  font-family: 'DM Sans', sans-serif;
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.6px;
@@ -165,7 +165,7 @@
   margin-bottom: 14px;
 }
 .sp-toggle-label {
-  font-family: 'NHGrotesk', sans-serif;
+  font-family: 'DM Sans', sans-serif;
   font-size: 12px;
   color: rgba(255,255,255,0.7);
 }
@@ -208,7 +208,7 @@
 
 .sp-select {
   width: 100%;
-  font-family: 'NHGrotesk', sans-serif;
+  font-family: 'DM Sans', sans-serif;
   font-size: 12px;
   color: rgba(255,255,255,0.75);
   background: rgba(255,255,255,0.04);
@@ -224,7 +224,7 @@
 }
 
 .sp-loading {
-  font-family: 'NHGrotesk', sans-serif;
+  font-family: 'DM Sans', sans-serif;
   font-size: 12px;
   color: rgba(255,255,255,0.3);
   padding: 40px 20px;

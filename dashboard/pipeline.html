@@ -20,7 +20,7 @@
   --text: #ffffff; --text-muted: rgba(255,255,255,0.42); --text-dim: rgba(255,255,255,0.22);
   --green: #4ade80; --yellow: #fbbf24; --red: #f87171; --purple: #a78bfa;
   --sidebar-w:180px; --font-head: 'NHGrotesk','Arial Black',Arial,sans-serif;
-  --font-data: 'NHGrotesk','Arial Black',Arial,sans-serif; --font-body: 'Outfit',sans-serif;
+  --font-data: 'DM Sans',sans-serif; --font-body: 'Outfit',sans-serif;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:14px;overflow:hidden;}
@@ -200,8 +200,8 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 /* Only boost main content body text */
 
 /* DM Sans body */
-:root{--font-body:'NHGrotesk','Arial Black',Arial,sans-serif;}
-html,body{font-family:'NHGrotesk','Arial Black',Arial,sans-serif!important;}
+:root{--font-body:'DM Sans',sans-serif;}
+html,body{font-family:'DM Sans',sans-serif!important;}
 </style><link rel="stylesheet" href="/dashboard/spring-animations.css"/><link rel="stylesheet" href="/dashboard/settings-panel.css"/><script src="/dashboard/settings-panel.js"></script></head>
 <body>
 <div class="amb amb-1"></div>
@@ -784,57 +784,25 @@ function onScriptModalOverlayClick(e) {
   if (e.target === document.getElementById('script-modal-overlay')) closeScriptModal();
 }
 
-function populateScriptModal(scriptRaw) {
-  let hook = '', body = '', cta = '', caption = '';
-
-  const hasLabels = /^(HOOK|BODY|CTA|CAPTION)[:\s]/im.test(scriptRaw);
-
-  if (hasLabels) {
-    // Labeled format
-    const hookMatch    = scriptRaw.match(/HOOK[:\s]+([\s\S]*?)(?=\n[ \t]*(BODY|CTA|CAPTION)[:\s]|$)/i);
-    const bodyMatch    = scriptRaw.match(/BODY[:\s]+([\s\S]*?)(?=\n[ \t]*(CTA|CAPTION)[:\s]|$)/i);
-    const ctaMatch     = scriptRaw.match(/CTA[:\s]+([\s\S]*?)(?=\n[ \t]*CAPTION[:\s]|$)/i);
-    const captionMatch = scriptRaw.match(/CAPTION[:\s]+([\s\S]*?)$/i);
-    hook    = hookMatch    ? hookMatch[1].trim()    : '';
-    body    = bodyMatch    ? bodyMatch[1].trim()    : '';
-    cta     = ctaMatch     ? ctaMatch[1].trim()     : '';
-    caption = captionMatch ? captionMatch[1].trim() : '';
-  } else {
-    // Plain paragraph format — split on blank lines or inline CTA: label
-    const ctaInline = scriptRaw.match(/\n\n?CTA[:\s]+([\s\S]*)$/i);
-    const captionInline = scriptRaw.match(/\n\n?CAPTION[:\s]+([\s\S]*)$/i);
-
-    let main = scriptRaw;
-    if (captionInline) { caption = captionInline[1].trim(); main = main.slice(0, captionInline.index).trim(); }
-    if (ctaInline)     { cta     = ctaInline[1].trim();     main = main.slice(0, ctaInline.index).trim(); }
-
-    // Also check for inline "CTA:" at end of last paragraph
-    if (!cta) {
-      const ctaEnd = main.match(/\n\nCTA:\s*([\s\S]+)$/i);
-      if (ctaEnd) { cta = ctaEnd[1].trim(); main = main.slice(0, ctaEnd.index).trim(); }
-    }
-
-    const paras = main.split(/\n\n+/).map(p => p.trim()).filter(Boolean);
-    hook = paras[0] || '';
-    body = paras.slice(1).join('\n\n') || '';
-  }
-
+function populateScriptFields(hook, body, cta, caption) {
   document.getElementById('smt-hook').value    = hook;
   document.getElementById('smt-body').value    = body;
   document.getElementById('smt-cta').value     = cta;
   document.getElementById('smt-caption').value = caption;
+}
 
-  if (scriptModalCard) {
-    const ns = scriptModalKeyNs(scriptModalCard);
-    const savedHook    = localStorage.getItem(ns + '_hook');
-    const savedBody    = localStorage.getItem(ns + '_body');
-    const savedCta     = localStorage.getItem(ns + '_cta');
-    const savedCaption = localStorage.getItem(ns + '_caption');
-    if (savedHook)    document.getElementById('smt-hook').value    = savedHook;
-    if (savedBody)    document.getElementById('smt-body').value    = savedBody;
-    if (savedCta)     document.getElementById('smt-cta').value     = savedCta;
-    if (savedCaption) document.getElementById('smt-caption').value = savedCaption;
-  }
+function populateScriptModal(scriptRaw) {
+  let hook = '', body = '', cta = '', caption = '';
+
+  // Strip trailing CTA line (inline at end)
+  const ctaInline = scriptRaw.match(/\n\nCTA[:\s]+([\s\S]+)$/i);
+  if (ctaInline) { cta = ctaInline[1].trim(); scriptRaw = scriptRaw.slice(0, ctaInline.index).trim(); }
+
+  const paras = scriptRaw.split(/\n\n+/).map(p => p.trim()).filter(Boolean);
+  hook = paras[0] || '';
+  body = paras.slice(1).join('\n\n') || '';
+
+  populateScriptFields(hook, body, cta, caption);
 
   document.getElementById('script-modal-loading').style.display = 'none';
   document.getElementById('script-modal-body').style.display    = 'flex';
@@ -900,9 +868,12 @@ function copyScriptModal() {
 function openSavedScriptModal(card) {
   if (card.classList.contains('dragging')) return;
   openScriptModal(card, false);
-  const ns  = scriptModalKeyNs(card);
-  const raw = localStorage.getItem(ns) || '';
-  populateScriptModal(raw);
+  const ns = scriptModalKeyNs(card);
+  const hook    = localStorage.getItem(ns + '_hook')    || '';
+  const body    = localStorage.getItem(ns + '_body')    || '';
+  const cta     = localStorage.getItem(ns + '_cta')     || '';
+  const caption = localStorage.getItem(ns + '_caption') || '';
+  populateScriptFields(hook, body, cta, caption);
 }
 
 // ── DRAWER TABS (no-op kept for compat) ──────────────────────
@@ -1103,8 +1074,14 @@ async function loadFromSupabase() {
         <span class="kcard-platform">${date}</span>
       </div>`;
 
-    // Store script in localStorage for drawer
-    if (item.content) localStorage.setItem(SCRIPT_NS + item.id, item.content + (meta.caption ? '\n\n---\nCAPTION:\n' + meta.caption : ''));
+    // Store script fields separately in localStorage
+    if (item.content) {
+      const ns = SCRIPT_NS + item.id;
+      localStorage.setItem(ns + '_hook',    meta.hook    || '');
+      localStorage.setItem(ns + '_body',    item.content || '');
+      localStorage.setItem(ns + '_cta',     meta.cta     || '');
+      localStorage.setItem(ns + '_caption', meta.caption || '');
+    }
 
     card.onclick = (e) => { if (!e.target.closest('.discard-btn,.caption-btn')) openSavedScript(card); };
     col.appendChild(card);

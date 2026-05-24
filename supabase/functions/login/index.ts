@@ -28,7 +28,7 @@ Deno.serve(async (req) => {
   );
 
   const { data, error } = await supabase
-    .from('clients')
+    .from('ctrl_users')
     .select('client_id, client_slug, password_hash')
     .eq('username', username.toLowerCase().trim())
     .single();

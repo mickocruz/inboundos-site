@@ -1,8 +1,24 @@
 {
+  "redirects": [
+    {
+      "source": "/landing.html",
+      "destination": "/landing",
+      "permanent": true
+    },
+    {
+      "source": "/apply.html",
+      "destination": "/apply",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/",
       "destination": "/landing.html"
+    },
+    {
+      "source": "/apply",
+      "destination": "/apply.html"
     },
     {
       "source": "/landing",

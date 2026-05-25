@@ -450,8 +450,8 @@ body::after {
 .detail-modal{background:#0f1824;border:1px solid var(--border-glow);border-radius:16px;width:430px;max-width:calc(100vw - 40px);padding:22px;box-shadow:0 0 60px rgba(79,195,247,0.1),0 24px 60px rgba(0,0,0,0.6);transform:translateY(12px);transition:transform 0.2s;}
 .detail-modal-overlay.open .detail-modal{transform:translateY(0);}
 .detail-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
-.detail-title{font-family:var(--font-head);font-size:15px;font-weight:900;letter-spacing:-0.4px;}
-.detail-title span{color:var(--accent);}
+.detail-title{font-family:var(--font-data);font-size:15px;font-weight:700;letter-spacing:-0.2px;color:#fff;}
+.detail-title span{color:#fff;}
 .detail-close{background:none;border:1px solid var(--border);color:var(--text-muted);font-size:14px;cursor:pointer;padding:3px 8px;border-radius:5px;line-height:1;transition:all 0.15s;}
 .detail-close:hover{border-color:var(--border-glow);color:var(--text);}
 .detail-sub{font-family:var(--font-data);font-size:11px;color:var(--text-muted);margin-bottom:14px;}
@@ -975,7 +975,7 @@ html,body{font-family:'DM Sans',sans-serif!important;}
 <div class="detail-modal-overlay" id="agentDetailModal" onclick="if(event.target===this)closeAgentDetail()">
   <div class="detail-modal">
     <div class="detail-head">
-      <div class="detail-title"><span id="agentDetailName">Scout</span> Agent</div>
+      <div class="detail-title"><span id="agentDetailName">Scout</span></div>
       <button class="detail-close" onclick="closeAgentDetail()">✕</button>
     </div>
     <div class="detail-sub" id="agentDetailRole">Research Agent</div>
@@ -1094,23 +1094,76 @@ function dashEscape(str) {
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+const SUPA_URL_DASH = 'https://cscfbuhwlfhblxprkwnh.supabase.co';
+const SUPA_ANON_DASH = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
+
+function detailTimeAgo(iso) {
+  if (!iso) return '—';
+  const diff = Date.now() - new Date(iso).getTime();
+  const m = Math.floor(diff / 60000);
+  if (m < 1) return 'just now';
+  if (m < 60) return m + 'm ago';
+  const h = Math.floor(m / 60);
+  if (h < 24) return h + 'h ago';
+  return Math.floor(h / 24) + 'd ago';
+}
+
+function detailTimeUntil(iso) {
+  if (!iso) return '—';
+  const diff = new Date(iso).getTime() - Date.now();
+  if (diff <= 0) return 'Soon';
+  const m = Math.floor(diff / 60000);
+  if (m < 60) return 'in ' + m + 'm';
+  const h = Math.floor(m / 60);
+  if (h < 24) return 'in ' + h + 'h ' + (m % 60) + 'm';
+  return 'in ' + Math.floor(h / 24) + 'd';
+}
+
+function detailStatusColor(s) {
+  if (s === 'success') return '#4ade80';
+  if (s === 'running') return '#4FC3F7';
+  if (s === 'error') return '#f87171';
+  return 'rgba(255,255,255,0.3)';
+}
+
 function openAgentDetail(card) {
   const name = card.querySelector('.agent-name')?.textContent.trim() || 'Agent';
   const role = card.querySelector('.agent-role')?.textContent.trim() || '';
-  const fallbackTask = card.querySelector('.agent-task')?.textContent.trim() || '';
-  const runtime = agentRuntime(name);
-  const base = DASH_AGENT_DETAILS[name] || { progress: 0, tasks: [fallbackTask], next: 'No next step set', status: 'Idle' };
-  const detail = runtime
-    ? { progress: runtime.progress || 0, tasks: [runtime.task], next: runtime.status, status: 'Active' }
-    : { ...base, progress: 0, tasks: ['No active task'], status: 'Idle' };
+
   document.getElementById('agentDetailName').textContent = name;
-  document.getElementById('agentDetailRole').textContent = role + ' · ' + detail.status + ' · ' + detail.progress + '%';
-  document.getElementById('agentDetailProgress').style.width = detail.progress + '%';
-  document.getElementById('agentDetailList').innerHTML = `
-    <div class="detail-row"><div class="detail-label">Working On</div><div class="detail-text">${detail.tasks.map(dashEscape).join('<br>')}</div></div>
-    <div class="detail-row"><div class="detail-label">Progress</div><div class="detail-text">${detail.progress}% complete</div></div>
-    <div class="detail-row"><div class="detail-label">Next Step</div><div class="detail-text">${dashEscape(detail.next)}</div></div>`;
+  document.getElementById('agentDetailRole').textContent = role;
+  document.getElementById('agentDetailProgress').style.width = '0%';
+  document.getElementById('agentDetailList').innerHTML = '<div style="font-family:var(--font-data);font-size:11px;color:rgba(255,255,255,0.3);padding:12px 0;">Loading…</div>';
   document.getElementById('agentDetailModal').classList.add('open');
+
+  // Fetch real data from Supabase
+  const agentKey = name.toLowerCase();
+  fetch(`${SUPA_URL_DASH}/rest/v1/agent_runs?agent=eq.${agentKey}&select=*&limit=1`, {
+    headers: { 'apikey': SUPA_ANON_DASH, 'Authorization': 'Bearer ' + SUPA_ANON_DASH }
+  })
+  .then(r => r.ok ? r.json() : [])
+  .then(rows => {
+    const run = rows[0] || null;
+    const status = run ? run.status : 'idle';
+    const lastRun = run ? run.last_run_at : null;
+    const nextRun = run ? run.next_run_at : null;
+    const schedule = run ? run.schedule : '—';
+    const notConnected = schedule === 'Not connected';
+    const statusLabel = status === 'success' ? 'Done' : status === 'running' ? 'Running' : status === 'error' ? 'Error' : 'Idle';
+    const statusColor = detailStatusColor(status);
+
+    document.getElementById('agentDetailRole').textContent = role;
+    document.getElementById('agentDetailList').innerHTML = `
+      <div class="detail-row"><div class="detail-label">Status</div><div class="detail-text" style="color:${statusColor};">${statusLabel}</div></div>
+      <div class="detail-row"><div class="detail-label">Schedule</div><div class="detail-text">${notConnected ? 'Not connected' : (schedule || '—')}</div></div>
+      <div class="detail-row"><div class="detail-label">Last Run</div><div class="detail-text">${detailTimeAgo(lastRun)}</div></div>
+      <div class="detail-row"><div class="detail-label">Next Run</div><div class="detail-text">${notConnected ? '—' : detailTimeUntil(nextRun)}</div></div>
+      ${run && run.error ? `<div class="detail-row"><div class="detail-label" style="color:#f87171;">Error</div><div class="detail-text" style="color:#f87171;font-size:10px;">${dashEscape(run.error)}</div></div>` : ''}
+    `;
+  })
+  .catch(() => {
+    document.getElementById('agentDetailList').innerHTML = '<div style="font-family:var(--font-data);font-size:11px;color:rgba(255,255,255,0.3);padding:12px 0;">Could not load data.</div>';
+  });
 }
 
 function updateOverviewAgentCards() {

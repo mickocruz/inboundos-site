@@ -21,6 +21,10 @@
       "destination": "/login.html"
     },
     {
+      "source": "/onboarding",
+      "destination": "/onboarding.html"
+    },
+    {
       "source": "/dashboard",
       "destination": "/dashboard/dashboard.html"
     },

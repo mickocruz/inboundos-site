@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InboundOS — Client Setup</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:#0D1117;min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:'DM Sans',sans-serif;padding:24px;}
+.wrap{width:100%;max-width:520px;}
+.logo{font-size:22px;font-weight:900;letter-spacing:-0.03em;color:#fff;margin-bottom:32px;text-align:center;}
+.logo span{color:#4FC3F7;}
+.progress-row{display:flex;gap:6px;margin-bottom:32px;}
+.step-dot{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,0.08);transition:background 0.3s;}
+.step-dot.done{background:#4FC3F7;}
+.step-dot.active{background:rgba(79,195,247,0.4);}
+.card{background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:32px;backdrop-filter:blur(20px);}
+.card-top{height:1px;background:#4FC3F7;opacity:0.4;margin:-32px -32px 28px;border-radius:20px 20px 0 0;}
+.step{display:none;}
+.step.active{display:block;}
+.step-label{font-size:9px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:rgba(79,195,247,0.7);margin-bottom:6px;}
+.step-title{font-size:22px;font-weight:900;letter-spacing:-0.03em;color:#fff;margin-bottom:6px;}
+.step-sub{font-size:12px;color:rgba(255,255,255,0.35);margin-bottom:28px;line-height:1.5;}
+.field{margin-bottom:18px;}
+.field-label{font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:7px;}
+.field-hint{font-size:10px;color:rgba(255,255,255,0.2);margin-top:4px;line-height:1.4;}
+input,textarea,select{width:100%;background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:11px 14px;font-size:13px;color:#fff;outline:none;transition:border-color 0.2s;font-family:'DM Sans',sans-serif;resize:none;}
+input::placeholder,textarea::placeholder{color:rgba(255,255,255,0.18);}
+input:focus,textarea:focus,select:focus{border-color:rgba(79,195,247,0.4);}
+select option{background:#1a2332;}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:2px;}
+.chip{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:7px;padding:6px 12px;font-size:11px;color:rgba(255,255,255,0.45);cursor:pointer;transition:all 0.15s;user-select:none;}
+.chip:hover{border-color:rgba(79,195,247,0.3);color:rgba(255,255,255,0.8);}
+.chip.selected{background:rgba(79,195,247,0.1);border-color:rgba(79,195,247,0.45);color:#4FC3F7;font-weight:600;}
+.row{display:flex;gap:12px;}
+.row .field{flex:1;}
+.btn-row{display:flex;gap:10px;margin-top:28px;}
+.btn-back{flex:0 0 auto;padding:11px 20px;background:transparent;border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.3);cursor:pointer;transition:all 0.15s;font-family:'DM Sans',sans-serif;}
+.btn-back:hover{border-color:rgba(255,255,255,0.2);color:rgba(255,255,255,0.6);}
+.btn-next{flex:1;padding:12px;background:#4FC3F7;border:none;border-radius:10px;font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#0D1117;cursor:pointer;transition:filter 0.15s;font-family:'DM Sans',sans-serif;}
+.btn-next:hover{filter:brightness(1.1);}
+.btn-next:disabled{opacity:0.35;cursor:not-allowed;filter:none;}
+.error{font-size:11px;color:#f87171;margin-top:8px;display:none;}
+
+/* Success screen */
+.success{text-align:center;padding:12px 0;}
+.success-icon{width:56px;height:56px;background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.25);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;}
+.success-icon svg{width:24px;height:24px;stroke:#4ade80;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.success-title{font-size:22px;font-weight:900;letter-spacing:-0.03em;color:#fff;margin-bottom:8px;}
+.success-sub{font-size:12px;color:rgba(255,255,255,0.35);margin-bottom:28px;line-height:1.6;}
+.creds-box{background:rgba(79,195,247,0.05);border:1px solid rgba(79,195,247,0.15);border-radius:12px;padding:18px 20px;margin-bottom:20px;text-align:left;}
+.creds-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.creds-row:last-child{margin-bottom:0;}
+.creds-key{font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.3);}
+.creds-val{font-size:13px;font-weight:700;color:#4FC3F7;font-family:monospace;}
+.copy-btn{background:rgba(79,195,247,0.1);border:1px solid rgba(79,195,247,0.2);border-radius:6px;padding:3px 9px;font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#4FC3F7;cursor:pointer;transition:all 0.15s;font-family:'DM Sans',sans-serif;}
+.copy-btn:hover{background:rgba(79,195,247,0.2);}
+.login-btn{width:100%;padding:12px;background:#4FC3F7;border:none;border-radius:10px;font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#0D1117;cursor:pointer;font-family:'DM Sans',sans-serif;transition:filter 0.15s;}
+.login-btn:hover{filter:brightness(1.1);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="logo">Inbound<span>OS</span></div>
+  <div class="progress-row">
+    <div class="step-dot active" id="dot-0"></div>
+    <div class="step-dot" id="dot-1"></div>
+    <div class="step-dot" id="dot-2"></div>
+    <div class="step-dot" id="dot-3"></div>
+    <div class="step-dot" id="dot-4"></div>
+  </div>
+  <div class="card">
+    <div class="card-top"></div>
+
+    <!-- STEP 0: Identity -->
+    <div class="step active" id="step-0">
+      <div class="step-label">Step 1 of 5</div>
+      <div class="step-title">Let's set up your system.</div>
+      <div class="step-sub">Takes about 5 minutes. We'll configure your AI agents, voice, and dashboard.</div>
+      <div class="row">
+        <div class="field">
+          <div class="field-label">First Name</div>
+          <input type="text" id="first_name" placeholder="Alex" autocomplete="given-name">
+        </div>
+        <div class="field">
+          <div class="field-label">Last Name</div>
+          <input type="text" id="last_name" placeholder="Rivera" autocomplete="family-name">
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-label">Agency Name</div>
+        <input type="text" id="agency_name" placeholder="Rivera Media Co.">
+      </div>
+      <div class="field">
+        <div class="field-label">Your Niche</div>
+        <div class="chips" id="niche-chips">
+          <div class="chip" data-val="smm">Social Media</div>
+          <div class="chip" data-val="video">Video / Content</div>
+          <div class="chip" data-val="ads">Paid Ads</div>
+          <div class="chip" data-val="seo">SEO</div>
+          <div class="chip" data-val="web">Web Design</div>
+          <div class="chip" data-val="email">Email Marketing</div>
+          <div class="chip" data-val="pr">PR / Branding</div>
+          <div class="chip" data-val="other">Other</div>
+        </div>
+        <input type="hidden" id="niche">
+      </div>
+      <div class="error" id="err-0">Fill in all fields and pick a niche.</div>
+      <div class="btn-row">
+        <button class="btn-next" onclick="next(0)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- STEP 1: ICP -->
+    <div class="step" id="step-1">
+      <div class="step-label">Step 2 of 5</div>
+      <div class="step-title">Who do you help?</div>
+      <div class="step-sub">Your agents use this to target the right people and write content that speaks directly to your dream client.</div>
+      <div class="field">
+        <div class="field-label">Ideal Client Title / Role</div>
+        <input type="text" id="icp_title" placeholder="e.g. Agency Owner, Coach, Consultant">
+      </div>
+      <div class="field">
+        <div class="field-label">Their Biggest Problem</div>
+        <textarea id="icp_pain" rows="3" placeholder="e.g. They're posting every day but getting zero inbound leads from content."></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label">Result You Deliver</div>
+        <textarea id="icp_result" rows="2" placeholder="e.g. Consistent inbound leads from content without posting manually."></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label">Revenue Range of Ideal Client</div>
+        <div class="chips" id="revenue-chips">
+          <div class="chip" data-val="<10k">&lt;$10K/mo</div>
+          <div class="chip" data-val="10-30k">$10–30K/mo</div>
+          <div class="chip" data-val="30-100k">$30–100K/mo</div>
+          <div class="chip" data-val="100k+">$100K+/mo</div>
+        </div>
+        <input type="hidden" id="icp_revenue">
+      </div>
+      <div class="error" id="err-1">Fill in all fields.</div>
+      <div class="btn-row">
+        <button class="btn-back" onclick="back(1)">← Back</button>
+        <button class="btn-next" onclick="next(1)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: Voice -->
+    <div class="step" id="step-2">
+      <div class="step-label">Step 3 of 5</div>
+      <div class="step-title">Your content voice.</div>
+      <div class="step-sub">Quill writes in your voice. The more specific you are, the less it sounds like AI.</div>
+      <div class="field">
+        <div class="field-label">Tone</div>
+        <div class="chips" id="tone-chips">
+          <div class="chip" data-val="direct">Direct</div>
+          <div class="chip" data-val="conversational">Conversational</div>
+          <div class="chip" data-val="educational">Educational</div>
+          <div class="chip" data-val="bold">Bold / Contrarian</div>
+          <div class="chip" data-val="storytelling">Storytelling</div>
+          <div class="chip" data-val="witty">Witty</div>
+        </div>
+        <input type="hidden" id="voice_tone">
+      </div>
+      <div class="field">
+        <div class="field-label">Words / Phrases You Always Use</div>
+        <input type="text" id="voice_words" placeholder="e.g. real talk, no fluff, install, system">
+        <div class="field-hint">Comma-separated. These get baked into every script.</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Words / Phrases You Never Use</div>
+        <input type="text" id="voice_avoid" placeholder="e.g. utilize, leverage, synergy, game-changer">
+        <div class="field-hint">Comma-separated. Agents will avoid these.</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Content Pillars (what you talk about)</div>
+        <textarea id="voice_pillars" rows="2" placeholder="e.g. Inbound leads, AI systems, agency growth, behind-the-scenes"></textarea>
+      </div>
+      <div class="error" id="err-2">Pick a tone and fill in your pillars.</div>
+      <div class="btn-row">
+        <button class="btn-back" onclick="back(2)">← Back</button>
+        <button class="btn-next" onclick="next(2)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: System Config -->
+    <div class="step" id="step-3">
+      <div class="step-label">Step 4 of 5</div>
+      <div class="step-title">Connect your stack.</div>
+      <div class="step-sub">These keys let your agents run autonomously. All stored encrypted — Micko never sees your passwords.</div>
+      <div class="field">
+        <div class="field-label">Anthropic API Key</div>
+        <input type="password" id="anthropic_key" placeholder="sk-ant-..." autocomplete="off">
+        <div class="field-hint">Get it at console.anthropic.com → API Keys. ~$20–50/mo usage.</div>
+      </div>
+      <div class="field">
+        <div class="field-label">n8n Webhook URL</div>
+        <input type="text" id="n8n_webhook" placeholder="https://your-n8n.app.n8n.cloud/webhook/...">
+        <div class="field-hint">Your n8n Cloud instance URL. Micko will send you this after setup.</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Posting Frequency</div>
+        <div class="chips" id="freq-chips">
+          <div class="chip" data-val="daily">Daily</div>
+          <div class="chip" data-val="3x">3x / Week</div>
+          <div class="chip" data-val="5x">5x / Week</div>
+          <div class="chip" data-val="custom">Custom</div>
+        </div>
+        <input type="hidden" id="post_frequency">
+      </div>
+      <div class="field">
+        <div class="field-label">Primary Platform</div>
+        <div class="chips" id="platform-chips">
+          <div class="chip" data-val="instagram">Instagram</div>
+          <div class="chip" data-val="tiktok">TikTok</div>
+          <div class="chip" data-val="linkedin">LinkedIn</div>
+          <div class="chip" data-val="youtube">YouTube Shorts</div>
+          <div class="chip" data-val="twitter">X / Twitter</div>
+        </div>
+        <input type="hidden" id="platform">
+      </div>
+      <div class="error" id="err-3">Fill in API key and pick frequency + platform.</div>
+      <div class="btn-row">
+        <button class="btn-back" onclick="back(3)">← Back</button>
+        <button class="btn-next" onclick="next(3)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- STEP 4: Account -->
+    <div class="step" id="step-4">
+      <div class="step-label">Step 5 of 5</div>
+      <div class="step-title">Create your login.</div>
+      <div class="step-sub">This is how you'll access your InboundOS dashboard.</div>
+      <div class="field">
+        <div class="field-label">Username</div>
+        <input type="text" id="username" placeholder="alex-rivera" autocomplete="username" autocapitalize="none" autocorrect="off">
+        <div class="field-hint">Lowercase, hyphens OK. This becomes your dashboard URL.</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Password</div>
+        <input type="password" id="password" placeholder="Min. 8 characters" autocomplete="new-password">
+      </div>
+      <div class="field">
+        <div class="field-label">Confirm Password</div>
+        <input type="password" id="password2" placeholder="Repeat password" autocomplete="new-password">
+      </div>
+      <div class="error" id="err-4">Check all fields — passwords must match and be 8+ characters.</div>
+      <div class="btn-row">
+        <button class="btn-back" onclick="back(4)">← Back</button>
+        <button class="btn-next" id="submit-btn" onclick="submit()">Launch My System →</button>
+      </div>
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="step" id="step-success">
+      <div class="success">
+        <div class="success-icon">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="success-title">System installed.</div>
+        <div class="success-sub">Your agents are configured and your dashboard is live.<br>Bookmark your login link below.</div>
+        <div class="creds-box">
+          <div class="creds-row">
+            <span class="creds-key">Dashboard URL</span>
+            <span class="creds-val" id="out-url">—</span>
+          </div>
+          <div class="creds-row">
+            <span class="creds-key">Username</span>
+            <span class="creds-val" id="out-username">—</span>
+          </div>
+          <div class="creds-row">
+            <span class="creds-key">Status</span>
+            <span class="creds-val" style="color:#4ade80;">Active</span>
+          </div>
+        </div>
+        <button class="login-btn" id="go-login-btn">Go to My Dashboard →</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const PROVISION_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co/functions/v1/provision-client';
+let currentStep = 0;
+const totalSteps = 5;
+
+// Chip selection
+document.querySelectorAll('.chips').forEach(group => {
+  group.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      group.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+      chip.classList.add('selected');
+      const hiddenId = group.id.replace('-chips', '').replace(/-([a-z])/g, (_, l) => l.toUpperCase());
+      // map chip group id to hidden input id
+      const map = {
+        'nicheChips': 'niche',
+        'revenueChips': 'icp_revenue',
+        'toneChips': 'voice_tone',
+        'freqChips': 'post_frequency',
+        'platformChips': 'platform',
+      };
+      // simpler: find hidden input in same .field parent
+      const hiddenInput = group.closest('.field').querySelector('input[type=hidden]');
+      if (hiddenInput) hiddenInput.value = chip.dataset.val;
+    });
+  });
+});
+
+function showStep(n) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById('step-' + (n === 'success' ? 'success' : n)).classList.add('active');
+  for (let i = 0; i < totalSteps; i++) {
+    const dot = document.getElementById('dot-' + i);
+    if (!dot) continue;
+    dot.classList.remove('done', 'active');
+    if (i < n) dot.classList.add('done');
+    else if (i === n) dot.classList.add('active');
+  }
+}
+
+function validate(step) {
+  if (step === 0) {
+    return v('first_name') && v('last_name') && v('agency_name') && v('niche');
+  }
+  if (step === 1) {
+    return v('icp_title') && v('icp_pain') && v('icp_result') && v('icp_revenue');
+  }
+  if (step === 2) {
+    return v('voice_tone') && v('voice_pillars');
+  }
+  if (step === 3) {
+    return v('anthropic_key') && v('post_frequency') && v('platform');
+  }
+  if (step === 4) {
+    const pw = g('password'); const pw2 = g('password2');
+    return v('username') && pw.length >= 8 && pw === pw2;
+  }
+  return true;
+}
+
+function v(id) { return g(id).trim() !== ''; }
+function g(id) { return document.getElementById(id)?.value || ''; }
+
+function next(step) {
+  if (!validate(step)) {
+    document.getElementById('err-' + step).style.display = 'block';
+    return;
+  }
+  document.getElementById('err-' + step).style.display = 'none';
+  currentStep = step + 1;
+  showStep(currentStep);
+  window.scrollTo(0, 0);
+}
+
+function back(step) {
+  currentStep = step - 1;
+  showStep(currentStep);
+  window.scrollTo(0, 0);
+}
+
+function slugify(str) {
+  return str.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+async function submit() {
+  const btn = document.getElementById('submit-btn');
+  btn.textContent = 'Installing...';
+  btn.disabled = true;
+
+  const username = slugify(g('username'));
+  const clientSlug = username;
+  const clientId = username.replace(/-/g, '_');
+
+  const payload = {
+    // Identity
+    first_name: g('first_name').trim(),
+    last_name: g('last_name').trim(),
+    agency_name: g('agency_name').trim(),
+    niche: g('niche'),
+    // ICP
+    icp_title: g('icp_title').trim(),
+    icp_pain: g('icp_pain').trim(),
+    icp_result: g('icp_result').trim(),
+    icp_revenue: g('icp_revenue'),
+    // Voice
+    voice_tone: g('voice_tone'),
+    voice_words: g('voice_words').trim(),
+    voice_avoid: g('voice_avoid').trim(),
+    voice_pillars: g('voice_pillars').trim(),
+    // System
+    anthropic_key: g('anthropic_key').trim(),
+    n8n_webhook: g('n8n_webhook').trim(),
+    post_frequency: g('post_frequency'),
+    platform: g('platform'),
+    // Account
+    username: clientSlug,
+    password: g('password'),
+    client_id: clientId,
+    client_slug: clientSlug,
+  };
+
+  try {
+    const res = await fetch(PROVISION_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Provisioning failed');
+
+    // Show success
+    const dashUrl = 'https://inboundos.vercel.app/' + clientSlug + '/dashboard';
+    document.getElementById('out-url').textContent = dashUrl;
+    document.getElementById('out-username').textContent = clientSlug;
+    document.getElementById('go-login-btn').onclick = () => window.location.href = '/login';
+    showStep('success');
+    // hide progress dots on success
+    document.querySelector('.progress-row').style.display = 'none';
+  } catch (err) {
+    document.getElementById('err-4').textContent = err.message || 'Something went wrong. Try again.';
+    document.getElementById('err-4').style.display = 'block';
+    btn.textContent = 'Launch My System →';
+    btn.disabled = false;
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Apply — InboundOS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    @font-face {
+      font-family: 'NHG Display';
+      src: url('/NHGDisplay.otf') format('opentype');
+      font-weight: 900;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0D1117;
+      --surface:   #1C2C3B;
+      --card:      #111820;
+      --border:    rgba(255,255,255,0.08);
+      --border-hi: rgba(79,195,247,0.5);
+      --white:     #FFFFFF;
+      --blue:      #4FC3F7;
+      --gray:      #8899A6;
+      --muted:     #3D4F5E;
+      --error:     #F85149;
+      --font-display: 'NHG Display', 'Arial Black', 'Helvetica Neue', sans-serif;
+      --font-body:    'DM Sans', system-ui, sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      height: 56px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(13,17,23,0.92);
+      backdrop-filter: blur(12px);
+    }
+
+    .nav-logo {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 18px;
+      letter-spacing: -0.02em;
+      text-decoration: none;
+      color: var(--white);
+    }
+
+    .nav-logo span { color: var(--blue); }
+
+    .nav-tag {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gray);
+    }
+
+    /* ── Screens ── */
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* ── Hero Layout ── */
+    .hero-wrap {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 32px;
+    }
+
+    .eyebrow::before, .eyebrow::after {
+      content: '';
+      width: 24px;
+      height: 1px;
+      background: var(--blue);
+      opacity: 0.5;
+    }
+
+    h1.hero-title {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: clamp(48px, 8vw, 88px);
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+      max-width: 800px;
+      margin-bottom: 32px;
+    }
+
+    h1.hero-title .accent { color: var(--blue); }
+
+    .hero-sub {
+      font-size: clamp(15px, 2vw, 18px);
+      color: var(--gray);
+      line-height: 1.7;
+      max-width: 520px;
+      margin-bottom: 48px;
+    }
+
+    .hero-sub strong { color: var(--white); font-weight: 600; }
+
+    /* ── CTA Button ── */
+    .btn-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--blue);
+      color: var(--bg);
+      font-family: var(--font-body);
+      font-size: 15px;
+      font-weight: 700;
+      padding: 16px 32px;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+      transition: opacity 0.15s, transform 0.1s;
+      text-decoration: none;
+    }
+
+    .btn-cta:hover { opacity: 0.88; }
+    .btn-cta:active { transform: scale(0.98); }
+
+    .btn-cta svg { width: 16px; height: 16px; }
+
+    .hero-note {
+      margin-top: 20px;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Stat Strip ── */
+    .stat-strip {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 32px 0;
+      margin: 0;
+    }
+
+    .stat-item {
+      flex: 1;
+      text-align: center;
+      padding: 0 32px;
+      border-right: 1px solid var(--border);
+    }
+
+    .stat-item:last-child { border-right: none; }
+
+    .stat-num {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: clamp(28px, 4vw, 40px);
+      letter-spacing: -0.03em;
+      color: var(--white);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .stat-num span { color: var(--blue); }
+
+    .stat-label {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gray);
+    }
+
+    /* ── Form Layout ── */
+    .form-wrap {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 100px 24px 80px;
+    }
+
+    /* Progress */
+    .progress-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .progress-tag {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--blue);
+    }
+
+    .progress-count {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+
+    .progress-track {
+      height: 2px;
+      background: var(--border);
+      margin-bottom: 64px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      position: absolute;
+      top: 0; left: 0;
+      height: 100%;
+      background: var(--blue);
+      transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+      width: 0%;
+    }
+
+    /* Steps */
+    .step { display: none; }
+    .step.active { display: block; }
+
+    .step-eyebrow {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 16px;
+    }
+
+    .step-question {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: clamp(28px, 5vw, 44px);
+      line-height: 1.0;
+      letter-spacing: -0.025em;
+      margin-bottom: 16px;
+    }
+
+    .step-hint {
+      font-size: 14px;
+      color: var(--gray);
+      line-height: 1.6;
+      margin-bottom: 40px;
+      max-width: 520px;
+    }
+
+    /* Text inputs */
+    .field-group { display: flex; flex-direction: column; gap: 12px; }
+
+    .field-wrap { position: relative; }
+
+    input[type="text"],
+    input[type="email"],
+    textarea {
+      width: 100%;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--white);
+      font-family: var(--font-body);
+      font-size: 15px;
+      padding: 16px 20px;
+      outline: none;
+      transition: border-color 0.2s;
+      -webkit-appearance: none;
+    }
+
+    input[type="text"]::placeholder,
+    input[type="email"]::placeholder,
+    textarea::placeholder { color: var(--muted); }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    textarea:focus { border-color: var(--blue); }
+
+    textarea { resize: vertical; min-height: 110px; line-height: 1.6; }
+
+    /* Radio options */
+    .options-list { display: flex; flex-direction: column; gap: 2px; }
+
+    .opt {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 18px 20px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      position: relative;
+    }
+
+    .opt:hover { border-color: rgba(255,255,255,0.15); }
+
+    .opt:has(input:checked) {
+      border-color: var(--border-hi);
+      background: rgba(79,195,247,0.04);
+    }
+
+    .opt input[type="radio"] {
+      width: 16px;
+      height: 16px;
+      min-width: 16px;
+      accent-color: var(--blue);
+      margin-top: 3px;
+      cursor: pointer;
+    }
+
+    .opt-body { flex: 1; }
+
+    .opt-title {
+      display: block;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--white);
+      line-height: 1.3;
+      margin-bottom: 3px;
+    }
+
+    .opt-desc {
+      font-size: 13px;
+      color: var(--gray);
+      line-height: 1.5;
+    }
+
+    /* Buttons */
+    .btn-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 40px;
+    }
+
+    .btn-next, .btn-submit {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--blue);
+      color: var(--bg);
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 700;
+      padding: 14px 28px;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      letter-spacing: 0.03em;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+
+    .btn-next:hover, .btn-submit:hover { opacity: 0.88; }
+    .btn-next:active, .btn-submit:active { transform: scale(0.98); }
+
+    .btn-back {
+      background: transparent;
+      color: var(--muted);
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 500;
+      padding: 14px 20px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      cursor: pointer;
+      letter-spacing: 0.03em;
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .btn-back:hover { color: var(--white); border-color: rgba(255,255,255,0.2); }
+
+    /* Error */
+    .field-error {
+      font-size: 12px;
+      color: var(--error);
+      margin-top: 8px;
+      display: none;
+      letter-spacing: 0.02em;
+    }
+
+    .field-error.show { display: block; }
+
+    /* Divider */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 48px 0;
+    }
+
+    /* Sub question */
+    .sub-question {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: clamp(20px, 3vw, 28px);
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+
+    .sub-hint {
+      font-size: 13px;
+      color: var(--gray);
+      margin-bottom: 20px;
+    }
+
+    /* Note */
+    .form-note {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 16px;
+      line-height: 1.5;
+    }
+
+    /* ── End screens ── */
+    .end-wrap {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 100px 24px 80px;
+    }
+
+    .end-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .end-label.blue { color: var(--blue); }
+    .end-label.muted { color: var(--muted); }
+
+    .end-title {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: clamp(36px, 6vw, 64px);
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+      margin-bottom: 24px;
+      max-width: 600px;
+    }
+
+    .end-body {
+      font-size: 16px;
+      color: var(--gray);
+      line-height: 1.7;
+      max-width: 440px;
+      margin-bottom: 40px;
+    }
+
+    .end-body strong { color: var(--white); }
+
+    .end-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--blue);
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(79,195,247,0.3);
+      padding-bottom: 2px;
+      transition: border-color 0.15s;
+    }
+
+    .end-link:hover { border-color: var(--blue); }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 24px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-logo {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 14px;
+      letter-spacing: -0.01em;
+      color: var(--white);
+    }
+
+    .footer-logo span { color: var(--blue); }
+
+    .footer-copy {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      nav { padding: 0 20px; }
+      footer { padding: 20px; flex-direction: column; gap: 8px; text-align: center; }
+      .stat-strip { flex-direction: column; gap: 0; }
+      .stat-item { border-right: none; border-bottom: 1px solid var(--border); padding: 24px; }
+      .stat-item:last-child { border-bottom: none; }
+      .btn-row { flex-direction: column-reverse; }
+      .btn-back, .btn-next, .btn-submit { width: 100%; justify-content: center; }
+    }
+
+    /* ── Other blocker textarea ── */
+    #other-wrap { margin-top: 8px; display: none; }
+  </style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+  <a class="nav-logo" href="#"><span>Inbound</span>OS</a>
+  <span class="nav-tag">Application</span>
+</nav>
+
+<!-- ═══════════════════════════════════════════
+     SCREEN: INTRO
+═══════════════════════════════════════════ -->
+<div class="screen active" id="screen-intro">
+
+  <div class="hero-wrap">
+    <div class="eyebrow">1-on-1 Coaching</div>
+
+    <h1 class="hero-title">
+      Apply to work<br>with <span class="accent">Micko.</span>
+    </h1>
+
+    <p class="hero-sub">
+      This isn't an onboarding form. <strong>It's a filter.</strong><br>
+      I work with a small number of agency owners at a time — personally, not through assistants.
+      Answer honestly. If we're a fit, I'll reach out.
+    </p>
+
+    <button class="btn-cta" onclick="startForm()">
+      Start Application
+      <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+
+    <p class="hero-note">Takes ~3 minutes — no pitch on the other end</p>
+  </div>
+
+  <!-- Stat Strip -->
+  <div class="stat-strip">
+    <div class="stat-item">
+      <div class="stat-num">2.2<span>K</span></div>
+      <div class="stat-label">Agency owners reached</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">35<span>%</span></div>
+      <div class="stat-label">Close rate (avg)</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">$200<span>K+</span></div>
+      <div class="stat-label">Revenue generated</div>
+    </div>
+  </div>
+
+  <footer>
+    <span class="footer-logo"><span>Inbound</span>OS</span>
+    <span class="footer-copy">© 2026 InboundOS. All rights reserved.</span>
+  </footer>
+
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SCREEN: FORM
+═══════════════════════════════════════════ -->
+<div class="screen" id="screen-form">
+  <div class="form-wrap">
+
+    <!-- Progress -->
+    <div class="progress-header">
+      <span class="progress-tag" id="prog-tag">Step 1</span>
+      <span class="progress-count" id="prog-count">1 / 7</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill"></div>
+    </div>
+
+    <form id="app-form" novalidate>
+
+      <!-- ── Step 1: Identity ── -->
+      <div class="step active" id="step-1">
+        <div class="step-eyebrow">Who you are</div>
+        <div class="step-question">Name &amp; Instagram handle.</div>
+        <p class="step-hint">First name is fine. IG so I can check your content before the call.</p>
+
+        <div class="field-group">
+          <div class="field-wrap">
+            <input type="text" id="name" placeholder="First name" autocomplete="given-name" />
+            <div class="field-error" id="name-error">Name required.</div>
+          </div>
+          <div class="field-wrap">
+            <input type="text" id="instagram" placeholder="@yourhandle" />
+            <div class="field-error" id="ig-error">Instagram handle required.</div>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button type="button" class="btn-next" onclick="nextStep(1)">Next →</button>
+        </div>
+      </div>
+
+      <!-- ── Step 2: Business ── -->
+      <div class="step" id="step-2">
+        <div class="step-eyebrow">Your business</div>
+        <div class="step-question">What do you do<br>&amp; who do you help?</div>
+        <p class="step-hint">"I help roofing companies get leads via Facebook ads" beats "I run a marketing agency."</p>
+
+        <textarea id="what-you-do" placeholder="Describe in 1–2 sentences..."></textarea>
+        <div class="field-error" id="biz-error">Required.</div>
+
+        <div class="btn-row">
+          <button type="button" class="btn-back" onclick="prevStep(2)">← Back</button>
+          <button type="button" class="btn-next" onclick="nextStep(2)">Next →</button>
+        </div>
+      </div>
+
+      <!-- ── Step 3: Revenue ── -->
+      <div class="step" id="step-3">
+        <div class="step-eyebrow">Where you're at</div>
+        <div class="step-question">Current monthly revenue.</div>
+        <p class="step-hint">Approximate is fine. Not a gatekeep — helps me understand your context.</p>
+
+        <div class="options-list">
+          <label class="opt">
+            <input type="radio" name="revenue" value="pre-revenue" />
+            <div class="opt-body">
+              <span class="opt-title">$0 — Pre-revenue</span>
+              <span class="opt-desc">Still building. Haven't landed a client yet.</span>
+            </div>
+          </label>
+          <label class="opt">
+            <input type="radio" name="revenue" value="1k-3k" />
+            <div class="opt-body">
+              <span class="opt-title">$1K – $3K / mo</span>
+              <span class="opt-desc">Early traction. 1–2 clients.</span>
+            </div>
+          </label>
+          <label class="opt">
+            <input type="radio" name="revenue" value="3k-7k" />
+            <div class="opt-body">
+              <span class="opt-title">$3K – $7K / mo</span>
+              <span class="opt-desc">Consistent income but hitting a ceiling.</span>
+            </div>
+          </label>
+          <label class="opt">
+            <input type="radio" name="revenue" value="7k-15k" />
+            <div class="opt-body">
+              <span class="opt-title">$7K – $15K / mo</span>
+              <span class="opt-desc">Scaling. Need systems and leverage.</span>
+            </div>
+          </label>
+          <label class="opt">
+            <input type="radio" name="revenue" value="15k+" />
+            <div class="opt-body">
+              <span class="opt-title">$15K+ / mo</span>
+              <span class="opt-desc">Already here. Optimizing.</span>
+            </div>
+          </label>
+        </div>
+        <div class="field-error" id="rev-error">Select one to continue.</div>
+
+        <div class="btn-row">
+          <button type="button" class="btn-back" onclick="prevStep(3)">← Back</button>
+          <button type="button" class="btn-next" onclick="nextStep(3)">Next →</button>
+        </div>
+      </div>
+
+      <!-- ── Step 4: Blocker ── -->
+      <div class="step" id="step-4">
+        <div class="step-eyebrow">The real problem</div>
+        <div class="step-question">What's the #1 thing<br>blocking you right now?</div>
+        <p class="step-hint">Not what sounds good. What actually keeps you stuck.</p>
+
+        <div class="options-list">
+          <label class="opt">
+            <input type="radio" name="blocker" value="no-leads" />
+            <div class="opt-body">
+              <span class="opt-title">No consistent leads</span>
+              <span class="opt-desc">Relying on referrals or cold outreach. Unpredictable pipeline.</span>
+            </div>
+          </label>
+          <label class="opt">
+            <input type="radio" name="blocker" value="no-content" />
+            <div class="opt-body">
+              <span class="opt-title">Not posting content</span>
+              <span class="opt-desc">Know I should. No system, no idea what to say.</span>
+            </div>
+          </label>
+          <label class="opt">
+            <input type="radio" name="blocker" value="bad-closes" />
+            <div class="opt-body">
+              <span class="opt-title">Leads but bad close rate</span>
+              <span class="opt-desc">Getting calls. Not converting. Something's off.</span>
+            </div>
+          </label>
+          <label class="opt">
+            <input type="radio" name="blocker" value="no-time" />
+            <div class="opt-body">
+              <span class="opt-title">No time</span>
+              <span class="opt-desc">Stuck in delivery. Can't work on the business — only in it.</span>
+            </div>
+          </label>
+          <label class="opt">
+            <input type="radio" name="blocker" value="other" />
+            <div class="opt-body">
+              <span class="opt-title">Something else</span>
+              <span class="opt-desc">I'll explain below.</span>
+            </div>
+          </label>
+        </div>
+        <div class="field-error" id="block-error">Select one to continue.</div>
+
+        <div id="other-wrap">
+          <textarea id="other-blocker" placeholder="What's actually blocking you?..." style="margin-top:8px; min-height:80px;"></textarea>
+        </div>
+
+        <div class="btn-row">
+          <button type="button" class="btn-back" onclick="prevStep(4)">← Back</button>
+          <button type="button" class="btn-next" onclick="nextStep(4)">Next →</button>
+        </div>
+      </div>
+
+      <!-- ── Step 5: Duration ── -->
+      <div class="step" id="step-5">
+        <div class="step-eyebrow">Urgency check</div>
+        <div class="step-question">How long has this<br>been a problem?</div>
+        <p class="step-hint">I work with people ready to move — not people still deciding if they have a problem.</p>
+
+        <div class="options-list">
+          <label class="opt">
+            <input type="radio" name="duration" value="just-started" />
+            <div class="opt-body">
+              <span class="opt-title">Just starting out</span>
+              <span class="opt-desc">Brand new. Still figuring things out.</span>
+            </div>
+          </label>
+          <label class="opt">
+            <input type="radio" name="duration" value="few-months" />
+            <div class="opt-body">
+              <span class="opt-title">A few months</span>
+              <span class="opt-desc">Made some moves. Not seeing results yet.</span>
+            </div>
+          </label>
+          <label class="opt">
+            <input type="radio" name="duration" value="6-12-months" />
+            <div class="opt-body">
+              <span class="opt-title">6 – 12 months</span>
+              <span class="opt-desc">Been at it. Hit a wall I can't break through alone.</span>
+            </div>
+          </label>
+          <label class="opt">
+            <input type="radio" name="duration" value="1yr+" />
+            <div class="opt-body">
+              <span class="opt-title">1+ year</span>
+              <span class="opt-desc">Long time. Tried things. Need a different approach.</span>
+            </div>
+          </label>
+        </div>
+        <div class="field-error" id="dur-error">Select one to continue.</div>
+
+        <div class="btn-row">
+          <button type="button" class="btn-back" onclick="prevStep(5)">← Back</button>
+          <button type="button" class="btn-next" onclick="nextStep(5)">Next →</button>
+        </div>
+      </div>
+
+      <!-- ── Step 6: Investment ── -->
+      <div class="step" id="step-6">
+        <div class="step-eyebrow">Investment</div>
+        <div class="step-question">Are you prepared to<br>invest in solving this?</div>
+        <p class="step-hint">1-on-1 coaching is a serious investment. No judgment for being honest.</p>
+
+        <div class="options-list">
+          <label class="opt">
+            <input type="radio" name="investment" value="yes-ready" />
+            <div class="opt-body">
+              <span class="opt-title">Yes — I'm ready</span>
+              <span class="opt-desc">If it's the right fit, I'm in.</span>
+            </div>
+          </label>
+          <label class="opt">
+            <input type="radio" name="investment" value="need-to-check" />
+            <div class="opt-body">
+              <span class="opt-title">Need to check finances first</span>
+              <span class="opt-desc">Want to look at what's possible before committing.</span>
+            </div>
+          </label>
+          <label class="opt">
+            <input type="radio" name="investment" value="not-right-now" />
+            <div class="opt-body">
+              <span class="opt-title">Not financially ready right now</span>
+              <span class="opt-desc">Honest answer: budget isn't there yet.</span>
+            </div>
+          </label>
+        </div>
+        <div class="field-error" id="inv-error">Select one to continue.</div>
+
+        <div class="btn-row">
+          <button type="button" class="btn-back" onclick="prevStep(6)">← Back</button>
+          <button type="button" class="btn-next" onclick="nextStep(6)">Next →</button>
+        </div>
+      </div>
+
+      <!-- ── Step 7: Why now + email ── -->
+      <div class="step" id="step-7">
+        <div class="step-eyebrow">Final question</div>
+        <div class="step-question">Why are you<br>applying right now?</div>
+        <p class="step-hint">Not why you need help in general — why today? What made you fill this out?</p>
+
+        <textarea id="why-now" placeholder="Be real. A sentence or two is fine."></textarea>
+        <div class="field-error" id="why-error">Required.</div>
+
+        <hr class="divider" />
+
+        <div class="sub-question">Where should I reach you?</div>
+        <p class="sub-hint">I'll email if we're a fit. One message — either way. No spam.</p>
+
+        <div class="field-wrap">
+          <input type="email" id="email" placeholder="your@email.com" autocomplete="email" />
+          <div class="field-error" id="email-error">Valid email required.</div>
+        </div>
+
+        <div class="btn-row">
+          <button type="button" class="btn-back" onclick="prevStep(7)">← Back</button>
+          <button type="button" class="btn-submit" onclick="submitForm()">Submit Application →</button>
+        </div>
+        <p class="form-note">I review every application personally.</p>
+      </div>
+
+    </form>
+  </div>
+
+  <footer>
+    <span class="footer-logo"><span>Inbound</span>OS</span>
+    <span class="footer-copy">© 2026 InboundOS</span>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SCREEN: DISQUALIFY
+═══════════════════════════════════════════ -->
+<div class="screen" id="screen-disqualify">
+  <div class="end-wrap">
+    <div class="end-label muted">Application reviewed</div>
+    <h2 class="end-title">Not the right<br>time — yet.</h2>
+    <p class="end-body">
+      Based on what you shared, now might not be the right moment for 1-on-1 coaching.
+      That's not a knock — it's just honest.<br><br>
+      Best move: <strong>follow the content, implement what you can, come back when you're ready.</strong>
+    </p>
+    <a class="end-link" href="https://www.instagram.com" target="_blank" rel="noopener">
+      Follow on Instagram →
+    </a>
+  </div>
+  <footer>
+    <span class="footer-logo"><span>Inbound</span>OS</span>
+    <span class="footer-copy">© 2026 InboundOS</span>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SCREEN: SUCCESS
+═══════════════════════════════════════════ -->
+<div class="screen" id="screen-success">
+  <div class="end-wrap">
+    <div class="end-label blue">Application received</div>
+    <h2 class="end-title">You're in<br>the queue.</h2>
+    <p class="end-body">
+      I'll review it personally. If we're a fit, you'll hear from us within <strong>48 hours</strong> to book a call.
+    </p>
+  </div>
+  <footer>
+    <span class="footer-logo"><span>Inbound</span>OS</span>
+    <span class="footer-copy">© 2026 InboundOS</span>
+  </footer>
+</div>
+
+<script>
+  let currentStep = 1;
+  const TOTAL = 7;
+
+  function startForm() {
+    show('screen-form');
+    updateProgress(1);
+  }
+
+  function show(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function goStep(n) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    document.getElementById('step-' + n).classList.add('active');
+    currentStep = n;
+    updateProgress(n);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function updateProgress(n) {
+    const pct = ((n - 1) / TOTAL) * 100;
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('prog-tag').textContent = 'Step ' + n;
+    document.getElementById('prog-count').textContent = n + ' / ' + TOTAL;
+  }
+
+  function prevStep(from) { goStep(from - 1); }
+
+  function nextStep(from) {
+    if (!validate(from)) return;
+
+    if (from === 3) {
+      const rev = document.querySelector('input[name="revenue"]:checked');
+      if (rev?.value === 'pre-revenue') { show('screen-disqualify'); return; }
+    }
+
+    if (from === 6) {
+      const inv = document.querySelector('input[name="investment"]:checked');
+      if (inv?.value === 'not-right-now') { show('screen-disqualify'); return; }
+    }
+
+    goStep(from + 1);
+  }
+
+  function validate(step) {
+    let ok = true;
+
+    const checks = {
+      1: () => {
+        const n = v('name'), ig = v('instagram');
+        err('name-error', !n); err('ig-error', !ig);
+        return !!(n && ig);
+      },
+      2: () => { const b = v('what-you-do'); err('biz-error', !b); return !!b; },
+      3: () => { const c = checked('revenue'); err('rev-error', !c); return !!c; },
+      4: () => { const c = checked('blocker'); err('block-error', !c); return !!c; },
+      5: () => { const c = checked('duration'); err('dur-error', !c); return !!c; },
+      6: () => { const c = checked('investment'); err('inv-error', !c); return !!c; },
+    };
+
+    if (checks[step]) ok = checks[step]();
+    return ok;
+  }
+
+  const SUPABASE_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
+
+  async function submitForm() {
+    const why = v('why-now');
+    const email = v('email');
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+    err('why-error', !why);
+    err('email-error', !emailOk);
+    if (!why || !emailOk) return;
+
+    const btn = document.querySelector('.btn-submit');
+    btn.textContent = 'Submitting…';
+    btn.disabled = true;
+
+    const payload = {
+      name: v('name'),
+      instagram: v('instagram'),
+      business: v('what-you-do'),
+      revenue: checked('revenue'),
+      blocker: checked('blocker'),
+      other_blocker: v('other-blocker') || null,
+      duration: checked('duration'),
+      investment: checked('investment'),
+      why_now: why,
+      email,
+      source: new URLSearchParams(window.location.search).get('ref') || 'direct'
+    };
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/applications`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_ANON,
+          'Authorization': `Bearer ${SUPABASE_ANON}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) {
+        const errBody = await res.text();
+        console.error('Supabase error:', res.status, errBody);
+        // Still show success — don't block user on DB errors
+      }
+    } catch (e) {
+      console.error('Submit error:', e);
+    }
+
+    show('screen-success');
+  }
+
+  function v(id) {
+    return (document.getElementById(id)?.value || '').trim();
+  }
+
+  function checked(name) {
+    return document.querySelector(`input[name="${name}"]:checked`)?.value || null;
+  }
+
+  function err(id, show) {
+    document.getElementById(id)?.classList.toggle('show', show);
+  }
+
+  // Show "other" textarea when selected
+  document.addEventListener('change', e => {
+    if (e.target.name === 'blocker') {
+      document.getElementById('other-wrap').style.display =
+        e.target.value === 'other' ? 'block' : 'none';
+    }
+  });
+</script>
+</body>
+</html>

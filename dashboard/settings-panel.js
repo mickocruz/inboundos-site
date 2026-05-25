@@ -4,6 +4,23 @@
   const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
   const H = { 'apikey': SB_ANON, 'Authorization': `Bearer ${SB_ANON}`, 'Content-Type': 'application/json' };
 
+  const SB_SVC = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTQ2MzIyNSwiZXhwIjoyMDk1MDM5MjI1fQ.8ik968LXAthPkd6nkKOOOFlzTbR-94A22l5T_9T17GE';
+
+  async function uploadAvatar(file) {
+    const ext = file.name.split('.').pop();
+    const path = `avatar.${ext}`;
+    const res = await fetch(`${SB_URL}/storage/v1/object/avatars/${path}`, {
+      method: 'POST',
+      headers: { 'apikey': SB_SVC, 'Authorization': `Bearer ${SB_SVC}`, 'x-upsert': 'true' },
+      body: file
+    });
+    if (!res.ok) {
+      const err = await res.text();
+      throw new Error('Upload failed: ' + err);
+    }
+    return `${SB_URL}/storage/v1/object/public/avatars/${path}?t=${Date.now()}`;
+  }
+
   let currentProfile = null;
 
   function injectModal() {
@@ -29,7 +46,7 @@
 
   async function fetchProfile() {
     try {
-      const res = await fetch(`${SB_URL}/rest/v1/profiles?select=*&limit=1`, { headers: H });
+      const res = await fetch(`${SB_URL}/rest/v1/ctrl_users?select=id,username,full_name,role,avatar_url&limit=1`, { headers: H });
       if (!res.ok) throw new Error();
       const rows = await res.json();
       return rows[0] || null;
@@ -37,7 +54,7 @@
   }
 
   async function saveProfile(id, data) {
-    await fetch(`${SB_URL}/rest/v1/profiles?id=eq.${id}`, {
+    await fetch(`${SB_URL}/rest/v1/ctrl_users?id=eq.${id}`, {
       method: 'PATCH',
       headers: { ...H, 'Prefer': 'return=minimal' },
       body: JSON.stringify(data)
@@ -47,8 +64,8 @@
   function renderBody(profile) {
     const body = document.getElementById('settings-body');
     const name = profile ? (profile.full_name || 'Micko Cruz') : 'Micko Cruz';
-    const role = profile ? (profile.role || profile.company || 'Founder · InboundOS') : 'Founder · InboundOS';
-    const avatar = profile ? (profile.avatar_url || 'mk-avatar.jpg') : 'mk-avatar.jpg';
+    const role = profile ? (profile.role || 'Founder · InboundOS') : 'Founder · InboundOS';
+    const avatar = profile ? (profile.avatar_url || '/micko.jpg') : '/micko.jpg';
 
     body.innerHTML = `
       <div class="sp-avatar-wrap">
@@ -97,34 +114,37 @@
     btn.disabled = true;
     btn.textContent = 'Saving…';
 
-    // Update sidebar immediately
-    const nameEl = document.querySelector('.mk-name');
-    const roleEl = document.querySelector('.mk-role');
-    if (nameEl) nameEl.textContent = name;
-    if (roleEl) roleEl.textContent = role;
+    try {
+      const profileData = { full_name: name, role: role };
 
-    // Save to Supabase if profile exists
-    if (currentProfile) {
-      await saveProfile(currentProfile.id, { full_name: name, role: role });
-    }
+      // Upload photo first if selected
+      const photoInput = document.getElementById('sp-photo-input');
+      if (photoInput.files[0]) {
+        const publicUrl = await uploadAvatar(photoInput.files[0]);
+        profileData.avatar_url = publicUrl;
+        // Update all avatar images on page
+        document.querySelectorAll('.mk-avatar-wrap img, #sp-avatar-img').forEach(el => el.src = publicUrl);
+      }
 
-    // Handle photo upload (base64 store in profile if no storage bucket)
-    const photoInput = document.getElementById('sp-photo-input');
-    if (photoInput.files[0] && currentProfile) {
-      const reader = new FileReader();
-      reader.onload = async function(e) {
-        const avatarEl = document.querySelector('.mk-avatar-wrap img');
-        if (avatarEl) avatarEl.src = e.target.result;
-        // Store data URL in profile (small images only)
-        await saveProfile(currentProfile.id, { avatar_url: e.target.result });
-      };
-      reader.readAsDataURL(photoInput.files[0]);
+      // Save name + role (+ avatar_url if uploaded) in one call
+      if (currentProfile) {
+        await saveProfile(currentProfile.id, profileData);
+      }
+
+      // Update sidebar text
+      const nameEl = document.querySelector('.mk-name');
+      const roleEl = document.querySelector('.mk-role');
+      if (nameEl) nameEl.textContent = name;
+      if (roleEl) roleEl.textContent = role;
+
+      msg.classList.add('show');
+      setTimeout(() => msg.classList.remove('show'), 2500);
+    } catch (err) {
+      alert('Save failed: ' + err.message);
     }
 
     btn.disabled = false;
     btn.textContent = 'Save Changes';
-    msg.classList.add('show');
-    setTimeout(() => msg.classList.remove('show'), 2500);
   };
 
   async function openPanel() {
@@ -143,9 +163,21 @@
   window.__settingsOpen = openPanel;
   window.__settingsClose = closePanel;
 
+  async function initSidebar() {
+    const profile = await fetchProfile();
+    if (!profile) return;
+    const nameEl = document.querySelector('.mk-name');
+    const roleEl = document.querySelector('.mk-role');
+    const avatarEl = document.querySelector('.mk-avatar-wrap img');
+    if (nameEl && profile.full_name) nameEl.textContent = profile.full_name;
+    if (roleEl && profile.role) roleEl.textContent = profile.role;
+    if (avatarEl && profile.avatar_url) avatarEl.src = profile.avatar_url;
+  }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', injectModal);
+    document.addEventListener('DOMContentLoaded', () => { injectModal(); initSidebar(); });
   } else {
     injectModal();
+    initSidebar();
   }
 })();

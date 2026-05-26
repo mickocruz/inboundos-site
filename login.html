@@ -79,6 +79,7 @@ function togglePw() {
   }
 }
 const EDGE_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co/functions/v1/login';
+const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
 
 async function login() {
   const un = document.getElementById('username').value.trim().toLowerCase();
@@ -93,7 +94,7 @@ async function login() {
   try {
     const res = await fetch(EDGE_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + ANON_KEY },
       body: JSON.stringify({ username: un, password: pw }),
     });
     const data = await res.json();

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script>(function(){var s=null;try{s=JSON.parse(localStorage.getItem("sb_session")||"null");}catch(e){}if(!s||!s.access_token||!s.client_slug){window.location.href="/login?from="+encodeURIComponent(window.location.pathname);return;}var exp=s.expires_at?s.expires_at*1000:0;if(exp&&exp<Date.now()){localStorage.removeItem("sb_session");window.location.href="/login?from="+encodeURIComponent(window.location.pathname);return;}var seg=window.location.pathname.split("/").filter(Boolean)[0];if(seg&&seg!==s.client_slug){window.location.href="/login?from="+encodeURIComponent(window.location.pathname);}})();</script>
+<head><script>(function(){function gc(n){var v=document.cookie.match("(^|;) ?"+n+"=([^;]*)(;|$)");return v?v[2]:null;}var auth=gc("ctrl_auth"),slug=gc("ctrl_slug");if(!auth||!slug){window.location.href="/login?from="+encodeURIComponent(window.location.pathname);return;}var seg=window.location.pathname.split("/").filter(Boolean)[0];if(seg&&seg!==slug){window.location.href="/login?from="+encodeURIComponent(window.location.pathname);}})();</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>InboundOS - Research</title>
@@ -117,9 +117,16 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .swipe-filter{padding:3px 10px;border-radius:20px;font-family:var(--font-data);font-size:10px;font-weight:600;background:rgba(255,255,255,0.03);color:var(--text-muted);border:1px solid var(--border);cursor:pointer;transition:all 0.15s;letter-spacing:0.3px;}
 .swipe-filter:hover{border-color:rgba(79,195,247,0.3);color:var(--accent);}
 .swipe-filter.active{background:rgba(79,195,247,0.08);color:var(--accent);border-color:rgba(79,195,247,0.3);}
-.swipe-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;transition:border-color 0.2s,box-shadow 0.2s;}
-.swipe-card:hover{border-color:rgba(79,195,247,0.2);box-shadow:0 0 16px rgba(79,195,247,0.05);}
-.swipe-hook{font-family:var(--font-data);font-size:11.5px;color:var(--text);line-height:1.5;font-weight:500;}
+.swipe-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;cursor:pointer;transition:border-color 0.2s,box-shadow 0.2s,transform 0.18s;}
+.swipe-card:hover{border-color:rgba(79,195,247,0.3);box-shadow:0 0 20px rgba(79,195,247,0.08);transform:translateY(-2px);}
+.swipe-thumb{position:relative;width:100%;aspect-ratio:9/16;background:rgba(255,255,255,0.03);overflow:hidden;flex-shrink:0;}
+.swipe-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.swipe-thumb-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(79,195,247,0.06),rgba(167,139,250,0.04));font-size:28px;}
+.swipe-play-icon{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+.swipe-play-icon svg{width:36px;height:36px;opacity:0.85;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.6));}
+.swipe-competitor-badge{position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);border-radius:4px;padding:2px 7px;font-family:var(--font-data);font-size:9px;color:rgba(255,255,255,0.8);font-weight:500;}
+.swipe-card-body{padding:11px 13px;display:flex;flex-direction:column;gap:7px;}
+.swipe-hook{font-family:var(--font-data);font-size:11px;color:var(--text);line-height:1.5;font-weight:500;}
 .swipe-meta{display:flex;flex-wrap:wrap;gap:5px;align-items:center;}
 .swipe-tag{font-family:var(--font-data);font-size:8.5px;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:0.5px;text-transform:uppercase;}
 .swipe-tag-tofu{background:rgba(79,195,247,0.1);color:var(--accent);}
@@ -129,6 +136,20 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .swipe-tag-neutral{background:rgba(255,255,255,0.05);color:var(--text-muted);}
 .swipe-views{font-family:var(--font-data);font-size:9px;color:var(--text-dim);margin-left:auto;}
 .swipe-empty{font-family:var(--font-data);font-size:12px;color:var(--text-dim);padding:24px;text-align:center;grid-column:1/-1;}
+/* SWIPE MODAL */
+.swipe-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);z-index:500;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.22s;}
+.swipe-modal-overlay.open{opacity:1;pointer-events:all;}
+.swipe-modal-box{width:min(480px,96vw);max-height:92vh;background:rgba(10,18,30,0.95);border:1px solid rgba(255,255,255,0.1);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;transform:scale(0.9) translateY(12px);transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1),opacity 0.22s;box-shadow:0 32px 80px rgba(0,0,0,0.7);}
+.swipe-modal-overlay.open .swipe-modal-box{transform:scale(1) translateY(0);}
+.swipe-modal-embed{width:100%;aspect-ratio:9/16;background:#000;position:relative;flex-shrink:0;}
+.swipe-modal-embed iframe{width:100%;height:100%;border:none;display:block;}
+.swipe-modal-embed-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:linear-gradient(135deg,rgba(79,195,247,0.07),rgba(0,0,0,0.3));padding:24px;}
+.swipe-modal-info{padding:16px 18px 20px;display:flex;flex-direction:column;gap:10px;overflow-y:auto;}
+.swipe-modal-hook{font-family:var(--font-data);font-size:13px;font-weight:500;color:var(--text);line-height:1.55;}
+.swipe-modal-link{display:flex;align-items:center;gap:8px;background:rgba(79,195,247,0.07);border:1px solid rgba(79,195,247,0.2);border-radius:8px;padding:9px 12px;text-decoration:none;color:var(--accent);font-family:var(--font-data);font-size:11px;font-weight:600;transition:background 0.15s;word-break:break-all;}
+.swipe-modal-link:hover{background:rgba(79,195,247,0.14);}
+.swipe-modal-close{position:absolute;top:12px;right:12px;background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;z-index:10;transition:background 0.15s;}
+.swipe-modal-close:hover{background:rgba(0,0,0,0.8);}
 /* Ambient blobs */
 .amb{position:fixed;border-radius:50%;filter:blur(110px);pointer-events:none;z-index:0;}
 .amb-1{width:700px;height:500px;top:-100px;left:10%;background:rgba(79,195,247,0.055);animation:ab1 20s ease-in-out infinite;}
@@ -140,19 +161,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 @media(prefers-reduced-motion:reduce){.amb{animation:none!important;}}
 </style>
 <style>
-@media(max-width:768px){
-  .competitor-grid{grid-template-columns:1fr 1fr!important;}
-  html,body{overflow:auto!important;height:auto!important;}
-  .layout{flex-direction:column;height:auto!important;}
-  .sidebar{width:100%!important;min-width:0!important;max-height:none!important;height:auto!important;border-right:none;border-bottom:1px solid rgba(255,255,255,0.07);display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;align-items:center;padding:0;overflow-x:auto!important;overflow-y:hidden!important;-webkit-overflow-scrolling:touch;}
-  .sidebar-logo-wrap{padding:10px 14px;border-bottom:none!important;margin-bottom:0!important;flex-shrink:0;}
-  .nav-section{display:contents;}
-  .nav-section-label{display:none!important;}
-  .nav-item{padding:10px 12px;font-size:12px;white-space:nowrap!important;flex-shrink:0;border-left:none!important;border-bottom:2px solid transparent;border-radius:0;}
-  .nav-item.active{border-bottom-color:#4FC3F7!important;background:none!important;}
-  .sidebar-bottom{display:none!important;}
-  .main{flex:none!important;width:100%!important;padding:16px 14px 60px;overflow-x:hidden;}
-}
+/* mobile layout handled by mobile.css */
 
 
 
@@ -163,7 +172,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 /* DM Sans body */
 :root{--font-body:'DM Sans',sans-serif;}
 html,body{font-family:'DM Sans',sans-serif!important;}
-</style><link rel="stylesheet" href="/dashboard/spring-animations.css"/><link rel="stylesheet" href="/dashboard/settings-panel.css"/><script src="/dashboard/settings-panel.js"></script></head>
+</style><link rel="stylesheet" href="/dashboard/spring-animations.css"/><link rel="stylesheet" href="/dashboard/mobile.css?v=3"/><link rel="stylesheet" href="/dashboard/settings-panel.css"/><script src="/dashboard/settings-panel.js"></script></head>
 <body>
 <div class="amb amb-1"></div>
 <div class="amb amb-2"></div>
@@ -172,30 +181,30 @@ html,body{font-family:'DM Sans',sans-serif!important;}
   <nav class="sidebar">
     <div class="sidebar-logo-wrap" onclick="location.href='/'"><div class="sidebar-logo-text"><span style="color:#ffffff;">Inbound</span><span style="color:#4FC3F7;">OS</span></div></div>
     <div class="nav-section"><div class="nav-section-label">Command</div>
-      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');return v?v[2]:'';})()+'/dashboard'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>Dashboard</div>
-      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');return v?v[2]:'';})()+'/agents'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="10" width="20" height="12" rx="2"/><path d="M12 2a5 5 0 0 1 5 5v3H7V7a5 5 0 0 1 5-5z"/><circle cx="12" cy="16" r="1.2" fill="currentColor" stroke="none"/></svg>Agents</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/dashboard'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>Dashboard</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/agents'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="10" width="20" height="12" rx="2"/><path d="M12 2a5 5 0 0 1 5 5v3H7V7a5 5 0 0 1 5-5z"/><circle cx="12" cy="16" r="1.2" fill="currentColor" stroke="none"/></svg>Agents</div>
       <div class="nav-item" id="nav-chat-item" style="opacity:0.35;cursor:not-allowed;pointer-events:none;" title="Chat requires an Anthropic API key"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Chat</div>
     </div>
     <div class="nav-section"><div class="nav-section-label">Content</div>
-      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');return v?v[2]:'';})()+'/performance'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="4" height="20" rx="1"/><rect x="10" y="8" width="4" height="14" rx="1"/><rect x="18" y="4" width="4" height="18" rx="1"/></svg>Instagram</div>
-      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');return v?v[2]:'';})()+'/pipeline'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Content Pipeline</div>
-      <div class="nav-item active" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');return v?v[2]:'';})()+'/research'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Research</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/performance'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="4" height="20" rx="1"/><rect x="10" y="8" width="4" height="14" rx="1"/><rect x="18" y="4" width="4" height="18" rx="1"/></svg>Instagram</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/pipeline'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Content Pipeline</div>
+      <div class="nav-item active" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/research'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Research</div>
     </div>
     <div class="nav-section"><div class="nav-section-label">Revenue</div>
-      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');return v?v[2]:'';})()+'/clients'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Clients</div>
-      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');return v?v[2]:'';})()+'/sales-calls'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.74 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.66 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Sales Calls</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/clients'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Clients</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/sales-calls'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.74 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.66 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Sales Calls</div>
     </div>
     <div class="nav-section"><div class="nav-section-label">Intelligence</div>
-      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');return v?v[2]:'';})()+'/sops'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>SOPs</div>
-      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');return v?v[2]:'';})()+'/org-chart'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><path d="M12 7v3M12 10l-5 7M12 10l5 7"/></svg>Org Chart</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/sops'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>SOPs</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/org-chart'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><path d="M12 7v3M12 10l-5 7M12 10l5 7"/></svg>Org Chart</div>
     </div>
-    <div class="sidebar-bottom"><div class="mk-avatar-wrap" onclick="window.__settingsOpen()" style="cursor:pointer;"><img src="/micko.jpg" alt="MK" style="width:32px;height:32px;object-fit:cover;border-radius:50%;border:1px solid rgba(79,195,247,0.2);"/><div><div class="mk-name">Micko Cruz</div><div class="mk-role">Founder · InboundOS</div></div></div></div>
+    <div class="sidebar-bottom"><div class="mk-avatar-wrap" onclick="window.__settingsOpen()" style="cursor:pointer;"><img src="mk-avatar.jpg" alt="MK" style="width:32px;height:32px;object-fit:cover;border-radius:50%;border:1px solid rgba(79,195,247,0.2);"/><div><div class="mk-name">Micko Cruz</div><div class="mk-role">Founder · InboundOS</div></div></div></div>
   </nav>
 
   <main class="main">
     <div class="header">
       <div class="header-left">
-        <h1>Research</h1>
+        <h1>RESEARCH<span>.</span></h1>
         <div class="date">Content Intelligence · May 5, 2026 · Updated 8 min ago</div>
       </div>
       <div class="header-right">
@@ -235,6 +244,22 @@ html,body{font-family:'DM Sans',sans-serif!important;}
 
     <div style="height:32px;"></div>
   </main>
+</div>
+<!-- SWIPE FILE MODAL -->
+<div class="swipe-modal-overlay" id="swipeModalOverlay" onclick="if(event.target===this)closeSwipeModal()">
+  <div class="swipe-modal-box" id="swipeModalBox">
+    <div class="swipe-modal-embed" id="swipeModalEmbed">
+      <button class="swipe-modal-close" onclick="closeSwipeModal()">✕</button>
+    </div>
+    <div class="swipe-modal-info">
+      <div class="swipe-modal-hook" id="swipeModalHook"></div>
+      <div id="swipeModalMeta" style="display:flex;flex-wrap:wrap;gap:5px;"></div>
+      <a class="swipe-modal-link" id="swipeModalLink" href="#" target="_blank" rel="noopener">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Open on Instagram
+      </a>
+    </div>
+  </div>
 </div>
 <!-- COMPETITOR EDITOR MODAL -->
 <div id="compEditorOverlay" style="position:fixed;inset:0;z-index:300;background:rgba(0,0,0,0.72);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.2s;" onclick="if(event.target===this)closeCompetitorEditor()">
@@ -614,7 +639,6 @@ function addReelToQueue(btn) {
 // ── SWIPE FILE — Supabase content_bucket ──
 const SB_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co';
 const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
-const CLIENT_ID = (document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)')||[])[2]?.replace(/-/g,'_') || 'micko_cruz';
 
 let _swipeAll = [];
 let _activeStage = '';
@@ -625,7 +649,7 @@ async function loadSwipeFile() {
   if (status) status.textContent = 'Loading…';
   try {
     const res = await fetch(
-      `${SB_URL}/rest/v1/content_bucket?client_id=eq.${CLIENT_ID}&select=id,reel_title,hook,hook_type,funnel_stage,competitor,views,likes,comments,steal_worthy,threat_level,emotional_trigger&order=views.desc&limit=60`,
+      `${SB_URL}/rest/v1/content_bucket?select=id,reel_title,hook,hook_type,funnel_stage,competitor,views,likes,comments,steal_worthy,threat_level,emotional_trigger,reel_url&order=views.desc&limit=60`,
       { headers: { 'apikey': SB_ANON, 'Authorization': `Bearer ${SB_ANON}` } }
     );
     if (!res.ok) throw new Error(res.status);
@@ -655,23 +679,57 @@ function renderSwipeFile() {
     return;
   }
 
-  grid.innerHTML = rows.map(r => {
+  // Gradient palettes per competitor for placeholder thumbs
+  const GRAD_PALETTES = [
+    'linear-gradient(135deg,#1a2a3a,#0d2035)',
+    'linear-gradient(135deg,#1a1a2e,#16213e)',
+    'linear-gradient(135deg,#0d1b2a,#1b2838)',
+    'linear-gradient(135deg,#1a0a2e,#0d0d1f)',
+    'linear-gradient(135deg,#0a1628,#0d2040)',
+  ];
+  const compColors = {};
+  let compIdx = 0;
+  function compGrad(comp) {
+    if (!comp) return GRAD_PALETTES[0];
+    if (!compColors[comp]) { compColors[comp] = GRAD_PALETTES[compIdx++ % GRAD_PALETTES.length]; }
+    return compColors[comp];
+  }
+  function accentForStage(s) {
+    return s === 'TOFU' ? '#4FC3F7' : s === 'MOFU' ? '#fbbf24' : s === 'BOFU' ? '#4ade80' : '#a78bfa';
+  }
+
+  grid.innerHTML = rows.map((r, i) => {
     const stage = r.funnel_stage || '';
     const stageClass = stage === 'TOFU' ? 'swipe-tag-tofu' : stage === 'MOFU' ? 'swipe-tag-mofu' : stage === 'BOFU' ? 'swipe-tag-bofu' : 'swipe-tag-neutral';
     const hookType = r.hook_type ? `<span class="swipe-tag swipe-tag-neutral">${escapeHtml(r.hook_type)}</span>` : '';
     const steal = r.steal_worthy ? `<span class="swipe-tag swipe-tag-steal">⭐ Steal</span>` : '';
-    const competitor = r.competitor ? `<span class="swipe-tag swipe-tag-neutral">${escapeHtml(r.competitor)}</span>` : '';
     const views = r.views ? fmtNum(r.views) + ' views' : '';
     const displayText = r.hook || r.reel_title || '—';
-    return `<div class="swipe-card">
-      <div class="swipe-hook">${escapeHtml(displayText)}</div>
-      <div class="swipe-meta">
-        ${stage ? `<span class="swipe-tag ${stageClass}">${stage}</span>` : ''}
-        ${hookType}${steal}${competitor}
-        <span class="swipe-views">${views}</span>
+    const comp = r.competitor || '';
+    const initials = comp.replace('@','').slice(0,2).toUpperCase() || '▶';
+    const accent = accentForStage(stage);
+    const grad = compGrad(comp);
+    const hasLink = !!r.reel_url;
+    return `<div class="swipe-card" onclick="openSwipeModal(${i})" data-idx="${i}">
+      <div class="swipe-thumb" style="background:${grad};position:relative;">
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;">
+          <div style="width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:13px;font-weight:900;color:${accent};">${escapeHtml(initials)}</div>
+          <svg width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="14" fill="rgba(255,255,255,0.08)"/><polygon points="11,9 21,14 11,19" fill="${accent}" opacity="0.9"/></svg>
+        </div>
+        ${comp ? `<div class="swipe-competitor-badge">${escapeHtml(comp)}</div>` : ''}
+        ${hasLink ? `<div style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.5);border-radius:4px;padding:2px 6px;font-size:8px;font-family:var(--font-data);color:rgba(255,255,255,0.6);">IG</div>` : ''}
+      </div>
+      <div class="swipe-card-body">
+        <div class="swipe-hook">${escapeHtml(displayText)}</div>
+        <div class="swipe-meta">
+          ${stage ? `<span class="swipe-tag ${stageClass}">${stage}</span>` : ''}
+          ${hookType}${steal}
+          <span class="swipe-views">${views}</span>
+        </div>
       </div>
     </div>`;
   }).join('');
+  _swipeRows = rows;
 }
 
 document.getElementById('swipeFilters').addEventListener('click', function(e) {
@@ -686,6 +744,71 @@ document.getElementById('swipeFilters').addEventListener('click', function(e) {
     btn.classList.add('active');
   }
   renderSwipeFile();
+});
+
+let _swipeRows = [];
+
+function openSwipeModal(idx) {
+  const r = _swipeRows[idx];
+  if (!r) return;
+  const overlay = document.getElementById('swipeModalOverlay');
+  const embedEl = document.getElementById('swipeModalEmbed');
+  const hookEl  = document.getElementById('swipeModalHook');
+  const metaEl  = document.getElementById('swipeModalMeta');
+  const linkEl  = document.getElementById('swipeModalLink');
+
+  hookEl.textContent = r.hook || r.reel_title || '—';
+
+  // Meta tags
+  const stage = r.funnel_stage || '';
+  const stageClass = stage === 'TOFU' ? 'swipe-tag-tofu' : stage === 'MOFU' ? 'swipe-tag-mofu' : stage === 'BOFU' ? 'swipe-tag-bofu' : 'swipe-tag-neutral';
+  metaEl.innerHTML = [
+    stage ? `<span class="swipe-tag ${stageClass}">${stage}</span>` : '',
+    r.hook_type ? `<span class="swipe-tag swipe-tag-neutral">${escapeHtml(r.hook_type)}</span>` : '',
+    r.steal_worthy ? `<span class="swipe-tag swipe-tag-steal">⭐ Steal-Worthy</span>` : '',
+    r.competitor ? `<span class="swipe-tag swipe-tag-neutral">${escapeHtml(r.competitor)}</span>` : '',
+    r.views ? `<span class="swipe-views" style="margin-left:0;">${fmtNum(r.views)} views</span>` : '',
+  ].filter(Boolean).join('');
+
+  // Link
+  if (r.reel_url) {
+    linkEl.href = r.reel_url;
+    linkEl.style.display = 'flex';
+  } else {
+    linkEl.style.display = 'none';
+  }
+
+  // Modal embed — use IG official blockquote embed for public reels
+  const closeBtn = `<button class="swipe-modal-close" onclick="closeSwipeModal()">✕</button>`;
+  if (r.reel_url) {
+    const scMatch = r.reel_url.match(/\/reel\/([A-Za-z0-9_-]+)/);
+    const sc = scMatch ? scMatch[1] : '';
+    if (sc) {
+      // Official Instagram embed iframe
+      const embedUrl = `https://www.instagram.com/p/${sc}/embed/captioned/`;
+      embedEl.innerHTML = closeBtn + `<iframe src="${escapeAttr(embedUrl)}" style="width:100%;height:100%;border:none;display:block;" frameborder="0" scrolling="no" allowtransparency="true"></iframe>`;
+    } else {
+      embedEl.innerHTML = closeBtn + `<div class="swipe-modal-embed-placeholder">
+        <span style="font-family:var(--font-data);font-size:11px;color:var(--text-muted);text-align:center;">Open on Instagram to view reel</span>
+      </div>`;
+    }
+  } else {
+    embedEl.innerHTML = closeBtn + `<div class="swipe-modal-embed-placeholder">
+      <span style="font-family:var(--font-data);font-size:11px;color:var(--text-muted);text-align:center;">No link available</span>
+    </div>`;
+  }
+
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeSwipeModal() {
+  document.getElementById('swipeModalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeSwipeModal();
 });
 
 loadSwipeFile();

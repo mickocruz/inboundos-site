@@ -177,21 +177,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 @media(prefers-reduced-motion:reduce){.amb{animation:none!important;}.kcard{opacity:1!important;transform:none!important;transition:none!important;}}
 </style>
 <style>
-@media(max-width:768px){
-  .pipe-stats{grid-template-columns:1fr 1fr!important;}
-  .board{grid-template-columns:1fr!important;overflow-y:auto!important;overflow-x:hidden!important;}
-  .main{overflow:auto!important;}
-  html,body{overflow:auto!important;height:auto!important;}
-  .layout{flex-direction:column;height:auto!important;}
-  .sidebar{width:100%!important;min-width:0!important;max-height:none!important;height:auto!important;border-right:none;border-bottom:1px solid rgba(255,255,255,0.07);display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;align-items:center;padding:0;overflow-x:auto!important;overflow-y:hidden!important;-webkit-overflow-scrolling:touch;}
-  .sidebar-logo-wrap{padding:10px 14px;border-bottom:none!important;margin-bottom:0!important;flex-shrink:0;}
-  .nav-section{display:contents;}
-  .nav-section-label{display:none!important;}
-  .nav-item{padding:10px 12px;font-size:12px;white-space:nowrap!important;flex-shrink:0;border-left:none!important;border-bottom:2px solid transparent;border-radius:0;}
-  .nav-item.active{border-bottom-color:#4FC3F7!important;background:none!important;}
-  .sidebar-bottom{display:none!important;}
-  .main{flex:none!important;width:100%!important;padding:16px 14px 60px;overflow-x:hidden;}
-}
+/* pipeline mobile handled by mobile.css */
 
 
 
@@ -202,7 +188,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 /* DM Sans body */
 :root{--font-body:'DM Sans',sans-serif;}
 html,body{font-family:'DM Sans',sans-serif!important;}
-</style><link rel="stylesheet" href="/dashboard/spring-animations.css"/><link rel="stylesheet" href="/dashboard/settings-panel.css"/><script src="/dashboard/settings-panel.js"></script></head>
+</style><link rel="stylesheet" href="/dashboard/spring-animations.css"/><link rel="stylesheet" href="/dashboard/settings-panel.css"/><link rel="stylesheet" href="/dashboard/mobile.css?v=3"/><script src="/dashboard/settings-panel.js"></script></head>
 <body>
 <div class="amb amb-1"></div>
 <div class="amb amb-2"></div>
@@ -211,22 +197,22 @@ html,body{font-family:'DM Sans',sans-serif!important;}
   <nav class="sidebar">
     <div class="sidebar-logo-wrap" onclick="location.href='/'"><div class="sidebar-logo-text"><span style="color:#ffffff;">Inbound</span><span style="color:#4FC3F7;">OS</span></div></div>
     <div class="nav-section"><div class="nav-section-label">Command</div>
-      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');return v?v[2]:'';})()+'/dashboard'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>Dashboard</div>
-      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');return v?v[2]:'';})()+'/agents'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="10" width="20" height="12" rx="2"/><path d="M12 2a5 5 0 0 1 5 5v3H7V7a5 5 0 0 1 5-5z"/><circle cx="12" cy="16" r="1.2" fill="currentColor" stroke="none"/></svg>Agents</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/dashboard'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>Dashboard</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/agents'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="10" width="20" height="12" rx="2"/><path d="M12 2a5 5 0 0 1 5 5v3H7V7a5 5 0 0 1 5-5z"/><circle cx="12" cy="16" r="1.2" fill="currentColor" stroke="none"/></svg>Agents</div>
       <div class="nav-item" id="nav-chat-item" style="opacity:0.35;cursor:not-allowed;pointer-events:none;" title="Chat requires an Anthropic API key"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Chat</div>
     </div>
     <div class="nav-section"><div class="nav-section-label">Content</div>
-      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');return v?v[2]:'';})()+'/performance'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="4" height="20" rx="1"/><rect x="10" y="8" width="4" height="14" rx="1"/><rect x="18" y="4" width="4" height="18" rx="1"/></svg>Instagram</div>
-      <div class="nav-item active" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');return v?v[2]:'';})()+'/pipeline'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Content Pipeline</div>
-      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');return v?v[2]:'';})()+'/research'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Research</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/performance'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="4" height="20" rx="1"/><rect x="10" y="8" width="4" height="14" rx="1"/><rect x="18" y="4" width="4" height="18" rx="1"/></svg>Instagram</div>
+      <div class="nav-item active" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/pipeline'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Content Pipeline</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/research'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Research</div>
     </div>
     <div class="nav-section"><div class="nav-section-label">Revenue</div>
-      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');return v?v[2]:'';})()+'/clients'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Clients</div>
-      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');return v?v[2]:'';})()+'/sales-calls'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.74 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.66 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Sales Calls</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/clients'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Clients</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/sales-calls'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.74 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.66 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Sales Calls</div>
     </div>
     <div class="nav-section"><div class="nav-section-label">Intelligence</div>
-      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');return v?v[2]:'';})()+'/sops'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>SOPs</div>
-      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');return v?v[2]:'';})()+'/org-chart'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><path d="M12 7v3M12 10l-5 7M12 10l5 7"/></svg>Org Chart</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/sops'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>SOPs</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/org-chart'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><path d="M12 7v3M12 10l-5 7M12 10l5 7"/></svg>Org Chart</div>
     </div>
     <div class="sidebar-bottom"><div class="mk-avatar-wrap" onclick="window.__settingsOpen()" style="cursor:pointer;"><img src="/micko.jpg" alt="MK" style="width:32px;height:32px;object-fit:cover;border-radius:50%;border:1px solid rgba(79,195,247,0.2);"/><div><div class="mk-name">Micko Cruz</div><div class="mk-role">Founder · InboundOS</div></div></div></div>
   </nav>
@@ -244,7 +230,7 @@ html,body{font-family:'DM Sans',sans-serif!important;}
 
     <!-- STATS ROW -->
     <div class="pipe-stats">
-      <div class="pipe-stat"><div class="pipe-stat-val" style="color:var(--yellow);">3</div><div class="pipe-stat-lbl">Scripting</div></div>
+      <div class="pipe-stat"><div class="pipe-stat-val" style="color:var(--yellow);">3</div><div class="pipe-stat-lbl">Scripts to Film</div></div>
       <div class="pipe-stat"><div class="pipe-stat-val" style="color:var(--purple);">2</div><div class="pipe-stat-lbl">Editing</div></div>
       <div class="pipe-stat"><div class="pipe-stat-val" style="color:var(--accent);">4</div><div class="pipe-stat-lbl">Scheduled</div></div>
       <div class="pipe-stat"><div class="pipe-stat-val" style="color:var(--green);">38</div><div class="pipe-stat-lbl">Published</div></div>
@@ -252,10 +238,10 @@ html,body{font-family:'DM Sans',sans-serif!important;}
 
     <!-- KANBAN BOARD -->
     <div class="board" id="board">
-<!-- SCRIPTING -->
+<!-- SCRIPTS TO FILM -->
       <div class="col">
         <div class="col-header">
-          <span class="col-title">Scripting</span>
+          <span class="col-title">Scripts to Film</span>
           <span class="col-count" id="count-scripting">3</span>
         </div>
         <div class="col-body" id="col-scripting" data-col="scripting"
@@ -317,12 +303,8 @@ html,body{font-family:'DM Sans',sans-serif!important;}
     </div>
     <div class="script-modal-body" id="script-modal-body" style="display:none;">
       <div>
-        <span class="script-section-label hook">Hook</span>
-        <textarea class="script-section-ta hook-ta" id="smt-hook" placeholder="Opening line that stops the scroll…"></textarea>
-      </div>
-      <div>
-        <span class="script-section-label body-lbl">Body</span>
-        <textarea class="script-section-ta body-ta" id="smt-body" placeholder="The value, story, or explanation…"></textarea>
+        <span class="script-section-label body-lbl">Script</span>
+        <textarea class="script-section-ta body-ta" id="smt-script" placeholder="Hook + script body…"></textarea>
       </div>
       <div>
         <span class="script-section-label caption-lbl">Caption</span>
@@ -443,7 +425,7 @@ function closeFunnelModal() {
   document.getElementById('funnel-modal').classList.remove('open');
 }
 
-// ── DRAG & DROP ───────────────────────────────────────────────
+// ── DRAG & DROP (desktop) ──────────────────────────────────────
 let dragCard = null;
 let dragFromCol = null;
 
@@ -451,19 +433,16 @@ function onDragStart(e, el) {
   dragCard = el;
   dragFromCol = el.closest('.col-body').dataset.col;
   e.dataTransfer.effectAllowed = 'move';
-  // iOS 26: lift with spring scale + tilt + glass shadow
   setTimeout(() => {
     el.classList.add('dragging');
     el.style.transition = 'transform 0.35s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease, opacity 0.25s ease';
   }, 0);
-  // Haptic-style pulse on all drop zones
   document.querySelectorAll('.col-body').forEach(col => col.classList.add('drop-ready'));
 }
 
 document.addEventListener('dragend', (e) => {
   const card = e.target;
   card.classList.remove('dragging');
-  // Spring land: brief overshoot then settle
   card.style.transition = 'transform 0.5s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.35s ease, opacity 0.2s ease';
   card.style.transform = 'scale(1.04)';
   card.style.boxShadow = '0 8px 32px rgba(79,195,247,0.18)';
@@ -481,7 +460,6 @@ function onDragOver(e) {
   const col = e.currentTarget;
   if (!col.classList.contains('drag-over')) {
     col.classList.add('drag-over');
-    // Magnetic snap pulse
     col.style.transition = 'transform 0.3s cubic-bezier(0.34,1.56,0.64,1), background 0.2s, box-shadow 0.25s';
     col.style.transform = 'scale(1.025)';
     col.style.boxShadow = '0 0 0 1.5px rgba(79,195,247,0.35), inset 0 0 24px rgba(79,195,247,0.06)';
@@ -502,7 +480,6 @@ function onDrop(e, colId) {
   col.style.boxShadow = '';
   if (!dragCard) return;
 
-  // Spring insert: card enters from slight scale-down
   dragCard.style.transition = 'none';
   dragCard.style.transform = 'scale(0.92) translateY(8px)';
   dragCard.style.opacity = '0.6';
@@ -523,6 +500,65 @@ function onDrop(e, colId) {
   if (supaId && newStatus) supaUpdateStatus(supaId, newStatus);
   dragCard = null;
 }
+
+// ── MOVE TO NEXT STAGE (mobile button) ────────────────────────
+const COL_ORDER = ['scripting','editing','scheduled','published'];
+
+function moveCardToNext(e, btn) {
+  e.stopPropagation();
+  const card = btn.closest('.kcard');
+  const colBody = card.closest('.col-body');
+  if (!colBody) return;
+  const currentCol = colBody.dataset.col;
+  const idx = COL_ORDER.indexOf(currentCol);
+  if (idx === -1 || idx >= COL_ORDER.length - 1) return;
+  const nextCol = COL_ORDER[idx + 1];
+  const targetCol = document.getElementById('col-' + nextCol);
+  if (!targetCol) return;
+
+  card.style.transition = 'transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.2s';
+  card.style.transform = 'scale(0.95)';
+  card.style.opacity = '0.5';
+  setTimeout(() => {
+    targetCol.prepend(card);
+    card.style.transform = 'scale(1.04)';
+    card.style.opacity = '1';
+    setTimeout(() => { card.style.transform = ''; card.style.transition = ''; }, 350);
+    updateCounts();
+    serializeBoard();
+    updateMoveButtons();
+    const supaId = card.dataset.supaId;
+    const newStatus = COL_STATUS[nextCol];
+    if (supaId && newStatus) supaUpdateStatus(supaId, newStatus);
+  }, 180);
+}
+
+function updateMoveButtons() {
+  if (window.innerWidth > 768) return;
+  document.querySelectorAll('.kcard').forEach(card => {
+    const colBody = card.closest('.col-body');
+    if (!colBody) return;
+    const colId = colBody.dataset.col;
+    const idx = COL_ORDER.indexOf(colId);
+    let btn = card.querySelector('.kcard-move-btn');
+    if (idx === -1) return;
+    if (idx >= COL_ORDER.length - 1) {
+      if (btn) btn.remove();
+      return;
+    }
+    const nextLabel = { scripting:'Move to Editing', editing:'Move to Scheduled', scheduled:'Move to Published' }[colId] || 'Move →';
+    if (!btn) {
+      btn = document.createElement('button');
+      btn.className = 'kcard-move-btn';
+      btn.setAttribute('onclick', 'moveCardToNext(event, this)');
+      const meta = card.querySelector('.kcard-meta');
+      if (meta) meta.insertBefore(btn, meta.firstChild);
+    }
+    btn.textContent = nextLabel + ' →';
+  });
+}
+
+window.addEventListener('resize', updateMoveButtons);
 
 let pendingCard, pendingCol;
 
@@ -596,11 +632,6 @@ function dataToCard(data) {
     ? `<span class="ktag" style="${escapeHtml(labelStyle)}">${escapeHtml(labelText)}</span>`
     : '';
 
-  // Scripted badge — shown when scripted, placed right of label
-  const scriptedHtml = data.scripted
-    ? `<span class="ktag" style="background:rgba(74,222,128,0.09);color:var(--green);">✓ Scripted</span>`
-    : '';
-
   // Script-it button — shown only when NOT scripted
   const scriptBtnHtml = !data.scripted
     ? `<button class="script-btn" onclick="event.stopPropagation();openFunnelModal(this)">✦ Script it</button>`
@@ -609,7 +640,7 @@ function dataToCard(data) {
   // Discard — always far right
   const discardBtnHtml = `<button class="discard-btn" title="Discard" onclick="discardCard(event,this)">Discard</button>`;
 
-  card.innerHTML = `<div class="kcard-title">${escapeHtml(data.title)}</div><div class="kcard-meta">${labelHtml}${scriptedHtml}${scriptBtnHtml}${discardBtnHtml}</div>`;
+  card.innerHTML = `<div class="kcard-title">${escapeHtml(data.title)}</div><div class="kcard-meta">${labelHtml}${scriptBtnHtml}${discardBtnHtml}</div>`;
   card.onclick = (e) => { if (!e.target.closest('.script-btn,.discard-btn')) openSavedScript(card); };
   return card;
 }
@@ -774,8 +805,8 @@ function onScriptModalOverlayClick(e) {
 }
 
 function populateScriptFields(hook, body, cta, caption) {
-  document.getElementById('smt-hook').value    = hook;
-  document.getElementById('smt-body').value    = body;
+  const script = [hook, body].filter(Boolean).join('\n\n');
+  document.getElementById('smt-script').value  = script;
   document.getElementById('smt-caption').value = caption;
 }
 
@@ -797,7 +828,7 @@ function populateScriptModal(scriptRaw) {
 
   // Auto-resize after browser paints
   requestAnimationFrame(() => requestAnimationFrame(() => {
-    ['smt-hook','smt-body','smt-caption'].forEach(id => {
+    ['smt-script','smt-caption'].forEach(id => {
       const ta = document.getElementById(id);
       ta.style.height = 'auto';
       ta.style.height = ta.scrollHeight + 'px';
@@ -805,42 +836,30 @@ function populateScriptModal(scriptRaw) {
     });
   }));
 
-  document.getElementById('smt-hook').focus();
+  document.getElementById('smt-script').focus();
 }
 
 function saveScriptModal() {
   if (!scriptModalCard) return;
-  const hook    = document.getElementById('smt-hook').value.trim();
-  const body    = document.getElementById('smt-body').value.trim();
-  const cta     = document.getElementById('smt-cta').value.trim();
+  const script  = document.getElementById('smt-script').value.trim();
   const caption = document.getElementById('smt-caption').value.trim();
-  if (!hook && !body) return;
+  if (!script) return;
 
   const ns   = scriptModalKeyNs(scriptModalCard);
-  const full = [hook && 'HOOK:\n'+hook, body && 'BODY:\n'+body, cta && 'CTA:\n'+cta, caption && 'CAPTION:\n'+caption].filter(Boolean).join('\n\n');
+  const full = [script && 'SCRIPT:\n'+script, caption && 'CAPTION:\n'+caption].filter(Boolean).join('\n\n');
   localStorage.setItem(ns, full);
-  localStorage.setItem(ns + '_hook',    hook);
-  localStorage.setItem(ns + '_body',    body);
-  localStorage.setItem(ns + '_cta',     cta);
+  localStorage.setItem(ns + '_hook',    '');
+  localStorage.setItem(ns + '_body',    script);
+  localStorage.setItem(ns + '_cta',     '');
   localStorage.setItem(ns + '_caption', caption);
 
   const _saved = scriptModalCard;
   _saved.classList.add('scripted');
-  _saved.onclick = (e) => { if (!e.target.closest('.discard-btn,.caption-btn')) openSavedScriptModal(_saved); };
+  _saved.onclick = (e) => { if (!e.target.closest('.discard-btn,.kcard-move-btn')) openSavedScriptModal(_saved); };
 
   const meta = _saved.querySelector('.kcard-meta');
   const oldBtn = meta.querySelector('.script-btn');
   if (oldBtn) oldBtn.remove();
-  if (!meta.querySelector('.ktag[data-scripted]')) {
-    const badge = document.createElement('span');
-    badge.className = 'ktag';
-    badge.setAttribute('data-scripted', '1');
-    badge.style.cssText = 'background:rgba(74,222,128,0.09);color:var(--green);';
-    badge.textContent = '✓ Scripted';
-    const discard = meta.querySelector('.discard-btn');
-    if (discard) meta.insertBefore(badge, discard);
-    else meta.appendChild(badge);
-  }
 
   // Move card to next column
   const colId = _saved.closest('.col-body')?.dataset.col || 'scripting';
@@ -858,8 +877,7 @@ function saveScriptModal() {
 
 function copyScriptModal() {
   const parts = [
-    document.getElementById('smt-hook').value,
-    document.getElementById('smt-body').value,
+    document.getElementById('smt-script').value,
     document.getElementById('smt-caption').value,
   ].filter(Boolean);
   navigator.clipboard.writeText(parts.join('\n\n')).catch(() => {});
@@ -867,7 +885,7 @@ function copyScriptModal() {
 
 function resizeScriptTextareas() {
   requestAnimationFrame(() => requestAnimationFrame(() => {
-    ['smt-hook','smt-body','smt-caption'].forEach(id => {
+    ['smt-script','smt-caption'].forEach(id => {
       const ta = document.getElementById(id);
       ta.style.height = 'auto';
       ta.style.height = ta.scrollHeight + 'px';
@@ -988,30 +1006,10 @@ function saveScript() {
   drawerCard.onclick = (e) => { if (!e.target.closest('.discard-btn,.caption-btn')) openSavedScript(_savedCard); };
 
   const meta = drawerCard.querySelector('.kcard-meta');
-  // Remove script-btn
   const oldBtn = meta.querySelector('.script-btn');
   if (oldBtn) oldBtn.remove();
-  // Insert ✓ Scripted badge before Discard (keeps MOFU/TOFU label on the left)
-  if (!meta.querySelector('.ktag[data-scripted]')) {
-    const badge = document.createElement('span');
-    badge.className = 'ktag';
-    badge.setAttribute('data-scripted', '1');
-    badge.style.cssText = 'background:rgba(74,222,128,0.09);color:var(--green);';
-    badge.textContent = '✓ Scripted';
-    const discard = meta.querySelector('.discard-btn');
-    meta.insertBefore(badge, discard || null);
-  }
-  // Add Edit Captions button if not present
-  if (!meta.querySelector('.caption-btn')) {
-    const capBtn = document.createElement('button');
-    capBtn.className = 'caption-btn';
-    capBtn.textContent = '✦ Edit Captions';
-    capBtn.onclick = (e) => { e.stopPropagation(); openCaptionDrawer(_savedCard); };
-    const discard = meta.querySelector('.discard-btn');
-    meta.insertBefore(capBtn, discard || null);
-  }
 
-  // Move to Scripting column
+  // Move to Scripts to Film column
   document.getElementById('col-scripting').prepend(drawerCard);
   updateCounts();
   serializeBoard();
@@ -1085,7 +1083,6 @@ async function loadFromSupabase() {
     card.innerHTML = `
       <div class="kcard-title">${escapeHtml(topic)}</div>
       <div class="kcard-meta">
-        ${isScripted ? '<span class="ktag" style="background:rgba(74,222,128,0.09);color:var(--green);">✓ Scripted</span>' : ''}
         <span class="kcard-platform">${date}</span>
       </div>`;
 
@@ -1103,6 +1100,7 @@ async function loadFromSupabase() {
   });
 
   updateCounts();
+  updateMoveButtons();
 }
 
 // On load: load from Supabase
@@ -1117,46 +1115,17 @@ async function loadFromSupabase() {
       meta.insertAdjacentHTML('beforeend', '<button class="discard-btn" title="Discard" onclick="discardCard(event,this)">Discard</button>');
     }
 
-    // If a saved script exists for this card → mark scripted
+    // If a saved script exists for this card → mark scripted (state only, no badge)
     const savedScript = localStorage.getItem(cardKey(card));
     if (savedScript && !card.classList.contains('scripted')) {
       card.classList.add('scripted');
-      // Remove script-btn if present
       const btn = card.querySelector('.script-btn');
       if (btn) btn.remove();
-      // Add scripted badge before Discard if missing
-      if (meta && !meta.querySelector('.ktag[data-scripted],.ktag')) {
-        const badge = document.createElement('span');
-        badge.className = 'ktag';
-        badge.setAttribute('data-scripted', '1');
-        badge.style.cssText = 'background:rgba(74,222,128,0.09);color:var(--green);';
-        badge.textContent = '✓ Scripted';
-        const discard = meta.querySelector('.discard-btn');
-        meta.insertBefore(badge, discard || null);
-      } else if (meta && !meta.querySelector('[data-scripted]')) {
-        const badge = document.createElement('span');
-        badge.className = 'ktag';
-        badge.setAttribute('data-scripted', '1');
-        badge.style.cssText = 'background:rgba(74,222,128,0.09);color:var(--green);';
-        badge.textContent = '✓ Scripted';
-        const discard = meta.querySelector('.discard-btn');
-        meta.insertBefore(badge, discard || null);
-      }
     }
 
     card.querySelectorAll('.script-btn').forEach(btn => {
       btn.setAttribute('onclick', 'event.stopPropagation();openFunnelModal(this)');
     });
-    // Add Edit Captions btn to scripted cards that don't have one
-    if (card.classList.contains('scripted') && meta && !meta.querySelector('.caption-btn')) {
-      const capBtn = document.createElement('button');
-      capBtn.className = 'caption-btn';
-      capBtn.textContent = '✦ Edit Captions';
-      const _card = card;
-      capBtn.onclick = (e) => { e.stopPropagation(); openCaptionDrawer(_card); };
-      const discard = meta.querySelector('.discard-btn');
-      meta.insertBefore(capBtn, discard || null);
-    }
     if (!card.onclick) {
       const _card = card;
       card.onclick = (e) => { if (!e.target.closest('.script-btn,.discard-btn,.caption-btn')) openSavedScript(_card); };
@@ -1164,6 +1133,7 @@ async function loadFromSupabase() {
   });
   updateCounts();
   serializeBoard();
+  updateMoveButtons();
 
   // Staggered card entrance
   document.querySelectorAll('.kcard').forEach((card, i) => {

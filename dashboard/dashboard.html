@@ -1138,7 +1138,8 @@ function openAgentDetail(card) {
 
   // Fetch real data from Supabase
   const agentKey = name.toLowerCase();
-  fetch(`${SUPA_URL_DASH}/rest/v1/agent_runs?agent=eq.${agentKey}&select=*&limit=1`, {
+  const _dashClientId = (document.cookie.match('(^|;) ?ctrl_client=([^;]*)(;|$)')||[])[2] || 'micko_cruz';
+  fetch(`${SUPA_URL_DASH}/rest/v1/agent_runs?client_id=eq.${_dashClientId}&agent=eq.${agentKey}&select=*&limit=1`, {
     headers: { 'apikey': SUPA_ANON_DASH, 'Authorization': 'Bearer ' + SUPA_ANON_DASH }
   })
   .then(r => r.ok ? r.json() : [])
@@ -1763,7 +1764,7 @@ loadContentBucket();
     const weekAgo = new Date(Date.now() - 7*24*60*60*1000).toISOString();
     const [items, runs] = await Promise.all([
       fetch(`${SUPA_URL}/rest/v1/agent_items?client_id=eq.${clientId}&agent=eq.quill&created_at=gte.${weekAgo}&select=id,status`, { headers: H }).then(r => r.ok ? r.json() : []),
-      fetch(`${SUPA_URL}/rest/v1/agent_runs?select=*&order=agent`, { headers: H }).then(r => r.ok ? r.json() : []),
+      fetch(`${SUPA_URL}/rest/v1/agent_runs?client_id=eq.${clientId}&select=*&order=agent`, { headers: H }).then(r => r.ok ? r.json() : []),
     ]);
 
     // Update script counts

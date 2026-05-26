@@ -614,6 +614,7 @@ function addReelToQueue(btn) {
 // ── SWIPE FILE — Supabase content_bucket ──
 const SB_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co';
 const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
+const CLIENT_ID = (document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)')||[])[2]?.replace(/-/g,'_') || 'micko_cruz';
 
 let _swipeAll = [];
 let _activeStage = '';
@@ -624,7 +625,7 @@ async function loadSwipeFile() {
   if (status) status.textContent = 'Loading…';
   try {
     const res = await fetch(
-      `${SB_URL}/rest/v1/content_bucket?select=id,reel_title,hook,hook_type,funnel_stage,competitor,views,likes,comments,steal_worthy,threat_level,emotional_trigger&order=views.desc&limit=60`,
+      `${SB_URL}/rest/v1/content_bucket?client_id=eq.${CLIENT_ID}&select=id,reel_title,hook,hook_type,funnel_stage,competitor,views,likes,comments,steal_worthy,threat_level,emotional_trigger&order=views.desc&limit=60`,
       { headers: { 'apikey': SB_ANON, 'Authorization': `Bearer ${SB_ANON}` } }
     );
     if (!res.ok) throw new Error(res.status);

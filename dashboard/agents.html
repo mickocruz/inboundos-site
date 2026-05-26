@@ -1573,7 +1573,8 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeAssig
   }
 
   try {
-    const res = await fetch(`${SUPA_URL}/rest/v1/agent_runs?select=*&order=agent`, {
+    const _agentClientId = (document.cookie.match('(^|;) ?ctrl_client=([^;]*)(;|$)')||[])[2] || 'micko_cruz';
+    const res = await fetch(`${SUPA_URL}/rest/v1/agent_runs?client_id=eq.${_agentClientId}&select=*&order=agent`, {
       headers: { 'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_KEY}` }
     });
     if (!res.ok) return;

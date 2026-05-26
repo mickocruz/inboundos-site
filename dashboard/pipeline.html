@@ -1022,11 +1022,12 @@ const SUPA_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIs
 
 // status → column id mapping
 const STATUS_COL = {
-  pending:  'scripting',
-  approved: 'scripting',
-  filmed:   'editing',
-  posted:   'published',
-  trashed:  null, // hidden
+  pending:   'scripting',
+  approved:  'scripting',
+  filmed:    'editing',
+  scheduled: 'scheduled',
+  posted:    'published',
+  trashed:   null,
 };
 
 async function supaFetch(table, params = '') {
@@ -1051,7 +1052,7 @@ async function supaUpdateStatus(id, status) {
 }
 
 // Map column id → Supabase status (reverse of STATUS_COL)
-const COL_STATUS = { ideas: 'pending', scripting: 'approved', editing: 'filmed', scheduled: 'filmed', published: 'posted' };
+const COL_STATUS = { ideas: 'pending', scripting: 'approved', editing: 'filmed', scheduled: 'scheduled', published: 'posted' };
 const NEXT_COL  = { scripting: 'editing', editing: 'scheduled', scheduled: 'published', published: null };
 const NEXT_LABEL = { scripting: 'Move to Editing', editing: 'Move to Scheduled', scheduled: 'Move to Published', published: 'Mark Published' };
 

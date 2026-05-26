@@ -56,6 +56,7 @@ button:disabled{opacity:0.4;cursor:not-allowed;}
 </div>
 <script>
 const SB_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co';
+const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
 const EDGE_URL = SB_URL + '/functions/v1/login';
 
 function getSession() {
@@ -98,7 +99,7 @@ async function login() {
   try {
     const res = await fetch(EDGE_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SB_ANON },
       body: JSON.stringify({ username: un, password: pw }),
     });
     const data = await res.json();

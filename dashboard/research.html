@@ -118,7 +118,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .swipe-filter:hover{border-color:rgba(79,195,247,0.3);color:var(--accent);}
 .swipe-filter.active{background:rgba(79,195,247,0.08);color:var(--accent);border-color:rgba(79,195,247,0.3);}
 .swipe-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;cursor:pointer;transition:border-color 0.2s,box-shadow 0.2s,transform 0.18s;}
-.swipe-card:hover{border-color:rgba(79,195,247,0.3);box-shadow:0 0 20px rgba(79,195,247,0.08);transform:translateY(-2px);}
+.swipe-card:hover{border-color:rgba(79,195,247,0.45);box-shadow:0 0 28px rgba(79,195,247,0.18),0 0 0 1px rgba(79,195,247,0.12);transform:translateY(-2px);}
 .swipe-thumb{position:relative;width:100%;aspect-ratio:9/16;background:rgba(255,255,255,0.03);overflow:hidden;flex-shrink:0;}
 .swipe-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
 .swipe-thumb-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(79,195,247,0.06),rgba(167,139,250,0.04));font-size:28px;}
@@ -233,12 +233,18 @@ html,body{font-family:'DM Sans',sans-serif!important;}
       <span id="swipeCount" style="font-size:9px;color:var(--text-dim);letter-spacing:0;text-transform:none;font-family:var(--font-data);font-weight:400;margin-left:4px;"></span>
       <span id="swipeStatus" style="font-size:10px;font-family:var(--font-data);color:var(--text-dim);margin-left:auto;letter-spacing:0;text-transform:none;font-weight:400;"></span>
     </div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px;" id="swipeFilters">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:4px;"><div style="display:flex;gap:8px;flex-wrap:wrap;" id="swipeFilters">
       <button class="swipe-filter active" data-stage="">All</button>
       <button class="swipe-filter" data-stage="TOFU">TOFU</button>
       <button class="swipe-filter" data-stage="MOFU">MOFU</button>
       <button class="swipe-filter" data-stage="BOFU">BOFU</button>
       <button class="swipe-filter" data-steal="true">⭐ Steal-Worthy</button>
+    </div>
+    <div style="display:flex;gap:6px;margin-left:auto;" id="swipeSortBtns">
+      <button class="swipe-filter active" data-sort="views">👁 Views</button>
+      <button class="swipe-filter" data-sort="likes">❤️ Likes</button>
+      <button class="swipe-filter" data-sort="comments">💬 Comments</button>
+    </div>
     </div>
     <div id="swipeGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;"></div>
 
@@ -643,6 +649,7 @@ const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsIn
 let _swipeAll = [];
 let _activeStage = '';
 let _activeSteal = false;
+let _activeSort = 'views';
 
 async function loadSwipeFile() {
   const status = document.getElementById('swipeStatus');
@@ -668,9 +675,10 @@ function renderSwipeFile() {
   const countEl = document.getElementById('swipeCount');
   if (!grid) return;
 
-  let rows = _swipeAll;
+  let rows = [..._swipeAll];
   if (_activeStage) rows = rows.filter(r => r.funnel_stage === _activeStage);
   if (_activeSteal) rows = rows.filter(r => r.steal_worthy);
+  rows.sort((a, b) => (b[_activeSort] || 0) - (a[_activeSort] || 0));
 
   if (countEl) countEl.textContent = `· ${rows.length} shown`;
 
@@ -711,14 +719,6 @@ function renderSwipeFile() {
     const grad = compGrad(comp);
     const hasLink = !!r.reel_url;
     return `<div class="swipe-card" onclick="openSwipeModal(${i})" data-idx="${i}">
-      <div class="swipe-thumb" style="background:${grad};position:relative;">
-        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;">
-          <div style="width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:13px;font-weight:900;color:${accent};">${escapeHtml(initials)}</div>
-          <svg width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="14" fill="rgba(255,255,255,0.08)"/><polygon points="11,9 21,14 11,19" fill="${accent}" opacity="0.9"/></svg>
-        </div>
-        ${comp ? `<div class="swipe-competitor-badge">${escapeHtml(comp)}</div>` : ''}
-        ${hasLink ? `<div style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.5);border-radius:4px;padding:2px 6px;font-size:8px;font-family:var(--font-data);color:rgba(255,255,255,0.6);">IG</div>` : ''}
-      </div>
       <div class="swipe-card-body">
         <div class="swipe-hook">${escapeHtml(displayText)}</div>
         <div class="swipe-meta">
@@ -740,9 +740,18 @@ document.getElementById('swipeFilters').addEventListener('click', function(e) {
     btn.classList.toggle('active', _activeSteal);
   } else {
     _activeStage = btn.dataset.stage;
-    document.querySelectorAll('.swipe-filter:not([data-steal])').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('#swipeFilters .swipe-filter:not([data-steal])').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
   }
+  renderSwipeFile();
+});
+
+document.getElementById('swipeSortBtns').addEventListener('click', function(e) {
+  const btn = e.target.closest('.swipe-filter');
+  if (!btn || !btn.dataset.sort) return;
+  _activeSort = btn.dataset.sort;
+  document.querySelectorAll('#swipeSortBtns .swipe-filter').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
   renderSwipeFile();
 });
 

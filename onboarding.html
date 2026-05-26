@@ -205,6 +205,14 @@ select option{background:#1a2332;}
           <div class="chip" data-val="5x">5x / Week</div>
           <div class="chip" data-val="custom">Custom</div>
         </div>
+        <div id="custom-freq-wrap" style="display:none;margin-top:10px;display:none;flex-direction:row;gap:8px;align-items:center;">
+          <input type="number" id="custom_freq_num" min="1" max="99" placeholder="e.g. 2" style="width:80px;flex-shrink:0;">
+          <select id="custom_freq_period">
+            <option value="day">per day</option>
+            <option value="week" selected>per week</option>
+            <option value="month">per month</option>
+          </select>
+        </div>
         <input type="hidden" id="post_frequency">
       </div>
       <div class="field">
@@ -302,9 +310,29 @@ document.querySelectorAll('.chips').forEach(group => {
       // simpler: find hidden input in same .field parent
       const hiddenInput = group.closest('.field').querySelector('input[type=hidden]');
       if (hiddenInput) hiddenInput.value = chip.dataset.val;
+
+      // Show/hide custom frequency input
+      if (group.id === 'freq-chips') {
+        const wrap = document.getElementById('custom-freq-wrap');
+        if (chip.dataset.val === 'custom') {
+          wrap.style.display = 'flex';
+          hiddenInput.value = '';
+        } else {
+          wrap.style.display = 'none';
+        }
+      }
     });
   });
 });
+
+// Update post_frequency hidden value when custom inputs change
+function updateCustomFreq() {
+  const num = document.getElementById('custom_freq_num').value.trim();
+  const period = document.getElementById('custom_freq_period').value;
+  if (num) document.getElementById('post_frequency').value = num + 'x/' + period;
+}
+document.getElementById('custom_freq_num').addEventListener('input', updateCustomFreq);
+document.getElementById('custom_freq_period').addEventListener('change', updateCustomFreq);
 
 function showStep(n) {
   document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));

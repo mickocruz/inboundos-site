@@ -702,7 +702,9 @@ function renderSwipeFile() {
     const stageClass = stage === 'TOFU' ? 'swipe-tag-tofu' : stage === 'MOFU' ? 'swipe-tag-mofu' : stage === 'BOFU' ? 'swipe-tag-bofu' : 'swipe-tag-neutral';
     const hookType = r.hook_type ? `<span class="swipe-tag swipe-tag-neutral">${escapeHtml(r.hook_type)}</span>` : '';
     const steal = r.steal_worthy ? `<span class="swipe-tag swipe-tag-steal">⭐ Steal</span>` : '';
-    const views = r.views ? fmtNum(r.views) + ' views' : '';
+    const sortVal = r[_activeSort];
+    const sortLabel = { views: 'views', likes: 'likes', comments: 'comments' }[_activeSort] || 'views';
+    const statText = sortVal ? fmtNum(sortVal) + ' ' + sortLabel : '';
     const displayText = r.hook || r.reel_title || '—';
     const comp = r.competitor || '';
     const initials = comp.replace('@','').slice(0,2).toUpperCase() || '▶';
@@ -715,7 +717,7 @@ function renderSwipeFile() {
         <div class="swipe-meta">
           ${stage ? `<span class="swipe-tag ${stageClass}">${stage}</span>` : ''}
           ${hookType}${steal}
-          <span class="swipe-views">${views}</span>
+          <span class="swipe-views">${statText}</span>
         </div>
       </div>
     </div>`;

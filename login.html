@@ -55,17 +55,15 @@ button:disabled{opacity:0.4;cursor:not-allowed;}
   </div>
 </div>
 <script>
-function setCookie(name, value, days) {
-  const d = new Date();
-  d.setTime(d.getTime() + days * 24 * 60 * 60 * 1000);
-  document.cookie = name + '=' + value + ';expires=' + d.toUTCString() + ';path=/;SameSite=Lax;Secure';
+function getSession() {
+  try { return JSON.parse(localStorage.getItem('sb_session') || 'null'); } catch { return null; }
 }
-function getCookie(name) {
-  const v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
-  return v ? v[2] : null;
-}
-if (getCookie('ctrl_auth') === 'ok' && getCookie('ctrl_slug')) {
-  window.location.href = '/' + getCookie('ctrl_slug') + '/dashboard';
+const _s = getSession();
+if (_s && _s.access_token && _s.client_slug) {
+  const exp = _s.expires_at ? _s.expires_at * 1000 : 0;
+  if (!exp || exp > Date.now()) {
+    window.location.href = '/' + _s.client_slug + '/dashboard';
+  }
 }
 document.getElementById('username').addEventListener('keydown', function(e) { if (e.key === 'Enter') document.getElementById('password').focus(); });
 document.getElementById('password').addEventListener('keydown', function(e) { if (e.key === 'Enter') login(); });
@@ -110,9 +108,13 @@ async function login() {
       return;
     }
 
-    setCookie('ctrl_auth', 'ok', 365);
-    setCookie('ctrl_client', data.client_id, 365);
-    setCookie('ctrl_slug', data.client_slug, 365);
+    localStorage.setItem('sb_session', JSON.stringify({
+      access_token: data.access_token,
+      refresh_token: data.refresh_token,
+      expires_at: data.expires_at,
+      client_id: data.client_id,
+      client_slug: data.client_slug,
+    }));
 
     const params = new URLSearchParams(window.location.search);
     const from = params.get('from');

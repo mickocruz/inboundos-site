@@ -1019,6 +1019,7 @@ function saveScript() {
 // ── SUPABASE CONFIG ───────────────────────────────────────────
 const SUPA_URL  = 'https://cscfbuhwlfhblxprkwnh.supabase.co';
 const SUPA_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
+const SUPA_SVC  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTQ2MzIyNSwiZXhwIjoyMDk1MDM5MjI1fQ.8ik968LXAthPkd6nkKOOOFlzTbR-94A22l5T_9T17GE';
 
 // status → column id mapping
 const STATUS_COL = {
@@ -1039,16 +1040,17 @@ async function supaFetch(table, params = '') {
 }
 
 async function supaUpdateStatus(id, status) {
-  await fetch(`${SUPA_URL}/rest/v1/agent_items?id=eq.${id}`, {
+  const res = await fetch(`${SUPA_URL}/rest/v1/agent_items?id=eq.${id}`, {
     method: 'PATCH',
     headers: {
-      'apikey': SUPA_KEY,
-      'Authorization': `Bearer ${SUPA_KEY}`,
+      'apikey': SUPA_SVC,
+      'Authorization': `Bearer ${SUPA_SVC}`,
       'Content-Type': 'application/json',
       'Prefer': 'return=minimal',
     },
     body: JSON.stringify({ status }),
   });
+  if (!res.ok) console.error('Failed to save card status:', res.status, id, status);
 }
 
 // Map column id → Supabase status (reverse of STATUS_COL)

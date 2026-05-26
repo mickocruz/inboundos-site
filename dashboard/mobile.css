@@ -30,36 +30,45 @@
     font-size:11px!important;font-weight:600!important;
   }
 
-  /* ── AGENTS PAGE — compact 2-col cards ── */
+  /* ── AGENTS PAGE — compact 3-col cards ── */
   .agents-row{
     display:grid!important;
-    grid-template-columns:1fr 1fr!important;
-    gap:10px!important;
+    grid-template-columns:1fr 1fr 1fr!important;
+    gap:8px!important;
     width:100%!important;
     overflow:visible!important;
   }
   .agent-exp{
-    padding:14px 12px!important;
+    padding:10px 8px!important;
     min-width:0!important;
     box-sizing:border-box!important;
+    align-items:center!important;
   }
-  /* Hide details — keep icon + status + name only */
+  /* Hide everything except icon + status + name */
   .agent-exp .agent-actions-list,
   .agent-exp .agent-prog-bar,
   .agent-exp .agent-prog-pct,
   .agent-exp .agent-role-lg,
-  .agent-exp .pulse-result-panel{
+  .agent-exp .pulse-result-panel,
+  .agent-exp .agent-last,
+  .agent-exp .agent-next,
+  .agent-exp .agent-schedule,
+  .agent-exp [class*="last"],
+  .agent-exp [class*="next"],
+  .agent-exp [class*="schedule"]{
     display:none!important;
   }
+  .agent-exp .agent-run-meta{display:none!important;}
+  .agent-exp .agent-top{margin-bottom:6px!important;}
   .agent-exp .agent-avatar-lg{
-    width:40px!important;height:40px!important;
-    font-size:14px!important;margin-bottom:8px!important;
+    width:32px!important;height:32px!important;
+    font-size:12px!important;margin-bottom:6px!important;
   }
   .agent-exp .agent-name-lg{
-    font-size:13px!important;margin-bottom:4px!important;
+    font-size:11px!important;margin-bottom:3px!important;letter-spacing:-0.3px!important;
   }
   .agent-exp .agent-status-badge{
-    font-size:8px!important;padding:2px 6px!important;margin-bottom:0!important;
+    font-size:7px!important;padding:1px 5px!important;margin-bottom:0!important;
   }
 
   /* Full-column layout */

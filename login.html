@@ -55,20 +55,24 @@ button:disabled{opacity:0.4;cursor:not-allowed;}
   </div>
 </div>
 <script>
-function setCookie(name, value, days) {
-  const d = new Date();
-  d.setTime(d.getTime() + days * 24 * 60 * 60 * 1000);
-  document.cookie = name + '=' + value + ';expires=' + d.toUTCString() + ';path=/';
+const SB_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co';
+const EDGE_URL = SB_URL + '/functions/v1/login';
+
+function getSession() {
+  try { return JSON.parse(localStorage.getItem('sb_session') || 'null'); } catch { return null; }
 }
-function getCookie(name) {
-  const v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
-  return v ? v[2] : null;
+
+const session = getSession();
+if (session && session.access_token && session.client_slug) {
+  const exp = session.expires_at ? session.expires_at * 1000 : 0;
+  if (!exp || exp > Date.now()) {
+    window.location.href = '/' + session.client_slug + '/dashboard';
+  }
 }
-if (getCookie('ctrl_auth') === 'ok' && getCookie('ctrl_slug')) {
-  window.location.href = '/' + getCookie('ctrl_slug') + '/dashboard';
-}
+
 document.getElementById('username').addEventListener('keydown', function(e) { if (e.key === 'Enter') document.getElementById('password').focus(); });
 document.getElementById('password').addEventListener('keydown', function(e) { if (e.key === 'Enter') login(); });
+
 function togglePw() {
   const inp = document.getElementById('password');
   const icon = document.getElementById('eye-icon');
@@ -80,7 +84,6 @@ function togglePw() {
     icon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>';
   }
 }
-const EDGE_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co/functions/v1/login';
 
 async function login() {
   const un = document.getElementById('username').value.trim().toLowerCase();
@@ -110,9 +113,13 @@ async function login() {
       return;
     }
 
-    setCookie('ctrl_auth', 'ok', 90);
-    setCookie('ctrl_client', data.client_id, 90);
-    setCookie('ctrl_slug', data.client_slug, 90);
+    localStorage.setItem('sb_session', JSON.stringify({
+      access_token: data.access_token,
+      refresh_token: data.refresh_token,
+      expires_at: data.expires_at,
+      client_id: data.client_id,
+      client_slug: data.client_slug,
+    }));
 
     const params = new URLSearchParams(window.location.search);
     const from = params.get('from');

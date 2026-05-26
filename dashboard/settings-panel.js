@@ -2,16 +2,29 @@
 (function () {
   const SB_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co';
   const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
-  const H = { 'apikey': SB_ANON, 'Authorization': `Bearer ${SB_ANON}`, 'Content-Type': 'application/json' };
 
-  const SB_SVC = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTQ2MzIyNSwiZXhwIjoyMDk1MDM5MjI1fQ.8ik968LXAthPkd6nkKOOOFlzTbR-94A22l5T_9T17GE';
+  function getToken() {
+    try {
+      const s = JSON.parse(localStorage.getItem('sb_session') || 'null');
+      return s ? s.access_token : null;
+    } catch { return null; }
+  }
+
+  function authHeaders() {
+    const token = getToken() || SB_ANON;
+    return { 'apikey': SB_ANON, 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' };
+  }
 
   async function uploadAvatar(file) {
+    const token = getToken();
+    if (!token) throw new Error('Not authenticated');
     const ext = file.name.split('.').pop();
-    const path = `avatar.${ext}`;
+    const session = JSON.parse(localStorage.getItem('sb_session') || '{}');
+    const userId = session.client_id || 'user';
+    const path = `${userId}/avatar.${ext}`;
     const res = await fetch(`${SB_URL}/storage/v1/object/avatars/${path}`, {
       method: 'POST',
-      headers: { 'apikey': SB_SVC, 'Authorization': `Bearer ${SB_SVC}`, 'x-upsert': 'true' },
+      headers: { 'apikey': SB_ANON, 'Authorization': `Bearer ${token}`, 'x-upsert': 'true' },
       body: file
     });
     if (!res.ok) {
@@ -46,7 +59,7 @@
 
   async function fetchProfile() {
     try {
-      const res = await fetch(`${SB_URL}/rest/v1/ctrl_users?select=id,username,full_name,role,avatar_url&limit=1`, { headers: H });
+      const res = await fetch(`${SB_URL}/rest/v1/ctrl_users?select=id,username,full_name,role,avatar_url&limit=1`, { headers: authHeaders() });
       if (!res.ok) throw new Error();
       const rows = await res.json();
       return rows[0] || null;
@@ -56,7 +69,7 @@
   async function saveProfile(id, data) {
     await fetch(`${SB_URL}/rest/v1/ctrl_users?id=eq.${id}`, {
       method: 'PATCH',
-      headers: { ...H, 'Prefer': 'return=minimal' },
+      headers: { ...authHeaders(), 'Prefer': 'return=minimal' },
       body: JSON.stringify(data)
     });
   }

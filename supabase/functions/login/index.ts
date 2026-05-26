@@ -27,28 +27,40 @@ Deno.serve(async (req) => {
     Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
   );
 
-  const { data, error } = await supabase
+  // Look up email from ctrl_users by username
+  const { data: user, error: lookupErr } = await supabase
     .from('ctrl_users')
-    .select('client_id, client_slug, password_hash')
+    .select('client_id, client_slug, email')
     .eq('username', username.toLowerCase().trim())
     .single();
 
-  if (error || !data) {
+  if (lookupErr || !user || !user.email) {
     return new Response(JSON.stringify({ error: 'Incorrect username' }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
   }
 
-  // Compare password using Postgres pgcrypto via rpc
-  const { data: match, error: hashErr } = await supabase.rpc('verify_password', {
-    input_password: password,
-    stored_hash: data.password_hash,
+  // Sign in via Supabase Auth
+  const anonClient = createClient(
+    Deno.env.get('SUPABASE_URL')!,
+    Deno.env.get('SUPABASE_ANON_KEY')!
+  );
+
+  const { data: session, error: authErr } = await anonClient.auth.signInWithPassword({
+    email: user.email,
+    password,
   });
 
-  if (hashErr || !match) {
+  if (authErr || !session?.session) {
     return new Response(JSON.stringify({ error: 'Incorrect password' }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
   }
 
   return new Response(
-    JSON.stringify({ client_id: data.client_id, client_slug: data.client_slug }),
+    JSON.stringify({
+      access_token: session.session.access_token,
+      refresh_token: session.session.refresh_token,
+      expires_at: session.session.expires_at,
+      client_id: user.client_id,
+      client_slug: user.client_slug,
+    }),
     { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
   );
 });

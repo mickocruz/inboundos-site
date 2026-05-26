@@ -142,6 +142,15 @@
   .pipe-stats{grid-template-columns:1fr 1fr!important;}
   .stats-row{grid-template-columns:1fr 1fr!important;}
 
+  /* ── PIPELINE STAT FILTER ── */
+  .pipe-stat[data-filter-col]{cursor:pointer;transition:border-color 0.15s,background 0.15s;}
+  .pipe-stat[data-filter-col]:active{opacity:0.8;}
+  .pipe-stat[data-filter-col].stat-active{
+    border-color:rgba(79,195,247,0.45)!important;
+    background:rgba(79,195,247,0.08)!important;
+    box-shadow:0 0 0 1px rgba(79,195,247,0.2);
+  }
+
   /* ── PIPELINE KANBAN MOBILE ── */
   .board{
     display:flex!important;flex-direction:column!important;gap:0!important;

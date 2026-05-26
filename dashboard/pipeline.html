@@ -230,10 +230,10 @@ html,body{font-family:'DM Sans',sans-serif!important;}
 
     <!-- STATS ROW -->
     <div class="pipe-stats">
-      <div class="pipe-stat"><div class="pipe-stat-val" style="color:var(--yellow);">3</div><div class="pipe-stat-lbl">Scripts to Film</div></div>
-      <div class="pipe-stat"><div class="pipe-stat-val" style="color:var(--purple);">2</div><div class="pipe-stat-lbl">Editing</div></div>
-      <div class="pipe-stat"><div class="pipe-stat-val" style="color:var(--accent);">4</div><div class="pipe-stat-lbl">Scheduled</div></div>
-      <div class="pipe-stat"><div class="pipe-stat-val" style="color:var(--green);">38</div><div class="pipe-stat-lbl">Published</div></div>
+      <div class="pipe-stat" data-filter-col="scripting"><div class="pipe-stat-val" style="color:var(--yellow);">3</div><div class="pipe-stat-lbl">Scripts to Film</div></div>
+      <div class="pipe-stat" data-filter-col="editing"><div class="pipe-stat-val" style="color:var(--purple);">2</div><div class="pipe-stat-lbl">Editing</div></div>
+      <div class="pipe-stat" data-filter-col="scheduled"><div class="pipe-stat-val" style="color:var(--accent);">4</div><div class="pipe-stat-lbl">Scheduled</div></div>
+      <div class="pipe-stat" data-filter-col="published"><div class="pipe-stat-val" style="color:var(--green);">38</div><div class="pipe-stat-lbl">Published</div></div>
     </div>
 
     <!-- KANBAN BOARD -->
@@ -1150,6 +1150,33 @@ document.addEventListener('keydown', (e) => {
     closeScriptModal();
   }
 });
+
+// ── MOBILE STAT FILTER ────────────────────────────────────────
+(function(){
+  var activeFilter = null;
+  var cols = {
+    scripting: document.querySelector('.col:nth-child(1)'),
+    editing:   document.querySelector('.col:nth-child(2)'),
+    scheduled: document.querySelector('.col:nth-child(3)'),
+    published: document.querySelector('.col:nth-child(4)')
+  };
+  document.querySelectorAll('.pipe-stat[data-filter-col]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      if(window.innerWidth > 768) return;
+      var col = btn.getAttribute('data-filter-col');
+      if(activeFilter === col){
+        activeFilter = null;
+        document.querySelectorAll('.pipe-stat[data-filter-col]').forEach(function(b){ b.classList.remove('stat-active'); });
+        Object.values(cols).forEach(function(c){ if(c) c.style.display=''; });
+      } else {
+        activeFilter = col;
+        document.querySelectorAll('.pipe-stat[data-filter-col]').forEach(function(b){ b.classList.remove('stat-active'); });
+        btn.classList.add('stat-active');
+        Object.entries(cols).forEach(function(e){ if(e[1]) e[1].style.display = e[0]===col ? '' : 'none'; });
+      }
+    });
+  });
+})();
 </script>
 <script>(function(){var sel=".card,.cs-card,.client-profile,.checklist-panel,.agent-card,.ops-card,.ov-card,.insight-card,.reel-card,.stat-card,.kcard,.sop-card,.swipe-card";function stagger(els){[].forEach.call(els,function(el,i){if(!el.classList.contains("s-visible")){setTimeout(function(){el.classList.add("s-visible");},60+i*70);}});}document.addEventListener("DOMContentLoaded",function(){stagger(document.querySelectorAll(sel));});var ob=new MutationObserver(function(ms){ms.forEach(function(m){m.addedNodes.forEach(function(n){if(n.nodeType===1){var found=n.matches&&n.matches(sel)?[n]:[];[].push.apply(found,n.querySelectorAll?n.querySelectorAll(sel):[]);stagger(found);}});});});ob.observe(document.body||document.documentElement,{childList:true,subtree:true});})();</script></body>
 </html>

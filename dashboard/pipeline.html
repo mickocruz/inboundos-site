@@ -880,7 +880,73 @@ function copyScriptModal() {
     document.getElementById('smt-script').value,
     document.getElementById('smt-caption').value,
   ].filter(Boolean);
-  navigator.clipboard.writeText(parts.join('\n\n')).catch(() => {});
+  const text = parts.join('\n\n');
+  if (!text.trim()) return;
+
+  function showCopyToast() {
+    let toast = document.getElementById('copy-toast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'copy-toast';
+      toast.style.cssText = [
+        'position:fixed','bottom:28px','left:50%','transform:translateX(-50%) translateY(20px)',
+        'background:rgba(74,222,128,0.15)','border:1px solid rgba(74,222,128,0.4)',
+        'color:#4ade80','font-family:DM Sans,sans-serif','font-size:13px','font-weight:600',
+        'padding:10px 22px','border-radius:30px','z-index:99999',
+        'pointer-events:none','opacity:0',
+        'transition:opacity 0.2s ease,transform 0.2s ease',
+        'backdrop-filter:blur(12px)','-webkit-backdrop-filter:blur(12px)',
+      ].join(';');
+      toast.textContent = '✓ Copied to clipboard';
+      document.body.appendChild(toast);
+    }
+    requestAnimationFrame(() => {
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateX(-50%) translateY(0)';
+    });
+    clearTimeout(toast._hide);
+    toast._hide = setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateX(-50%) translateY(20px)';
+    }, 2200);
+
+    // Flash button
+    const btn = document.querySelector('.script-modal-btn-copy');
+    if (btn) {
+      const orig = btn.textContent;
+      btn.textContent = '✓ Copied!';
+      btn.style.background = 'rgba(74,222,128,0.15)';
+      btn.style.borderColor = 'rgba(74,222,128,0.4)';
+      btn.style.color = '#4ade80';
+      setTimeout(() => {
+        btn.textContent = orig;
+        btn.style.background = '';
+        btn.style.borderColor = '';
+        btn.style.color = '';
+      }, 2200);
+    }
+  }
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(showCopyToast).catch(() => {
+      fallbackCopy(text);
+      showCopyToast();
+    });
+  } else {
+    fallbackCopy(text);
+    showCopyToast();
+  }
+}
+
+function fallbackCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;pointer-events:none;';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  try { document.execCommand('copy'); } catch(e) {}
+  document.body.removeChild(ta);
 }
 
 function resizeScriptTextareas() {

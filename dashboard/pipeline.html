@@ -734,7 +734,7 @@ function dataToCard(data) {
   const discardBtnHtml = `<button class="discard-btn" title="Discard" onclick="discardCard(event,this)">Discard</button>`;
 
   card.innerHTML = `<div class="kcard-title">${escapeHtml(data.title)}</div><div class="kcard-meta">${labelHtml}${scriptBtnHtml}${discardBtnHtml}</div>`;
-  card.onclick = (e) => { if (!e.target.closest('.script-btn,.discard-btn')) openSavedScript(card); };
+  card.onclick = (e) => { if (!e.target.closest('.script-btn,.discard-btn,.kcard-move-btn')) openSavedScript(card); };
   return card;
 }
 
@@ -1159,7 +1159,7 @@ function saveScript() {
   // Transform card into scripted state
   const _savedCard = drawerCard;
   drawerCard.classList.add('scripted');
-  drawerCard.onclick = (e) => { if (!e.target.closest('.discard-btn,.caption-btn')) openSavedScript(_savedCard); };
+  drawerCard.onclick = (e) => { if (!e.target.closest('.discard-btn,.caption-btn,.kcard-move-btn')) openSavedScript(_savedCard); };
 
   const meta = drawerCard.querySelector('.kcard-meta');
   const oldBtn = meta.querySelector('.script-btn');
@@ -1272,7 +1272,7 @@ async function loadFromSupabase() {
       localStorage.setItem(ns + '_caption', meta.caption || '');
     }
 
-    card.onclick = (e) => { if (!e.target.closest('.discard-btn,.caption-btn')) openSavedScript(card); };
+    card.onclick = (e) => { if (!e.target.closest('.discard-btn,.caption-btn,.kcard-move-btn')) openSavedScript(card); };
     col.appendChild(card);
   });
 
@@ -1305,7 +1305,7 @@ async function loadFromSupabase() {
     });
     if (!card.onclick) {
       const _card = card;
-      card.onclick = (e) => { if (!e.target.closest('.script-btn,.discard-btn,.caption-btn')) openSavedScript(_card); };
+      card.onclick = (e) => { if (!e.target.closest('.script-btn,.discard-btn,.caption-btn,.kcard-move-btn')) openSavedScript(_card); };
     }
   });
   updateCounts();

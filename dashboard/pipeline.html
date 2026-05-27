@@ -957,6 +957,14 @@ function saveScriptModal() {
   // Move card to next column
   const colId = _saved.closest('.col-body')?.dataset.col || 'scripting';
   const nextCol = NEXT_COL[colId];
+
+  // editing → scheduled: close script modal and open schedule modal
+  if (nextCol === 'scheduled') {
+    closeScriptModal();
+    openSchedModal(_saved, 'scheduled');
+    return;
+  }
+
   if (nextCol) {
     const col = document.getElementById('col-' + nextCol);
     if (col) col.prepend(_saved);
@@ -1226,7 +1234,7 @@ async function supaUpdateScheduledDate(id, scheduledAt) {
 // Map column id → Supabase status (reverse of STATUS_COL)
 const COL_STATUS = { ideas: 'pending', scripting: 'approved', editing: 'filmed', scheduled: 'scheduled', published: 'posted' };
 const NEXT_COL  = { scripting: 'editing', editing: 'scheduled', scheduled: 'published', published: null };
-const NEXT_LABEL = { scripting: 'Move to Editing', editing: 'Move to Scheduled', scheduled: 'Move to Published', published: 'Mark Published' };
+const NEXT_LABEL = { scripting: 'Move to Editing', editing: 'Schedule Post', scheduled: 'Move to Published', published: 'Mark Published' };
 
 async function loadFromSupabase() {
   const items = await supaFetch('agent_items', 'agent=eq.quill&order=created_at.desc&limit=100');

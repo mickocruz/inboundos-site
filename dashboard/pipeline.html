@@ -1247,27 +1247,35 @@ async function supaUpdateStatus(id, status) {
 }
 
 async function supaUpdateScheduledDate(id, scheduledAt) {
+  // fetch current metadata first so we can merge
+  const session = JSON.parse(localStorage.getItem('sb_session') || '{}');
+  const cur = await fetch(`${SUPA_URL}/rest/v1/agent_items?id=eq.${id}&select=metadata`, {
+    headers: { 'apikey': SUPA_SVC, 'Authorization': `Bearer ${session.access_token || SUPA_SVC}` }
+  });
+  const rows = cur.ok ? await cur.json() : [];
+  const existingMeta = (rows[0] && rows[0].metadata) || {};
+  const newMeta = { ...existingMeta, scheduled_date: scheduledAt };
   const res = await fetch(`${SUPA_URL}/rest/v1/agent_items?id=eq.${id}`, {
     method: 'PATCH',
-    headers: {
-      'apikey': SUPA_SVC,
-      'Authorization': `Bearer ${SUPA_SVC}`,
-      'Content-Type': 'application/json',
-      'Prefer': 'return=minimal',
-    },
-    body: JSON.stringify({ scheduled_date: scheduledAt }),
+    headers: { 'apikey': SUPA_SVC, 'Authorization': `Bearer ${SUPA_SVC}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+    body: JSON.stringify({ metadata: newMeta }),
   });
-  if (!res.ok) console.error('Failed to save scheduled_date:', res.status, id);
+  if (!res.ok) console.error('Failed to save scheduled_date in metadata:', res.status, id);
 }
 
 async function supaUpdateCaption(id, caption) {
   const session = JSON.parse(localStorage.getItem('sb_session') || '{}');
+  const cur = await fetch(`${SUPA_URL}/rest/v1/agent_items?id=eq.${id}&select=metadata`, {
+    headers: { 'apikey': SUPA_SVC, 'Authorization': `Bearer ${session.access_token || SUPA_SVC}` }
+  });
+  const rows = cur.ok ? await cur.json() : [];
+  const existingMeta = (rows[0] && rows[0].metadata) || {};
   const res = await fetch(`${SUPA_URL}/rest/v1/agent_items?id=eq.${id}`, {
     method: 'PATCH',
-    headers: { 'apikey': SUPA_ANON, 'Authorization': `Bearer ${session.access_token}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-    body: JSON.stringify({ caption }),
+    headers: { 'apikey': SUPA_SVC, 'Authorization': `Bearer ${SUPA_SVC}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+    body: JSON.stringify({ metadata: { ...existingMeta, caption } }),
   });
-  if (!res.ok) console.error('Failed to save caption:', res.status, id);
+  if (!res.ok) console.error('Failed to save caption in metadata:', res.status, id);
 }
 
 async function supaUpdateVideoUrl(id, videoUrl) {

@@ -175,6 +175,47 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 @keyframes ab2{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(-50px,-30px) scale(1.06);}}
 @keyframes ab3{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(40px,-50px) scale(0.94);}}
 @media(prefers-reduced-motion:reduce){.amb{animation:none!important;}.kcard{opacity:1!important;transform:none!important;transition:none!important;}}
+
+/* ── SCHEDULE MODAL ── */
+.sched-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.65);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:500;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.2s ease;}
+.sched-overlay.open{opacity:1;pointer-events:all;}
+.sched-box{background:#0d1820;border:1px solid rgba(79,195,247,0.2);border-radius:18px;padding:28px;width:340px;max-width:92vw;box-shadow:0 32px 80px rgba(0,0,0,0.7),0 0 40px rgba(79,195,247,0.06);transform:scale(0.9) translateY(12px);opacity:0;transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1),opacity 0.2s ease;}
+.sched-overlay.open .sched-box{transform:scale(1) translateY(0);opacity:1;}
+.sched-title{font-family:var(--font-head);font-size:17px;font-weight:900;letter-spacing:-0.5px;margin-bottom:4px;}
+.sched-title span{color:var(--accent);}
+.sched-sub{font-family:var(--font-data);font-size:11px;color:var(--text-muted);margin-bottom:22px;line-height:1.4;}
+.sched-card-name{font-family:var(--font-data);font-size:12px;color:var(--accent);margin-bottom:20px;padding:8px 12px;background:rgba(79,195,247,0.06);border:1px solid rgba(79,195,247,0.12);border-radius:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sched-field{margin-bottom:16px;}
+.sched-label{font-family:var(--font-head);font-size:9px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:7px;display:block;}
+.sched-input{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:9px;padding:10px 13px;font-family:var(--font-data);font-size:13px;color:var(--text);outline:none;transition:border-color 0.2s;-webkit-appearance:none;}
+.sched-input:focus{border-color:rgba(79,195,247,0.4);}
+.sched-input::-webkit-calendar-picker-indicator{filter:invert(0.7);}
+.sched-actions{display:flex;gap:10px;margin-top:22px;}
+.sched-btn{flex:1;padding:11px;border-radius:9px;font-family:var(--font-data);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.18s;letter-spacing:0.4px;border:1px solid transparent;}
+.sched-btn-cancel{background:transparent;border-color:rgba(255,255,255,0.08);color:var(--text-muted);}
+.sched-btn-cancel:hover{border-color:rgba(255,255,255,0.2);color:var(--text);}
+.sched-btn-confirm{background:rgba(79,195,247,0.1);border-color:rgba(79,195,247,0.3);color:var(--accent);}
+.sched-btn-confirm:hover{background:rgba(79,195,247,0.18);}
+
+/* ── CALENDAR VIEW ── */
+.view-toggle{display:flex;gap:6px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:3px;}
+.view-btn{padding:5px 14px;border-radius:5px;font-family:var(--font-data);font-size:11px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--text-muted);transition:all 0.15s;}
+.view-btn.active{background:rgba(79,195,247,0.12);color:var(--accent);}
+#calendar-view{display:none;flex:1;overflow-y:auto;min-height:0;}
+#calendar-view.active{display:block;}
+#board.hidden{display:none!important;}
+.cal-week{margin-bottom:20px;}
+.cal-week-label{font-family:var(--font-head);font-size:9px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;display:flex;align-items:center;gap:10px;}
+.cal-week-label::after{content:'';flex:1;height:1px;background:var(--border);}
+.cal-days{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;}
+.cal-day{min-height:80px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:8px;}
+.cal-day-label{font-family:var(--font-data);font-size:9px;color:var(--text-dim);margin-bottom:6px;font-weight:600;}
+.cal-day.today{border-color:rgba(79,195,247,0.25);background:rgba(79,195,247,0.04);}
+.cal-day.today .cal-day-label{color:var(--accent);}
+.cal-chip{background:rgba(79,195,247,0.1);border:1px solid rgba(79,195,247,0.2);border-radius:5px;padding:3px 6px;font-family:var(--font-data);font-size:9px;color:var(--accent);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;}
+.cal-chip:hover{background:rgba(79,195,247,0.18);}
+.cal-empty{color:var(--text-dim);font-family:var(--font-data);font-size:11px;text-align:center;padding:40px 20px;}
+@media(max-width:768px){.cal-days{grid-template-columns:repeat(3,1fr)!important;}.view-toggle{margin-left:auto;}}
 </style>
 <style>
 /* pipeline mobile handled by mobile.css */
@@ -223,7 +264,11 @@ html,body{font-family:'DM Sans',sans-serif!important;}
         <h1>Pipeline</h1>
         <div class="date">Content Board · 17 active items · Drag to move between stages</div>
       </div>
-      <div class="header-right">
+      <div class="header-right" style="display:flex;align-items:center;gap:10px;">
+        <div class="view-toggle">
+          <button class="view-btn active" id="btn-board-view" onclick="switchView('board')">Board</button>
+          <button class="view-btn" id="btn-cal-view" onclick="switchView('calendar')">Calendar</button>
+        </div>
         <div class="status-pill"><div class="status-dot"></div>Live Sync</div>
       </div>
     </div>
@@ -283,7 +328,31 @@ html,body{font-family:'DM Sans',sans-serif!important;}
       </div>
     </div>
 
+    <!-- CALENDAR VIEW -->
+    <div id="calendar-view"></div>
+
   </main>
+</div>
+
+<!-- SCHEDULE MODAL -->
+<div class="sched-overlay" id="sched-overlay">
+  <div class="sched-box">
+    <div class="sched-title">Schedule <span>Post</span></div>
+    <div class="sched-sub">Pick when this goes live</div>
+    <div class="sched-card-name" id="sched-card-name">—</div>
+    <div class="sched-field">
+      <label class="sched-label">Date</label>
+      <input class="sched-input" type="date" id="sched-date">
+    </div>
+    <div class="sched-field">
+      <label class="sched-label">Time</label>
+      <input class="sched-input" type="time" id="sched-time" value="09:00">
+    </div>
+    <div class="sched-actions">
+      <button class="sched-btn sched-btn-cancel" onclick="closeSchedModal(true)">Cancel</button>
+      <button class="sched-btn sched-btn-confirm" onclick="confirmSchedule()">Schedule →</button>
+    </div>
+  </div>
 </div>
 
 <!-- SCRIPT MODAL -->
@@ -313,7 +382,7 @@ html,body{font-family:'DM Sans',sans-serif!important;}
     </div>
     <div class="script-modal-footer">
       <button class="script-modal-btn script-modal-btn-save" onclick="saveScriptModal()">✓ Save &amp; Move to Editing</button>
-      <button class="script-modal-btn script-modal-btn-copy" onclick="copyScriptModal()">⎘ Copy All</button>
+      <button class="script-modal-btn script-modal-btn-copy" onclick="copyScriptModal()">⎘ Copy Script</button>
       <button class="script-modal-btn script-modal-btn-discard" onclick="closeScriptModal()">Discard</button>
     </div>
   </div>
@@ -483,6 +552,23 @@ function onDrop(e, colId) {
   dragCard.style.transition = 'none';
   dragCard.style.transform = 'scale(0.92) translateY(8px)';
   dragCard.style.opacity = '0.6';
+
+  if (colId === 'scheduled') {
+    // intercept — show schedule modal before committing
+    const pendingCard = dragCard;
+    dragCard = null;
+    col.appendChild(pendingCard);
+    requestAnimationFrame(() => {
+      pendingCard.style.transition = 'transform 0.45s cubic-bezier(0.34,1.56,0.64,1), opacity 0.25s ease';
+      pendingCard.style.transform = 'scale(1.03)';
+      pendingCard.style.opacity = '1';
+      setTimeout(() => { pendingCard.style.transform = ''; pendingCard.style.transition = ''; }, 450);
+    });
+    updateCounts();
+    openSchedModal(pendingCard, 'scheduled');
+    return;
+  }
+
   col.appendChild(dragCard);
 
   requestAnimationFrame(() => {
@@ -513,6 +599,13 @@ function moveCardToNext(e, btn) {
   const idx = COL_ORDER.indexOf(currentCol);
   if (idx === -1 || idx >= COL_ORDER.length - 1) return;
   const nextCol = COL_ORDER[idx + 1];
+
+  // intercept editing → scheduled
+  if (nextCol === 'scheduled') {
+    openSchedModal(card, 'scheduled');
+    return;
+  }
+
   const targetCol = document.getElementById('col-' + nextCol);
   if (!targetCol) return;
 
@@ -546,7 +639,7 @@ function updateMoveButtons() {
       if (btn) btn.remove();
       return;
     }
-    const nextLabel = { scripting:'Move to Editing', editing:'Move to Scheduled', scheduled:'Move to Published' }[colId] || 'Move →';
+    const nextLabel = { scripting:'Move to Editing', editing:'Schedule Post', scheduled:'Move to Published' }[colId] || 'Move →';
     if (!btn) {
       btn = document.createElement('button');
       btn.className = 'kcard-move-btn';
@@ -876,11 +969,8 @@ function saveScriptModal() {
 }
 
 function copyScriptModal() {
-  const parts = [
-    document.getElementById('smt-script').value,
-    document.getElementById('smt-caption').value,
-  ].filter(Boolean);
-  const text = parts.join('\n\n');
+  const text = (document.getElementById('smt-script').value || '').trim();
+  const parts = [text]; // script only
   if (!text.trim()) return;
 
   function showCopyToast() {
@@ -1119,6 +1209,20 @@ async function supaUpdateStatus(id, status) {
   if (!res.ok) console.error('Failed to save card status:', res.status, id, status);
 }
 
+async function supaUpdateScheduledDate(id, scheduledAt) {
+  const res = await fetch(`${SUPA_URL}/rest/v1/agent_items?id=eq.${id}`, {
+    method: 'PATCH',
+    headers: {
+      'apikey': SUPA_SVC,
+      'Authorization': `Bearer ${SUPA_SVC}`,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=minimal',
+    },
+    body: JSON.stringify({ scheduled_date: scheduledAt }),
+  });
+  if (!res.ok) console.error('Failed to save scheduled_date:', res.status, id);
+}
+
 // Map column id → Supabase status (reverse of STATUS_COL)
 const COL_STATUS = { ideas: 'pending', scripting: 'approved', editing: 'filmed', scheduled: 'scheduled', published: 'posted' };
 const NEXT_COL  = { scripting: 'editing', editing: 'scheduled', scheduled: 'published', published: null };
@@ -1148,11 +1252,15 @@ async function loadFromSupabase() {
     card.draggable = true;
     card.dataset.id = item.id;
     card.dataset.supaId = item.id;
+    if (item.scheduled_date) card.dataset.scheduledAt = item.scheduled_date;
     card.setAttribute('ondragstart', 'onDragStart(event,this)');
+    const schedDateStr = item.scheduled_date
+      ? new Date(item.scheduled_date).toLocaleDateString('en-US',{month:'short',day:'numeric'}) + ' · ' + new Date(item.scheduled_date).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})
+      : '';
     card.innerHTML = `
       <div class="kcard-title">${escapeHtml(topic)}</div>
       <div class="kcard-meta">
-        <span class="kcard-platform">${date}</span>
+        <span class="kcard-platform">${schedDateStr || date}</span>
       </div>`;
 
     // Store script fields separately in localStorage
@@ -1216,6 +1324,170 @@ document.addEventListener('keydown', (e) => {
     closeScriptModal();
   }
 });
+
+// ── SCHEDULE MODAL ────────────────────────────────────────────
+let _schedCard = null;
+let _schedTargetCol = null;
+
+function openSchedModal(card, targetCol) {
+  _schedCard = card;
+  _schedTargetCol = targetCol;
+  const title = card.querySelector('.kcard-title');
+  document.getElementById('sched-card-name').textContent = title ? title.textContent : 'Post';
+  // default date = tomorrow
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  document.getElementById('sched-date').value = tomorrow.toISOString().split('T')[0];
+  document.getElementById('sched-time').value = '09:00';
+  document.getElementById('sched-overlay').classList.add('open');
+}
+
+function closeSchedModal(revert) {
+  document.getElementById('sched-overlay').classList.remove('open');
+  if (revert && _schedCard) {
+    // put card back to editing if cancelled from drag
+    const editingCol = document.getElementById('col-editing');
+    if (_schedCard.closest('#col-scheduled') && editingCol) {
+      editingCol.prepend(_schedCard);
+      updateCounts();
+      updateMoveButtons();
+    }
+  }
+  _schedCard = null;
+  _schedTargetCol = null;
+}
+
+async function confirmSchedule() {
+  const dateVal = document.getElementById('sched-date').value;
+  const timeVal = document.getElementById('sched-time').value || '09:00';
+  if (!dateVal) { document.getElementById('sched-date').focus(); return; }
+
+  const scheduledAt = new Date(`${dateVal}T${timeVal}:00`).toISOString();
+  const card = _schedCard;
+  const supaId = card ? card.dataset.supaId : null;
+
+  document.getElementById('sched-overlay').classList.remove('open');
+
+  // move card to scheduled col if not already there
+  const targetColEl = document.getElementById('col-' + _schedTargetCol);
+  if (targetColEl && card && !targetColEl.contains(card)) {
+    targetColEl.prepend(card);
+  }
+
+  updateCounts();
+  serializeBoard();
+  updateMoveButtons();
+
+  // store on card for calendar
+  if (card) card.dataset.scheduledAt = scheduledAt;
+
+  if (supaId) {
+    await supaUpdateStatus(supaId, 'scheduled');
+    await supaUpdateScheduledDate(supaId, scheduledAt);
+  }
+
+  // show toast
+  let toast = document.getElementById('copy-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'copy-toast';
+    toast.style.cssText = 'position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(79,195,247,0.12);border:1px solid rgba(79,195,247,0.35);color:#4FC3F7;font-family:DM Sans,sans-serif;font-size:13px;font-weight:600;padding:10px 22px;border-radius:30px;z-index:99999;pointer-events:none;opacity:0;transition:opacity 0.2s ease,transform 0.2s ease;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);';
+    document.body.appendChild(toast);
+  }
+  const d = new Date(scheduledAt);
+  toast.textContent = `✓ Scheduled for ${d.toLocaleDateString('en-US',{month:'short',day:'numeric'})} at ${d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})}`;
+  requestAnimationFrame(() => { toast.style.opacity='1'; toast.style.transform='translateX(-50%) translateY(0)'; });
+  clearTimeout(toast._hide);
+  toast._hide = setTimeout(() => { toast.style.opacity='0'; toast.style.transform='translateX(-50%) translateY(20px)'; }, 3000);
+
+  _schedCard = null;
+  _schedTargetCol = null;
+
+  // refresh calendar if open
+  if (document.getElementById('calendar-view').classList.contains('active')) renderCalendar();
+}
+
+// ── VIEW TOGGLE ────────────────────────────────────────────────
+function switchView(view) {
+  const board = document.getElementById('board');
+  const cal = document.getElementById('calendar-view');
+  const btnBoard = document.getElementById('btn-board-view');
+  const btnCal = document.getElementById('btn-cal-view');
+  const statsRow = document.querySelector('.pipe-stats');
+  if (view === 'calendar') {
+    board.classList.add('hidden');
+    cal.classList.add('active');
+    btnBoard.classList.remove('active');
+    btnCal.classList.add('active');
+    if (statsRow) statsRow.style.display = 'none';
+    renderCalendar();
+  } else {
+    board.classList.remove('hidden');
+    cal.classList.remove('active');
+    btnBoard.classList.add('active');
+    btnCal.classList.remove('active');
+    if (statsRow) statsRow.style.display = '';
+  }
+}
+
+// ── CALENDAR RENDER ────────────────────────────────────────────
+function renderCalendar() {
+  const wrap = document.getElementById('calendar-view');
+
+  // collect scheduled cards
+  const cards = Array.from(document.querySelectorAll('#col-scheduled .kcard'));
+  const scheduled = cards.map(c => {
+    const sa = c.dataset.scheduledAt;
+    return sa ? { date: new Date(sa), title: (c.querySelector('.kcard-title') || {}).textContent || '—', card: c } : null;
+  }).filter(Boolean);
+
+  if (!scheduled.length) {
+    wrap.innerHTML = '<div class="cal-empty">No scheduled posts yet.<br>Move cards to Scheduled to see them here.</div>';
+    return;
+  }
+
+  // build 4-week grid starting from current Monday
+  const today = new Date(); today.setHours(0,0,0,0);
+  const dayOfWeek = today.getDay();
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+
+  const DAY_NAMES = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  let html = '';
+
+  for (let week = 0; week < 6; week++) {
+    const weekStart = new Date(monday);
+    weekStart.setDate(monday.getDate() + week * 7);
+    const weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekStart.getDate() + 6);
+
+    const hasItems = scheduled.some(s => s.date >= weekStart && s.date <= weekEnd);
+
+    // show up to 6 weeks but skip empty ones beyond week 2
+    if (week >= 2 && !hasItems) continue;
+
+    const weekLabel = `${weekStart.toLocaleDateString('en-US',{month:'short',day:'numeric'})} – ${weekEnd.toLocaleDateString('en-US',{month:'short',day:'numeric'})}`;
+    html += `<div class="cal-week"><div class="cal-week-label">${weekLabel}</div><div class="cal-days">`;
+
+    for (let d = 0; d < 7; d++) {
+      const day = new Date(weekStart);
+      day.setDate(weekStart.getDate() + d);
+      const isToday = day.toDateString() === today.toDateString();
+      const dayItems = scheduled.filter(s => s.date.toDateString() === day.toDateString());
+
+      html += `<div class="cal-day${isToday?' today':''}">`;
+      html += `<div class="cal-day-label">${DAY_NAMES[d]} ${day.getDate()}</div>`;
+      dayItems.forEach(item => {
+        const timeStr = item.date.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+        html += `<div class="cal-chip" title="${item.title}">${timeStr} · ${item.title.slice(0,28)}${item.title.length>28?'…':''}</div>`;
+      });
+      html += '</div>';
+    }
+    html += '</div></div>';
+  }
+
+  wrap.innerHTML = html || '<div class="cal-empty">No scheduled posts in the next 6 weeks.</div>';
+}
 
 // ── MOBILE STAT FILTER ────────────────────────────────────────
 (function(){

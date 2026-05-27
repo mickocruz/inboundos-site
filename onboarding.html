@@ -488,7 +488,7 @@
         <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </button>
-    <p class="hero-note">15 questions · Submits to your client profile</p>
+    <p class="hero-note">14 questions · Submits to your client profile</p>
   </div>
   <footer>
     <span class="footer-logo"><span>Inbound</span>OS</span>
@@ -587,144 +587,99 @@
         </div>
       </div>
 
-      <!-- Step 7: Brand Kit -->
-      <div class="step" id="step-7">
-        <div class="step-eyebrow">Your brand</div>
-        <div class="step-question">Do you have a brand<br>doc or brand kit?</div>
-        <p class="step-hint">Logos, color palettes, fonts, brand guidelines — anything that defines how your brand looks and sounds.</p>
-
-        <div class="options-list" style="margin-bottom: 24px;" id="brand-options">
-          <label class="opt">
-            <input type="radio" name="has-brand-kit" value="yes" />
-            <div class="opt-body">
-              <span class="opt-title">Yes — I have one</span>
-              <span class="opt-desc">I'll upload it below.</span>
-            </div>
-          </label>
-          <label class="opt">
-            <input type="radio" name="has-brand-kit" value="no" />
-            <div class="opt-body">
-              <span class="opt-title">No — not yet</span>
-              <span class="opt-desc">We'll work with what you have.</span>
-            </div>
-          </label>
-        </div>
-        <div class="field-error" id="brand-kit-error">Select one to continue.</div>
-
-        <div id="brand-upload-wrap" style="display:none; margin-top: 16px;">
-          <input type="file" id="brand-kit-file" accept=".pdf,.png,.jpg,.jpeg,.zip,.ai,.fig,.sketch" style="
-            width: 100%;
-            background: transparent;
-            border: 1px dashed rgba(79,195,247,0.4);
-            border-radius: 12px;
-            color: var(--gray);
-            font-family: var(--font-body);
-            font-size: 14px;
-            padding: 20px;
-            cursor: pointer;
-          " />
-          <p class="form-note" style="margin-top: 8px;">PDF, PNG, JPG, ZIP, AI, Figma, or Sketch. Max 20MB.</p>
-        </div>
-
-        <div class="btn-row">
-          <button type="button" class="btn-back" onclick="prevStep(7)">← Back</button>
-          <button type="button" class="btn-next" onclick="nextStep(7)">Next →</button>
-        </div>
-      </div>
-
       <!-- Step 8: Hooks -->
-      <div class="step" id="step-8">
+      <div class="step" id="step-7">
         <div class="step-eyebrow">Your hooks</div>
         <div class="step-question">What lines make<br>people stop scrolling?</div>
         <p class="step-hint">Openers, subject lines, DM starters that always get a reaction. Even if you haven't posted — what would make YOUR person stop?</p>
         <textarea id="hooks" placeholder="Lines that land for your audience..."></textarea>
         <div class="field-error" id="hooks-error">Required.</div>
         <div class="btn-row">
-          <button type="button" class="btn-back" onclick="prevStep(8)">← Back</button>
-          <button type="button" class="btn-next" onclick="nextStep(8)">Next →</button>
+          <button type="button" class="btn-back" onclick="prevStep(7)">← Back</button>
+          <button type="button" class="btn-next" onclick="nextStep(7)">Next →</button>
         </div>
       </div>
 
       <!-- Step 9: Content History -->
-      <div class="step" id="step-9">
+      <div class="step" id="step-8">
         <div class="step-eyebrow">Your content</div>
         <div class="step-question">What have you posted<br>before?</div>
         <p class="step-hint">What worked? What flopped? What did you hate making? Even "I've never posted" is useful — just be honest.</p>
         <textarea id="content-history" placeholder="What worked, what didn't, what you've tried..."></textarea>
         <div class="field-error" id="content-error">Required.</div>
         <div class="btn-row">
-          <button type="button" class="btn-back" onclick="prevStep(9)">← Back</button>
-          <button type="button" class="btn-next" onclick="nextStep(9)">Next →</button>
+          <button type="button" class="btn-back" onclick="prevStep(8)">← Back</button>
+          <button type="button" class="btn-next" onclick="nextStep(8)">Next →</button>
         </div>
       </div>
 
       <!-- Step 10: Competitors -->
-      <div class="step" id="step-10">
+      <div class="step" id="step-9">
         <div class="step-eyebrow">Your competitors</div>
         <div class="step-question">Who's winning in<br>your niche?</div>
         <p class="step-hint">2–3 IG accounts you admire, compete with, or study. What do they do that works? What do they get wrong?</p>
         <textarea id="competitors" placeholder="@handle — why they work / what they miss&#10;@handle — ..."></textarea>
         <div class="field-error" id="comp-error">Required.</div>
         <div class="btn-row">
-          <button type="button" class="btn-back" onclick="prevStep(10)">← Back</button>
-          <button type="button" class="btn-next" onclick="nextStep(10)">Next →</button>
+          <button type="button" class="btn-back" onclick="prevStep(9)">← Back</button>
+          <button type="button" class="btn-next" onclick="nextStep(9)">Next →</button>
         </div>
       </div>
 
       <!-- Step 11: Objections -->
-      <div class="step" id="step-11">
+      <div class="step" id="step-10">
         <div class="step-eyebrow">Their objections</div>
         <div class="step-question">Why do people<br>not buy from you?</div>
         <p class="step-hint">The #1 thing people say right before they don't pull the trigger. Price? Trust? Timing? What's the real hesitation?</p>
         <textarea id="objections" placeholder="The most common reason people hesitate or say no..."></textarea>
         <div class="field-error" id="obj-error">Required.</div>
         <div class="btn-row">
-          <button type="button" class="btn-back" onclick="prevStep(11)">← Back</button>
-          <button type="button" class="btn-next" onclick="nextStep(11)">Next →</button>
+          <button type="button" class="btn-back" onclick="prevStep(10)">← Back</button>
+          <button type="button" class="btn-next" onclick="nextStep(10)">Next →</button>
         </div>
       </div>
 
       <!-- Step 12: Process -->
-      <div class="step" id="step-12">
+      <div class="step" id="step-11">
         <div class="step-eyebrow">Your process</div>
         <div class="step-question">How do you actually<br>deliver results?</div>
         <p class="step-hint">Walk me through your delivery step by step. What happens after someone pays you? What do you do that others don't?</p>
         <textarea id="process" placeholder="Step 1: ...&#10;Step 2: ...&#10;Step 3: ..."></textarea>
         <div class="field-error" id="proc-error">Required.</div>
         <div class="btn-row">
-          <button type="button" class="btn-back" onclick="prevStep(12)">← Back</button>
-          <button type="button" class="btn-next" onclick="nextStep(12)">Next →</button>
+          <button type="button" class="btn-back" onclick="prevStep(11)">← Back</button>
+          <button type="button" class="btn-next" onclick="nextStep(11)">Next →</button>
         </div>
       </div>
 
       <!-- Step 13: Differentiator -->
-      <div class="step" id="step-13">
+      <div class="step" id="step-12">
         <div class="step-eyebrow">Your edge</div>
         <div class="step-question">Why you over<br>everyone else?</div>
         <p class="step-hint">Not "I care more" or "I'm results-focused." What is actually different about how you work, what you know, or what you've built?</p>
         <textarea id="differentiator" placeholder="What makes you different from others doing the same thing..."></textarea>
         <div class="field-error" id="diff-error">Required.</div>
         <div class="btn-row">
-          <button type="button" class="btn-back" onclick="prevStep(13)">← Back</button>
-          <button type="button" class="btn-next" onclick="nextStep(13)">Next →</button>
+          <button type="button" class="btn-back" onclick="prevStep(12)">← Back</button>
+          <button type="button" class="btn-next" onclick="nextStep(12)">Next →</button>
         </div>
       </div>
 
       <!-- Step 14: Off-limits -->
-      <div class="step" id="step-14">
+      <div class="step" id="step-13">
         <div class="step-eyebrow">Off-limits</div>
         <div class="step-question">What should we<br>never say or post?</div>
         <p class="step-hint">Topics, claims, angles, words, or formats that are off the table. Anything political, religious, sensitive, or just not your brand.</p>
         <textarea id="off-limits" placeholder="Never post about X, avoid Y tone, don't claim Z..."></textarea>
         <div class="field-error" id="limits-error">Required.</div>
         <div class="btn-row">
-          <button type="button" class="btn-back" onclick="prevStep(14)">← Back</button>
-          <button type="button" class="btn-next" onclick="nextStep(14)">Next →</button>
+          <button type="button" class="btn-back" onclick="prevStep(13)">← Back</button>
+          <button type="button" class="btn-next" onclick="nextStep(13)">Next →</button>
         </div>
       </div>
 
       <!-- Step 15: Setup -->
-      <div class="step" id="step-15">
+      <div class="step" id="step-14">
         <div class="step-eyebrow">Setup</div>
         <div class="step-question">Let's check your<br>tech stack.</div>
         <p class="step-hint">We'll walk through setup together — just need to know what you're starting with.</p>
@@ -795,7 +750,7 @@
         </div>
 
         <div class="btn-row">
-          <button type="button" class="btn-back" onclick="prevStep(15)">← Back</button>
+          <button type="button" class="btn-back" onclick="prevStep(14)">← Back</button>
           <button type="button" class="btn-submit" onclick="submitForm()">Submit →</button>
         </div>
         <p class="form-note">Micko reviews every submission before installation begins.</p>
@@ -827,7 +782,7 @@
 
 <script>
   let currentStep = 1;
-  const TOTAL = 15;
+  const TOTAL = 14;
 
   function startForm() {
     show('screen-form');
@@ -870,20 +825,14 @@
       4: ['origin', 'origin-error'],
       5: ['stories', 'stories-error'],
       6: ['voice', 'voice-error'],
-      8: ['hooks', 'hooks-error'],
-      9: ['content-history', 'content-error'],
-      10: ['competitors', 'comp-error'],
-      11: ['objections', 'obj-error'],
-      12: ['process', 'proc-error'],
-      13: ['differentiator', 'diff-error'],
-      14: ['off-limits', 'limits-error'],
+      7: ['hooks', 'hooks-error'],
+      8: ['content-history', 'content-error'],
+      9: ['competitors', 'comp-error'],
+      10: ['objections', 'obj-error'],
+      11: ['process', 'proc-error'],
+      12: ['differentiator', 'diff-error'],
+      13: ['off-limits', 'limits-error'],
     };
-
-    if (step === 7) {
-      const val = checked('has-brand-kit');
-      err('brand-kit-error', !val);
-      return !!val;
-    }
 
     if (textChecks[step]) {
       const [fieldId, errId] = textChecks[step];
@@ -969,12 +918,6 @@
     document.getElementById(id)?.classList.toggle('show', show);
   }
 
-  document.addEventListener('change', e => {
-    if (e.target.name === 'has-brand-kit') {
-      document.getElementById('brand-upload-wrap').style.display =
-        e.target.value === 'yes' ? 'block' : 'none';
-    }
-  });
 </script>
 </body>
 </html>

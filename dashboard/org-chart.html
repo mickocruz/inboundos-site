@@ -125,83 +125,16 @@ html,body{font-family:'DM Sans',sans-serif!important;}
   <main class="main">
     <div>
       <div class="header-title">Org Chart</div>
-      <div style="font-family:var(--font-data);font-size:11px;color:var(--text-muted);margin-top:5px;">InboundOS team structure — 1 founder, 7 AI agents</div>
+      <div style="font-family:var(--font-data);font-size:11px;color:var(--text-muted);margin-top:5px;">Team structure</div>
     </div>
-
-    <div class="section-label">Team Structure</div>
-    <div class="org-wrap" id="orgWrap">
-      <div style="font-family:var(--font-data);font-size:12px;color:var(--text-muted);padding:40px;text-align:center;">Loading…</div>
+    <div style="flex:1;display:flex;align-items:center;justify-content:center;">
+      <div style="text-align:center;font-family:var(--font-data);color:var(--text-muted);">
+        <div style="font-size:32px;margin-bottom:14px;opacity:0.3;">⬡</div>
+        <div style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.35);">Coming soon</div>
+      </div>
     </div>
-    <div class="section-label">Agent Map</div>
-    <div id="agentMap" style="background:rgba(255,255,255,0.028);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:20px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.07),0 4px 20px rgba(0,0,0,0.28);display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;"></div>
   </main>
 </div>
-<script>
-const SB_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co';
-const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
-const SB_HEADERS = { 'apikey': SB_ANON, 'Authorization': `Bearer ${SB_ANON}` };
-
-function hexToRgb(hex) {
-  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
-  return `${r},${g},${b}`;
-}
-function escH(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-async function loadOrgChart() {
-  try {
-    const res = await fetch(`${SB_URL}/rest/v1/agent_roster?select=*&active=eq.true&order=sort_order.asc`, { headers: SB_HEADERS });
-    if (!res.ok) throw new Error(res.status);
-    const rows = await res.json();
-    const founder = rows.find(r => r.type === 'founder');
-    const agents = rows.filter(r => r.type === 'agent');
-    renderOrgChart(founder, agents);
-    renderAgentMap(agents);
-  } catch(e) {
-    document.getElementById('orgWrap').innerHTML = `<div style="font-family:var(--font-data);font-size:12px;color:var(--text-muted);padding:40px;text-align:center;">Run schema SQL first — table not found</div>`;
-  }
-}
-
-function renderOrgChart(founder, agents) {
-  const wrap = document.getElementById('orgWrap');
-  const founderHtml = founder ? `
-    <div class="founder-node">
-      <div class="founder-name">${escH(founder.name)}</div>
-      <div class="founder-role">${escH(founder.role)}</div>
-      ${founder.description ? `<div class="founder-tag">${escH(founder.description)}</div>` : ''}
-    </div>
-    <div class="connector-row"></div>` : '';
-
-  const agentCols = agents.map(a => {
-    const rgb = hexToRgb(a.color || '#ffffff');
-    return `<div class="agent-col">
-      <div class="agent-col-connector"></div>
-      <div class="agent-node" style="border:1px solid rgba(${rgb},0.25);">
-        <div class="agent-color-bar" style="background:${escH(a.color)};"></div>
-        <div class="agent-node-name" style="color:${escH(a.color)};">${escH(a.name)}</div>
-        <div class="agent-node-role">${escH(a.role)}</div>
-      </div>
-    </div>`;
-  }).join('');
-
-  wrap.innerHTML = founderHtml + `<div class="tree-row">${agentCols}</div>`;
-}
-
-function renderAgentMap(agents) {
-  const map = document.getElementById('agentMap');
-  map.innerHTML = agents.map(a => {
-    const rgb = hexToRgb(a.color || '#ffffff');
-    return `<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(${rgb},0.04);border-radius:8px;border:1px solid rgba(${rgb},0.1);">
-      <div style="width:8px;height:8px;border-radius:50%;background:${escH(a.color)};flex-shrink:0;"></div>
-      <div>
-        <div style="font-family:var(--font-head);font-size:11px;font-weight:900;letter-spacing:1px;color:${escH(a.color)};">${escH(a.name)}</div>
-        <div style="font-family:var(--font-data);font-size:10px;color:var(--text-muted);">${escH(a.description||a.role)}</div>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-loadOrgChart();
-</script>
 <script>
 (function() {
   fetch('http://localhost:3001/agent/chat', {

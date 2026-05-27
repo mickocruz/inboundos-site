@@ -623,12 +623,13 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
       <div class="card agent-exp" style="border-top:2px solid #e879f9;">
         <div class="agent-top">
           <div class="agent-avatar-lg" style="background:rgba(232,121,249,0.1);color:#e879f9;"><!-- Forge: wrench --><svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
-          <span class="agent-status-badge st-idle">Idle</span>
+          <span class="agent-status-badge st-idle" id="forge-status-badge">Idle</span>
         </div>
         <div class="agent-name-lg">Forge</div>
-        <div class="agent-role-lg">System Builder · On Demand</div>
+        <div class="agent-role-lg">Client Onboarding · On Demand</div>
         <div class="agent-prog-bar"><div class="agent-prog-fill" data-target="0" style="background:#e879f9;"></div></div>
         <div class="agent-prog-pct" style="color:#e879f9;">0%</div>
+        <button class="agent-dispatch" style="background:rgba(232,121,249,0.1);border-color:rgba(232,121,249,0.3);color:#e879f9;margin-top:10px;" onclick="openForgeModal()">Run Forge</button>
       </div>
 
     </div>
@@ -682,6 +683,34 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
   </aside>
 </div>
 
+
+<!-- FORGE MODAL -->
+<div class="modal-overlay" id="forgeModal" onclick="if(event.target===this)closeForgeModal()">
+  <div class="modal-box" style="width:520px;">
+    <div class="modal-head">
+      <div class="modal-title">Run <span style="color:#e879f9;">Forge</span></div>
+      <button class="modal-close" onclick="closeForgeModal()">✕</button>
+    </div>
+
+    <div class="modal-label">Client</div>
+    <select id="forge-client-select" style="width:100%;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:10px 12px;font-family:var(--font-body);font-size:12px;color:var(--text);outline:none;margin-bottom:16px;cursor:pointer;transition:border-color 0.2s;" onfocus="this.style.borderColor='rgba(232,121,249,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.07)'">
+      <option value="" disabled selected style="background:#0D1117;">Loading clients…</option>
+    </select>
+
+    <div class="modal-label">Call Transcript</div>
+    <textarea id="forge-transcript" class="modal-textarea" style="height:110px;margin-bottom:16px;border-radius:8px;" placeholder="Paste the full onboarding call transcript here…"></textarea>
+
+    <div class="modal-label">Brand Docs</div>
+    <textarea id="forge-brand-docs" class="modal-textarea" style="height:90px;margin-bottom:20px;border-radius:8px;" placeholder="Paste brand guidelines, colors, fonts, tone notes — anything they sent…"></textarea>
+
+    <div id="forge-status-msg" style="font-size:11px;color:rgba(232,121,249,0.8);margin-bottom:12px;display:none;"></div>
+
+    <div class="modal-footer">
+      <button class="modal-cancel" onclick="closeForgeModal()">Cancel</button>
+      <button id="forge-run-btn" onclick="runForge()" style="background:rgba(232,121,249,0.9);border:none;border-radius:7px;padding:7px 20px;font-family:var(--font-data);font-size:10px;font-weight:700;color:#0D1117;cursor:pointer;transition:all 0.18s;letter-spacing:0.3px;">Run Forge →</button>
+    </div>
+  </div>
+</div>
 
 <div class="modal-overlay" id="taskDetailModal" onclick="if(event.target===this)closeTaskDetail()">
   <div class="modal-box">
@@ -1472,7 +1501,88 @@ window.addEventListener('load', () => {
   }, 30000);
 });
 
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeAssignModal(); closeTaskDetail(); } });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeAssignModal(); closeTaskDetail(); closeForgeModal(); } });
+
+// ── FORGE MODAL ──
+const SUPABASE_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
+const FORGE_WEBHOOK = 'YOUR_N8N_WEBHOOK_URL_HERE';
+
+async function openForgeModal() {
+  document.getElementById('forgeModal').classList.add('open');
+  const select = document.getElementById('forge-client-select');
+  select.innerHTML = '<option value="" disabled selected style="background:#0D1117;">Loading clients…</option>';
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/onboarding?select=email,offer&order=created_at.desc`, {
+      headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` }
+    });
+    const clients = await res.json();
+    if (!clients.length) {
+      select.innerHTML = '<option value="" disabled selected style="background:#0D1117;">No clients found</option>';
+      return;
+    }
+    select.innerHTML = '<option value="" disabled selected style="background:#0D1117;">Select a client…</option>';
+    clients.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c.email;
+      opt.textContent = c.email;
+      opt.style.background = '#0D1117';
+      select.appendChild(opt);
+    });
+  } catch(e) {
+    select.innerHTML = '<option value="" disabled selected style="background:#0D1117;">Error loading clients</option>';
+  }
+}
+
+function closeForgeModal() {
+  document.getElementById('forgeModal').classList.remove('open');
+  document.getElementById('forge-status-msg').style.display = 'none';
+  document.getElementById('forge-status-msg').textContent = '';
+  document.getElementById('forge-run-btn').disabled = false;
+  document.getElementById('forge-run-btn').textContent = 'Run Forge →';
+}
+
+async function runForge() {
+  const email = document.getElementById('forge-client-select').value;
+  const transcript = document.getElementById('forge-transcript').value.trim();
+  const brandDocs = document.getElementById('forge-brand-docs').value.trim();
+  const statusMsg = document.getElementById('forge-status-msg');
+  const btn = document.getElementById('forge-run-btn');
+
+  if (!email) { statusMsg.textContent = 'Select a client first.'; statusMsg.style.display = 'block'; return; }
+  if (!transcript) { statusMsg.textContent = 'Paste the call transcript.'; statusMsg.style.display = 'block'; return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Running…';
+  statusMsg.textContent = 'Fetching client profile from Supabase…';
+  statusMsg.style.display = 'block';
+
+  try {
+    // Pull full onboarding data from Supabase
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/onboarding?email=eq.${encodeURIComponent(email)}&limit=1`, {
+      headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` }
+    });
+    const rows = await res.json();
+    if (!rows.length) { statusMsg.textContent = 'No onboarding data found for this client.'; btn.disabled = false; btn.textContent = 'Run Forge →'; return; }
+
+    statusMsg.textContent = 'Firing Forge…';
+
+    await fetch(FORGE_WEBHOOK, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ onboarding: rows[0], transcript, brand_docs: brandDocs })
+    });
+
+    statusMsg.textContent = '✓ Forge is running. Check output in n8n.';
+    document.getElementById('forge-status-badge').textContent = 'Running';
+    document.getElementById('forge-status-badge').className = 'agent-status-badge st-active';
+    btn.textContent = 'Sent ✓';
+  } catch(e) {
+    statusMsg.textContent = 'Error: could not reach webhook. Check n8n is running.';
+    btn.disabled = false;
+    btn.textContent = 'Run Forge →';
+  }
+}
 </script>
 <script>
 // ── SUPABASE AGENT STATUS ─────────────────────────────────────

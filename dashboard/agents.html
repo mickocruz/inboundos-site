@@ -816,7 +816,7 @@ function buildKanbanCard(record, col) {
   }
   div.innerHTML = `
     <div class="kanban-card-top">
-      <div class="kanban-card-icon" style="background:${BG_MAP[record.agent]||'rgba(79,195,247,0.1)'};">${ICONS[record.agent]||\'🤖\'}</div>
+      <div class="kanban-card-icon" style="background:${BG_MAP[record.agent]||'rgba(79,195,247,0.1)'};">${ICONS[record.agent]||'🤖'}</div>
       <span class="kanban-card-agent">${escapeText(record.agent)}</span>
     </div>
     <div class="kanban-card-task">${escapeText(record.task)}</div>

@@ -197,6 +197,18 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .sched-btn-cancel:hover{border-color:rgba(255,255,255,0.2);color:var(--text);}
 .sched-btn-confirm{background:rgba(79,195,247,0.1);border-color:rgba(79,195,247,0.3);color:var(--accent);}
 .sched-btn-confirm:hover{background:rgba(79,195,247,0.18);}
+.sched-box{max-height:92vh;display:flex;flex-direction:column;}
+.sched-scroll{flex:1;overflow-y:auto;scrollbar-width:none;padding-right:2px;}
+.sched-caption-ta{resize:none;min-height:90px;line-height:1.6;font-size:12px;}
+.sched-drive-zone{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.03);border:1.5px dashed rgba(79,195,247,0.25);border-radius:10px;padding:11px 13px;cursor:text;transition:border-color 0.2s,background 0.2s;}
+.sched-drive-zone:focus-within{border-color:rgba(79,195,247,0.55);background:rgba(79,195,247,0.04);border-style:solid;}
+.sched-drive-zone.has-url{border-color:rgba(74,222,128,0.4);border-style:solid;background:rgba(74,222,128,0.04);}
+.sched-drive-input{flex:1;background:transparent;border:none;outline:none;font-family:var(--font-data);font-size:11.5px;color:var(--text);min-width:0;}
+.sched-drive-input::placeholder{color:var(--text-dim);}
+.sched-drive-clear{font-size:11px;color:var(--text-dim);cursor:pointer;padding:2px 4px;border-radius:4px;flex-shrink:0;}
+.sched-drive-clear:hover{color:var(--red);}
+.sched-drive-hint{font-family:var(--font-data);font-size:10px;color:var(--text-dim);margin-top:6px;padding-left:2px;}
+.sched-drive-ok{font-family:var(--font-data);font-size:10px;color:var(--green);margin-top:6px;padding-left:2px;}
 
 /* ── CALENDAR VIEW ── */
 .view-toggle{display:flex;gap:6px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:3px;}
@@ -341,13 +353,29 @@ html,body{font-family:'DM Sans',sans-serif!important;}
     <div class="sched-title">Schedule <span>Post</span></div>
     <div class="sched-sub">Pick when this goes live</div>
     <div class="sched-card-name" id="sched-card-name">—</div>
-    <div class="sched-field">
-      <label class="sched-label">Date</label>
-      <input class="sched-input" type="date" id="sched-date">
-    </div>
-    <div class="sched-field">
-      <label class="sched-label">Time</label>
-      <input class="sched-input" type="time" id="sched-time" value="09:00">
+    <div class="sched-scroll">
+      <div class="sched-field">
+        <label class="sched-label">Caption</label>
+        <textarea class="sched-input sched-caption-ta" id="sched-caption" placeholder="Instagram caption…" rows="4"></textarea>
+      </div>
+      <div class="sched-field">
+        <label class="sched-label">📎 Google Drive Video Link</label>
+        <div class="sched-drive-zone" id="sched-drive-zone" onclick="document.getElementById('sched-video-url').focus()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;opacity:0.45"><path d="M8.5 2h7L21 9.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" stroke="currentColor" stroke-width="1.5"/><path d="M14 2v8h8" stroke="currentColor" stroke-width="1.5"/></svg>
+          <input class="sched-drive-input" type="url" id="sched-video-url" placeholder="Paste Google Drive link here…" oninput="onDriveInput(this)">
+          <span class="sched-drive-clear" id="sched-drive-clear" onclick="clearDriveUrl()" style="display:none">✕</span>
+        </div>
+        <div class="sched-drive-hint" id="sched-drive-hint">Set file to "Anyone with link can view"</div>
+        <div class="sched-drive-ok" id="sched-drive-ok" style="display:none">✓ Drive link detected</div>
+      </div>
+      <div class="sched-field">
+        <label class="sched-label">Date</label>
+        <input class="sched-input" type="date" id="sched-date">
+      </div>
+      <div class="sched-field">
+        <label class="sched-label">Time</label>
+        <input class="sched-input" type="time" id="sched-time" value="09:00">
+      </div>
     </div>
     <div class="sched-actions">
       <button class="sched-btn sched-btn-cancel" onclick="closeSchedModal(true)">Cancel</button>
@@ -1232,6 +1260,54 @@ async function supaUpdateScheduledDate(id, scheduledAt) {
   if (!res.ok) console.error('Failed to save scheduled_date:', res.status, id);
 }
 
+async function supaUpdateCaption(id, caption) {
+  const session = JSON.parse(localStorage.getItem('sb_session') || '{}');
+  const res = await fetch(`${SUPA_URL}/rest/v1/agent_items?id=eq.${id}`, {
+    method: 'PATCH',
+    headers: { 'apikey': SUPA_ANON, 'Authorization': `Bearer ${session.access_token}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+    body: JSON.stringify({ caption }),
+  });
+  if (!res.ok) console.error('Failed to save caption:', res.status, id);
+}
+
+async function supaUpdateVideoUrl(id, videoUrl) {
+  const session = JSON.parse(localStorage.getItem('sb_session') || '{}');
+  const res = await fetch(`${SUPA_URL}/rest/v1/agent_items?id=eq.${id}`, {
+    method: 'PATCH',
+    headers: { 'apikey': SUPA_ANON, 'Authorization': `Bearer ${session.access_token}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+    body: JSON.stringify({ video_url: videoUrl }),
+  });
+  if (!res.ok) console.error('Failed to save video_url to agent_items:', res.status, id);
+}
+
+function onDriveInput(el) {
+  const zone = document.getElementById('sched-drive-zone');
+  const hint = document.getElementById('sched-drive-hint');
+  const ok   = document.getElementById('sched-drive-ok');
+  const clr  = document.getElementById('sched-drive-clear');
+  const isDrive = el.value.includes('drive.google.com');
+  zone.classList.toggle('has-url', !!el.value);
+  clr.style.display = el.value ? '' : 'none';
+  hint.style.display = isDrive || !el.value ? '' : '';
+  ok.style.display   = isDrive ? '' : 'none';
+  hint.style.display = isDrive ? 'none' : '';
+}
+
+function clearDriveUrl() {
+  const el = document.getElementById('sched-video-url');
+  el.value = '';
+  onDriveInput(el);
+  el.focus();
+}
+
+function driveToDirectUrl(url) {
+  if (!url) return '';
+  // https://drive.google.com/file/d/FILE_ID/view → direct download
+  const m = url.match(/\/file\/d\/([^/]+)/);
+  if (m) return `https://drive.google.com/uc?export=download&id=${m[1]}`;
+  return url; // pass through if not a Drive link
+}
+
 // Map column id → Supabase status (reverse of STATUS_COL)
 const COL_STATUS = { ideas: 'pending', scripting: 'approved', editing: 'filmed', scheduled: 'scheduled', published: 'posted' };
 const NEXT_COL  = { scripting: 'editing', editing: 'scheduled', scheduled: 'published', published: null };
@@ -1348,6 +1424,14 @@ function openSchedModal(card, targetCol) {
   tomorrow.setDate(tomorrow.getDate() + 1);
   document.getElementById('sched-date').value = tomorrow.toISOString().split('T')[0];
   document.getElementById('sched-time').value = '09:00';
+  const existingUrl = card.dataset.videoUrl || '';
+  const urlEl = document.getElementById('sched-video-url');
+  urlEl.value = existingUrl;
+  onDriveInput(urlEl);
+  // pre-fill caption from saved localStorage
+  const ns = 'ctrl_script_' + (card.dataset.supaId || card.querySelector('.kcard-title')?.textContent?.trim());
+  const savedCaption = localStorage.getItem(ns + '_caption') || card.dataset.caption || '';
+  document.getElementById('sched-caption').value = savedCaption;
   document.getElementById('sched-overlay').classList.add('open');
 }
 
@@ -1372,8 +1456,16 @@ async function confirmSchedule() {
   if (!dateVal) { document.getElementById('sched-date').focus(); return; }
 
   const scheduledAt = new Date(`${dateVal}T${timeVal}:00`).toISOString();
+  const rawVideoUrl = document.getElementById('sched-video-url').value.trim();
+  const videoUrl = driveToDirectUrl(rawVideoUrl);
+  const captionVal = document.getElementById('sched-caption').value.trim();
   const card = _schedCard;
   const supaId = card ? card.dataset.supaId : null;
+  // save updated caption back to localStorage
+  if (captionVal && card) {
+    const ns = 'ctrl_script_' + (supaId || card.querySelector('.kcard-title')?.textContent?.trim());
+    localStorage.setItem(ns + '_caption', captionVal);
+  }
 
   document.getElementById('sched-overlay').classList.remove('open');
 
@@ -1388,11 +1480,16 @@ async function confirmSchedule() {
   updateMoveButtons();
 
   // store on card for calendar
-  if (card) card.dataset.scheduledAt = scheduledAt;
+  if (card) {
+    card.dataset.scheduledAt = scheduledAt;
+    if (videoUrl) card.dataset.videoUrl = videoUrl;
+  }
 
   if (supaId) {
     await supaUpdateStatus(supaId, 'scheduled');
     await supaUpdateScheduledDate(supaId, scheduledAt);
+    if (videoUrl) await supaUpdateVideoUrl(supaId, videoUrl);
+    if (captionVal) await supaUpdateCaption(supaId, captionVal);
   }
 
   // show toast

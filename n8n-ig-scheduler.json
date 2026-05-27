@@ -1,0 +1,166 @@
+{
+  "name": "IG Auto Scheduler",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": { "interval": [{ "field": "minutes", "minutesInterval": 5 }] }
+      },
+      "id": "schedule-trigger",
+      "name": "Every 5 Min",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "https://cscfbuhwlfhblxprkwnh.supabase.co/rest/v1/agent_items",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            { "name": "status", "value": "eq.scheduled" },
+            { "name": "scheduled_date", "value": "lte.{{ $now.toISO() }}" },
+            { "name": "video_url", "value": "not.is.null" },
+            { "name": "select", "value": "id,title,caption,video_url,scheduled_date" }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA" },
+            { "name": "Authorization", "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTQ2MzIyNSwiZXhwIjoyMDk1MDM5MjI1fQ.8ik968LXAthPkd6nkKOOOFlzTbR-94A22l5T_9T17GE" }
+          ]
+        }
+      },
+      "id": "fetch-due-posts",
+      "name": "Fetch Due Posts",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [220, 0]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "leftValue": "", "typeValidation": "strict" },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.length }}",
+              "rightValue": 0,
+              "operator": { "type": "number", "operation": "gt" }
+            }
+          ]
+        }
+      },
+      "id": "check-has-posts",
+      "name": "Has Posts?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [440, 0]
+    },
+    {
+      "parameters": { "fieldToSplitOut": "body", "include": "allOtherFields" },
+      "id": "split-posts",
+      "name": "Split Posts",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [660, -80]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.instagram.com/v23.0/17841467458786238/media",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Content-Type", "value": "application/json" },
+            { "name": "Authorization", "value": "Bearer IGAGHKwhBO5jRBZAFp4dnZARWURibnc5VmRVQ3RpaG9jTWV1Ty1iMG0tMVZAacnJDb3BUX3VYWlRvaXIxVnp6dG5aWmo1ZAHEzbDVDcFdvcXRhajVtcEtpMGJ0a1JZAMlpVbk9zTXB6OEM3YjNjVzZAYRUw0Ry1IYTVrYkQwWW81T2hxcwZDZD" }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "video_url", "value": "={{ $json.video_url }}" },
+            { "name": "caption", "value": "={{ $json.caption || '' }}" },
+            { "name": "media_type", "value": "REELS" }
+          ]
+        }
+      },
+      "id": "create-ig-container",
+      "name": "Create IG Container",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [880, -80]
+    },
+    {
+      "parameters": { "amount": 30, "unit": "seconds" },
+      "id": "wait-30s",
+      "name": "Wait 30s",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [1100, -80]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.instagram.com/v23.0/17841467458786238/media_publish",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Content-Type", "value": "application/json" },
+            { "name": "Authorization", "value": "Bearer IGAGHKwhBO5jRBZAFp4dnZARWURibnc5VmRVQ3RpaG9jTWV1Ty1iMG0tMVZAacnJDb3BUX3VYWlRvaXIxVnp6dG5aWmo1ZAHEzbDVDcFdvcXRhajVtcEtpMGJ0a1JZAMlpVbk9zTXB6OEM3YjNjVzZAYRUw0Ry1IYTVrYkQwWW81T2hxcwZDZD" }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "creation_id", "value": "={{ $('Create IG Container').item.json.id }}" }
+          ]
+        }
+      },
+      "id": "publish-ig-post",
+      "name": "Publish IG Post",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1320, -80]
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://cscfbuhwlfhblxprkwnh.supabase.co/rest/v1/agent_items?id=eq.{{ $('Split Posts').item.json.id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA" },
+            { "name": "Authorization", "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTQ2MzIyNSwiZXhwIjoyMDk1MDM5MjI1fQ.8ik968LXAthPkd6nkKOOOFlzTbR-94A22l5T_9T17GE" },
+            { "name": "Content-Type", "value": "application/json" },
+            { "name": "Prefer", "value": "return=minimal" }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "status", "value": "posted" }
+          ]
+        }
+      },
+      "id": "mark-published",
+      "name": "Mark Published",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1540, -80]
+    }
+  ],
+  "connections": {
+    "Every 5 Min": { "main": [[{ "node": "Fetch Due Posts", "type": "main", "index": 0 }]] },
+    "Fetch Due Posts": { "main": [[{ "node": "Has Posts?", "type": "main", "index": 0 }]] },
+    "Has Posts?": { "main": [[{ "node": "Split Posts", "type": "main", "index": 0 }], []] },
+    "Split Posts": { "main": [[{ "node": "Create IG Container", "type": "main", "index": 0 }]] },
+    "Create IG Container": { "main": [[{ "node": "Wait 30s", "type": "main", "index": 0 }]] },
+    "Wait 30s": { "main": [[{ "node": "Publish IG Post", "type": "main", "index": 0 }]] },
+    "Publish IG Post": { "main": [[{ "node": "Mark Published", "type": "main", "index": 0 }]] }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" }
+}

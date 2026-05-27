@@ -15,8 +15,6 @@
       "parameters": {
         "method": "GET",
         "url": "https://cscfbuhwlfhblxprkwnh.supabase.co/rest/v1/agent_items",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpHeaderAuth",
         "sendQuery": true,
         "queryParameters": {
           "parameters": [

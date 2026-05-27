@@ -129,7 +129,6 @@
 
   /* ── CARDS & GRIDS ── */
   /* Generic: force single column on any grid */
-  .agents-row,
   .kanban-board,
   .ideas-grid,
   .client-strip,

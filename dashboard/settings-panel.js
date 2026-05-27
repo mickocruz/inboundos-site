@@ -104,6 +104,7 @@
 
       <button class="sp-save-btn" id="sp-save-btn" onclick="window.__settingsSave()">Save Changes</button>
       <div class="sp-saved-msg" id="sp-saved-msg">Changes saved</div>
+      <button class="sp-logout-btn" onclick="window.__settingsLogout()">Sign Out</button>
     `;
 
     // Photo preview
@@ -175,6 +176,11 @@
 
   window.__settingsOpen = openPanel;
   window.__settingsClose = closePanel;
+
+  window.__settingsLogout = function() {
+    localStorage.removeItem('sb_session');
+    window.location.href = '/login';
+  };
 
   async function initSidebar() {
     const profile = await fetchProfile();

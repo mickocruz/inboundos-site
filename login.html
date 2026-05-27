@@ -109,10 +109,11 @@ async function login() {
       return;
     }
 
+    const ninetyDays = Math.floor(Date.now() / 1000) + (90 * 24 * 60 * 60);
     localStorage.setItem('sb_session', JSON.stringify({
       access_token: data.access_token,
       refresh_token: data.refresh_token,
-      expires_at: data.expires_at,
+      expires_at: ninetyDays,
       client_id: data.client_id,
       client_slug: data.client_slug,
     }));

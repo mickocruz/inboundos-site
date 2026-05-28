@@ -1,7 +1,7 @@
 # InboundOS — Client Onboarding SOP (Internal)
 
 **For:** Micko only  
-**Version:** 1.0
+**Version:** 2.0
 
 ---
 
@@ -32,59 +32,53 @@ Don't start your steps until you have all three.
 
 ## Your Checklist (Do In Order)
 
-### Step 1 — Add Client via Admin Page
+### Step 1 — Run the Provisioner Script (Does Everything Automatically)
 
-Go to: `inboundos.vercel.app/admin/add-client`  
-Password: (your admin password)
+Once client sends you their 3 Supabase keys, run this one command from the repo:
 
-Fill in:
-- First name, last name, agency name
-- Username — lowercase, dashes only (e.g. `john-smith`)
-- Password — set something strong, you'll send this to them
-- Their Supabase URL, anon key, service role key
+```bash
+cd /Users/mknevamiss/Claude/Projects/inboundos-site
 
-Hit **Add Client**.
-
-This automatically:
-- Creates their login in your master database
-- Creates their `client_config` record in their own Supabase
-- Links their Supabase keys to their account so the dashboard loads their data
-
----
-
-### Step 2 — Fill In Their Business Profile
-
-Go to **their Supabase** → SQL Editor and run:
-
-```sql
-UPDATE client_config SET
-  niche = 'their niche',
-  icp_title = 'their ideal client title',
-  icp_pain = 'their ICP pain point',
-  icp_result = 'result you deliver',
-  icp_revenue = 'ICP revenue range',
-  voice_tone = 'their tone',
-  voice_words = 'power words',
-  voice_avoid = 'words to avoid',
-  voice_pillars = 'content pillars',
-  post_frequency = 'daily',
-  platform = 'instagram'
-WHERE client_id = 'their_client_id';
+python3 scripts/provision-client.py \
+  --email their@email.com \
+  --username john-smith \
+  --password their-password \
+  --sb-url https://xxxx.supabase.co \
+  --sb-anon eyJ... \
+  --sb-service eyJ...
 ```
 
-You'll have this info from their onboarding form.
+This single command automatically:
+- Pulls their answers from the onboarding form
+- Creates their login in your master database
+- Writes their full `client_config` (ICP, voice, niche, pillars) to their Supabase
+- Generates a folder of pre-filled workflow JSON files at `client-workflows/john-smith/`
+
+No SQL. No manual fill-in. Done in seconds.
 
 ---
 
-### Step 3 — Send Client Their Login
+### Step 2 — (Optional) Spot-Check Their Config
 
-Message them:
+If you want to verify the auto-populated config looks right:
+
+Go to **their Supabase** → Table Editor → `client_config` → find their row. Fields should be populated from their onboarding form. Edit anything that looks off.
+
+---
+
+### Step 3 — Send Client Their Login + Workflow Files
+
+The script prints a summary at the end. Send client:
 
 > Your InboundOS dashboard is ready.
 > 
 > Login: inboundos.vercel.app/login  
 > Username: `their-username`  
 > Password: `their-password`
+
+Also zip and send them the folder: `client-workflows/john-smith/`
+
+Tell them: *"Import each .json file into n8n. Then add your Claude API key and Instagram token — that's the only manual part left."*
 
 ---
 

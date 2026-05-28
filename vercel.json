@@ -115,6 +115,10 @@
     {
       "source": "/pipeline",
       "destination": "/dashboard/pipeline.html"
+    },
+    {
+      "source": "/admin/add-client",
+      "destination": "/admin/add-client.html"
     }
   ]
 }

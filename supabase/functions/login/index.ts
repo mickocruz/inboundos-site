@@ -60,6 +60,8 @@ Deno.serve(async (req) => {
       expires_at: session.session.expires_at,
       client_id: user.client_id,
       client_slug: user.client_slug,
+      client_supabase_url: Deno.env.get('SUPABASE_URL')!,
+      client_supabase_anon: Deno.env.get('SUPABASE_ANON_KEY')!,
     }),
     { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
   );

@@ -327,8 +327,9 @@ html,body{font-family:'DM Sans',sans-serif!important;}
 
 <script>
 // ── SUPABASE ──
-const SB_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co';
-const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
+const _sbSession = JSON.parse(localStorage.getItem('sb_session') || '{}');
+const SB_URL = _sbSession.client_supabase_url || 'https://cscfbuhwlfhblxprkwnh.supabase.co';
+const SB_ANON = _sbSession.client_supabase_anon || '';
 const PROXY = 'http://localhost:3001';
 const SB_HEADERS = { 'apikey': SB_ANON, 'Authorization': `Bearer ${SB_ANON}` };
 

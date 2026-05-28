@@ -1587,8 +1587,9 @@ async function runForge() {
 <script>
 // ── SUPABASE AGENT STATUS ─────────────────────────────────────
 (async function loadAgentRunsFromSupabase() {
-  const SUPA_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co';
-  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
+  const _sbSess = JSON.parse(localStorage.getItem('sb_session') || '{}');
+  const SUPA_URL = _sbSess.client_supabase_url || 'https://cscfbuhwlfhblxprkwnh.supabase.co';
+  const SUPA_KEY = _sbSess.client_supabase_anon || '';
 
   // Map Supabase agent names → CTRL card display names
   const AGENT_NAME_MAP = {
@@ -1620,7 +1621,7 @@ async function runForge() {
   }
 
   try {
-    const _agentClientId = (document.cookie.match('(^|;) ?ctrl_client=([^;]*)(;|$)')||[])[2] || 'micko_cruz';
+    const _agentClientId = _sbSess.client_id || 'micko_cruz';
     const res = await fetch(`${SUPA_URL}/rest/v1/agent_runs?client_id=eq.${_agentClientId}&select=*&order=agent`, {
       headers: { 'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_KEY}` }
     });

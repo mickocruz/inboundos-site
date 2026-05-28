@@ -1,7 +1,8 @@
 // settings-panel.js
 (function () {
-  const SB_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co';
-  const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
+  const _sp = JSON.parse(localStorage.getItem('sb_session') || '{}');
+  const SB_URL = _sp.client_supabase_url || 'https://cscfbuhwlfhblxprkwnh.supabase.co';
+  const SB_ANON = _sp.client_supabase_anon || '';
 
   function getToken() {
     try {

@@ -116,6 +116,9 @@ async function login() {
       expires_at: ninetyDays,
       client_id: data.client_id,
       client_slug: data.client_slug,
+      client_supabase_url: data.client_supabase_url,
+      client_supabase_anon: data.client_supabase_anon,
+      client_supabase_service: data.client_supabase_service,
     }));
 
     const params = new URLSearchParams(window.location.search);

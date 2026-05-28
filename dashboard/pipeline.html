@@ -1211,9 +1211,10 @@ function saveScript() {
 
 // ── SUPABASE CONFIG ───────────────────────────────────────────
 const _sbSession = JSON.parse(localStorage.getItem('sb_session') || '{}');
-const SUPA_URL  = _sbSession.client_supabase_url || 'https://cscfbuhwlfhblxprkwnh.supabase.co';
-const SUPA_KEY  = _sbSession.client_supabase_anon || '';
-const SUPA_SVC  = _sbSession.client_supabase_service || '';
+const SUPA_URL      = _sbSession.client_supabase_url || 'https://cscfbuhwlfhblxprkwnh.supabase.co';
+const SUPA_KEY      = _sbSession.client_supabase_anon || '';
+const SUPA_SVC      = _sbSession.client_supabase_service || '';
+const SUPA_CLIENT   = _sbSession.client_id || 'micko_cruz';
 
 // status → column id mapping
 const STATUS_COL = {
@@ -1323,7 +1324,7 @@ const NEXT_COL  = { scripting: 'editing', editing: 'scheduled', scheduled: 'publ
 const NEXT_LABEL = { scripting: 'Move to Editing', editing: 'Schedule Post', scheduled: 'Move to Published', published: 'Mark Published' };
 
 async function loadFromSupabase() {
-  const items = await supaFetch('agent_items', 'agent=eq.quill&order=created_at.desc&limit=100');
+  const items = await supaFetch('agent_items', `agent=eq.quill&client_id=eq.${SUPA_CLIENT}&order=created_at.desc&limit=100`);
   if (!items.length) return;
 
   const seenIds = new Set();

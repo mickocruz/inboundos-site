@@ -26,7 +26,7 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:14px;overflow:hidden;}
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;}
-body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(79,195,247,0.08) 0%,transparent 70%),radial-gradient(ellipse 40% 60% at 100% 20%,rgba(79,195,247,0.03) 0%,transparent 60%);pointer-events:none;z-index:0;}
+body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 55% at 50% -5%,rgba(79,195,247,0.07) 0%,transparent 65%),radial-gradient(ellipse 45% 50% at 95% 15%,rgba(79,195,247,0.04) 0%,transparent 55%),radial-gradient(ellipse 35% 40% at 5% 80%,rgba(74,222,128,0.025) 0%,transparent 55%);pointer-events:none;z-index:0;}
 .layout{display:flex;height:100vh;position:relative;z-index:1;}
 .sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);background:rgba(7,11,18,0.82);border-right:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column;padding:0 0 16px;backdrop-filter:blur(32px) saturate(160%);-webkit-backdrop-filter:blur(32px) saturate(160%);z-index:10;overflow-y:auto;scrollbar-width:none;box-shadow:inset -1px 0 0 rgba(255,255,255,0.04);}
 .sidebar::-webkit-scrollbar{display:none;}
@@ -100,6 +100,13 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .script-btn.generating{color:var(--yellow);border-color:rgba(251,191,36,0.3);background:rgba(251,191,36,0.06);animation:genPulse 1.1s ease-in-out infinite;}
 .discard-btn{background:transparent;border:1px solid var(--border);color:var(--text-dim);border-radius:4px;padding:2px 6px;font-family:var(--font-data);font-size:9px;font-weight:600;cursor:pointer;transition:all 0.15s;line-height:1;}
 .discard-btn:hover{border-color:rgba(248,113,113,0.35);color:var(--red);background:rgba(248,113,113,0.05);}
+.trash-btn{background:transparent;border:1px solid var(--border);color:var(--text-dim);border-radius:4px;padding:2px 6px;font-size:10px;cursor:pointer;transition:all 0.15s;line-height:1;flex-shrink:0;}
+.trash-btn:hover{border-color:rgba(248,113,113,0.45);color:var(--red);background:rgba(248,113,113,0.07);}
+.trash-confirm{display:inline-flex;align-items:center;gap:4px;margin-left:auto;}
+.trash-confirm-yes{background:rgba(248,113,113,0.15);border:1px solid rgba(248,113,113,0.4);color:var(--red);border-radius:4px;padding:2px 7px;font-family:var(--font-data);font-size:9px;font-weight:700;cursor:pointer;}
+.trash-confirm-no{background:transparent;border:1px solid var(--border);color:var(--text-dim);border-radius:4px;padding:2px 6px;font-family:var(--font-data);font-size:9px;cursor:pointer;}
+.trash-confirm-yes:hover{background:rgba(248,113,113,0.3);}
+.trash-confirm-no:hover{color:var(--text);}
 @keyframes genPulse{0%,100%{opacity:1;}50%{opacity:0.45;}}
 /* SCRIPTED CARD STATE */
 .kcard.scripted{border-color:rgba(74,222,128,0.22);cursor:pointer;}
@@ -168,7 +175,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .modal-btn-confirm{background:var(--accent-dim);border:1px solid rgba(79,195,247,0.3);color:var(--accent);text-transform:uppercase;letter-spacing:0.8px;}
 .modal-btn-confirm:hover{background:rgba(79,195,247,0.15);box-shadow:0 0 16px rgba(79,195,247,0.15);}
 /* Ambient blobs */
-.amb{position:fixed;border-radius:50%;filter:blur(110px);pointer-events:none;z-index:0;}
+.amb{display:none !important;}
 .amb-1{width:700px;height:500px;top:-100px;left:10%;background:rgba(79,195,247,0.055);animation:ab1 20s ease-in-out infinite;}
 .amb-2{width:500px;height:500px;bottom:5%;right:5%;background:rgba(74,222,128,0.04);animation:ab2 26s ease-in-out infinite;}
 .amb-3{width:400px;height:400px;top:40%;left:40%;background:rgba(168,139,250,0.03);animation:ab3 32s ease-in-out infinite;}
@@ -283,6 +290,7 @@ html,body{font-family:'DM Sans',sans-serif!important;}
           <button class="view-btn active" id="btn-board-view" onclick="switchView('board')">Board</button>
           <button class="view-btn" id="btn-cal-view" onclick="switchView('calendar')">Calendar</button>
         </div>
+        <button id="quill-run-btn-pipeline" onclick="runQuill()" style="background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);color:#fbbf24;border-radius:8px;padding:7px 14px;font-family:var(--font-data);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.18s;letter-spacing:0.3px;">Run Quill</button>
         <div class="status-pill"><div class="status-dot"></div>Live Sync</div>
       </div>
     </div>
@@ -360,14 +368,18 @@ html,body{font-family:'DM Sans',sans-serif!important;}
         <textarea class="sched-input sched-caption-ta" id="sched-caption" placeholder="Instagram caption…" rows="4"></textarea>
       </div>
       <div class="sched-field">
-        <label class="sched-label">📎 Google Drive Video Link</label>
-        <div class="sched-drive-zone" id="sched-drive-zone" onclick="document.getElementById('sched-video-url').focus()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;opacity:0.45"><path d="M8.5 2h7L21 9.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" stroke="currentColor" stroke-width="1.5"/><path d="M14 2v8h8" stroke="currentColor" stroke-width="1.5"/></svg>
-          <input class="sched-drive-input" type="url" id="sched-video-url" placeholder="Paste Google Drive link here…" oninput="onDriveInput(this)">
-          <span class="sched-drive-clear" id="sched-drive-clear" onclick="clearDriveUrl()" style="display:none">✕</span>
+        <label class="sched-label">🎬 Video</label>
+        <!-- Upload zone -->
+        <div id="sched-upload-zone" onclick="document.getElementById('sched-file-input').click()" ondragover="event.preventDefault();this.style.borderColor='rgba(79,195,247,0.5)'" ondragleave="this.style.borderColor=''" ondrop="onVideoFileDrop(event)"
+          style="border:1.5px dashed rgba(79,195,247,0.25);border-radius:10px;padding:18px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;transition:border-color 0.2s;background:rgba(79,195,247,0.03);">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(79,195,247,0.6)" stroke-width="1.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <span id="sched-upload-label" style="font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(255,255,255,0.45);">Click or drag a video file here</span>
+          <span id="sched-upload-progress" style="font-family:'DM Sans',sans-serif;font-size:11px;color:#4FC3F7;display:none;"></span>
         </div>
-        <div class="sched-drive-hint" id="sched-drive-hint">Set file to "Anyone with link can view"</div>
-        <div class="sched-drive-ok" id="sched-drive-ok" style="display:none">✓ Drive link detected</div>
+        <input type="file" id="sched-file-input" accept="video/*" style="display:none" onchange="onVideoFileSelect(this)">
+        <!-- fallback: direct URL paste -->
+        <input class="sched-input" type="url" id="sched-video-url" placeholder="Or paste a direct video URL…" style="margin-top:8px;font-size:11px;" oninput="onVideoUrlInput(this)">
+        <div id="sched-video-ok" style="font-family:'DM Sans',sans-serif;font-size:10px;color:#4ade80;margin-top:4px;display:none;">✓ Video ready</div>
       </div>
       <div class="sched-field">
         <label class="sched-label">Date</label>
@@ -380,6 +392,7 @@ html,body{font-family:'DM Sans',sans-serif!important;}
     </div>
     <div class="sched-actions">
       <button class="sched-btn sched-btn-cancel" onclick="closeSchedModal(true)">Cancel</button>
+      <button class="sched-btn" onclick="postNow()" style="background:rgba(74,222,128,0.1);border-color:rgba(74,222,128,0.3);color:#4ade80;">Post Now</button>
       <button class="sched-btn sched-btn-confirm" onclick="confirmSchedule()">Schedule →</button>
     </div>
   </div>
@@ -413,7 +426,7 @@ html,body{font-family:'DM Sans',sans-serif!important;}
     <div class="script-modal-footer">
       <button class="script-modal-btn script-modal-btn-save" onclick="saveScriptModal()">✓ Save &amp; Move to Editing</button>
       <button class="script-modal-btn script-modal-btn-copy" onclick="copyScriptModal()">⎘ Copy Script</button>
-      <button class="script-modal-btn script-modal-btn-discard" onclick="closeScriptModal()">Discard</button>
+      <button class="script-modal-btn script-modal-btn-discard" onclick="trashFromModal()">🗑 Delete</button>
     </div>
   </div>
 </div>
@@ -761,10 +774,10 @@ function dataToCard(data) {
     : '';
 
   // Discard — always far right
-  const discardBtnHtml = `<button class="discard-btn" title="Discard" onclick="discardCard(event,this)">Discard</button>`;
+  const discardBtnHtml = `<button class="trash-btn" title="Delete script" onclick="trashCard(event,this)">🗑</button>`;
 
   card.innerHTML = `<div class="kcard-title">${escapeHtml(data.title)}</div><div class="kcard-meta">${labelHtml}${scriptBtnHtml}${discardBtnHtml}</div>`;
-  card.onclick = (e) => { if (!e.target.closest('.script-btn,.discard-btn,.kcard-move-btn')) openSavedScript(card); };
+  card.onclick = (e) => { if (!e.target.closest('.script-btn,.trash-btn,.trash-confirm,.kcard-move-btn')) openSavedScript(card); };
   return card;
 }
 
@@ -855,7 +868,7 @@ function addCard() {
     <div class="kcard-title">${title}</div>
     <div class="kcard-meta">
       <button class="script-btn" onclick="event.stopPropagation();openFunnelModal(this)">✦ Script it</button>
-      <button class="discard-btn" title="Discard" onclick="discardCard(event,this)">Discard</button>
+      <button class="trash-btn" title="Delete script" onclick="trashCard(event,this)">🗑</button>
     </div>`;
   col.prepend(card);
   updateCounts();
@@ -869,12 +882,57 @@ function forgetDeletedTitle(title) {
   } catch(e) {}
 }
 
-function discardCard(e, btn) {
+async function supaDeleteItem(id) {
+  if (!id) return;
+  await fetch(`${SUPA_URL}/rest/v1/agent_items?id=eq.${id}`, {
+    method: 'DELETE',
+    headers: { 'apikey': SUPA_SVC, 'Authorization': `Bearer ${SUPA_SVC}`, 'Prefer': 'return=minimal' }
+  });
+}
+
+function trashCard(e, btn) {
   e.stopPropagation();
   const card = btn.closest('.kcard');
   if (!card) return;
+
+  // already showing confirm? no-op (buttons handle it)
+  if (card.querySelector('.trash-confirm')) return;
+
+  // swap trash btn for inline confirm
+  const meta = card.querySelector('.kcard-meta');
+  btn.style.display = 'none';
+  const confirm = document.createElement('span');
+  confirm.className = 'trash-confirm';
+  confirm.innerHTML = `<span style="font-family:var(--font-data);font-size:9px;color:var(--red);margin-right:2px;">Delete?</span><button class="trash-confirm-yes">Yes</button><button class="trash-confirm-no">No</button>`;
+  meta.appendChild(confirm);
+
+  confirm.querySelector('.trash-confirm-no').onclick = (ev) => {
+    ev.stopPropagation();
+    confirm.remove();
+    btn.style.display = '';
+  };
+  confirm.querySelector('.trash-confirm-yes').onclick = async (ev) => {
+    ev.stopPropagation();
+    const supaId = card.dataset.supaId || card.dataset.id;
+    rememberDeletedCard(card);
+    localStorage.removeItem(cardKey(card));
+    card.style.opacity = '0.4';
+    await supaDeleteItem(supaId);
+    card.remove();
+    updateCounts();
+    serializeBoard();
+  };
+}
+
+function trashFromModal() {
+  if (!scriptModalCard) { closeScriptModal(); return; }
+  if (!confirm('Delete this script? This cannot be undone.')) return;
+  const card = scriptModalCard;
+  const supaId = card.dataset.supaId || card.dataset.id;
+  closeScriptModal();
   rememberDeletedCard(card);
   localStorage.removeItem(cardKey(card));
+  supaDeleteItem(supaId);
   card.remove();
   updateCounts();
   serializeBoard();
@@ -1197,7 +1255,7 @@ function saveScript() {
   // Transform card into scripted state
   const _savedCard = drawerCard;
   drawerCard.classList.add('scripted');
-  drawerCard.onclick = (e) => { if (!e.target.closest('.discard-btn,.caption-btn,.kcard-move-btn')) openSavedScript(_savedCard); };
+  drawerCard.onclick = (e) => { if (!e.target.closest('.trash-btn,.trash-confirm,.caption-btn,.kcard-move-btn')) openSavedScript(_savedCard); };
 
   const meta = drawerCard.querySelector('.kcard-meta');
   const oldBtn = meta.querySelector('.script-btn');
@@ -1214,6 +1272,8 @@ function saveScript() {
 const _sbSession = JSON.parse(localStorage.getItem('sb_session') || '{}');
 const SUPA_URL      = _sbSession.client_supabase_url || 'https://cscfbuhwlfhblxprkwnh.supabase.co';
 const SUPA_KEY      = _sbSession.client_supabase_anon || '';
+const SUPA_ANON     = SUPA_KEY;
+const SUPA_TOKEN    = _sbSession.access_token || SUPA_KEY;
 const SUPA_SVC      = _sbSession.client_supabase_service || '';
 const SUPA_CLIENT   = _sbSession.client_id || 'micko_cruz';
 
@@ -1235,88 +1295,118 @@ async function supaFetch(table, params = '') {
   return res.json();
 }
 
+// All writes use the anon key + the logged-in user's access_token (RLS). No service key in frontend.
+const _wHeaders = { 'apikey': SUPA_ANON, 'Authorization': `Bearer ${SUPA_TOKEN}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' };
+
 async function supaUpdateStatus(id, status) {
   const res = await fetch(`${SUPA_URL}/rest/v1/agent_items?id=eq.${id}`, {
-    method: 'PATCH',
-    headers: {
-      'apikey': SUPA_SVC,
-      'Authorization': `Bearer ${SUPA_SVC}`,
-      'Content-Type': 'application/json',
-      'Prefer': 'return=minimal',
-    },
-    body: JSON.stringify({ status }),
+    method: 'PATCH', headers: _wHeaders, body: JSON.stringify({ status }),
   });
-  if (!res.ok) console.error('Failed to save card status:', res.status, id, status);
+  if (!res.ok) console.error('Failed to save card status:', res.status, id, status, await res.text());
 }
 
 async function supaUpdateScheduledDate(id, scheduledAt) {
-  // fetch current metadata first so we can merge
-  const session = JSON.parse(localStorage.getItem('sb_session') || '{}');
-  const cur = await fetch(`${SUPA_URL}/rest/v1/agent_items?id=eq.${id}&select=metadata`, {
-    headers: { 'apikey': SUPA_SVC, 'Authorization': `Bearer ${session.access_token || SUPA_SVC}` }
-  });
-  const rows = cur.ok ? await cur.json() : [];
-  const existingMeta = (rows[0] && rows[0].metadata) || {};
-  const newMeta = { ...existingMeta, scheduled_date: scheduledAt };
+  // write to the real top-level scheduled_date column (n8n IG auto-poster filters on this)
   const res = await fetch(`${SUPA_URL}/rest/v1/agent_items?id=eq.${id}`, {
-    method: 'PATCH',
-    headers: { 'apikey': SUPA_SVC, 'Authorization': `Bearer ${SUPA_SVC}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-    body: JSON.stringify({ metadata: newMeta }),
+    method: 'PATCH', headers: _wHeaders, body: JSON.stringify({ scheduled_date: scheduledAt }),
   });
-  if (!res.ok) console.error('Failed to save scheduled_date in metadata:', res.status, id);
+  if (!res.ok) console.error('Failed to save scheduled_date:', res.status, id, await res.text());
 }
 
 async function supaUpdateCaption(id, caption) {
-  const session = JSON.parse(localStorage.getItem('sb_session') || '{}');
   const cur = await fetch(`${SUPA_URL}/rest/v1/agent_items?id=eq.${id}&select=metadata`, {
-    headers: { 'apikey': SUPA_SVC, 'Authorization': `Bearer ${session.access_token || SUPA_SVC}` }
+    headers: { 'apikey': SUPA_ANON, 'Authorization': `Bearer ${SUPA_TOKEN}` }
   });
   const rows = cur.ok ? await cur.json() : [];
   const existingMeta = (rows[0] && rows[0].metadata) || {};
   const res = await fetch(`${SUPA_URL}/rest/v1/agent_items?id=eq.${id}`, {
-    method: 'PATCH',
-    headers: { 'apikey': SUPA_SVC, 'Authorization': `Bearer ${SUPA_SVC}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-    body: JSON.stringify({ metadata: { ...existingMeta, caption } }),
+    method: 'PATCH', headers: _wHeaders, body: JSON.stringify({ metadata: { ...existingMeta, caption } }),
   });
-  if (!res.ok) console.error('Failed to save caption in metadata:', res.status, id);
+  if (!res.ok) console.error('Failed to save caption in metadata:', res.status, id, await res.text());
 }
 
 async function supaUpdateVideoUrl(id, videoUrl) {
-  const session = JSON.parse(localStorage.getItem('sb_session') || '{}');
   const res = await fetch(`${SUPA_URL}/rest/v1/agent_items?id=eq.${id}`, {
-    method: 'PATCH',
-    headers: { 'apikey': SUPA_ANON, 'Authorization': `Bearer ${session.access_token}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-    body: JSON.stringify({ video_url: videoUrl }),
+    method: 'PATCH', headers: _wHeaders, body: JSON.stringify({ video_url: videoUrl }),
   });
-  if (!res.ok) console.error('Failed to save video_url to agent_items:', res.status, id);
+  if (!res.ok) console.error('Failed to save video_url to agent_items:', res.status, id, await res.text());
 }
 
-function onDriveInput(el) {
-  const zone = document.getElementById('sched-drive-zone');
-  const hint = document.getElementById('sched-drive-hint');
-  const ok   = document.getElementById('sched-drive-ok');
-  const clr  = document.getElementById('sched-drive-clear');
-  const isDrive = el.value.includes('drive.google.com');
-  zone.classList.toggle('has-url', !!el.value);
-  clr.style.display = el.value ? '' : 'none';
-  hint.style.display = isDrive || !el.value ? '' : '';
-  ok.style.display   = isDrive ? '' : 'none';
-  hint.style.display = isDrive ? 'none' : '';
-}
-
-function clearDriveUrl() {
-  const el = document.getElementById('sched-video-url');
-  el.value = '';
-  onDriveInput(el);
-  el.focus();
-}
+function onDriveInput(el) {} // legacy no-op
+function clearDriveUrl() {}
 
 function driveToDirectUrl(url) {
   if (!url) return '';
-  // https://drive.google.com/file/d/FILE_ID/view → direct download
   const m = url.match(/\/file\/d\/([^/]+)/);
   if (m) return `https://drive.google.com/uc?export=download&id=${m[1]}`;
-  return url; // pass through if not a Drive link
+  return url;
+}
+
+function onVideoUrlInput(el) {
+  const ok = document.getElementById('sched-video-ok');
+  ok.style.display = el.value.trim() ? '' : 'none';
+}
+
+function onVideoFileDrop(e) {
+  e.preventDefault();
+  document.getElementById('sched-upload-zone').style.borderColor = '';
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('video/')) uploadVideoFile(file);
+}
+
+function onVideoFileSelect(input) {
+  const file = input.files[0];
+  if (file) uploadVideoFile(file);
+}
+
+async function uploadVideoFile(file) {
+  const MAX_MB = 50;
+  if (file.size > MAX_MB * 1024 * 1024) {
+    showPipeToast(`⚠ Video too large (max ${MAX_MB}MB). Compress first.`, '#f87171');
+    return;
+  }
+  const label = document.getElementById('sched-upload-label');
+  const prog  = document.getElementById('sched-upload-progress');
+  const ok    = document.getElementById('sched-video-ok');
+  const urlEl = document.getElementById('sched-video-url');
+
+  label.style.display = 'none';
+  prog.style.display  = '';
+  prog.textContent    = 'Uploading…';
+
+  const ext  = file.name.split('.').pop();
+  const path = `reel_${Date.now()}.${ext}`;
+
+  try {
+    const res = await fetch(
+      `${SUPA_URL}/storage/v1/object/reels/${path}`,
+      {
+        method: 'POST',
+        headers: {
+          'apikey': SUPA_ANON,
+          'Authorization': `Bearer ${SUPA_TOKEN}`,
+          'Content-Type': file.type,
+          'x-upsert': 'true',
+        },
+        body: file,
+      }
+    );
+    if (!res.ok) {
+      const err = await res.text();
+      throw new Error(err);
+    }
+    const publicUrl = `${SUPA_URL}/storage/v1/object/public/reels/${path}`;
+    urlEl.value     = publicUrl;
+    prog.textContent = `✓ ${file.name} (${(file.size/1024/1024).toFixed(1)}MB)`;
+    prog.style.color = '#4ade80';
+    ok.style.display = '';
+    ok.textContent   = '✓ Video uploaded and ready';
+  } catch (e) {
+    prog.textContent = `✕ Upload failed: ${e.message.slice(0,60)}`;
+    prog.style.color = '#f87171';
+    label.style.display = '';
+    console.error('Upload error:', e);
+  }
 }
 
 // Map column id → Supabase status (reverse of STATUS_COL)
@@ -1339,7 +1429,7 @@ async function loadFromSupabase() {
     if (!col) return;
 
     const meta = item.metadata || {};
-    const topic = meta.topic || meta.hook || item.content.slice(0, 80);
+    const topic = meta.text_hook || meta.hook || meta.topic || item.content.slice(0, 80);
     const date = new Date(item.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     const isScripted = item.status !== 'pending';
 
@@ -1357,6 +1447,7 @@ async function loadFromSupabase() {
       <div class="kcard-title">${escapeHtml(topic)}</div>
       <div class="kcard-meta">
         <span class="kcard-platform">${schedDateStr || date}</span>
+        <button class="trash-btn" title="Delete script" onclick="trashCard(event,this)">🗑</button>
       </div>`;
 
     // Store script fields separately in localStorage
@@ -1368,7 +1459,7 @@ async function loadFromSupabase() {
       localStorage.setItem(ns + '_caption', meta.caption || '');
     }
 
-    card.onclick = (e) => { if (!e.target.closest('.discard-btn,.caption-btn,.kcard-move-btn')) openSavedScript(card); };
+    card.onclick = (e) => { if (!e.target.closest('.trash-btn,.trash-confirm,.caption-btn,.kcard-move-btn')) openSavedScript(card); };
     col.appendChild(card);
   });
 
@@ -1385,7 +1476,7 @@ async function loadFromSupabase() {
 
     // Add Discard if missing
     if (meta && !meta.querySelector('.discard-btn')) {
-      meta.insertAdjacentHTML('beforeend', '<button class="discard-btn" title="Discard" onclick="discardCard(event,this)">Discard</button>');
+      meta.insertAdjacentHTML('beforeend', '<button class="trash-btn" title="Delete script" onclick="trashCard(event,this)">🗑</button>');
     }
 
     // If a saved script exists for this card → mark scripted (state only, no badge)
@@ -1401,7 +1492,7 @@ async function loadFromSupabase() {
     });
     if (!card.onclick) {
       const _card = card;
-      card.onclick = (e) => { if (!e.target.closest('.script-btn,.discard-btn,.caption-btn,.kcard-move-btn')) openSavedScript(_card); };
+      card.onclick = (e) => { if (!e.target.closest('.script-btn,.trash-btn,.trash-confirm,.caption-btn,.kcard-move-btn')) openSavedScript(_card); };
     }
   });
   updateCounts();
@@ -1632,6 +1723,229 @@ function renderCalendar() {
     });
   });
 })();
+
+function _pipelineTaskId() { return 'task-' + Date.now() + '-' + Math.random().toString(36).slice(2); }
+
+async function runQuill() {
+  const btn = document.getElementById('quill-run-btn-pipeline');
+  const taskId = _pipelineTaskId();
+  const now = Date.now();
+
+  // Write task to shared store so agents page picks it up
+  try {
+    const tasks = JSON.parse(localStorage.getItem('ctrl_agent_tasks_v1') || '{}');
+    tasks[taskId] = { id: taskId, agent: 'Quill', task: 'Generate 5 daily scripts with hook selection', status: 'running', progress: 0, result: null, createdAt: now, updatedAt: now };
+    localStorage.setItem('ctrl_agent_tasks_v1', JSON.stringify(tasks));
+  } catch(e) {}
+
+  // Push to ops board
+  try {
+    const kb = JSON.parse(localStorage.getItem('ctrl_kanban_state') || '{"backlog":[],"progress":[],"done":[]}');
+    (kb.progress = kb.progress || []).unshift({ title: 'Quill — Daily Scripts', agent: 'Quill', id: taskId });
+    localStorage.setItem('ctrl_kanban_state', JSON.stringify(kb));
+  } catch(e) {}
+
+  btn.disabled = true; btn.textContent = 'Running…';
+
+  try {
+    const r = await fetch('http://localhost:5678/webhook/quill-trigger', { method: 'POST', headers: {'Content-Type':'application/json'}, body: '{}' });
+    if (!r.ok) throw new Error('n8n returned ' + r.status);
+
+    // Poll for completion
+    let done = false;
+    for (let i = 0; i < 36 && !done; i++) {
+      await new Promise(res => setTimeout(res, 5000));
+      try {
+        const ex = await fetch('http://localhost:5678/api/v1/executions?workflowId=0QoReLvsYWUaIrIO&limit=1');
+        if (ex.ok) {
+          const latest = (await ex.json()).data?.[0];
+          if (latest && (latest.status === 'success' || latest.status === 'error')) {
+            done = true;
+            const ok = latest.status === 'success';
+
+            // Update task store
+            try {
+              const tasks = JSON.parse(localStorage.getItem('ctrl_agent_tasks_v1') || '{}');
+              if (tasks[taskId]) { tasks[taskId].status = ok ? 'done' : 'failed'; tasks[taskId].result = ok ? '5 scripts generated' : 'Workflow error'; tasks[taskId].updatedAt = Date.now(); }
+              localStorage.setItem('ctrl_agent_tasks_v1', JSON.stringify(tasks));
+            } catch(e) {}
+
+            // Move ops card to done
+            try {
+              const kb = JSON.parse(localStorage.getItem('ctrl_kanban_state') || '{}');
+              kb.progress = (kb.progress||[]).filter(c => c.id !== taskId);
+              (kb.done = kb.done || []).unshift({ title: 'Quill — Daily Scripts', agent: 'Quill', id: taskId });
+              localStorage.setItem('ctrl_kanban_state', JSON.stringify(kb));
+            } catch(e) {}
+
+            // Log activity (feeds dashboard sidebar)
+            try {
+              const log = JSON.parse(localStorage.getItem('ctrl_activity_log') || '[]');
+              log.unshift({ agent: 'Quill', task: ok ? '5 scripts generated ✓' : 'Script generation failed ✗', time: Date.now() });
+              if (log.length > 50) log.length = 50;
+              localStorage.setItem('ctrl_activity_log', JSON.stringify(log));
+            } catch(e) {}
+
+            btn.textContent = ok ? '✓ Done' : '✗ Failed'; btn.disabled = false;
+            setTimeout(() => { btn.textContent = 'Run Quill'; }, 4000);
+          }
+        }
+      } catch(e) {}
+    }
+    if (!done) { btn.textContent = 'Run Quill'; btn.disabled = false; }
+  } catch(e) {
+    try {
+      const tasks = JSON.parse(localStorage.getItem('ctrl_agent_tasks_v1') || '{}');
+      if (tasks[taskId]) { tasks[taskId].status = 'failed'; tasks[taskId].result = e.message; tasks[taskId].updatedAt = Date.now(); }
+      localStorage.setItem('ctrl_agent_tasks_v1', JSON.stringify(tasks));
+    } catch(e2) {}
+    btn.textContent = 'Error — n8n running?'; btn.disabled = false;
+    setTimeout(() => { btn.textContent = 'Run Quill'; }, 3000);
+  }
+}
+
+// ── Posting loading modal ──
+function showPostingModal(text) {
+  let m = document.getElementById('posting-modal');
+  if (!m) {
+    m = document.createElement('div');
+    m.id = 'posting-modal';
+    m.style.cssText = 'position:fixed;inset:0;z-index:100000;display:flex;align-items:center;justify-content:center;background:rgba(7,11,18,0.7);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;transition:opacity 0.2s ease;';
+    m.innerHTML = `
+      <div style="background:rgba(20,26,34,0.96);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:32px 40px;display:flex;flex-direction:column;align-items:center;gap:18px;box-shadow:0 24px 64px rgba(0,0,0,0.5);min-width:280px;">
+        <div id="posting-spinner" style="width:42px;height:42px;border-radius:50%;border:3px solid rgba(79,195,247,0.18);border-top-color:#4FC3F7;animation:pm-spin 0.8s linear infinite;"></div>
+        <div id="posting-modal-text" style="font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;color:#fff;text-align:center;line-height:1.5;"></div>
+        <div id="posting-modal-sub" style="font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(255,255,255,0.4);text-align:center;"></div>
+      </div>`;
+    document.body.appendChild(m);
+    const st = document.createElement('style');
+    st.textContent = '@keyframes pm-spin{to{transform:rotate(360deg)}}';
+    document.head.appendChild(st);
+  }
+  m.querySelector('#posting-modal-text').textContent = text || 'Posting to Instagram…';
+  m.querySelector('#posting-modal-sub').textContent = 'Do not close this tab';
+  m.querySelector('#posting-spinner').style.display = '';
+  requestAnimationFrame(() => { m.style.opacity = '1'; });
+}
+function updatePostingModal(text, sub) {
+  const m = document.getElementById('posting-modal'); if (!m) return;
+  m.querySelector('#posting-modal-text').textContent = text;
+  if (sub != null) m.querySelector('#posting-modal-sub').textContent = sub;
+}
+function postingModalResult(ok, text) {
+  const m = document.getElementById('posting-modal'); if (!m) return;
+  m.querySelector('#posting-spinner').style.display = 'none';
+  m.querySelector('#posting-modal-text').innerHTML = (ok ? '<span style="color:#4ade80;font-size:22px;">✓</span><br>' : '<span style="color:#f87171;font-size:22px;">✕</span><br>') + text;
+  m.querySelector('#posting-modal-sub').textContent = '';
+  setTimeout(() => hidePostingModal(), ok ? 2200 : 4500);
+}
+function hidePostingModal() {
+  const m = document.getElementById('posting-modal'); if (!m) return;
+  m.style.opacity = '0';
+  setTimeout(() => m.remove(), 250);
+}
+
+async function postNow() {
+  const card = _schedCard;
+  if (!card) return;
+  const supaId = card.dataset.supaId || null;
+
+  // IG Reels require a video URL — block + prompt if missing
+  const rawVideoUrl = document.getElementById('sched-video-url').value.trim();
+  const videoUrl = driveToDirectUrl(rawVideoUrl);
+  if (!videoUrl) {
+    const field = document.getElementById('sched-video-url');
+    field.focus();
+    field.style.borderColor = 'rgba(248,113,113,0.6)';
+    showPipeToast('⚠ Add a video URL before posting', '#f87171');
+    return;
+  }
+
+  // need a real Supabase row to post — local-only cards can't be posted
+  if (!supaId) {
+    showPipeToast('⚠ This card isn\'t saved yet — can\'t post', '#f87171');
+    return;
+  }
+
+  const captionVal = document.getElementById('sched-caption').value.trim();
+  const scheduledAt = new Date().toISOString();
+
+  document.getElementById('sched-overlay').classList.remove('open');
+  showPostingModal('Saving post…');
+
+  // 1) write to Supabase, then VERIFY it actually persisted (RLS/constraints can silently no-op)
+  await supaUpdateScheduledDate(supaId, scheduledAt);
+  await supaUpdateVideoUrl(supaId, videoUrl);
+  if (captionVal) await supaUpdateCaption(supaId, captionVal);
+  await supaUpdateStatus(supaId, 'scheduled');
+
+  const verify = await fetch(`${SUPA_URL}/rest/v1/agent_items?id=eq.${supaId}&select=status,video_url,scheduled_date`, {
+    headers: { 'apikey': SUPA_ANON, 'Authorization': `Bearer ${SUPA_TOKEN}` }
+  });
+  const vrow = (verify.ok ? await verify.json() : [])[0];
+  if (!vrow || vrow.status !== 'scheduled' || !vrow.video_url) {
+    postingModalResult(false, 'Failed to save post.<br>Write was rejected — not posted.');
+    return;
+  }
+
+  // 2) trigger n8n to post immediately
+  updatePostingModal('Sending to Instagram…', 'Do not close this tab');
+  try {
+    await fetch('http://localhost:5678/webhook/ig-post-now', { method: 'POST', headers: {'Content-Type':'application/json'}, body: '{}' });
+  } catch (e) {
+    postingModalResult(false, 'Can\'t reach the posting service.<br>Is n8n running on this machine?');
+    return;
+  }
+
+  // 3) poll until n8n marks it 'posted' (real IG publish confirmed). Max ~75s.
+  updatePostingModal('Publishing to Instagram…', 'This can take up to a minute');
+  let posted = false;
+  for (let i = 0; i < 25; i++) {
+    await new Promise(r => setTimeout(r, 3000));
+    const r = await fetch(`${SUPA_URL}/rest/v1/agent_items?id=eq.${supaId}&select=status`, {
+      headers: { 'apikey': SUPA_ANON, 'Authorization': `Bearer ${SUPA_TOKEN}` }
+    });
+    const st = (r.ok ? await r.json() : [])[0]?.status;
+    if (st === 'posted') { posted = true; break; }
+    if (st !== 'scheduled') break; // status changed unexpectedly (e.g. error reset)
+  }
+
+  if (posted) {
+    // confirmed live — NOW move card to Published
+    const pubCol = document.getElementById('col-published');
+    if (pubCol) pubCol.prepend(card);
+    card.dataset.col = 'published';
+    card.dataset.scheduledAt = scheduledAt;
+    card.dataset.videoUrl = videoUrl;
+    updateCounts(); serializeBoard(); updateMoveButtons();
+    postingModalResult(true, 'Posted to Instagram!');
+  } else {
+    // not confirmed — leave card where it is, don't lie
+    postingModalResult(false, 'Couldn\'t confirm the post went live.<br>Check Instagram / n8n. Card left unposted.');
+  }
+
+  _schedCard = null;
+  _schedTargetCol = null;
+}
+
+// shared toast helper
+function showPipeToast(msg, color) {
+  let toast = document.getElementById('copy-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'copy-toast';
+    toast.style.cssText = 'position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);font-family:DM Sans,sans-serif;font-size:13px;font-weight:600;padding:10px 22px;border-radius:30px;z-index:99999;pointer-events:none;opacity:0;transition:opacity 0.2s ease,transform 0.2s ease;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);';
+    document.body.appendChild(toast);
+  }
+  const c = color || '#4FC3F7';
+  toast.style.background = 'rgba(13,17,23,0.85)';
+  toast.style.border = '1px solid ' + c;
+  toast.style.color = c;
+  toast.textContent = msg;
+  requestAnimationFrame(() => { toast.style.opacity='1'; toast.style.transform='translateX(-50%) translateY(0)'; });
+  clearTimeout(toast._hide);
+  toast._hide = setTimeout(() => { toast.style.opacity='0'; toast.style.transform='translateX(-50%) translateY(20px)'; }, 3500);
+}
 </script>
 <script>(function(){var sel=".card,.cs-card,.client-profile,.checklist-panel,.agent-card,.ops-card,.ov-card,.insight-card,.reel-card,.stat-card,.kcard,.sop-card,.swipe-card";function stagger(els){[].forEach.call(els,function(el,i){if(!el.classList.contains("s-visible")){setTimeout(function(){el.classList.add("s-visible");},60+i*70);}});}document.addEventListener("DOMContentLoaded",function(){stagger(document.querySelectorAll(sel));});var ob=new MutationObserver(function(ms){ms.forEach(function(m){m.addedNodes.forEach(function(n){if(n.nodeType===1){var found=n.matches&&n.matches(sel)?[n]:[];[].push.apply(found,n.querySelectorAll?n.querySelectorAll(sel):[]);stagger(found);}});});});ob.observe(document.body||document.documentElement,{childList:true,subtree:true});})();</script></body>
 </html>

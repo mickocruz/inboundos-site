@@ -119,6 +119,14 @@
     {
       "source": "/admin/add-client",
       "destination": "/admin/add-client.html"
+    },
+    {
+      "source": "/:client/crm",
+      "destination": "/dashboard/crm.html"
+    },
+    {
+      "source": "/crm",
+      "destination": "/dashboard/crm.html"
     }
   ]
 }

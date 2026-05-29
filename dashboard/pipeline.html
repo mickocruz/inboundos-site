@@ -776,7 +776,7 @@ function dataToCard(data) {
     : '';
 
   // Discard — always far right
-  const discardBtnHtml = `<button class="trash-btn" title="Delete script" onclick="trashCard(event,this)<svg width="12" height="13" viewBox="0 0 24 26" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="6" width="18" height="17" rx="2" stroke="#f87171" stroke-width="2"/><path d="M1 6h22" stroke="#f87171" stroke-width="2" stroke-linecap="round"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" stroke="#f87171" stroke-width="2" stroke-linecap="round"/><line x1="9" y1="11" x2="9" y2="19" stroke="#f87171" stroke-width="2" stroke-linecap="round"/><line x1="15" y1="11" x2="15" y2="19" stroke="#f87171" stroke-width="2" stroke-linecap="round"/></svg></button>`;
+  const discardBtnHtml = `<button class="trash-btn" title="Delete script" onclick="trashCard(event,this)"><svg width="12" height="13" viewBox="0 0 24 26" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="6" width="18" height="17" rx="2" stroke="#f87171" stroke-width="2"/><path d="M1 6h22" stroke="#f87171" stroke-width="2" stroke-linecap="round"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" stroke="#f87171" stroke-width="2" stroke-linecap="round"/><line x1="9" y1="11" x2="9" y2="19" stroke="#f87171" stroke-width="2" stroke-linecap="round"/><line x1="15" y1="11" x2="15" y2="19" stroke="#f87171" stroke-width="2" stroke-linecap="round"/></svg></button>`;
 
   card.innerHTML = `<div class="kcard-title">${escapeHtml(data.title)}</div><div class="kcard-meta">${labelHtml}${scriptBtnHtml}${discardBtnHtml}</div>`;
   card.onclick = (e) => { if (!e.target.closest('.script-btn,.trash-btn,.trash-confirm,.kcard-move-btn')) openSavedScript(card); };
@@ -870,7 +870,7 @@ function addCard() {
     <div class="kcard-title">${title}</div>
     <div class="kcard-meta">
       <button class="script-btn" onclick="event.stopPropagation();openFunnelModal(this)">✦ Script it</button>
-      <button class="trash-btn" title="Delete script" onclick="trashCard(event,this)<svg width="12" height="13" viewBox="0 0 24 26" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="6" width="18" height="17" rx="2" stroke="#f87171" stroke-width="2"/><path d="M1 6h22" stroke="#f87171" stroke-width="2" stroke-linecap="round"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" stroke="#f87171" stroke-width="2" stroke-linecap="round"/><line x1="9" y1="11" x2="9" y2="19" stroke="#f87171" stroke-width="2" stroke-linecap="round"/><line x1="15" y1="11" x2="15" y2="19" stroke="#f87171" stroke-width="2" stroke-linecap="round"/></svg></button>
+      <button class="trash-btn" title="Delete script" onclick="trashCard(event,this)"><svg width="12" height="13" viewBox="0 0 24 26" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="6" width="18" height="17" rx="2" stroke="#f87171" stroke-width="2"/><path d="M1 6h22" stroke="#f87171" stroke-width="2" stroke-linecap="round"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" stroke="#f87171" stroke-width="2" stroke-linecap="round"/><line x1="9" y1="11" x2="9" y2="19" stroke="#f87171" stroke-width="2" stroke-linecap="round"/><line x1="15" y1="11" x2="15" y2="19" stroke="#f87171" stroke-width="2" stroke-linecap="round"/></svg></button>
     </div>`;
   col.prepend(card);
   updateCounts();
@@ -1457,7 +1457,7 @@ async function loadFromSupabase() {
       <div class="kcard-title">${escapeHtml(topic)}</div>
       <div class="kcard-meta">
         <span class="kcard-platform">${schedDateStr || date}</span>
-        <button class="trash-btn" title="Delete script" onclick="trashCard(event,this)<svg width="12" height="13" viewBox="0 0 24 26" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="6" width="18" height="17" rx="2" stroke="#f87171" stroke-width="2"/><path d="M1 6h22" stroke="#f87171" stroke-width="2" stroke-linecap="round"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" stroke="#f87171" stroke-width="2" stroke-linecap="round"/><line x1="9" y1="11" x2="9" y2="19" stroke="#f87171" stroke-width="2" stroke-linecap="round"/><line x1="15" y1="11" x2="15" y2="19" stroke="#f87171" stroke-width="2" stroke-linecap="round"/></svg></button>
+        <button class="trash-btn" title="Delete script" onclick="trashCard(event,this)"><svg width="12" height="13" viewBox="0 0 24 26" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="6" width="18" height="17" rx="2" stroke="#f87171" stroke-width="2"/><path d="M1 6h22" stroke="#f87171" stroke-width="2" stroke-linecap="round"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" stroke="#f87171" stroke-width="2" stroke-linecap="round"/><line x1="9" y1="11" x2="9" y2="19" stroke="#f87171" stroke-width="2" stroke-linecap="round"/><line x1="15" y1="11" x2="15" y2="19" stroke="#f87171" stroke-width="2" stroke-linecap="round"/></svg></button>
       </div>`;
 
     // Store script fields separately in localStorage
@@ -1486,7 +1486,7 @@ async function loadFromSupabase() {
 
     // Add Discard if missing
     if (meta && !meta.querySelector('.discard-btn')) {
-      meta.insertAdjacentHTML('beforeend', '<button class="trash-btn" title="Delete script" onclick="trashCard(event,this)<svg width="12" height="13" viewBox="0 0 24 26" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="6" width="18" height="17" rx="2" stroke="#f87171" stroke-width="2"/><path d="M1 6h22" stroke="#f87171" stroke-width="2" stroke-linecap="round"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" stroke="#f87171" stroke-width="2" stroke-linecap="round"/><line x1="9" y1="11" x2="9" y2="19" stroke="#f87171" stroke-width="2" stroke-linecap="round"/><line x1="15" y1="11" x2="15" y2="19" stroke="#f87171" stroke-width="2" stroke-linecap="round"/></svg></button>');
+      meta.insertAdjacentHTML('beforeend', '<button class="trash-btn" title="Delete script" onclick="trashCard(event,this)"><svg width="12" height="13" viewBox="0 0 24 26" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="6" width="18" height="17" rx="2" stroke="#f87171" stroke-width="2"/><path d="M1 6h22" stroke="#f87171" stroke-width="2" stroke-linecap="round"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" stroke="#f87171" stroke-width="2" stroke-linecap="round"/><line x1="9" y1="11" x2="9" y2="19" stroke="#f87171" stroke-width="2" stroke-linecap="round"/><line x1="15" y1="11" x2="15" y2="19" stroke="#f87171" stroke-width="2" stroke-linecap="round"/></svg></button>');
     }
 
     // If a saved script exists for this card → mark scripted (state only, no badge)

@@ -4,140 +4,121 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>InboundOS - ROI Report</title>
-<link rel="preload" href="/NHGDisplay95Black.otf" as="font" type="font/otf" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 @font-face { font-family:'NHGrotesk'; src:url('/dashboard/fonts/NHGrotesk-Black.otf') format('opentype'); font-weight:900; }
 :root {
-  --bg:#0D1117; --surface:rgba(255,255,255,0.015); --card:rgba(255,255,255,0.02); --border:rgba(255,255,255,0.07); --border-glow:rgba(79,195,247,0.2);
-  --accent:#4FC3F7; --accent-dim:rgba(79,195,247,0.07); --text:#ffffff; --text-muted:rgba(255,255,255,0.3); --text-dim:rgba(255,255,255,0.22);
+  --bg:#0D1117; --card:rgba(255,255,255,0.02); --border:rgba(255,255,255,0.07); --border-glow:rgba(79,195,247,0.2);
+  --accent:#4FC3F7; --text:#ffffff; --text-muted:rgba(255,255,255,0.3); --text-dim:rgba(255,255,255,0.22);
   --green:#4ade80; --yellow:#fbbf24; --red:#f87171; --purple:#a78bfa;
   --sidebar-w:180px;
-  --font-head:'NHGrotesk','Arial Black',Arial,sans-serif; --font-data:'DM Sans',sans-serif; --font-body:'DM Sans',sans-serif;
+  --font-head:'NHGrotesk','Arial Black',Arial,sans-serif; --font-data:'DM Sans',sans-serif;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:14px;overflow:hidden;}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font-data);font-size:14px;overflow:hidden;}
 body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 55% at 50% -5%,rgba(79,195,247,0.07) 0%,transparent 65%),radial-gradient(ellipse 45% 50% at 95% 15%,rgba(79,195,247,0.04) 0%,transparent 55%);pointer-events:none;z-index:0;}
 .layout{display:flex;height:100vh;position:relative;z-index:1;}
 
 /* SIDEBAR */
-.sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);background:rgba(7,11,18,0.82);border-right:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column;padding:0 0 16px;backdrop-filter:blur(32px) saturate(160%);-webkit-backdrop-filter:blur(32px) saturate(160%);z-index:10;overflow-y:auto;scrollbar-width:none;box-shadow:inset -1px 0 0 rgba(255,255,255,0.04);}
+.sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);background:rgba(7,11,18,0.82);border-right:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column;padding:0 0 16px;backdrop-filter:blur(32px) saturate(160%);z-index:10;overflow-y:auto;scrollbar-width:none;}
 .sidebar::-webkit-scrollbar{display:none;}
 .sidebar-logo-wrap{padding:18px 16px 14px;border-bottom:1px solid var(--border);margin-bottom:8px;cursor:pointer;}
-.sidebar-logo-text{font-family:var(--font-head);font-size:17px;font-weight:900;letter-spacing:-0.5px;line-height:1;user-select:none;}
+.logo-text{font-family:var(--font-head);font-size:17px;font-weight:900;letter-spacing:-0.5px;line-height:1;user-select:none;}
 .nav-section{padding:10px 0 4px;}
-.nav-section-label{font-family:var(--font-data);font-size:9px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--text-dim);padding:0 16px;margin-bottom:4px;}
-.nav-item{display:flex;align-items:center;gap:9px;padding:8px 16px;cursor:pointer;transition:all 0.15s ease;color:var(--text-muted);position:relative;user-select:none;font-family:var(--font-data);font-size:13px;font-weight:500;border-left:2px solid transparent;}
+.nav-sec-lbl{font-family:var(--font-data);font-size:9px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--text-dim);padding:0 16px;margin-bottom:4px;}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 16px;cursor:pointer;transition:all 0.15s;color:var(--text-muted);font-family:var(--font-data);font-size:13px;font-weight:500;border-left:2px solid transparent;}
 .nav-item svg{width:14px;height:14px;flex-shrink:0;opacity:0.7;}
 .nav-item:hover{background:rgba(79,195,247,0.04);color:rgba(255,255,255,0.75);}
 .nav-item.active{color:#4FC3F7;border-left-color:#4FC3F7;background:rgba(79,195,247,0.06);}
 .nav-item.active svg{opacity:1;}
 .sidebar-bottom{margin-top:auto;padding:12px 16px 0;border-top:1px solid var(--border);}
-.mk-avatar-wrap{display:flex;align-items:center;gap:10px;}
-.mk-name{font-family:var(--font-data);font-size:12px;font-weight:600;color:#ffffff;line-height:1.2;}
+.mk-row{display:flex;align-items:center;gap:10px;cursor:pointer;}
+.mk-name{font-family:var(--font-data);font-size:12px;font-weight:600;color:#fff;line-height:1.2;}
 .mk-role{font-family:var(--font-data);font-size:10px;color:rgba(255,255,255,0.42);}
 
 /* MAIN */
-.main{flex:1;overflow-y:auto;overflow-x:hidden;padding:22px 24px;display:flex;flex-direction:column;gap:20px;scrollbar-width:thin;scrollbar-color:rgba(79,195,247,0.12) transparent;}
+.main{flex:1;overflow-y:auto;overflow-x:hidden;padding:22px 24px 40px;display:flex;flex-direction:column;gap:20px;scrollbar-width:thin;scrollbar-color:rgba(79,195,247,0.12) transparent;}
 .main::-webkit-scrollbar{width:3px;}.main::-webkit-scrollbar-thumb{background:rgba(79,195,247,0.15);border-radius:3px;}
 
-/* HEADER */
 .header{display:flex;align-items:flex-start;justify-content:space-between;}
-.header-left h1{font-family:var(--font-head);font-size:30px;font-weight:900;letter-spacing:-1.5px;line-height:1;}
-.header-left h1 span{color:var(--accent);}
-.header-left .sub{font-family:var(--font-data);font-size:11px;color:var(--text-muted);margin-top:5px;}
-.header-right{display:flex;gap:10px;align-items:center;}
-.pill{display:flex;align-items:center;gap:6px;border-radius:20px;padding:5px 12px;font-family:var(--font-data);font-size:11px;font-weight:500;}
-.pill-green{background:rgba(74,222,128,0.07);border:1px solid rgba(74,222,128,0.18);color:var(--green);}
-.status-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pg 2s infinite;}
+.h1{font-family:var(--font-head);font-size:30px;font-weight:900;letter-spacing:-1.5px;line-height:1;}
+.h1 span{color:var(--accent);}
+.hsub{font-family:var(--font-data);font-size:11px;color:var(--text-muted);margin-top:5px;}
+.hright{display:flex;gap:10px;align-items:center;}
+.pill-green{display:flex;align-items:center;gap:6px;border-radius:20px;padding:5px 12px;font-family:var(--font-data);font-size:11px;font-weight:500;background:rgba(74,222,128,0.07);border:1px solid rgba(74,222,128,0.18);color:var(--green);}
+.sdot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pg 2s infinite;}
 @keyframes pg{0%,100%{box-shadow:0 0 0 0 rgba(74,222,128,0.5);}50%{box-shadow:0 0 0 4px rgba(74,222,128,0);}}
-.refresh-btn{display:flex;align-items:center;gap:5px;background:transparent;border:1px solid var(--border-glow);color:var(--accent);border-radius:6px;padding:5px 12px;font-family:var(--font-data);font-size:11px;font-weight:600;cursor:pointer;letter-spacing:0.3px;}
+.refresh-btn{display:flex;align-items:center;gap:5px;background:transparent;border:1px solid var(--border-glow);color:var(--accent);border-radius:6px;padding:5px 12px;font-family:var(--font-data);font-size:11px;font-weight:600;cursor:pointer;}
 .refresh-btn:hover{background:rgba(79,195,247,0.06);}
 
-/* SECTION LABEL */
-.section-label{font-family:var(--font-head);font-size:10px;font-weight:900;letter-spacing:2.5px;text-transform:uppercase;color:var(--text-muted);display:flex;align-items:center;gap:10px;}
-.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+.sec-lbl{font-family:var(--font-head);font-size:10px;font-weight:900;letter-spacing:2.5px;text-transform:uppercase;color:var(--text-muted);display:flex;align-items:center;gap:10px;}
+.sec-lbl::after{content:'';flex:1;height:1px;background:var(--border);}
 
 /* CARDS */
 .card{background:rgba(255,255,255,0.028);backdrop-filter:blur(20px) saturate(160%);border:1px solid rgba(255,255,255,0.08);border-radius:14px;position:relative;overflow:hidden;transition:transform 0.2s,box-shadow 0.2s,border-color 0.2s;box-shadow:inset 0 1px 0 rgba(255,255,255,0.08),0 4px 20px rgba(0,0,0,0.3);}
-.card:hover{border-color:rgba(79,195,247,0.18);box-shadow:inset 0 1px 0 rgba(255,255,255,0.1),0 12px 40px rgba(0,0,0,0.45),0 0 0 1px rgba(79,195,247,0.08);transform:translateY(-2px);}
+.card:hover{border-color:rgba(79,195,247,0.18);box-shadow:inset 0 1px 0 rgba(255,255,255,0.1),0 12px 40px rgba(0,0,0,0.45);transform:translateY(-2px);}
 .card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(79,195,247,0.025) 0%,transparent 55%);pointer-events:none;}
 
-/* HERO ROI CARD */
-.roi-hero{padding:28px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px;background:linear-gradient(135deg,rgba(79,195,247,0.06) 0%,rgba(255,255,255,0.02) 60%);}
-.roi-hero-left{}
-.roi-hero-label{font-family:var(--font-head);font-size:10px;font-weight:900;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);margin-bottom:8px;}
-.roi-hero-val{font-family:var(--font-head);font-size:56px;font-weight:900;letter-spacing:-3px;line-height:1;color:var(--green);}
-.roi-hero-sub{font-family:var(--font-data);font-size:12px;color:var(--text-muted);margin-top:8px;}
-.roi-hero-right{display:flex;gap:32px;}
-.roi-hero-stat{}
-.roi-hero-stat-val{font-family:var(--font-head);font-size:28px;font-weight:900;letter-spacing:-1px;line-height:1;color:var(--text);}
-.roi-hero-stat-lbl{font-family:var(--font-data);font-size:10px;color:var(--text-muted);margin-top:4px;text-transform:uppercase;letter-spacing:0.5px;}
+/* HERO */
+.hero{padding:28px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px;background:linear-gradient(135deg,rgba(79,195,247,0.06) 0%,rgba(255,255,255,0.02) 60%);}
+.hero-lbl{font-family:var(--font-head);font-size:10px;font-weight:900;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);margin-bottom:8px;}
+.hero-val{font-family:var(--font-head);font-size:52px;font-weight:900;letter-spacing:-3px;line-height:1;color:var(--green);}
+.hero-sub{font-family:var(--font-data);font-size:12px;color:var(--text-muted);margin-top:8px;}
+.hero-stats{display:flex;gap:32px;}
+.hstat-val{font-family:var(--font-head);font-size:26px;font-weight:900;letter-spacing:-1px;line-height:1;}
+.hstat-lbl{font-family:var(--font-data);font-size:10px;color:var(--text-muted);margin-top:4px;text-transform:uppercase;letter-spacing:0.5px;}
 
-/* STAT GRID */
-.stat-grid{display:grid;gap:12px;}
-.stat-grid-4{grid-template-columns:repeat(4,1fr);}
-.stat-grid-3{grid-template-columns:repeat(3,1fr);}
-.stat-grid-2{grid-template-columns:repeat(2,1fr);}
-.stat-card{padding:18px 20px;}
-.stat-label{font-family:var(--font-head);font-size:9px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;}
-.stat-val{font-family:var(--font-head);font-size:32px;font-weight:900;letter-spacing:-1.5px;line-height:1;}
-.stat-val.accent{color:var(--accent);}
-.stat-val.green{color:var(--green);}
-.stat-val.yellow{color:var(--yellow);}
-.stat-val.purple{color:var(--purple);}
-.stat-sub{font-family:var(--font-data);font-size:10px;color:var(--text-muted);margin-top:5px;line-height:1.4;}
-.stat-badge{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-family:var(--font-data);font-weight:600;padding:2px 7px;border-radius:20px;margin-top:6px;}
-.badge-green{background:rgba(74,222,128,0.09);color:var(--green);border:1px solid rgba(74,222,128,0.2);}
-.badge-yellow{background:rgba(251,191,36,0.09);color:var(--yellow);border:1px solid rgba(251,191,36,0.2);}
-.badge-accent{background:rgba(79,195,247,0.09);color:var(--accent);border:1px solid rgba(79,195,247,0.2);}
-.badge-red{background:rgba(248,113,113,0.09);color:var(--red);border:1px solid rgba(248,113,113,0.2);}
+/* STAT GRIDS */
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.g2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+.sc{padding:18px 20px;}
+.slbl{font-family:var(--font-head);font-size:9px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;}
+.sval{font-family:var(--font-head);font-size:32px;font-weight:900;letter-spacing:-1.5px;line-height:1;}
+.sval.ac{color:var(--accent);}
+.sval.gr{color:var(--green);}
+.sval.pu{color:var(--purple);}
+.sval.ye{color:var(--yellow);}
+.ssub{font-family:var(--font-data);font-size:10px;color:var(--text-muted);margin-top:5px;line-height:1.4;}
+.badge{display:inline-flex;align-items:center;font-size:10px;font-family:var(--font-data);font-weight:600;padding:2px 7px;border-radius:20px;margin-top:6px;}
+.bg{background:rgba(74,222,128,0.09);color:var(--green);border:1px solid rgba(74,222,128,0.2);}
+.ba{background:rgba(79,195,247,0.09);color:var(--accent);border:1px solid rgba(79,195,247,0.2);}
+.by{background:rgba(251,191,36,0.09);color:var(--yellow);border:1px solid rgba(251,191,36,0.2);}
+.br{background:rgba(248,113,113,0.09);color:var(--red);border:1px solid rgba(248,113,113,0.2);}
 
 /* FUNNEL */
 .funnel-wrap{padding:20px 24px;}
-.funnel-title{font-family:var(--font-head);font-size:11px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:16px;}
-.funnel-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
-.funnel-label{font-family:var(--font-data);font-size:11px;color:var(--text-muted);width:100px;flex-shrink:0;}
-.funnel-bar-wrap{flex:1;height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;}
-.funnel-bar{height:100%;border-radius:3px;transition:width 0.8s cubic-bezier(0.34,1.56,0.64,1);}
-.funnel-count{font-family:var(--font-head);font-size:13px;font-weight:900;color:var(--text);width:36px;text-align:right;flex-shrink:0;}
-.funnel-pct{font-family:var(--font-data);font-size:10px;color:var(--text-dim);width:36px;text-align:right;flex-shrink:0;}
+.ftitle{font-family:var(--font-head);font-size:11px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:16px;}
+.frow{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.flbl{font-family:var(--font-data);font-size:11px;color:var(--text-muted);width:108px;flex-shrink:0;}
+.fbwrap{flex:1;height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;}
+.fbar{height:100%;border-radius:3px;transition:width 0.9s cubic-bezier(0.34,1.56,0.64,1);}
+.fcnt{font-family:var(--font-head);font-size:13px;font-weight:900;color:var(--text);width:32px;text-align:right;flex-shrink:0;}
+.fpct{font-family:var(--font-data);font-size:10px;color:var(--text-dim);width:32px;text-align:right;flex-shrink:0;}
 
-/* TIME SAVED TABLE */
-.time-table{padding:20px 24px;}
-.time-table-title{font-family:var(--font-head);font-size:11px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px;}
-.time-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
-.time-row:last-child{border-bottom:none;}
-.time-row-left{}
-.time-row-name{font-family:var(--font-data);font-size:12px;font-weight:600;color:var(--text);}
-.time-row-meta{font-family:var(--font-data);font-size:10px;color:var(--text-muted);margin-top:2px;}
-.time-row-right{text-align:right;}
-.time-row-hrs{font-family:var(--font-head);font-size:18px;font-weight:900;letter-spacing:-0.5px;color:var(--accent);}
-.time-row-rate{font-family:var(--font-data);font-size:9px;color:var(--text-dim);margin-top:2px;}
-.time-total-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0 0;}
-.time-total-label{font-family:var(--font-head);font-size:10px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);}
-.time-total-val{font-family:var(--font-head);font-size:26px;font-weight:900;letter-spacing:-1px;color:var(--green);}
+/* TIME TABLE */
+.ttable{padding:20px 24px;}
+.ttitle{font-family:var(--font-head);font-size:11px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px;}
+.trow{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.trow:last-of-type{border-bottom:none;}
+.tname{font-family:var(--font-data);font-size:12px;font-weight:600;color:var(--text);}
+.tmeta{font-family:var(--font-data);font-size:10px;color:var(--text-muted);margin-top:2px;}
+.thrs{font-family:var(--font-head);font-size:18px;font-weight:900;letter-spacing:-0.5px;color:var(--accent);}
+.trate{font-family:var(--font-data);font-size:9px;color:var(--text-dim);margin-top:2px;}
+.ttotal{display:flex;align-items:center;justify-content:space-between;padding:14px 0 4px;border-top:1px solid rgba(79,195,247,0.15);margin-top:4px;}
+.ttotal-lbl{font-family:var(--font-head);font-size:10px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);}
+.ttotal-val{font-family:var(--font-head);font-size:26px;font-weight:900;letter-spacing:-1px;color:var(--green);}
+.tdollar{display:flex;align-items:center;justify-content:space-between;}
+.tdollar-lbl{font-family:var(--font-data);font-size:11px;color:var(--text-muted);}
+.tdollar-val{font-family:var(--font-head);font-size:20px;font-weight:900;letter-spacing:-0.5px;color:var(--green);}
 
-/* MONTHLY ACTIVITY */
-.activity-grid{display:flex;gap:4px;align-items:flex-end;height:60px;padding:0 24px;}
-.act-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;}
-.act-bar{width:100%;border-radius:2px;background:rgba(79,195,247,0.25);transition:background 0.2s;}
-.act-bar:hover{background:rgba(79,195,247,0.5);}
-.act-bar-lbl{font-family:var(--font-data);font-size:8px;color:var(--text-dim);}
-.activity-header{display:flex;align-items:center;justify-content:space-between;padding:18px 24px 10px;}
-.activity-header-title{font-family:var(--font-head);font-size:11px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);}
-.activity-header-total{font-family:var(--font-head);font-size:18px;font-weight:900;letter-spacing:-0.5px;color:var(--accent);}
-.activity-footer{padding:10px 24px 18px;display:flex;gap:16px;}
-.act-legend{display:flex;align-items:center;gap:5px;font-family:var(--font-data);font-size:10px;color:var(--text-muted);}
-.act-dot{width:7px;height:7px;border-radius:2px;}
-
-/* LOADING */
-.skeleton{background:linear-gradient(90deg,rgba(255,255,255,0.04) 25%,rgba(255,255,255,0.08) 50%,rgba(255,255,255,0.04) 75%);background-size:200% 100%;animation:sk 1.5s infinite;}
-@keyframes sk{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
-.skel-val{height:32px;width:80px;border-radius:6px;display:inline-block;}
-.skel-sm{height:14px;width:60px;border-radius:4px;display:inline-block;}
+/* CHART CARDS */
+.chart-card{padding:20px 24px;}
+.chart-title{font-family:var(--font-head);font-size:11px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:16px;}
+.chart-wrap{position:relative;}
 
 .amb{display:none !important;}
 </style>
@@ -147,236 +128,166 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 <script src="/dashboard/settings-panel.js"></script>
 </head>
 <body>
-<div class="amb"></div>
 <div class="layout">
-  <!-- SIDEBAR -->
   <nav class="sidebar">
-    <div class="sidebar-logo-wrap" onclick="location.href='/'"><div class="sidebar-logo-text"><span style="color:#ffffff;">Inbound</span><span style="color:#4FC3F7;">OS</span></div></div>
-    <div class="nav-section"><div class="nav-section-label">Command</div>
+    <div class="sidebar-logo-wrap" onclick="goTo('dashboard')"><div class="logo-text"><span style="color:#fff;">Inbound</span><span style="color:#4FC3F7;">OS</span></div></div>
+    <div class="nav-section"><div class="nav-sec-lbl">Command</div>
       <div class="nav-item" onclick="goTo('dashboard')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>Dashboard</div>
       <div class="nav-item" onclick="goTo('agents')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="10" width="20" height="12" rx="2"/><path d="M12 2a5 5 0 0 1 5 5v3H7V7a5 5 0 0 1 5-5z"/><circle cx="12" cy="16" r="1.2" fill="currentColor" stroke="none"/></svg>Agents</div>
     </div>
-    <div class="nav-section"><div class="nav-section-label">Content</div>
+    <div class="nav-section"><div class="nav-sec-lbl">Content</div>
       <div class="nav-item" onclick="goTo('performance')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="4" height="20" rx="1"/><rect x="10" y="8" width="4" height="14" rx="1"/><rect x="18" y="4" width="4" height="18" rx="1"/></svg>Instagram</div>
       <div class="nav-item" onclick="goTo('pipeline')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Content Pipeline</div>
       <div class="nav-item" onclick="goTo('research')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Research</div>
     </div>
-    <div class="nav-section"><div class="nav-section-label">Revenue</div>
+    <div class="nav-section"><div class="nav-sec-lbl">Revenue</div>
       <div class="nav-item" onclick="goTo('clients')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Clients</div>
       <div class="nav-item" onclick="goTo('crm')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18v4H3z"/><path d="M3 10h18v4H3z"/><path d="M3 17h18v4H3z"/></svg>CRM</div>
       <div class="nav-item" onclick="goTo('sales-calls')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.74 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.66 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Sales Calls</div>
       <div class="nav-item active" onclick="goTo('roi')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>ROI Report</div>
     </div>
-    <div class="nav-section"><div class="nav-section-label">Intelligence</div>
+    <div class="nav-section"><div class="nav-sec-lbl">Intelligence</div>
       <div class="nav-item" onclick="goTo('sops')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>SOPs</div>
       <div class="nav-item" onclick="goTo('org-chart')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><path d="M12 7v3M12 10l-5 7M12 10l5 7"/></svg>Org Chart</div>
     </div>
-    <div class="sidebar-bottom"><div class="mk-avatar-wrap" onclick="window.__settingsOpen&&window.__settingsOpen()" style="cursor:pointer;"><img src="/micko.jpg" alt="MK" style="width:32px;height:32px;object-fit:cover;border-radius:50%;border:1px solid rgba(79,195,247,0.2);"/><div><div class="mk-name">Micko Cruz</div><div class="mk-role">Founder · InboundOS</div></div></div></div>
+    <div class="sidebar-bottom"><div class="mk-row" onclick="window.__settingsOpen&&window.__settingsOpen()"><img src="/micko.jpg" alt="MK" style="width:32px;height:32px;object-fit:cover;border-radius:50%;border:1px solid rgba(79,195,247,0.2);"/><div><div class="mk-name">Micko Cruz</div><div class="mk-role">Founder · InboundOS</div></div></div></div>
   </nav>
 
-  <!-- MAIN -->
-  <main class="main" id="main-content">
+  <main class="main">
     <div class="header">
-      <div class="header-left">
-        <h1>ROI <span>Report</span></h1>
-        <div class="sub" id="roi-date-sub">Loading…</div>
+      <div>
+        <div class="h1">ROI <span>Report</span></div>
+        <div class="hsub" id="roi-sub">Loading…</div>
       </div>
-      <div class="header-right">
-        <div class="pill pill-green"><div class="status-dot"></div>Live Data</div>
+      <div class="hright">
+        <div class="pill-green"><div class="sdot"></div>Live Data</div>
         <button class="refresh-btn" onclick="loadAll()">↻ Refresh</button>
       </div>
     </div>
 
-    <!-- HERO ROI CARD -->
-    <div class="card roi-hero">
-      <div class="roi-hero-left">
-        <div class="roi-hero-label">Total Time Saved This Month</div>
-        <div class="roi-hero-val" id="hero-hours">—</div>
-        <div class="roi-hero-sub">hours of manual work eliminated by InboundOS</div>
+    <!-- HERO -->
+    <div class="card hero">
+      <div>
+        <div class="hero-lbl">Total Time Saved (All Time)</div>
+        <div class="hero-val" id="hero-hours">—</div>
+        <div class="hero-sub">hours of manual work eliminated by InboundOS</div>
       </div>
-      <div class="roi-hero-right">
-        <div class="roi-hero-stat">
-          <div class="roi-hero-stat-val" id="hero-revenue">$—</div>
-          <div class="roi-hero-stat-lbl">Revenue Attributed</div>
-        </div>
-        <div class="roi-hero-stat">
-          <div class="roi-hero-stat-val" id="hero-calls">—</div>
-          <div class="roi-hero-stat-lbl">Calls Booked</div>
-        </div>
-        <div class="roi-hero-stat">
-          <div class="roi-hero-stat-val" id="hero-posts">—</div>
-          <div class="roi-hero-stat-lbl">Posts Published</div>
+      <div class="hero-stats">
+        <div><div class="hstat-val" id="hero-revenue" style="color:var(--green)">$—</div><div class="hstat-lbl">Revenue Attributed</div></div>
+        <div><div class="hstat-val" id="hero-calls" style="color:var(--accent)">—</div><div class="hstat-lbl">Calls Booked</div></div>
+        <div><div class="hstat-val" id="hero-posts" style="color:var(--accent)">—</div><div class="hstat-lbl">Posts Published</div></div>
+        <div><div class="hstat-val" id="hero-leads" style="color:var(--yellow)">—</div><div class="hstat-lbl">Leads Tracked</div></div>
+      </div>
+    </div>
+
+    <!-- CONTENT OUTPUT -->
+    <div class="sec-lbl">Content Output</div>
+    <div class="g4">
+      <div class="card sc">
+        <div class="slbl">Posts Published</div>
+        <div class="sval ac" id="s-posted">—</div>
+        <div class="ssub">Reels auto-posted via InboundOS</div>
+      </div>
+      <div class="card sc">
+        <div class="slbl">Scripts Generated</div>
+        <div class="sval" id="s-scripts">—</div>
+        <div class="ssub">Video scripts written by agents</div>
+        <div class="badge ba" id="b-scripts-hrs" style="display:none"></div>
+      </div>
+      <div class="card sc">
+        <div class="slbl">DMs Written</div>
+        <div class="sval" id="s-dms">—</div>
+        <div class="ssub">Outreach messages generated</div>
+        <div class="badge ba" id="b-dms-hrs" style="display:none"></div>
+      </div>
+      <div class="card sc">
+        <div class="slbl">Total AI Outputs</div>
+        <div class="sval pu" id="s-total">—</div>
+        <div class="ssub">All items generated by agents</div>
+      </div>
+    </div>
+
+    <!-- CHARTS ROW -->
+    <div class="sec-lbl">Activity & Pipeline</div>
+    <div class="g2">
+      <!-- 30-day output chart -->
+      <div class="card chart-card">
+        <div class="chart-title">AI Outputs — Last 30 Days</div>
+        <div class="chart-wrap" style="height:160px;"><canvas id="chart-activity"></canvas></div>
+      </div>
+      <!-- Lead stage donut -->
+      <div class="card chart-card">
+        <div class="chart-title">Lead Pipeline Breakdown</div>
+        <div style="display:flex;align-items:center;gap:24px;">
+          <div class="chart-wrap" style="height:160px;width:160px;flex-shrink:0;"><canvas id="chart-leads"></canvas></div>
+          <div id="lead-legend" style="display:flex;flex-direction:column;gap:8px;"></div>
         </div>
       </div>
     </div>
 
-    <!-- CONTENT SECTION -->
-    <div class="section-label">Content Output</div>
-    <div class="stat-grid stat-grid-4">
-      <div class="card stat-card">
-        <div class="stat-label">Posts Published</div>
-        <div class="stat-val accent" id="stat-posted">—</div>
-        <div class="stat-sub">Reels auto-posted via InboundOS</div>
-      </div>
-      <div class="card stat-card">
-        <div class="stat-label">Scripts Generated</div>
-        <div class="stat-val" id="stat-scripts">—</div>
-        <div class="stat-sub">Video scripts written by agents</div>
-        <div class="stat-badge badge-accent" id="badge-scripts-hrs"></div>
-      </div>
-      <div class="card stat-card">
-        <div class="stat-label">DMs Written</div>
-        <div class="stat-val" id="stat-dms">—</div>
-        <div class="stat-sub">Outreach messages generated</div>
-        <div class="stat-badge badge-accent" id="badge-dms-hrs"></div>
-      </div>
-      <div class="card stat-card">
-        <div class="stat-label">Total AI Outputs</div>
-        <div class="stat-val purple" id="stat-total-outputs">—</div>
-        <div class="stat-sub">All agent_items generated</div>
-      </div>
-    </div>
-
-    <!-- LEAD FUNNEL -->
-    <div class="section-label">Lead Funnel</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+    <!-- SALES CHART + FUNNEL -->
+    <div class="g2">
+      <!-- Sales funnel -->
       <div class="card">
         <div class="funnel-wrap">
-          <div class="funnel-title">Outreach Pipeline</div>
-          <div class="funnel-row">
-            <div class="funnel-label">Total Leads</div>
-            <div class="funnel-bar-wrap"><div class="funnel-bar" id="fbar-total" style="width:100%;background:rgba(79,195,247,0.4);"></div></div>
-            <div class="funnel-count" id="fc-total">—</div>
-            <div class="funnel-pct">100%</div>
-          </div>
-          <div class="funnel-row">
-            <div class="funnel-label">Contacted</div>
-            <div class="funnel-bar-wrap"><div class="funnel-bar" id="fbar-contacted" style="width:0%;background:rgba(79,195,247,0.55);"></div></div>
-            <div class="funnel-count" id="fc-contacted">—</div>
-            <div class="funnel-pct" id="fpct-contacted">—%</div>
-          </div>
-          <div class="funnel-row">
-            <div class="funnel-label">Replied</div>
-            <div class="funnel-bar-wrap"><div class="funnel-bar" id="fbar-replied" style="width:0%;background:rgba(74,222,128,0.5);"></div></div>
-            <div class="funnel-count" id="fc-replied">—</div>
-            <div class="funnel-pct" id="fpct-replied">—%</div>
-          </div>
-          <div class="funnel-row">
-            <div class="funnel-label">Needs Followup</div>
-            <div class="funnel-bar-wrap"><div class="funnel-bar" id="fbar-followup" style="width:0%;background:rgba(251,191,36,0.5);"></div></div>
-            <div class="funnel-count" id="fc-followup">—</div>
-            <div class="funnel-pct" id="fpct-followup">—%</div>
-          </div>
-          <div class="funnel-row">
-            <div class="funnel-label">Disqualified</div>
-            <div class="funnel-bar-wrap"><div class="funnel-bar" id="fbar-disq" style="width:0%;background:rgba(248,113,113,0.4);"></div></div>
-            <div class="funnel-count" id="fc-disq">—</div>
-            <div class="funnel-pct" id="fpct-disq">—%</div>
-          </div>
+          <div class="ftitle">Outreach Funnel</div>
+          <div class="frow"><div class="flbl">Total Leads</div><div class="fbwrap"><div class="fbar" id="fb-total" style="width:100%;background:rgba(79,195,247,0.4);"></div></div><div class="fcnt" id="fc-total">—</div><div class="fpct">100%</div></div>
+          <div class="frow"><div class="flbl">Contacted</div><div class="fbwrap"><div class="fbar" id="fb-contacted" style="width:0%;background:rgba(79,195,247,0.6);"></div></div><div class="fcnt" id="fc-contacted">—</div><div class="fpct" id="fp-contacted">—%</div></div>
+          <div class="frow"><div class="flbl">Replied</div><div class="fbwrap"><div class="fbar" id="fb-replied" style="width:0%;background:rgba(74,222,128,0.5);"></div></div><div class="fcnt" id="fc-replied">—</div><div class="fpct" id="fp-replied">—%</div></div>
+          <div class="frow"><div class="flbl">Needs Followup</div><div class="fbwrap"><div class="fbar" id="fb-followup" style="width:0%;background:rgba(251,191,36,0.5);"></div></div><div class="fcnt" id="fc-followup">—</div><div class="fpct" id="fp-followup">—%</div></div>
+          <div class="frow"><div class="flbl">Disqualified</div><div class="fbwrap"><div class="fbar" id="fb-disq" style="width:0%;background:rgba(248,113,113,0.4);"></div></div><div class="fcnt" id="fc-disq">—</div><div class="fpct" id="fp-disq">—%</div></div>
         </div>
       </div>
 
-      <!-- SALES STATS -->
+      <!-- Sales stats -->
       <div style="display:flex;flex-direction:column;gap:12px;">
-        <div class="stat-grid stat-grid-2" style="gap:12px;">
-          <div class="card stat-card">
-            <div class="stat-label">Calls Booked</div>
-            <div class="stat-val accent" id="stat-calls-total">—</div>
-            <div class="stat-sub">Total sales calls</div>
-          </div>
-          <div class="card stat-card">
-            <div class="stat-label">Qualified</div>
-            <div class="stat-val green" id="stat-calls-qualified">—</div>
-            <div class="stat-sub">Passed qualification</div>
-          </div>
+        <div class="g2" style="gap:12px;">
+          <div class="card sc"><div class="slbl">Calls Booked</div><div class="sval ac" id="s-calls">—</div><div class="ssub">Total sales calls</div></div>
+          <div class="card sc"><div class="slbl">Qualified</div><div class="sval gr" id="s-qualified">—</div><div class="ssub">Passed qualification</div></div>
         </div>
-        <div class="stat-grid stat-grid-2" style="gap:12px;">
-          <div class="card stat-card">
-            <div class="stat-label">Deals Closed</div>
-            <div class="stat-val green" id="stat-closed">—</div>
-            <div class="stat-sub">Clients won</div>
-            <div class="stat-badge badge-green" id="badge-close-rate"></div>
-          </div>
-          <div class="card stat-card">
-            <div class="stat-label">Revenue</div>
-            <div class="stat-val green" id="stat-revenue">$—</div>
-            <div class="stat-sub">From closed deals</div>
-            <div class="stat-badge badge-accent" id="badge-avg-deal"></div>
-          </div>
+        <div class="g2" style="gap:12px;">
+          <div class="card sc"><div class="slbl">Deals Closed</div><div class="sval gr" id="s-closed">—</div><div class="ssub">Clients won</div><div class="badge bg" id="b-close-rate" style="display:none"></div></div>
+          <div class="card sc"><div class="slbl">Revenue</div><div class="sval gr" id="s-revenue">$—</div><div class="ssub">From closed deals</div><div class="badge ba" id="b-avg-deal" style="display:none"></div></div>
         </div>
       </div>
     </div>
 
-    <!-- TIME SAVED BREAKDOWN -->
-    <div class="section-label">Time Saved Breakdown</div>
-    <div class="card">
-      <div class="time-table">
-        <div class="time-table-title">Hours Eliminated by InboundOS Agents</div>
-        <div class="time-row">
-          <div class="time-row-left">
-            <div class="time-row-name">Reel Scripts</div>
-            <div class="time-row-meta" id="time-scripts-meta">— scripts × 30 min each</div>
-          </div>
-          <div class="time-row-right">
-            <div class="time-row-hrs" id="time-scripts-hrs">—h</div>
-            <div class="time-row-rate">@ 30 min/script</div>
-          </div>
-        </div>
-        <div class="time-row">
-          <div class="time-row-left">
-            <div class="time-row-name">DM Outreach Messages</div>
-            <div class="time-row-meta" id="time-dms-meta">— DMs × 5 min each</div>
-          </div>
-          <div class="time-row-right">
-            <div class="time-row-hrs" id="time-dms-hrs">—h</div>
-            <div class="time-row-rate">@ 5 min/DM</div>
-          </div>
-        </div>
-        <div class="time-row">
-          <div class="time-row-left">
-            <div class="time-row-name">IG Scheduling & Posting</div>
-            <div class="time-row-meta" id="time-posts-meta">— posts × 10 min each</div>
-          </div>
-          <div class="time-row-right">
-            <div class="time-row-hrs" id="time-posts-hrs">—h</div>
-            <div class="time-row-rate">@ 10 min/post</div>
-          </div>
-        </div>
-        <div class="time-row">
-          <div class="time-row-left">
-            <div class="time-row-name">Sales Call Research</div>
-            <div class="time-row-meta" id="time-calls-meta">— calls × 20 min prep each</div>
-          </div>
-          <div class="time-row-right">
-            <div class="time-row-hrs" id="time-calls-hrs">—h</div>
-            <div class="time-row-rate">@ 20 min/call</div>
-          </div>
-        </div>
-        <div style="border-top:1px solid rgba(79,195,247,0.15);margin-top:4px;">
-          <div class="time-total-row">
-            <div class="time-total-label">Total Hours Saved</div>
-            <div class="time-total-val" id="time-total">—h</div>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;">
-            <div style="font-family:var(--font-data);font-size:11px;color:var(--text-muted);">At $50/hr freelancer rate, that's</div>
-            <div style="font-family:var(--font-head);font-size:20px;font-weight:900;letter-spacing:-0.5px;color:var(--green);" id="time-dollar-value">$—</div>
-          </div>
-        </div>
-      </div>
+    <!-- REVENUE CHART -->
+    <div class="sec-lbl">Revenue Over Time</div>
+    <div class="card chart-card">
+      <div class="chart-title">Closed Deal Value by Month</div>
+      <div class="chart-wrap" style="height:160px;"><canvas id="chart-revenue"></canvas></div>
     </div>
 
-    <!-- ACTIVITY CHART -->
-    <div class="section-label">30-Day Activity</div>
+    <!-- TIME SAVED -->
+    <div class="sec-lbl">Time Saved Breakdown</div>
     <div class="card">
-      <div class="activity-header">
-        <div class="activity-header-title">AI Outputs Generated</div>
-        <div class="activity-header-total" id="activity-total-label">— total this month</div>
-      </div>
-      <div class="activity-grid" id="activity-bars"></div>
-      <div class="activity-footer">
-        <div class="act-legend"><div class="act-dot" style="background:rgba(79,195,247,0.5);"></div>Scripts</div>
-        <div class="act-legend"><div class="act-dot" style="background:rgba(74,222,128,0.5);"></div>DMs</div>
-        <div class="act-legend"><div class="act-dot" style="background:rgba(168,139,250,0.5);"></div>Other</div>
+      <div class="ttable">
+        <div class="ttitle">Hours Eliminated by InboundOS Agents</div>
+        <div class="trow">
+          <div><div class="tname">Reel Scripts</div><div class="tmeta" id="t-scripts-meta">—</div></div>
+          <div style="text-align:right"><div class="thrs" id="t-scripts-hrs">—h</div><div class="trate">@ 30 min/script</div></div>
+        </div>
+        <div class="trow">
+          <div><div class="tname">DM Outreach Messages</div><div class="tmeta" id="t-dms-meta">—</div></div>
+          <div style="text-align:right"><div class="thrs" id="t-dms-hrs">—h</div><div class="trate">@ 5 min/DM</div></div>
+        </div>
+        <div class="trow">
+          <div><div class="tname">IG Scheduling & Posting</div><div class="tmeta" id="t-posts-meta">—</div></div>
+          <div style="text-align:right"><div class="thrs" id="t-posts-hrs">—h</div><div class="trate">@ 10 min/post</div></div>
+        </div>
+        <div class="trow">
+          <div><div class="tname">Sales Call Prep</div><div class="tmeta" id="t-calls-meta">—</div></div>
+          <div style="text-align:right"><div class="thrs" id="t-calls-hrs">—h</div><div class="trate">@ 20 min/call</div></div>
+        </div>
+        <div class="ttotal">
+          <div class="ttotal-lbl">Total Hours Saved</div>
+          <div class="ttotal-val" id="t-total">—h</div>
+        </div>
+        <div class="tdollar">
+          <div class="tdollar-lbl">At $50/hr freelancer rate, that's</div>
+          <div class="tdollar-val" id="t-dollar">$—</div>
+        </div>
       </div>
     </div>
 
@@ -385,190 +296,260 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 </div>
 
 <script>
-(function(){
-  var _s=null;try{_s=JSON.parse(localStorage.getItem('sb_session')||'null');}catch(e){}
-  window._sbSession=_s||{};
-})();
+var _sbSess = null;
+try { _sbSess = JSON.parse(localStorage.getItem('sb_session') || 'null'); } catch(e) {}
+_sbSess = _sbSess || {};
 
-const SUPA_URL = 'https://jotmhirlsitjdrxsxkow.supabase.co';
-const SUPA_ANON = window._sbSession.client_supabase_anon || '';
-const SUPA_TOKEN = window._sbSession.access_token || SUPA_ANON;
-const CLIENT_ID = window._sbSession.client_id || '';
+const SUPA_URL  = _sbSess.client_supabase_url || 'https://cscfbuhwlfhblxprkwnh.supabase.co';
+const SUPA_ANON = _sbSess.client_supabase_anon || '';
+const SUPA_TOK  = _sbSess.access_token || SUPA_ANON;
+const CLIENT_ID = _sbSess.client_id || '';
 
-const _rHeaders = {
-  'apikey': SUPA_ANON,
-  'Authorization': `Bearer ${SUPA_TOKEN}`,
-  'Content-Type': 'application/json'
-};
+const H = { 'apikey': SUPA_ANON, 'Authorization': `Bearer ${SUPA_TOK}` };
 
 function goTo(page) {
   var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','roi','login'];
-  var p=window.location.pathname.split('/').filter(Boolean);
-  var seg=p[0]||'';
-  var slug=pages.indexOf(seg)===-1?seg:'';
-  if(!slug){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');slug=v?v[2]:'';}
-  if(!slug){window.location.href='/login';return;}
-  window.location.href='/'+slug+'/'+page;
+  var slug = _sbSess.client_slug || '';
+  if (!slug) { var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)'); slug=v?v[2]:''; }
+  if (!slug) { window.location.href='/login'; return; }
+  window.location.href = '/'+slug+'/'+page;
 }
 
-async function sb(table, params) {
-  const url = `${SUPA_URL}/rest/v1/${table}?${params}`;
-  const res = await fetch(url, { headers: _rHeaders });
-  if (!res.ok) return [];
-  return res.json();
+async function sbGet(table, qs) {
+  try {
+    const r = await fetch(`${SUPA_URL}/rest/v1/${table}?${qs}`, { headers: H });
+    if (!r.ok) { console.warn(table, r.status, await r.text()); return []; }
+    return await r.json();
+  } catch(e) { console.error(table, e); return []; }
 }
+
+function set(id, v) { const el=document.getElementById(id); if(el) el.textContent=v; }
+function setBar(id, pct) { const el=document.getElementById(id); if(el) el.style.width=Math.max(2,Math.round(pct))+'%'; }
+function setPct(id, n, tot) { const el=document.getElementById(id); if(el) el.textContent=tot>0?Math.round(n/tot*100)+'%':'0%'; }
+function show(id, txt) { const el=document.getElementById(id); if(el){el.textContent=txt;el.style.display='inline-flex';} }
+function r1(n) { return Math.round(n*10)/10; }
+
+let chartActivity = null, chartLeads = null, chartRevenue = null;
 
 async function loadAll() {
-  const now = new Date();
-  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-  const monthEnd = new Date(now.getFullYear(), now.getMonth()+1, 0).toISOString();
+  document.getElementById('roi-sub').textContent = 'Loading live data from Supabase…';
 
-  document.getElementById('roi-date-sub').textContent =
-    now.toLocaleString('default',{month:'long'})+' '+now.getFullYear()+' · Live from Supabase';
+  const cid = CLIENT_ID ? `client_id=eq.${CLIENT_ID}&` : '';
 
-  // Fetch all in parallel
   const [items, leads, followup, calls] = await Promise.all([
-    sb('agent_items', `select=id,type,status,created_at&client_id=eq.${CLIENT_ID}&created_at=gte.${monthStart}`),
-    sb('outreach_leads', `select=id,opener_sent_at,stage,stage_label,disqualify_reason,followup_count&created_at=gte.${monthStart}`),
-    sb('leads_needing_followup', `select=id`),
-    sb('sales_calls', `select=id,qualified,closed,deal_value,created_at&created_at=gte.${monthStart}`)
+    sbGet('agent_items',         `${cid}select=id,type,status,created_at&order=created_at.asc`),
+    sbGet('outreach_leads',      `select=id,opener_sent_at,stage,stage_label,disqualify_reason,followup_count,created_at`),
+    sbGet('leads_needing_followup', `select=id`),
+    sbGet('sales_calls',         `select=id,qualified,closed,deal_value,created_at&order=created_at.asc`)
   ]);
 
-  // --- CONTENT STATS ---
-  const posted = items.filter(i => i.status === 'posted').length;
-  const scripts = items.filter(i => i.type === 'script' || i.type === 'reel_script').length;
-  const dms = items.filter(i => i.type === 'dm' || i.type === 'outreach_dm' || i.type === 'dm_reply').length;
-  const totalOutputs = items.length;
+  const now = new Date();
+  document.getElementById('roi-sub').textContent =
+    'All-time data · Last refreshed ' + now.toLocaleTimeString();
 
-  set('stat-posted', posted);
-  set('stat-scripts', scripts);
-  set('stat-dms', dms);
-  set('stat-total-outputs', totalOutputs);
+  // --- CONTENT ---
+  const posted  = items.filter(i => i.status === 'posted').length;
+  const scripts = items.filter(i => /script/i.test(i.type||'')).length;
+  const dms     = items.filter(i => /^dm/i.test(i.type||'')).length;
+  const total   = items.length;
 
-  const scriptHrs = Math.round(scripts * 30 / 60 * 10) / 10;
-  const dmHrs = Math.round(dms * 5 / 60 * 10) / 10;
-  const postHrs = Math.round(posted * 10 / 60 * 10) / 10;
+  set('s-posted', posted);
+  set('s-scripts', scripts);
+  set('s-dms', dms);
+  set('s-total', total);
+  set('hero-posts', posted);
 
-  if (scriptHrs > 0) document.getElementById('badge-scripts-hrs').textContent = scriptHrs+'h saved';
-  if (dmHrs > 0) document.getElementById('badge-dms-hrs').textContent = dmHrs+'h saved';
+  const scriptHrs = r1(scripts * 30 / 60);
+  const dmHrs     = r1(dms * 5 / 60);
+  const postHrs   = r1(posted * 10 / 60);
 
-  // --- LEAD FUNNEL ---
+  if (scriptHrs > 0) show('b-scripts-hrs', scriptHrs+'h saved');
+  if (dmHrs > 0)     show('b-dms-hrs', dmHrs+'h saved');
+
+  // --- LEADS ---
   const totalLeads = leads.length;
-  const contacted = leads.filter(l => l.opener_sent_at).length;
-  const replied = leads.filter(l => l.stage >= 2).length;
-  const disq = leads.filter(l => l.disqualify_reason).length;
-  const followupCount = followup.length;
+  const contacted  = leads.filter(l => l.opener_sent_at).length;
+  const replied    = leads.filter(l => (l.stage||0) >= 2).length;
+  const disq       = leads.filter(l => l.disqualify_reason).length;
+  const fu         = followup.length;
 
   set('fc-total', totalLeads);
   set('fc-contacted', contacted);
   set('fc-replied', replied);
-  set('fc-followup', followupCount);
+  set('fc-followup', fu);
   set('fc-disq', disq);
+  set('hero-leads', totalLeads);
 
   if (totalLeads > 0) {
-    setBar('fbar-contacted', contacted/totalLeads*100);
-    setBar('fbar-replied', replied/totalLeads*100);
-    setBar('fbar-followup', followupCount/totalLeads*100);
-    setBar('fbar-disq', disq/totalLeads*100);
-    setPct('fpct-contacted', contacted, totalLeads);
-    setPct('fpct-replied', replied, totalLeads);
-    setPct('fpct-followup', followupCount, totalLeads);
-    setPct('fpct-disq', disq, totalLeads);
+    setBar('fb-contacted', contacted/totalLeads*100);
+    setBar('fb-replied', replied/totalLeads*100);
+    setBar('fb-followup', fu/totalLeads*100);
+    setBar('fb-disq', disq/totalLeads*100);
+    setPct('fp-contacted', contacted, totalLeads);
+    setPct('fp-replied', replied, totalLeads);
+    setPct('fp-followup', fu, totalLeads);
+    setPct('fp-disq', disq, totalLeads);
   }
 
   // --- SALES ---
   const callsTotal = calls.length;
-  const qualified = calls.filter(c => c.qualified).length;
-  const closed = calls.filter(c => c.closed).length;
-  const revenue = calls.filter(c => c.closed).reduce((s, c) => s + (c.deal_value || 0), 0);
-  const avgDeal = closed > 0 ? Math.round(revenue / closed) : 0;
-  const closeRate = callsTotal > 0 ? Math.round(closed/callsTotal*100) : 0;
+  const qualified  = calls.filter(c => c.qualified).length;
+  const closed     = calls.filter(c => c.closed).length;
+  const revenue    = calls.filter(c => c.closed).reduce((s,c) => s+(c.deal_value||0), 0);
+  const avgDeal    = closed > 0 ? Math.round(revenue/closed) : 0;
+  const closeRate  = callsTotal > 0 ? Math.round(closed/callsTotal*100) : 0;
 
-  set('stat-calls-total', callsTotal);
-  set('stat-calls-qualified', qualified);
-  set('stat-closed', closed);
-  set('stat-revenue', '$'+revenue.toLocaleString());
+  set('s-calls', callsTotal);
+  set('s-qualified', qualified);
+  set('s-closed', closed);
+  set('s-revenue', '$'+revenue.toLocaleString());
   set('hero-revenue', '$'+revenue.toLocaleString());
   set('hero-calls', callsTotal);
-  set('hero-posts', posted);
 
-  if (avgDeal > 0) document.getElementById('badge-avg-deal').textContent = 'avg $'+avgDeal.toLocaleString();
-  if (closeRate > 0) document.getElementById('badge-close-rate').textContent = closeRate+'% close rate';
+  if (avgDeal > 0)   show('b-avg-deal', 'avg $'+avgDeal.toLocaleString());
+  if (closeRate > 0) show('b-close-rate', closeRate+'% close rate');
 
   // --- TIME SAVED ---
-  const callHrs = Math.round(callsTotal * 20 / 60 * 10) / 10;
-  const totalHrs = Math.round((scriptHrs + dmHrs + postHrs + callHrs) * 10) / 10;
+  const callHrs  = r1(callsTotal * 20 / 60);
+  const totalHrs = r1(scriptHrs + dmHrs + postHrs + callHrs);
   const dollarVal = Math.round(totalHrs * 50);
 
-  document.getElementById('time-scripts-meta').textContent = scripts+' scripts × 30 min each';
-  document.getElementById('time-dms-meta').textContent = dms+' DMs × 5 min each';
-  document.getElementById('time-posts-meta').textContent = posted+' posts × 10 min each';
-  document.getElementById('time-calls-meta').textContent = callsTotal+' calls × 20 min prep each';
-  document.getElementById('time-scripts-hrs').textContent = scriptHrs+'h';
-  document.getElementById('time-dms-hrs').textContent = dmHrs+'h';
-  document.getElementById('time-posts-hrs').textContent = postHrs+'h';
-  document.getElementById('time-calls-hrs').textContent = callHrs+'h';
-  document.getElementById('time-total').textContent = totalHrs+'h';
-  document.getElementById('time-dollar-value').textContent = '$'+dollarVal.toLocaleString();
-  document.getElementById('hero-hours').textContent = totalHrs+'h';
+  set('t-scripts-meta', scripts+' scripts × 30 min each');
+  set('t-dms-meta', dms+' DMs × 5 min each');
+  set('t-posts-meta', posted+' posts × 10 min each');
+  set('t-calls-meta', callsTotal+' calls × 20 min prep each');
+  set('t-scripts-hrs', scriptHrs+'h');
+  set('t-dms-hrs', dmHrs+'h');
+  set('t-posts-hrs', postHrs+'h');
+  set('t-calls-hrs', callHrs+'h');
+  set('t-total', totalHrs+'h');
+  set('t-dollar', '$'+dollarVal.toLocaleString());
+  set('hero-hours', totalHrs+'h');
 
-  // --- ACTIVITY CHART (last 30 days) ---
+  // --- CHARTS ---
   buildActivityChart(items);
-
-  document.getElementById('activity-total-label').textContent = totalOutputs+' total this month';
+  buildLeadDonut(contacted, replied, fu, disq, totalLeads);
+  buildRevenueChart(calls);
 }
 
+// Chart defaults
+Chart.defaults.color = 'rgba(255,255,255,0.3)';
+Chart.defaults.font.family = "'DM Sans', sans-serif";
+Chart.defaults.font.size = 10;
+
 function buildActivityChart(items) {
-  const bars = document.getElementById('activity-bars');
-  bars.innerHTML = '';
   const days = {};
   const now = new Date();
   for (let i = 29; i >= 0; i--) {
-    const d = new Date(now);
-    d.setDate(d.getDate() - i);
-    const key = d.toISOString().slice(0,10);
-    days[key] = 0;
+    const d = new Date(now); d.setDate(d.getDate()-i);
+    days[d.toISOString().slice(0,10)] = 0;
   }
   items.forEach(item => {
-    const key = (item.created_at||'').slice(0,10);
-    if (key in days) days[key]++;
+    const k = (item.created_at||'').slice(0,10);
+    if (k in days) days[k]++;
   });
-  const vals = Object.values(days);
-  const max = Math.max(...vals, 1);
-  const keys = Object.keys(days);
-  keys.forEach((key, i) => {
-    const v = days[key];
-    const pct = Math.max(4, Math.round(v/max*100));
-    const isToday = key === now.toISOString().slice(0,10);
-    const showLabel = (i % 5 === 0) || isToday;
-    const d = parseInt(key.slice(8));
-    const wrap = document.createElement('div');
-    wrap.className = 'act-bar-wrap';
-    wrap.title = key+': '+v+' outputs';
-    const bar = document.createElement('div');
-    bar.className = 'act-bar';
-    bar.style.height = pct+'%';
-    bar.style.background = isToday ? 'rgba(79,195,247,0.7)' : 'rgba(79,195,247,0.25)';
-    const lbl = document.createElement('div');
-    lbl.className = 'act-bar-lbl';
-    lbl.textContent = showLabel ? d : '';
-    wrap.appendChild(bar);
-    wrap.appendChild(lbl);
-    bars.appendChild(wrap);
+
+  const labels = Object.keys(days).map(k => {
+    const d = new Date(k); return (d.getMonth()+1)+'/'+(d.getDate());
+  });
+  const data = Object.values(days);
+
+  if (chartActivity) chartActivity.destroy();
+  const ctx = document.getElementById('chart-activity').getContext('2d');
+  chartActivity = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        data,
+        backgroundColor: 'rgba(79,195,247,0.3)',
+        hoverBackgroundColor: 'rgba(79,195,247,0.6)',
+        borderRadius: 3,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { title: (i) => i[0].label, label: (i) => i.raw+' outputs' } } },
+      scales: {
+        x: { grid: { display: false }, ticks: { maxTicksLimit: 8, color: 'rgba(255,255,255,0.2)' }, border: { display: false } },
+        y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: 'rgba(255,255,255,0.2)', maxTicksLimit: 4 }, border: { display: false } }
+      }
+    }
   });
 }
 
-function set(id, val) {
-  const el = document.getElementById(id);
-  if (el) el.textContent = val;
+function buildLeadDonut(contacted, replied, fu, disq, total) {
+  const untouched = Math.max(0, total - contacted - disq);
+  const data = [replied, contacted - replied, fu, disq, untouched];
+  const labels = ['Replied', 'Contacted', 'Needs Followup', 'Disqualified', 'Untouched'];
+  const colors = ['rgba(74,222,128,0.8)', 'rgba(79,195,247,0.8)', 'rgba(251,191,36,0.8)', 'rgba(248,113,113,0.7)', 'rgba(255,255,255,0.1)'];
+
+  // Legend
+  const leg = document.getElementById('lead-legend');
+  leg.innerHTML = '';
+  labels.forEach((lbl, i) => {
+    if (data[i] === 0) return;
+    leg.innerHTML += `<div style="display:flex;align-items:center;gap:7px;"><div style="width:8px;height:8px;border-radius:2px;background:${colors[i]};flex-shrink:0;"></div><div style="font-family:var(--font-data);font-size:10px;color:var(--text-muted);">${lbl} <span style="color:var(--text);font-weight:600;">${data[i]}</span></div></div>`;
+  });
+
+  if (chartLeads) chartLeads.destroy();
+  const ctx = document.getElementById('chart-leads').getContext('2d');
+  chartLeads = new Chart(ctx, {
+    type: 'doughnut',
+    data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: 0, hoverOffset: 4 }] },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      cutout: '68%',
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: (i) => ' '+i.label+': '+i.raw } } }
+    }
+  });
 }
-function setBar(id, pct) {
-  const el = document.getElementById(id);
-  if (el) el.style.width = Math.max(2, Math.round(pct))+'%';
-}
-function setPct(id, n, total) {
-  const el = document.getElementById(id);
-  if (el) el.textContent = total>0?Math.round(n/total*100)+'%':'0%';
+
+function buildRevenueChart(calls) {
+  const months = {};
+  calls.filter(c => c.closed && c.deal_value > 0).forEach(c => {
+    const k = (c.created_at||'').slice(0,7);
+    if (!k) return;
+    months[k] = (months[k]||0) + (c.deal_value||0);
+  });
+
+  const sorted = Object.keys(months).sort();
+  if (sorted.length === 0) {
+    // No data — show placeholder
+    const el = document.getElementById('chart-revenue').parentElement;
+    el.innerHTML = '<div style="height:160px;display:flex;align-items:center;justify-content:center;font-family:var(--font-data);font-size:11px;color:var(--text-dim);">No closed deals yet — data will appear here when deals are marked closed in Sales Calls.</div>';
+    return;
+  }
+
+  const labels = sorted.map(k => { const [y,m] = k.split('-'); return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][parseInt(m)-1]+' '+y.slice(2); });
+  const data = sorted.map(k => months[k]);
+
+  if (chartRevenue) chartRevenue.destroy();
+  const ctx = document.getElementById('chart-revenue').getContext('2d');
+  chartRevenue = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Revenue',
+        data,
+        backgroundColor: 'rgba(74,222,128,0.35)',
+        hoverBackgroundColor: 'rgba(74,222,128,0.6)',
+        borderRadius: 4,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: (i) => ' $'+i.raw.toLocaleString() } } },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: 'rgba(255,255,255,0.2)' }, border: { display: false } },
+        y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: 'rgba(255,255,255,0.2)', callback: v => '$'+v.toLocaleString() }, border: { display: false } }
+      }
+    }
+  });
 }
 
 loadAll();

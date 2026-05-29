@@ -885,11 +885,21 @@ function forgetDeletedTitle(title) {
 }
 
 async function supaDeleteItem(id) {
-  if (!id) return;
-  await fetch(`${SUPA_URL}/rest/v1/agent_items?id=eq.${id}`, {
-    method: 'DELETE',
-    headers: { 'apikey': SUPA_KEY, 'Authorization': `Bearer ${_sbSession.access_token || SUPA_KEY}`, 'Prefer': 'return=minimal' }
-  });
+  if (!id) return false;
+  try {
+    const res = await fetch(`${SUPA_URL}/rest/v1/agent_items?id=eq.${id}`, {
+      method: 'DELETE',
+      headers: { 'apikey': SUPA_KEY, 'Authorization': `Bearer ${_sbSession.access_token || SUPA_KEY}`, 'Prefer': 'return=minimal' }
+    });
+    if (!res.ok) {
+      console.error('[pipeline] DELETE failed', res.status, await res.text());
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.error('[pipeline] DELETE error', err);
+    return false;
+  }
 }
 
 function trashCard(e, btn) {
@@ -916,25 +926,42 @@ function trashCard(e, btn) {
   confirm.querySelector('.trash-confirm-yes').onclick = async (ev) => {
     ev.stopPropagation();
     const supaId = card.dataset.supaId || card.dataset.id;
+    card.style.opacity = '0.4';
+    const isSupaCard = !!card.dataset.supaId;
+    if (isSupaCard) {
+      const ok = await supaDeleteItem(supaId);
+      if (!ok) {
+        card.style.opacity = '';
+        confirm.remove();
+        btn.style.display = '';
+        alert('Delete failed — check console for details.');
+        return;
+      }
+    }
     rememberDeletedCard(card);
     localStorage.removeItem(cardKey(card));
-    card.style.opacity = '0.4';
-    await supaDeleteItem(supaId);
     card.remove();
     updateCounts();
     serializeBoard();
   };
 }
 
-function trashFromModal() {
+async function trashFromModal() {
   if (!scriptModalCard) { closeScriptModal(); return; }
   if (!confirm('Delete this script? This cannot be undone.')) return;
   const card = scriptModalCard;
   const supaId = card.dataset.supaId || card.dataset.id;
+  const isSupaCard = !!card.dataset.supaId;
   closeScriptModal();
+  if (isSupaCard) {
+    const ok = await supaDeleteItem(supaId);
+    if (!ok) {
+      alert('Delete failed — check console for details.');
+      return;
+    }
+  }
   rememberDeletedCard(card);
   localStorage.removeItem(cardKey(card));
-  supaDeleteItem(supaId);
   card.remove();
   updateCounts();
   serializeBoard();

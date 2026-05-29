@@ -341,7 +341,7 @@ async function loadAll() {
   const [items, leads, followup, calls] = await Promise.all([
     sbGet('agent_items',         `${cid}select=id,type,status,created_at&status=neq.trashed&order=created_at.asc`),
     sbGet('outreach_leads',      `select=id,opener_sent_at,stage,stage_label,disqualify_reason,followup_count,created_at`),
-    sbGet('leads_needing_followup', `select=id`),
+    sbGet('leads_needing_followup', `select=ig_handle`),
     sbGet('sales_calls',         `select=id,qualified,closed,deal_value,created_at&order=created_at.asc`)
   ]);
 

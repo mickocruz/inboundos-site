@@ -886,17 +886,9 @@ function forgetDeletedTitle(title) {
 
 async function supaDeleteItem(id) {
   if (!id) return;
-  const key = SUPA_SVC || SUPA_TOKEN;
-  // Patch status to 'trashed' first — filtered out on reload even if DELETE fails
-  await fetch(`${SUPA_URL}/rest/v1/agent_items?id=eq.${id}`, {
-    method: 'PATCH',
-    headers: { 'apikey': key, 'Authorization': `Bearer ${key}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-    body: JSON.stringify({ status: 'trashed' })
-  });
-  // Also hard-delete
   await fetch(`${SUPA_URL}/rest/v1/agent_items?id=eq.${id}`, {
     method: 'DELETE',
-    headers: { 'apikey': key, 'Authorization': `Bearer ${key}`, 'Prefer': 'return=minimal' }
+    headers: { 'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_TOKEN}`, 'Prefer': 'return=minimal' }
   });
 }
 
@@ -1425,7 +1417,7 @@ const NEXT_COL  = { scripting: 'editing', editing: 'scheduled', scheduled: 'publ
 const NEXT_LABEL = { scripting: 'Move to Editing', editing: 'Schedule Post', scheduled: 'Move to Published', published: 'Mark Published' };
 
 async function loadFromSupabase() {
-  const items = await supaFetch('agent_items', `agent=eq.quill&client_id=eq.${SUPA_CLIENT}&order=created_at.desc&limit=100`);
+  const items = await supaFetch('agent_items', `agent=eq.quill&client_id=eq.${SUPA_CLIENT}&status=neq.trashed&order=created_at.desc&limit=100`);
   if (!items.length) return;
 
   const seenIds = new Set();

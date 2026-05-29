@@ -303,7 +303,7 @@ _sbSess = _sbSess || {};
 const SUPA_URL  = _sbSess.client_supabase_url || 'https://cscfbuhwlfhblxprkwnh.supabase.co';
 const SUPA_ANON = _sbSess.client_supabase_anon || '';
 const SUPA_TOK  = _sbSess.access_token || SUPA_ANON;
-const CLIENT_ID = _sbSess.client_id || '';
+const CLIENT_ID = _sbSess.client_id || 'micko_cruz';
 
 const H = { 'apikey': SUPA_ANON, 'Authorization': `Bearer ${SUPA_TOK}` };
 
@@ -334,10 +334,11 @@ let chartActivity = null, chartLeads = null, chartRevenue = null;
 async function loadAll() {
   document.getElementById('roi-sub').textContent = 'Loading live data from Supabase…';
 
-  const cid = CLIENT_ID ? `client_id=eq.${CLIENT_ID}&` : '';
+  const clientId = CLIENT_ID || 'micko_cruz';
+  const cid = `client_id=eq.${clientId}&`;
 
   const [items, leads, followup, calls] = await Promise.all([
-    sbGet('agent_items',         `${cid}select=id,type,status,created_at&order=created_at.asc`),
+    sbGet('agent_items',         `${cid}select=id,type,status,created_at&status=neq.trashed&order=created_at.asc`),
     sbGet('outreach_leads',      `select=id,opener_sent_at,stage,stage_label,disqualify_reason,followup_count,created_at`),
     sbGet('leads_needing_followup', `select=id`),
     sbGet('sales_calls',         `select=id,qualified,closed,deal_value,created_at&order=created_at.asc`)

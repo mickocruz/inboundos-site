@@ -346,6 +346,7 @@ async function loadAll() {
   ]);
 
   console.log('[ROI] items:', items.length, 'leads:', leads.length, 'calls:', calls.length);
+  console.log('[ROI] types:', [...new Set(items.map(i=>i.type))], 'statuses:', [...new Set(items.map(i=>i.status))]);
   const now = new Date();
   document.getElementById('roi-sub').textContent =
     'All-time data · Last refreshed ' + now.toLocaleTimeString() + ` (${items.length} items)`;

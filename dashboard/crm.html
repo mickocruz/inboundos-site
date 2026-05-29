@@ -277,7 +277,7 @@ async function save(id){
     const token=getSupabaseToken();
     const r=await fetch(`https://cscfbuhwlfhblxprkwnh.supabase.co/rest/v1/outreach_leads?id=eq.${id}`,{
       method:'PATCH',
-      headers:{'Content-Type':'application/json','apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA','Authorization':`Bearer ${token||'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA'}`,'Prefer':'return=minimal'},
+      headers:{'Content-Type':'application/json','apikey':'sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8','Authorization':`Bearer ${token||'sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8'}`,'Prefer':'return=minimal'},
       body:JSON.stringify(patch)
     });
     if(!r.ok)throw new Error(await r.text());
@@ -292,7 +292,7 @@ async function loadLeads(){
   try{
     const token=getSupabaseToken();
     const r=await fetch('https://cscfbuhwlfhblxprkwnh.supabase.co/rest/v1/outreach_leads?select=*&order=updated_at.desc',{
-      headers:{'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA','Authorization':`Bearer ${token||'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA'}`}
+      headers:{'apikey':'sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8','Authorization':`Bearer ${token||'sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8'}`}
     });
     if(!r.ok)throw new Error(await r.text());
     leads=await r.json();

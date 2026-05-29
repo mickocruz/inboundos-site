@@ -19,9 +19,9 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:14px;overflow:hidden;}
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;}
-body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(79,195,247,0.08) 0%,transparent 70%),radial-gradient(ellipse 40% 60% at 100% 20%,rgba(79,195,247,0.03) 0%,transparent 60%);pointer-events:none;z-index:0;}
+body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 55% at 50% -5%,rgba(79,195,247,0.07) 0%,transparent 65%),radial-gradient(ellipse 45% 50% at 95% 15%,rgba(79,195,247,0.04) 0%,transparent 55%),radial-gradient(ellipse 35% 40% at 5% 80%,rgba(74,222,128,0.025) 0%,transparent 55%);pointer-events:none;z-index:0;}
 /* Ambient blobs */
-.amb{position:fixed;border-radius:50%;filter:blur(110px);pointer-events:none;z-index:0;}
+.amb{display:none !important;}
 .amb-1{width:700px;height:500px;top:-100px;left:10%;background:rgba(79,195,247,0.055);animation:ab1 20s ease-in-out infinite;}
 .amb-2{width:500px;height:500px;bottom:5%;right:5%;background:rgba(74,222,128,0.04);animation:ab2 26s ease-in-out infinite;}
 .amb-3{width:400px;height:400px;top:40%;left:40%;background:rgba(168,139,250,0.03);animation:ab3 32s ease-in-out infinite;}
@@ -64,7 +64,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 
 /* AGENT CARDS */
 .agents-row{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;align-items:stretch;}
-.agent-exp{padding:14px 12px;display:flex;flex-direction:column;gap:0;align-items:center;text-align:center;}
+.agent-exp{padding:14px 12px;display:flex;flex-direction:column;gap:0;align-items:center;text-align:center;justify-content:flex-start;}
 .agent-top{display:flex;align-items:flex-start;justify-content:center;margin-bottom:10px;}
 .agent-avatar-lg{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;position:relative;flex-shrink:0;margin:0 auto 10px;border:2px solid transparent;}
 .agent-dot{position:absolute;bottom:1px;right:1px;width:9px;height:9px;border-radius:50%;border:2px solid var(--card);}
@@ -72,8 +72,8 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .agent-status-badge.st-idle{color:rgba(255,255,255,0.3);border-color:rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);}
 .agent-status-badge.st-active{color:var(--green);border-color:rgba(74,222,128,0.25);background:rgba(74,222,128,0.07);}
 .agent-status-badge.st-error{color:var(--red);border-color:rgba(248,113,113,0.25);background:rgba(248,113,113,0.07);}
-.agent-name-lg{font-family:var(--font-head);font-size:12px;font-weight:900;letter-spacing:-0.2px;margin-bottom:1px;text-align:center;width:100%;}
-.agent-role-lg{font-family:var(--font-data);font-size:9px;color:var(--text-muted);margin-bottom:8px;text-align:center;width:100%;min-height:28px;display:flex;align-items:center;justify-content:center;}
+.agent-name-lg{font-family:var(--font-head);font-size:12px;font-weight:900;letter-spacing:-0.2px;margin-bottom:1px;text-align:center;width:100%;height:22px;display:flex;align-items:center;justify-content:center;}
+.agent-role-lg{font-family:var(--font-data);font-size:9px;color:var(--text-muted);margin-bottom:8px;text-align:center;width:100%;min-height:36px;height:36px;display:flex;align-items:center;justify-content:center;}
 .agent-prog-bar{height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;margin-bottom:5px;}
 .agent-prog-fill{height:100%;border-radius:2px;transition:width 1.2s cubic-bezier(0.4,0,0.2,1);width:0%;}
 .agent-prog-pct{font-family:var(--font-head);font-size:11px;font-weight:900;letter-spacing:-0.2px;margin-bottom:3px;}
@@ -282,6 +282,8 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
   padding: 22px 16px 18px !important;
   align-items: center !important;
   text-align: center !important;
+  min-height: 340px !important;
+  justify-content: flex-start !important;
   position: relative !important;
 }
 
@@ -388,11 +390,15 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
   font-family: 'DM Sans', sans-serif !important;
   font-size: 10px !important;
   color: rgba(255,255,255,0.32) !important;
-  margin-bottom: 18px !important;
-  min-height: auto !important;
-  line-height: 1.5 !important;
+  margin-bottom: 14px !important;
+  min-height: 52px !important;
+  height: 52px !important;
+  line-height: 1.4 !important;
   text-align: center !important;
   width: 100% !important;
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
 }
 
 /* Progress bar — hide when 0% */
@@ -525,6 +531,7 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
       <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/clients'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Clients</div>
       <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/crm'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v4H3z"/><path d="M3 10h18v4H3z"/><path d="M3 17h18v4H3z"/></svg>CRM</div>
       <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/sales-calls'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.74 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.66 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Sales Calls</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','roi','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/roi'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>ROI Report</div>
     </div>
     <div class="nav-section"><div class="nav-section-label">Intelligence</div>
       <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/sops'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>SOPs</div>
@@ -566,9 +573,10 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
           <span class="agent-status-badge st-idle">Idle</span>
         </div>
         <div class="agent-name-lg">Quill</div>
-        <div class="agent-role-lg">Scriptwriter + Caption Writer · Daily 9AM PHT</div>
+        <div class="agent-role-lg">Scriptwriter + Caption Writer · On Demand</div>
         <div class="agent-prog-bar"><div class="agent-prog-fill" data-target="0" style="background:var(--yellow);"></div></div>
         <div class="agent-prog-pct" style="color:var(--yellow);">0%</div>
+        <button class="agent-dispatch" id="quill-run-btn" style="background:rgba(251,191,36,0.1);border-color:rgba(251,191,36,0.3);color:#fbbf24;margin-top:10px;" onclick="runQuill()">Run Quill</button>
       </div>
 
       <!-- Pulse -->
@@ -606,6 +614,7 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
         <div class="agent-role-lg">Cold DM Writer · On Demand</div>
         <div class="agent-prog-bar"><div class="agent-prog-fill" data-target="0" style="background:#4ade80;"></div></div>
         <div class="agent-prog-pct" style="color:#4ade80;">0%</div>
+        <button class="agent-dispatch" style="background:rgba(74,222,128,0.1);border-color:rgba(74,222,128,0.3);color:#4ade80;margin-top:10px;" onclick="runEcho()">Run Echo</button>
       </div>
 
       <!-- Pilot -->
@@ -1508,6 +1517,110 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeAssig
 const SUPABASE_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co';
 const SUPABASE_ANON = 'sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8';
 const FORGE_WEBHOOK = 'http://localhost:5678/webhook/forge';
+const QUALIFY_SERVER = 'http://localhost:3001';
+
+function getSlug() {
+  const v = document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');
+  if (v && v[2]) return v[2];
+  const pages = ['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','login'];
+  const seg = window.location.pathname.split('/').filter(Boolean)[0] || '';
+  return pages.indexOf(seg) === -1 ? seg : '';
+}
+
+function runEcho() {
+  const slug = getSlug();
+  if (!slug) { window.location.href = '/login'; return; }
+  window.location.href = '/' + slug + '/crm?addlead=1';
+}
+
+async function runQuill() {
+  // Add task card to queue immediately
+  const record = makeTaskRecord('Quill', 'Generate 5 daily scripts with hook selection');
+  upsertTask(record);
+  renderKanban();
+
+  // Update all Run Quill buttons across pages
+  document.querySelectorAll('#quill-run-btn, #quill-run-btn-pipeline').forEach(b => {
+    if (b) { b.disabled = true; b.textContent = 'Queued…'; }
+  });
+
+  // Move to running
+  record.status = 'running'; record.updatedAt = Date.now();
+  upsertTask(record); renderKanban();
+  document.querySelectorAll('#quill-run-btn, #quill-run-btn-pipeline').forEach(b => {
+    if (b) b.textContent = 'Running…';
+  });
+
+  // Push to ops board (dashboard picks this up)
+  try {
+    const kb = JSON.parse(localStorage.getItem('ctrl_kanban_state') || '{"backlog":[],"progress":[],"done":[]}');
+    (kb.progress = kb.progress || []).unshift({ title: 'Quill — Daily Scripts', agent: 'Quill', id: record.id });
+    localStorage.setItem('ctrl_kanban_state', JSON.stringify(kb));
+  } catch(e) {}
+
+  try {
+    const r = await fetch('http://localhost:5678/webhook/quill-trigger', { method: 'POST', headers: {'Content-Type':'application/json'}, body: '{}' });
+    if (!r.ok) throw new Error('n8n returned ' + r.status);
+
+    // Poll n8n every 5s, max 3 min
+    let done = false;
+    for (let i = 0; i < 36 && !done; i++) {
+      await new Promise(res => setTimeout(res, 5000));
+      try {
+        const ex = await fetch('http://localhost:5678/api/v1/executions?workflowId=0QoReLvsYWUaIrIO&limit=1');
+        if (ex.ok) {
+          const latest = (await ex.json()).data?.[0];
+          if (latest && (latest.status === 'success' || latest.status === 'error')) {
+            done = true;
+            const ok = latest.status === 'success';
+            record.status = ok ? 'done' : 'failed';
+            record.result = ok ? '5 scripts generated' : 'Workflow error';
+            record.updatedAt = Date.now();
+            upsertTask(record); renderKanban();
+
+            // Move ops card to done column
+            try {
+              const kb = JSON.parse(localStorage.getItem('ctrl_kanban_state') || '{}');
+              kb.progress = (kb.progress||[]).filter(c => c.id !== record.id);
+              (kb.done = kb.done || []).unshift({ title: 'Quill — Daily Scripts', agent: 'Quill', id: record.id });
+              localStorage.setItem('ctrl_kanban_state', JSON.stringify(kb));
+            } catch(e) {}
+
+            // Log to activity (feeds dashboard live sidebar)
+            logActivity('Quill', ok ? '5 scripts generated ✓' : 'Script generation failed ✗');
+
+            document.querySelectorAll('#quill-run-btn, #quill-run-btn-pipeline').forEach(b => {
+              if (b) { b.textContent = ok ? '✓ Done' : '✗ Failed'; b.disabled = false; }
+            });
+            setTimeout(() => {
+              document.querySelectorAll('#quill-run-btn, #quill-run-btn-pipeline').forEach(b => {
+                if (b) b.textContent = 'Run Quill';
+              });
+            }, 4000);
+          }
+        }
+      } catch(e) {}
+    }
+    if (!done) {
+      logActivity('Quill', 'Scripts running in background…');
+      document.querySelectorAll('#quill-run-btn, #quill-run-btn-pipeline').forEach(b => {
+        if (b) { b.textContent = 'Run Quill'; b.disabled = false; }
+      });
+    }
+  } catch(e) {
+    record.status = 'failed'; record.result = e.message; record.updatedAt = Date.now();
+    upsertTask(record); renderKanban();
+    logActivity('Quill', 'Error — is n8n running?');
+    document.querySelectorAll('#quill-run-btn, #quill-run-btn-pipeline').forEach(b => {
+      if (b) { b.textContent = 'Error — n8n running?'; b.disabled = false; }
+    });
+    setTimeout(() => {
+      document.querySelectorAll('#quill-run-btn, #quill-run-btn-pipeline').forEach(b => {
+        if (b) b.textContent = 'Run Quill';
+      });
+    }, 3000);
+  }
+}
 
 async function openForgeModal() {
   document.getElementById('forgeModal').classList.add('open');
@@ -1658,15 +1771,17 @@ async function runForge() {
         if (!metaEl) {
           metaEl = document.createElement('div');
           metaEl.className = 'agent-run-meta';
-          metaEl.style.cssText = 'font-family:var(--font-data);font-size:9px;color:rgba(255,255,255,0.25);margin-top:5px;line-height:1.7;text-align:center;width:100%;';
+          metaEl.style.cssText = 'font-family:var(--font-data);font-size:9px;color:rgba(255,255,255,0.25);margin-top:5px;line-height:1.7;text-align:center;width:100%;height:52px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;';
           roleEl.insertAdjacentElement('afterend', metaEl);
         }
-        const notConnected = run.schedule === 'Not connected';
+        const ON_DEMAND_AGENTS = ['quill','echo','forge','hunter','pilot'];
+        const isOnDemand = ON_DEMAND_AGENTS.includes(run.agent?.toLowerCase()) || run.schedule === 'Not connected' || run.schedule === 'On Demand' || !run.schedule;
+        const dim = 'color:rgba(255,255,255,0.45);';
+        // Always render 3 rows so every card lines up; use — for empty
         metaEl.innerHTML = `
-          <div>Last: <span style="color:rgba(255,255,255,0.45);">${timeAgo(run.last_run_at)}</span></div>
-          <div>Next: <span style="color:${notConnected ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.45)'};">${nextRunLabel(run.next_run_at, run.schedule)}</span></div>
-          ${run.schedule && !notConnected ? `<div>${run.schedule}</div>` : ''}
-          ${run.error ? `<div style="color:rgba(248,113,113,0.7);margin-top:2px;">⚠ ${run.error.slice(0,40)}</div>` : ''}
+          <div>Last: <span style="${dim}">${timeAgo(run.last_run_at)}</span></div>
+          <div>Next: <span style="${dim}">${isOnDemand ? '—' : nextRunLabel(run.next_run_at, run.schedule)}</span></div>
+          <div style="opacity:0.7;">${isOnDemand ? 'On Demand' : (run.schedule || '—')}</div>
         `;
       }
     });

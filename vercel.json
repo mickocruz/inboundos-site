@@ -127,6 +127,14 @@
     {
       "source": "/crm",
       "destination": "/dashboard/crm.html"
+    },
+    {
+      "source": "/:client/roi",
+      "destination": "/dashboard/roi.html"
+    },
+    {
+      "source": "/roi",
+      "destination": "/dashboard/roi.html"
     }
   ]
 }

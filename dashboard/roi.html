@@ -345,9 +345,10 @@ async function loadAll() {
     sbGet('sales_calls',         `select=id,qualified,closed,deal_value,created_at&order=created_at.asc`)
   ]);
 
+  console.log('[ROI] items:', items.length, 'leads:', leads.length, 'calls:', calls.length);
   const now = new Date();
   document.getElementById('roi-sub').textContent =
-    'All-time data · Last refreshed ' + now.toLocaleTimeString();
+    'All-time data · Last refreshed ' + now.toLocaleTimeString() + ` (${items.length} items)`;
 
   // --- CONTENT ---
   const posted  = items.filter(i => i.status === 'posted').length;

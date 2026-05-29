@@ -100,8 +100,9 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .script-btn.generating{color:var(--yellow);border-color:rgba(251,191,36,0.3);background:rgba(251,191,36,0.06);animation:genPulse 1.1s ease-in-out infinite;}
 .discard-btn{background:transparent;border:1px solid var(--border);color:var(--text-dim);border-radius:4px;padding:2px 6px;font-family:var(--font-data);font-size:9px;font-weight:600;cursor:pointer;transition:all 0.15s;line-height:1;}
 .discard-btn:hover{border-color:rgba(248,113,113,0.35);color:var(--red);background:rgba(248,113,113,0.05);}
-.trash-btn{background:transparent;border:1px solid var(--border);color:var(--text-dim);border-radius:4px;padding:2px 6px;font-size:10px;cursor:pointer;transition:all 0.15s;line-height:1;flex-shrink:0;}
-.trash-btn:hover{border-color:rgba(248,113,113,0.45);color:var(--red);background:rgba(248,113,113,0.07);}
+.trash-btn{background:transparent;border:1px solid rgba(248,113,113,0.3);color:#f87171;border-radius:4px;padding:3px 6px;cursor:pointer;transition:all 0.15s;line-height:1;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;}
+.trash-btn:hover{border-color:rgba(248,113,113,0.6);background:rgba(248,113,113,0.08);}
+.trash-btn svg{display:block;flex-shrink:0;}
 .trash-confirm{display:inline-flex;align-items:center;gap:4px;margin-left:auto;}
 .trash-confirm-yes{background:rgba(248,113,113,0.15);border:1px solid rgba(248,113,113,0.4);color:var(--red);border-radius:4px;padding:2px 7px;font-family:var(--font-data);font-size:9px;font-weight:700;cursor:pointer;}
 .trash-confirm-no{background:transparent;border:1px solid var(--border);color:var(--text-dim);border-radius:4px;padding:2px 6px;font-family:var(--font-data);font-size:9px;cursor:pointer;}
@@ -426,7 +427,7 @@ html,body{font-family:'DM Sans',sans-serif!important;}
     <div class="script-modal-footer">
       <button class="script-modal-btn script-modal-btn-save" onclick="saveScriptModal()">✓ Save &amp; Move to Editing</button>
       <button class="script-modal-btn script-modal-btn-copy" onclick="copyScriptModal()">⎘ Copy Script</button>
-      <button class="script-modal-btn script-modal-btn-discard" onclick="trashFromModal()">🗑 Delete</button>
+      <button class="script-modal-btn script-modal-btn-discard" onclick="trashFromModal()"><svg width="11" height="12" viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right:5px;vertical-align:middle"><path d="M1 3h9M4 3V2h3v1M2 3l.7 7.5a.5.5 0 00.5.5h4.6a.5.5 0 00.5-.5L9 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.5 5.5v3M6.5 5.5v3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Delete</button>
     </div>
   </div>
 </div>
@@ -774,7 +775,7 @@ function dataToCard(data) {
     : '';
 
   // Discard — always far right
-  const discardBtnHtml = `<button class="trash-btn" title="Delete script" onclick="trashCard(event,this)">🗑</button>`;
+  const discardBtnHtml = `<button class="trash-btn" title="Delete script" onclick="trashCard(event,this)<svg width="11" height="12" viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 3h9M4 3V2h3v1M2 3l.7 7.5a.5.5 0 00.5.5h4.6a.5.5 0 00.5-.5L9 3" stroke="#f87171" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.5 5.5v3M6.5 5.5v3" stroke="#f87171" stroke-width="1.2" stroke-linecap="round"/></svg></button>`;
 
   card.innerHTML = `<div class="kcard-title">${escapeHtml(data.title)}</div><div class="kcard-meta">${labelHtml}${scriptBtnHtml}${discardBtnHtml}</div>`;
   card.onclick = (e) => { if (!e.target.closest('.script-btn,.trash-btn,.trash-confirm,.kcard-move-btn')) openSavedScript(card); };
@@ -868,7 +869,7 @@ function addCard() {
     <div class="kcard-title">${title}</div>
     <div class="kcard-meta">
       <button class="script-btn" onclick="event.stopPropagation();openFunnelModal(this)">✦ Script it</button>
-      <button class="trash-btn" title="Delete script" onclick="trashCard(event,this)">🗑</button>
+      <button class="trash-btn" title="Delete script" onclick="trashCard(event,this)<svg width="11" height="12" viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 3h9M4 3V2h3v1M2 3l.7 7.5a.5.5 0 00.5.5h4.6a.5.5 0 00.5-.5L9 3" stroke="#f87171" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.5 5.5v3M6.5 5.5v3" stroke="#f87171" stroke-width="1.2" stroke-linecap="round"/></svg></button>
     </div>`;
   col.prepend(card);
   updateCounts();
@@ -1447,7 +1448,7 @@ async function loadFromSupabase() {
       <div class="kcard-title">${escapeHtml(topic)}</div>
       <div class="kcard-meta">
         <span class="kcard-platform">${schedDateStr || date}</span>
-        <button class="trash-btn" title="Delete script" onclick="trashCard(event,this)">🗑</button>
+        <button class="trash-btn" title="Delete script" onclick="trashCard(event,this)<svg width="11" height="12" viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 3h9M4 3V2h3v1M2 3l.7 7.5a.5.5 0 00.5.5h4.6a.5.5 0 00.5-.5L9 3" stroke="#f87171" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.5 5.5v3M6.5 5.5v3" stroke="#f87171" stroke-width="1.2" stroke-linecap="round"/></svg></button>
       </div>`;
 
     // Store script fields separately in localStorage
@@ -1476,7 +1477,7 @@ async function loadFromSupabase() {
 
     // Add Discard if missing
     if (meta && !meta.querySelector('.discard-btn')) {
-      meta.insertAdjacentHTML('beforeend', '<button class="trash-btn" title="Delete script" onclick="trashCard(event,this)">🗑</button>');
+      meta.insertAdjacentHTML('beforeend', '<button class="trash-btn" title="Delete script" onclick="trashCard(event,this)<svg width="11" height="12" viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 3h9M4 3V2h3v1M2 3l.7 7.5a.5.5 0 00.5.5h4.6a.5.5 0 00.5-.5L9 3" stroke="#f87171" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.5 5.5v3M6.5 5.5v3" stroke="#f87171" stroke-width="1.2" stroke-linecap="round"/></svg></button>');
     }
 
     // If a saved script exists for this card → mark scripted (state only, no badge)

@@ -886,9 +886,17 @@ function forgetDeletedTitle(title) {
 
 async function supaDeleteItem(id) {
   if (!id) return;
+  const key = SUPA_SVC || SUPA_TOKEN;
+  // Patch status to 'trashed' first — filtered out on reload even if DELETE fails
+  await fetch(`${SUPA_URL}/rest/v1/agent_items?id=eq.${id}`, {
+    method: 'PATCH',
+    headers: { 'apikey': key, 'Authorization': `Bearer ${key}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+    body: JSON.stringify({ status: 'trashed' })
+  });
+  // Also hard-delete
   await fetch(`${SUPA_URL}/rest/v1/agent_items?id=eq.${id}`, {
     method: 'DELETE',
-    headers: { 'apikey': SUPA_SVC, 'Authorization': `Bearer ${SUPA_SVC}`, 'Prefer': 'return=minimal' }
+    headers: { 'apikey': key, 'Authorization': `Bearer ${key}`, 'Prefer': 'return=minimal' }
   });
 }
 

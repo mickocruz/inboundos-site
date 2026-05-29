@@ -305,7 +305,7 @@ const SUPA_ANON = _sbSess.client_supabase_anon || '';
 const SUPA_TOK  = _sbSess.access_token || SUPA_ANON;
 const CLIENT_ID = _sbSess.client_id || 'micko_cruz';
 
-const H = { 'apikey': SUPA_ANON, 'Authorization': `Bearer ${SUPA_TOK}` };
+const H = { 'apikey': SUPA_ANON, 'Authorization': `Bearer ${SUPA_ANON}` };
 
 function goTo(page) {
   var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','roi','login'];

@@ -4,6 +4,28 @@
   const SB_URL = _sp.client_supabase_url || 'https://cscfbuhwlfhblxprkwnh.supabase.co';
   const SB_ANON = _sp.client_supabase_anon || '';
 
+  // Auto-refresh token if expired or expiring within 10 minutes
+  async function maybeRefreshToken() {
+    try {
+      const s = JSON.parse(localStorage.getItem('sb_session') || 'null');
+      if (!s || !s.refresh_token) return;
+      const exp = s.expires_at ? s.expires_at * 1000 : 0;
+      const tenMin = 10 * 60 * 1000;
+      if (exp && exp > Date.now() + tenMin) return; // still fresh
+      const res = await fetch(`${SB_URL}/auth/v1/token?grant_type=refresh_token`, {
+        method: 'POST',
+        headers: { 'apikey': SB_ANON, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refresh_token: s.refresh_token })
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (!data.access_token) return;
+      const updated = { ...s, access_token: data.access_token, refresh_token: data.refresh_token || s.refresh_token, expires_at: data.expires_at || Math.floor(Date.now()/1000) + 3600 };
+      localStorage.setItem('sb_session', JSON.stringify(updated));
+    } catch(e) {}
+  }
+  maybeRefreshToken();
+
   function getToken() {
     try {
       const s = JSON.parse(localStorage.getItem('sb_session') || 'null');

@@ -1300,7 +1300,7 @@ function saveScript() {
 // ── SUPABASE CONFIG ───────────────────────────────────────────
 const _sbSession = JSON.parse(localStorage.getItem('sb_session') || '{}');
 const SUPA_URL      = _sbSession.client_supabase_url || 'https://cscfbuhwlfhblxprkwnh.supabase.co';
-const SUPA_KEY      = _sbSession.client_supabase_anon || '';
+const SUPA_KEY      = _sbSession.client_supabase_anon || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
 const SUPA_ANON     = SUPA_KEY;
 const SUPA_TOKEN    = _sbSession.access_token || SUPA_KEY;
 const SUPA_SVC      = _sbSession.client_supabase_service || '';

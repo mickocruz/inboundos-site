@@ -1703,7 +1703,7 @@ async function runForge() {
 (async function loadAgentRunsFromSupabase() {
   const _sbSess = JSON.parse(localStorage.getItem('sb_session') || '{}');
   const SUPA_URL = _sbSess.client_supabase_url || 'https://cscfbuhwlfhblxprkwnh.supabase.co';
-  const SUPA_KEY = _sbSess.client_supabase_anon || '';
+  const SUPA_KEY = _sbSess.client_supabase_anon || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
 
   // Map Supabase agent names → CTRL card display names
   const AGENT_NAME_MAP = {

@@ -301,7 +301,7 @@ try { _sbSess = JSON.parse(localStorage.getItem('sb_session') || 'null'); } catc
 _sbSess = _sbSess || {};
 
 const SUPA_URL  = _sbSess.client_supabase_url || 'https://cscfbuhwlfhblxprkwnh.supabase.co';
-const SUPA_ANON = _sbSess.client_supabase_anon || '';
+const SUPA_ANON = _sbSess.client_supabase_anon || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
 const SUPA_TOK  = _sbSess.access_token || SUPA_ANON;
 const CLIENT_ID = _sbSess.client_id || 'micko_cruz';
 

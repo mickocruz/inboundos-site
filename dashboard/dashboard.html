@@ -1073,7 +1073,7 @@ function dashEscape(str) {
 
 const _sbSessDash = JSON.parse(localStorage.getItem('sb_session') || '{}');
 const SUPA_URL_DASH = _sbSessDash.client_supabase_url || 'https://cscfbuhwlfhblxprkwnh.supabase.co';
-const SUPA_ANON_DASH = _sbSessDash.client_supabase_anon || '';
+const SUPA_ANON_DASH = _sbSessDash.client_supabase_anon || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
 
 function detailTimeAgo(iso) {
   if (!iso) return '—';
@@ -1736,7 +1736,7 @@ loadContentBucket();
   const _sbSessStats = JSON.parse(localStorage.getItem('sb_session') || '{}');
   const clientId = _sbSessStats.client_id || 'micko_cruz';
   const SUPA_URL = _sbSessStats.client_supabase_url || 'https://cscfbuhwlfhblxprkwnh.supabase.co';
-  const SUPA_KEY = _sbSessStats.client_supabase_anon || '';
+  const SUPA_KEY = _sbSessStats.client_supabase_anon || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
   const H = { 'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_KEY}` };
 
   try {

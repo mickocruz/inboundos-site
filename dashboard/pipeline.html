@@ -886,10 +886,9 @@ function forgetDeletedTitle(title) {
 
 async function supaDeleteItem(id) {
   if (!id) return;
-  const svc = SUPA_SVC || SUPA_TOKEN;
   await fetch(`${SUPA_URL}/rest/v1/agent_items?id=eq.${id}`, {
     method: 'DELETE',
-    headers: { 'apikey': svc, 'Authorization': `Bearer ${svc}`, 'Prefer': 'return=minimal' }
+    headers: { 'apikey': SUPA_KEY, 'Authorization': `Bearer ${_sbSession.access_token || SUPA_KEY}`, 'Prefer': 'return=minimal' }
   });
 }
 

@@ -274,10 +274,9 @@ async function save(id){
   btn.disabled=true;btn.textContent='Saving…';
   const patch={stage:parseInt(document.getElementById(`ssel-${id}`).value),notes:document.getElementById(`notes-${id}`).value};
   try{
-    const token=getSupabaseToken();
     const r=await fetch(`https://cscfbuhwlfhblxprkwnh.supabase.co/rest/v1/outreach_leads?id=eq.${id}`,{
       method:'PATCH',
-      headers:{'Content-Type':'application/json','apikey':'sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8','Authorization':`Bearer ${token||'sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8'}`,'Prefer':'return=minimal'},
+      headers:{'Content-Type':'application/json','apikey':'sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8','Authorization':'Bearer sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8','Prefer':'return=minimal'},
       body:JSON.stringify(patch)
     });
     if(!r.ok)throw new Error(await r.text());
@@ -290,9 +289,8 @@ async function save(id){
 async function loadLeads(){
   document.getElementById('lead-list').innerHTML='<div class="empty loading">Loading…</div>';
   try{
-    const token=getSupabaseToken();
     const r=await fetch('https://cscfbuhwlfhblxprkwnh.supabase.co/rest/v1/outreach_leads?select=*&order=updated_at.desc',{
-      headers:{'apikey':'sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8','Authorization':`Bearer ${token||'sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8'}`}
+      headers:{'apikey':'sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8','Authorization':'Bearer sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8'}
     });
     if(!r.ok)throw new Error(await r.text());
     leads=await r.json();

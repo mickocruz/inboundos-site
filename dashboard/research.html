@@ -160,6 +160,29 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 @keyframes ab2{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(-50px,-30px) scale(1.06);}}
 @keyframes ab3{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(40px,-50px) scale(0.94);}}
 @media(prefers-reduced-motion:reduce){.amb{animation:none!important;}}
+/* HOOK SWEEP */
+.hook-search-wrap{display:flex;gap:8px;align-items:center;}
+.hook-search{flex:1;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-family:var(--font-data);font-size:12px;color:var(--text);outline:none;transition:border-color 0.2s;}
+.hook-search:focus{border-color:rgba(79,195,247,0.35);}
+.hook-search::placeholder{color:var(--text-dim);}
+.hook-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.hook-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:13px 15px;display:flex;flex-direction:column;gap:9px;transition:border-color 0.2s,box-shadow 0.2s,background 0.2s;cursor:pointer;position:relative;overflow:hidden;}
+.hook-card::before{content:'';position:absolute;inset-x:0;top:0;height:1px;background:linear-gradient(90deg,transparent,rgba(79,195,247,0.2),transparent);opacity:0;transition:opacity 0.2s;}
+.hook-card:hover{border-color:rgba(79,195,247,0.28);box-shadow:0 0 22px rgba(79,195,247,0.06),0 4px 24px rgba(0,0,0,0.35);background:rgba(79,195,247,0.025);}
+.hook-card:hover::before{opacity:1;}
+.hook-card.copied{border-color:rgba(74,222,128,0.35);box-shadow:0 0 14px rgba(74,222,128,0.08);background:rgba(74,222,128,0.03);}
+.hook-text{font-family:var(--font-data);font-size:11.5px;color:var(--text);line-height:1.55;font-weight:500;}
+.hook-footer{display:flex;align-items:center;justify-content:space-between;gap:6px;}
+.hook-example-btn{font-family:var(--font-data);font-size:9px;font-weight:600;padding:2px 9px;border-radius:5px;border:1px solid rgba(79,195,247,0.15);background:rgba(79,195,247,0.04);color:rgba(79,195,247,0.6);cursor:pointer;transition:all 0.15s;white-space:nowrap;display:flex;align-items:center;gap:4px;}
+.hook-example-btn:hover{background:rgba(79,195,247,0.08);border-color:rgba(79,195,247,0.35);color:var(--accent);}
+.hook-copy-btn{font-family:var(--font-data);font-size:9px;font-weight:600;padding:2px 8px;border-radius:5px;border:1px solid var(--border);background:transparent;color:var(--text-muted);cursor:pointer;transition:all 0.15s;white-space:nowrap;}
+.hook-copy-btn:hover{background:var(--accent-dim);border-color:rgba(79,195,247,0.3);color:var(--accent);}
+.hook-copy-btn.done{color:var(--green);border-color:rgba(74,222,128,0.3);background:rgba(74,222,128,0.05);}
+.hook-pagination{display:flex;align-items:center;gap:8px;margin-top:4px;}
+.hook-page-btn{font-family:var(--font-data);font-size:10px;font-weight:600;padding:4px 12px;border-radius:6px;border:1px solid var(--border);background:rgba(255,255,255,0.02);color:var(--text-muted);cursor:pointer;transition:all 0.15s;}
+.hook-page-btn:hover:not(:disabled){border-color:rgba(79,195,247,0.3);color:var(--accent);}
+.hook-page-btn:disabled{opacity:0.3;cursor:default;}
+.hook-page-info{font-family:var(--font-data);font-size:10px;color:var(--text-dim);}
 </style>
 <style>
 /* mobile layout handled by mobile.css */
@@ -240,6 +263,19 @@ html,body{font-family:'DM Sans',sans-serif!important;}
     </div>
     </div>
     <div id="swipeGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;"></div>
+
+    <!-- HOOK SWEEP -->
+    <div class="section-label" style="margin-top:8px;">
+      Hook Sweep
+      <span id="hookCount" style="font-size:9px;color:var(--text-dim);letter-spacing:0;text-transform:none;font-family:var(--font-data);font-weight:400;margin-left:4px;"></span>
+      <span id="hookStatus" style="font-size:10px;font-family:var(--font-data);color:var(--text-dim);margin-left:auto;letter-spacing:0;text-transform:none;font-weight:400;"></span>
+    </div>
+    <div class="hook-search-wrap">
+      <input class="hook-search" id="hookSearch" type="text" placeholder="Search 1,000+ hooks…" oninput="hookSearchDebounce()">
+      <button class="hook-page-btn" onclick="hookRandomize()" style="white-space:nowrap;">⚡ Random 30</button>
+    </div>
+    <div class="hook-grid" id="hookGrid"></div>
+    <div class="hook-pagination" id="hookPagination"></div>
 
     <div style="height:32px;"></div>
   </main>
@@ -817,6 +853,105 @@ document.addEventListener('keydown', e => {
 });
 
 loadSwipeFile();
+</script>
+<script>
+// ── HOOK SWEEP ──
+const HOOKS_SB_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co';
+const HOOKS_SB_KEY = 'sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8';
+let _hooksAll = [];
+let _hooksFiltered = [];
+let _hookPage = 0;
+const HOOKS_PER_PAGE = 30;
+let _hookSearchTimer = null;
+
+async function loadHooks() {
+  const status = document.getElementById('hookStatus');
+  const count = document.getElementById('hookCount');
+  if (status) status.textContent = 'Loading…';
+  try {
+    let all = [], from = 0, pageSize = 1000;
+    while (true) {
+      const res = await fetch(
+        `${HOOKS_SB_URL}/rest/v1/hooks?select=id,hook_text,inspo_url&order=id.asc&limit=${pageSize}&offset=${from}`,
+        { headers: { 'apikey': HOOKS_SB_KEY, 'Authorization': `Bearer ${HOOKS_SB_KEY}`, 'Range-Unit': 'items', 'Range': `${from}-${from+pageSize-1}` } }
+      );
+      if (!res.ok) throw new Error(res.status);
+      const batch = await res.json();
+      all = all.concat(batch);
+      if (batch.length < pageSize) break;
+      from += pageSize;
+    }
+    _hooksAll = all; _hooksFiltered = all;
+    if (count) count.textContent = `· ${all.length} hooks`;
+    if (status) status.textContent = '';
+    renderHooks();
+  } catch(e) {
+    if (status) status.textContent = 'Failed to load';
+    const grid = document.getElementById('hookGrid');
+    if (grid) grid.innerHTML = `<div class="swipe-empty" style="grid-column:1/-1;">Could not load hooks</div>`;
+  }
+}
+
+function hookSearchDebounce() {
+  clearTimeout(_hookSearchTimer);
+  _hookSearchTimer = setTimeout(() => {
+    const q = document.getElementById('hookSearch').value.trim().toLowerCase();
+    _hooksFiltered = q ? _hooksAll.filter(h => h.hook_text.toLowerCase().includes(q)) : _hooksAll;
+    _hookPage = 0;
+    const count = document.getElementById('hookCount');
+    if (count) count.textContent = `· ${_hooksFiltered.length} shown`;
+    renderHooks();
+  }, 200);
+}
+
+function hookRandomize() {
+  _hooksFiltered = [..._hooksAll].sort(() => Math.random() - 0.5).slice(0, 30);
+  _hookPage = 0;
+  document.getElementById('hookSearch').value = '';
+  const count = document.getElementById('hookCount');
+  if (count) count.textContent = `· Random 30`;
+  renderHooks();
+}
+
+function renderHooks() {
+  const grid = document.getElementById('hookGrid');
+  const pag = document.getElementById('hookPagination');
+  if (!grid) return;
+  const start = _hookPage * HOOKS_PER_PAGE;
+  const slice = _hooksFiltered.slice(start, start + HOOKS_PER_PAGE);
+  const totalPages = Math.ceil(_hooksFiltered.length / HOOKS_PER_PAGE);
+  if (!slice.length) { grid.innerHTML = `<div class="swipe-empty" style="grid-column:1/-1;">No hooks match</div>`; pag.innerHTML = ''; return; }
+  grid.innerHTML = slice.map(h => {
+    const inspoBtn = h.inspo_url
+      ? `<button class="hook-example-btn" onclick="event.stopPropagation();window.open('${escapeHtml(h.inspo_url)}','_blank','noopener')">▶ See Example</button>`
+      : `<span style="font-size:9px;color:var(--text-dim);">No example</span>`;
+    const cardClick = h.inspo_url ? `onclick="window.open('${escapeHtml(h.inspo_url)}','_blank','noopener')"` : '';
+    return `<div class="hook-card" id="hcard-${h.id}" ${cardClick}>
+      <div class="hook-text">${escapeHtml(h.hook_text)}</div>
+      <div class="hook-footer">${inspoBtn}<button class="hook-copy-btn" onclick="event.stopPropagation();copyHook(${h.id},this)">Copy</button></div>
+    </div>`;
+  }).join('');
+  pag.innerHTML = `
+    <button class="hook-page-btn" onclick="hookGoPage(${_hookPage-1})" ${_hookPage===0?'disabled':''}>← Prev</button>
+    <span class="hook-page-info">Page ${_hookPage+1} of ${totalPages} · ${_hooksFiltered.length} hooks</span>
+    <button class="hook-page-btn" onclick="hookGoPage(${_hookPage+1})" ${_hookPage>=totalPages-1?'disabled':''}>Next →</button>`;
+}
+
+function hookGoPage(n) {
+  _hookPage = n; renderHooks();
+  document.getElementById('hookGrid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function copyHook(id, btn) {
+  const card = document.getElementById(`hcard-${id}`);
+  const text = card ? card.querySelector('.hook-text').textContent : '';
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ Copied'; btn.classList.add('done'); card.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('done'); card.classList.remove('copied'); }, 1800);
+  });
+}
+
+loadHooks();
 </script>
 <script>(function(){var sel=".card,.cs-card,.client-profile,.checklist-panel,.agent-card,.ops-card,.ov-card,.insight-card,.reel-card,.stat-card,.kcard,.sop-card,.swipe-card";function stagger(els){[].forEach.call(els,function(el,i){if(!el.classList.contains("s-visible")){setTimeout(function(){el.classList.add("s-visible");},60+i*70);}});}document.addEventListener("DOMContentLoaded",function(){stagger(document.querySelectorAll(sel));});var ob=new MutationObserver(function(ms){ms.forEach(function(m){m.addedNodes.forEach(function(n){if(n.nodeType===1){var found=n.matches&&n.matches(sel)?[n]:[];[].push.apply(found,n.querySelectorAll?n.querySelectorAll(sel):[]);stagger(found);}});});});ob.observe(document.body||document.documentElement,{childList:true,subtree:true});})();</script></body>
 </html>

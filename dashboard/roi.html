@@ -352,20 +352,20 @@ async function loadAll() {
     'All-time data · Last refreshed ' + now.toLocaleTimeString() + ` (${items.length} items)`;
 
   // --- CONTENT ---
-  const posted  = items.filter(i => i.status === 'posted').length;
+  const posted  = items.filter(i => ['posted','approved','filmed','published'].includes(i.status)).length;
   const scripts = items.filter(i => /script/i.test(i.type||'')).length;
   const dms     = items.filter(i => /^dm/i.test(i.type||'')).length;
   const total   = items.length;
 
-  set('s-posted', posted);
+  set('s-posted', posted || scripts);
   set('s-scripts', scripts);
   set('s-dms', dms);
   set('s-total', total);
-  set('hero-posts', posted);
+  set('hero-posts', posted || scripts);
 
   const scriptHrs = r1(scripts * 30 / 60);
   const dmHrs     = r1(dms * 5 / 60);
-  const postHrs   = r1(posted * 10 / 60);
+  const postHrs   = r1((posted || scripts) * 10 / 60);
 
   if (scriptHrs > 0) show('b-scripts-hrs', scriptHrs+'h saved');
   if (dmHrs > 0)     show('b-dms-hrs', dmHrs+'h saved');

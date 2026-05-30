@@ -153,9 +153,11 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .funnel-wrap{min-height:240px;}
 .ttable{min-height:260px;}
 .g4,.g3,.g2{align-items:stretch;}
-.hero{min-height:120px;align-items:center;flex-wrap:wrap;gap:20px;padding:24px 32px;}
+.card.hero{overflow:visible!important;min-height:unset!important;}
+.hero{min-height:unset;align-items:center;flex-wrap:wrap;gap:20px;padding:28px 32px;}
 .hero > div:first-child{flex:1;min-width:200px;}
 .hero-stats{flex-wrap:wrap;gap:24px 32px;}
+.hero-val{font-size:48px!important;line-height:1.1!important;}
 /* Rates grid */
 .rates-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
 .rate-card{padding:16px 18px;}

@@ -122,6 +122,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .chart-wrap{position:relative;}
 
 .amb{display:none !important;}
+/* Branding color overrides */
 .sval{color:var(--text)!important;}
 .sval.ac{color:var(--accent)!important;}
 .sval.gr{color:var(--green)!important;}
@@ -129,13 +130,27 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .sval.ye{color:var(--yellow)!important;}
 .slbl{color:var(--text-muted)!important;}
 .ssub{color:var(--text-muted)!important;}
-.hero-val{color:var(--green)!important;}
+.hero-lbl{color:var(--accent)!important;display:block!important;opacity:1!important;}
+.hero-val{color:var(--accent)!important;}
+.hero-sub{color:var(--text-muted)!important;}
 .hstat-val{color:var(--text)!important;}
 .hstat-lbl{color:var(--text-muted)!important;}
 .chart-title{color:var(--text-muted)!important;}
 .tname{color:var(--text)!important;}
 .tmeta{color:var(--text-muted)!important;}
 .thrs{color:var(--accent)!important;}
+.ttotal-val{color:var(--accent)!important;}
+.tdollar-val{color:var(--green)!important;}
+.ftitle{color:var(--text-muted)!important;}
+.flbl{color:var(--text-muted)!important;}
+.fcnt{color:var(--text)!important;}
+/* Fixed card heights — no cutoff */
+.sc{min-height:110px;display:flex;flex-direction:column;justify-content:flex-start;}
+.chart-card{min-height:220px;}
+.funnel-wrap{min-height:240px;}
+.ttable{min-height:260px;}
+.g4,.g3,.g2{align-items:stretch;}
+.hero{min-height:100px;align-items:center;flex-wrap:wrap;gap:20px;}
 </style>
 <link rel="stylesheet" href="/dashboard/spring-animations.css"/>
 <link rel="stylesheet" href="/dashboard/mobile.css?v=6"/>

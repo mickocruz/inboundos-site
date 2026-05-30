@@ -122,6 +122,9 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .chart-wrap{position:relative;}
 
 .amb{display:none !important;}
+.dfbtn{background:transparent;border:none;color:rgba(255,255,255,0.4);font-family:var(--font-data);font-size:11px;font-weight:500;padding:4px 10px;border-radius:6px;cursor:pointer;transition:all 0.15s;}
+.dfbtn:hover{color:#fff;background:rgba(255,255,255,0.06);}
+.dfbtn.active{background:rgba(79,195,247,0.15);color:var(--accent);font-weight:600;}
 /* Branding color overrides */
 .sval{color:var(--text)!important;}
 .sval.ac{color:var(--accent)!important;}
@@ -150,7 +153,15 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .funnel-wrap{min-height:240px;}
 .ttable{min-height:260px;}
 .g4,.g3,.g2{align-items:stretch;}
-.hero{min-height:100px;align-items:center;flex-wrap:wrap;gap:20px;}
+.hero{min-height:120px;align-items:center;flex-wrap:wrap;gap:20px;padding:24px 32px;}
+.hero > div:first-child{flex:1;min-width:200px;}
+.hero-stats{flex-wrap:wrap;gap:24px 32px;}
+/* Rates grid */
+.rates-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
+.rate-card{padding:16px 18px;}
+.rate-lbl{font-family:var(--font-head);font-size:9px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;}
+.rate-val{font-family:var(--font-head);font-size:28px;font-weight:900;letter-spacing:-1px;line-height:1;color:var(--accent);}
+.rate-sub{font-family:var(--font-data);font-size:10px;color:var(--text-muted);margin-top:5px;}
 </style>
 <link rel="stylesheet" href="/dashboard/spring-animations.css"/>
 <link rel="stylesheet" href="/dashboard/mobile.css?v=6"/>
@@ -190,6 +201,22 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
         <div class="hsub" id="roi-sub">Loading…</div>
       </div>
       <div class="hright">
+        <div id="date-filter-wrap" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+          <div style="display:flex;gap:4px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:3px;">
+            <button class="dfbtn" data-range="day" onclick="setRange('day',this)">Day</button>
+            <button class="dfbtn" data-range="week" onclick="setRange('week',this)">Week</button>
+            <button class="dfbtn" data-range="month" onclick="setRange('month',this)">Month</button>
+            <button class="dfbtn" data-range="year" onclick="setRange('year',this)">Year</button>
+            <button class="dfbtn active" data-range="all" onclick="setRange('all',this)">All Time</button>
+            <button class="dfbtn" data-range="custom" onclick="setRange('custom',this)">Custom</button>
+          </div>
+          <div id="custom-range" style="display:none;align-items:center;gap:6px;">
+            <input type="date" id="date-from" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:6px;color:#fff;font-family:var(--font-data);font-size:11px;padding:4px 8px;">
+            <span style="color:var(--text-muted);font-size:11px;">→</span>
+            <input type="date" id="date-to" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:6px;color:#fff;font-family:var(--font-data);font-size:11px;padding:4px 8px;">
+            <button class="refresh-btn" onclick="loadAll()" style="padding:4px 10px;font-size:11px;">Apply</button>
+          </div>
+        </div>
         <div class="pill-green"><div class="sdot"></div>Live Data</div>
         <button class="refresh-btn" onclick="loadAll()">↻ Refresh</button>
       </div>
@@ -282,6 +309,36 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
       </div>
     </div>
 
+    <!-- CONVERSION RATES -->
+    <div class="sec-lbl">Conversion Rates</div>
+    <div class="rates-grid">
+      <div class="card rate-card">
+        <div class="rate-lbl">Reply Rate</div>
+        <div class="rate-val" id="r-reply">—%</div>
+        <div class="rate-sub">Leads who replied / contacted</div>
+      </div>
+      <div class="card rate-card">
+        <div class="rate-lbl">Booking Rate</div>
+        <div class="rate-val" id="r-booking">—%</div>
+        <div class="rate-sub">Calls booked / leads contacted</div>
+      </div>
+      <div class="card rate-card">
+        <div class="rate-lbl">Show-Up Rate</div>
+        <div class="rate-val" id="r-showup">—%</div>
+        <div class="rate-sub">Showed up / calls booked</div>
+      </div>
+      <div class="card rate-card">
+        <div class="rate-lbl">Close Rate</div>
+        <div class="rate-val" id="r-close" style="color:var(--green)!important">—%</div>
+        <div class="rate-sub">Closed / calls held</div>
+      </div>
+      <div class="card rate-card">
+        <div class="rate-lbl">Qualify Rate</div>
+        <div class="rate-val" id="r-qualify">—%</div>
+        <div class="rate-sub">Qualified / total calls</div>
+      </div>
+    </div>
+
     <!-- REVENUE CHART -->
     <div class="sec-lbl">Revenue Over Time</div>
     <div class="card chart-card">
@@ -337,6 +394,43 @@ const CLIENT_ID = _sbSess.client_id || 'micko_cruz';
 
 const H = { 'apikey': SUPA_ANON, 'Authorization': `Bearer ${SUPA_ANON}` };
 
+// ── DATE RANGE ──────────────────────────────────────────────
+let _activeRange = 'all';
+
+function setRange(range, btn) {
+  _activeRange = range;
+  document.querySelectorAll('.dfbtn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const cw = document.getElementById('custom-range');
+  cw.style.display = range === 'custom' ? 'flex' : 'none';
+  if (range !== 'custom') loadAll();
+}
+
+function getRangeDates() {
+  const now = new Date();
+  if (_activeRange === 'custom') {
+    const f = document.getElementById('date-from').value;
+    const t = document.getElementById('date-to').value;
+    return { from: f ? new Date(f) : null, to: t ? new Date(t+'T23:59:59') : null };
+  }
+  const map = { day: 1, week: 7, month: 30, year: 365, all: null };
+  const days = map[_activeRange];
+  if (!days) return { from: null, to: null };
+  const from = new Date(now); from.setDate(from.getDate() - days);
+  return { from, to: now };
+}
+
+function filterByRange(arr, dateField='created_at') {
+  const { from, to } = getRangeDates();
+  if (!from && !to) return arr;
+  return arr.filter(r => {
+    const d = new Date(r[dateField]||'');
+    if (from && d < from) return false;
+    if (to && d > to) return false;
+    return true;
+  });
+}
+
 function goTo(page) {
   var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','roi','login'];
   var slug = _sbSess.client_slug || '';
@@ -362,24 +456,30 @@ function r1(n) { return Math.round(n*10)/10; }
 let chartActivity = null, chartLeads = null, chartRevenue = null;
 
 async function loadAll() {
-  const dbg = `URL:${SUPA_URL.slice(-10)} ANON:${SUPA_ANON?'✓':'✗'} TOK:${SUPA_TOK?'✓':'✗'} CID:${CLIENT_ID}`;
-  document.getElementById('roi-sub').textContent = 'Loading… '+dbg;
+  document.getElementById('roi-sub').textContent = 'Loading…';
 
   const clientId = CLIENT_ID || 'micko_cruz';
   const cid = `client_id=eq.${clientId}&`;
 
-  const [items, leads, followup, calls] = await Promise.all([
+  const [_items, _leads, followup, _calls] = await Promise.all([
     sbGet('agent_items',         `${cid}select=id,type,status,created_at&status=neq.trashed&order=created_at.asc`),
     sbGet('outreach_leads',      `select=id,opener_sent_at,stage,stage_label,disqualify_reason,followup_count,created_at`),
     sbGet('leads_needing_followup', `select=ig_handle`),
-    sbGet('sales_calls',         `select=id,qualified,closed,deal_value,created_at&order=created_at.asc`)
+    sbGet('sales_calls',         `select=id,qualified,closed,deal_value,created_at,showed_up&order=created_at.asc`)
   ]);
 
-  console.log('[ROI] items:', items.length, 'leads:', leads.length, 'calls:', calls.length);
-  console.log('[ROI] types:', [...new Set(items.map(i=>i.type))], 'statuses:', [...new Set(items.map(i=>i.status))]);
+  // Apply date range filter
+  const items = filterByRange(_items);
+  const leads = filterByRange(_leads);
+  const calls = filterByRange(_calls);
+
+  const { from, to } = getRangeDates();
+  const rangeLabel = _activeRange === 'all' ? 'All-time data' :
+    _activeRange === 'custom' ? `${document.getElementById('date-from').value} → ${document.getElementById('date-to').value}` :
+    { day:'Today', week:'Last 7 days', month:'Last 30 days', year:'Last 365 days' }[_activeRange];
   const now = new Date();
   document.getElementById('roi-sub').textContent =
-    'All-time data · Last refreshed ' + now.toLocaleTimeString() + ` (${items.length} items)`;
+    rangeLabel + ' · Last refreshed ' + now.toLocaleTimeString();
 
   // --- CONTENT ---
   const posted  = items.filter(i => ['posted','approved','filmed','published'].includes(i.status)).length;
@@ -442,6 +542,15 @@ async function loadAll() {
 
   if (avgDeal > 0)   show('b-avg-deal', 'avg $'+avgDeal.toLocaleString());
   if (closeRate > 0) show('b-close-rate', closeRate+'% close rate');
+
+  // --- RATES ---
+  const pct = (n, d) => d > 0 ? Math.round(n/d*100)+'%' : '—%';
+  const showedUp = calls.filter(c => c.showed_up).length;
+  set('r-reply',   pct(replied, contacted));
+  set('r-booking', pct(callsTotal, contacted));
+  set('r-showup',  pct(showedUp || callsTotal, callsTotal));
+  set('r-close',   pct(closed, showedUp || callsTotal));
+  set('r-qualify', pct(qualified, callsTotal));
 
   // --- TIME SAVED ---
   const callHrs  = r1(callsTotal * 20 / 60);

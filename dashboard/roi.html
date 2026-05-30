@@ -571,7 +571,12 @@ function buildRevenueChart(calls) {
   });
 }
 
-loadAll();
+loadAll().then(() => {
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('s-visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.05 });
+  document.querySelectorAll('.card').forEach(c => obs.observe(c));
+});
 </script>
 </body>
 </html>

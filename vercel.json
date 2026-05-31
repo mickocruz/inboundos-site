@@ -42,19 +42,23 @@
     },
     {
       "source": "/dashboard",
-      "destination": "/dashboard/dashboard.html"
+      "destination": "/dashboard/command.html"
     },
     {
       "source": "/dashboard/",
-      "destination": "/dashboard/dashboard.html"
+      "destination": "/dashboard/command.html"
     },
     {
       "source": "/:client/dashboard",
-      "destination": "/dashboard/dashboard.html"
+      "destination": "/dashboard/command.html"
     },
     {
       "source": "/:client/command",
       "destination": "/dashboard/command.html"
+    },
+    {
+      "source": "/:client/database",
+      "destination": "/dashboard/vault.html"
     },
     {
       "source": "/:client/vault",
@@ -119,6 +123,10 @@
     {
       "source": "/command",
       "destination": "/dashboard/command.html"
+    },
+    {
+      "source": "/database",
+      "destination": "/dashboard/vault.html"
     },
     {
       "source": "/vault",

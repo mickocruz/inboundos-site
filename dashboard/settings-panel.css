@@ -238,3 +238,17 @@
   transition: opacity 0.3s;
 }
 .sp-saved-msg.show { opacity: 1; }
+
+/* ── Global select dropdown fix ── */
+/* Native option elements: white bg, black text so they're readable */
+select option {
+  background: #ffffff !important;
+  color: #111111 !important;
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 13px !important;
+}
+select option:checked,
+select option:hover {
+  background: #e8f4fd !important;
+  color: #000000 !important;
+}

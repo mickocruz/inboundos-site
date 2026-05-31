@@ -83,8 +83,29 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .upload-webhook:focus{border-color:rgba(79,195,247,0.3);}
 .upload-webhook::placeholder{color:var(--text-dim);}
 
+/* TAB SWITCHER */
+.crm-tabs{display:flex;gap:2px;padding:0 24px 0;flex-shrink:0;}
+.crm-tab{display:flex;align-items:center;gap:6px;padding:10px 16px;font-family:var(--font-data);font-size:12px;font-weight:600;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;margin-bottom:-1px;}
+.crm-tab:hover{color:var(--text);}
+.crm-tab.on{color:var(--accent);border-bottom-color:var(--accent);}
+.crm-tab-badge{font-size:9.5px;font-weight:700;padding:1px 6px;border-radius:10px;background:rgba(255,255,255,0.06);color:var(--text-dim);}
+.crm-tab.on .crm-tab-badge{background:rgba(79,195,247,0.1);color:var(--accent);}
+
+/* INBOUND SECTION */
+.inbound-body{flex:1;overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:16px;scrollbar-width:thin;scrollbar-color:rgba(79,195,247,0.1) transparent;}
+.inbound-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:10px;}
+.inbound-empty-icon{font-size:32px;opacity:0.2;}
+.inbound-empty-text{font-family:var(--font-data);font-size:13px;color:var(--text-dim);text-align:center;}
+.inbound-empty-sub{font-family:var(--font-data);font-size:11px;color:var(--text-dim);opacity:0.6;text-align:center;max-width:320px;line-height:1.6;}
+.inbound-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all 0.15s;}
+.inbound-card:hover{border-color:rgba(79,195,247,0.2);background:rgba(79,195,247,0.03);}
+.inbound-card-info{flex:1;min-width:0;}
+.inbound-card-handle{font-family:var(--font-data);font-size:13px;font-weight:600;color:var(--text);}
+.inbound-card-sub{font-family:var(--font-data);font-size:11px;color:var(--text-muted);margin-top:2px;}
+.inbound-source-badge{font-family:var(--font-data);font-size:9px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;padding:2px 8px;border-radius:10px;background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.25);color:#a78bfa;}
+
 /* STAGE FILTERS */
-.stage-filters{display:flex;gap:6px;padding:0 24px 12px;flex-shrink:0;overflow-x:auto;scrollbar-width:none;}
+.stage-filters{display:flex;gap:6px;padding:10px 24px 12px;flex-shrink:0;overflow-x:auto;scrollbar-width:none;border-top:1px solid var(--border);}
 .stage-filters::-webkit-scrollbar{display:none;}
 .chip{display:flex;align-items:center;gap:5px;padding:4px 11px;border-radius:20px;border:1px solid var(--border);background:rgba(255,255,255,0.02);cursor:pointer;transition:all 0.15s;font-family:var(--font-data);font-size:11px;font-weight:500;white-space:nowrap;color:var(--text-muted);}
 .chip:hover{border-color:rgba(79,195,247,0.2);color:var(--text);}
@@ -134,7 +155,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .d-val{font-family:var(--font-data);font-size:10.5px;color:var(--text-muted);line-height:1.4;}
 .stage-sel{width:100%;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:7px;padding:7px 10px;color:var(--text);font-family:var(--font-data);font-size:11px;outline:none;cursor:pointer;transition:border-color 0.15s;}
 .stage-sel:focus{border-color:rgba(79,195,247,0.3);}
-.stage-sel option{background:#0D1117;color:#fff;}
+.stage-sel option{background:#ffffff;color:#111111;font-family:'DM Sans',sans-serif;}
 .notes-ta{width:100%;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:7px;padding:9px 12px;color:var(--text-muted);font-family:var(--font-data);font-size:11px;resize:none;outline:none;line-height:1.5;transition:border-color 0.15s;min-height:75px;}
 .notes-ta:focus{border-color:rgba(79,195,247,0.3);color:var(--text);}
 .save-btn{padding:6px 16px;background:var(--accent);border:none;border-radius:7px;font-family:var(--font-data);font-size:10px;font-weight:700;color:var(--bg);cursor:pointer;transition:all 0.15s;}
@@ -147,33 +168,47 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 </style>
 <style>:root{--font-body:'DM Sans',sans-serif;}html,body{font-family:'DM Sans',sans-serif!important;}</style>
 <link rel="stylesheet" href="/dashboard/spring-animations.css"/>
-<link rel="stylesheet" href="/dashboard/mobile.css?v=6"/>
+<link rel="stylesheet" href="/dashboard/mobile.css?v=8"/>
 <link rel="stylesheet" href="/dashboard/settings-panel.css"/>
 <script src="/dashboard/settings-panel.js"></script>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="InboundOS">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <meta name="theme-color" content="#0D1117">
 </head>
 <body>
 <div class="layout">
   <nav class="sidebar">
     <div class="sidebar-logo-wrap" onclick="location.href='/'"><div class="sidebar-logo-text"><span style="color:#ffffff;">Inbound</span><span style="color:#4FC3F7;">OS</span></div></div>
     <div class="nav-section"><div class="nav-section-label">Command</div>
-      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/dashboard'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>Dashboard</div>
-      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/agents'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="10" width="20" height="12" rx="2"/><path d="M12 2a5 5 0 0 1 5 5v3H7V7a5 5 0 0 1 5-5z"/><circle cx="12" cy="16" r="1.2" fill="currentColor" stroke="none"/></svg>Agents</div>
-      <div class="nav-item" id="nav-chat-item" style="opacity:0.35;cursor:not-allowed;pointer-events:none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Chat</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/dashboard'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>Dashboard</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/command'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>Command Center</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/agents'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="10" width="20" height="12" rx="2"/><path d="M12 2a5 5 0 0 1 5 5v3H7V7a5 5 0 0 1 5-5z"/><circle cx="12" cy="16" r="1.2" fill="currentColor" stroke="none"/></svg>Agents</div>
+      <div class="nav-item" id="nav-chat-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','chat','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/chat'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Chat</div>
     </div>
     <div class="nav-section"><div class="nav-section-label">Content</div>
-      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/performance'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="4" height="20" rx="1"/><rect x="10" y="8" width="4" height="14" rx="1"/><rect x="18" y="4" width="4" height="18" rx="1"/></svg>Instagram</div>
-      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/pipeline'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Content Pipeline</div>
-      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/research'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Research</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/performance'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="4" height="20" rx="1"/><rect x="10" y="8" width="4" height="14" rx="1"/><rect x="18" y="4" width="4" height="18" rx="1"/></svg>Instagram</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/pipeline'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Content Pipeline</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/research'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Research</div>
     </div>
     <div class="nav-section"><div class="nav-section-label">Revenue</div>
-      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/clients'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Clients</div>
-      <div class="nav-item active" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/crm'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v4H3z"/><path d="M3 10h18v4H3z"/><path d="M3 17h18v4H3z"/></svg>CRM</div>
-      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/sales-calls'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.74 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.66 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Sales Calls</div>
-      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','roi','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/roi'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>ROI Report</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/clients'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Clients</div>
+      <div class="nav-item active" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/crm'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v4H3z"/><path d="M3 10h18v4H3z"/><path d="M3 17h18v4H3z"/></svg>CRM</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/sales-calls'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.74 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.66 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Sales Calls</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','roi','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/roi'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>ROI Report</div>
     </div>
     <div class="nav-section"><div class="nav-section-label">Intelligence</div>
-      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/sops'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>SOPs</div>
-      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/org-chart'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><path d="M12 7v3M12 10l-5 7M12 10l5 7"/></svg>Org Chart</div>
+            <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/vault'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Company Database</div>
+<div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/sops'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>SOPs</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/org-chart'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><path d="M12 7v3M12 10l-5 7M12 10l5 7"/></svg>Org Chart</div>
+    </div>
+    
+    <!-- LIVE AGENT STATUS -->
+    <div class="sidebar-agents" id="sidebar-agents-section" style="padding:10px 0 4px;">
+      <div style="font-family:var(--font-data);font-size:9px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:rgba(255,255,255,0.22);padding:0 16px;margin-bottom:6px;">Agents</div>
+      <div id="sidebar-agent-status-list"></div>
     </div>
     <div class="sidebar-bottom"><div class="mk-avatar-wrap" onclick="window.__settingsOpen&&window.__settingsOpen()"><img src="/micko.jpg" alt="MK" style="width:32px;height:32px;object-fit:cover;border-radius:50%;border:1px solid rgba(79,195,247,0.2);"/><div><div class="mk-name">Micko Cruz</div><div class="mk-role">Founder · InboundOS</div></div></div></div>
   </nav>
@@ -181,7 +216,8 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
   <main class="main">
     <div class="page-header">
       <div>
-        <h1>Outreach <span>CRM</span></h1>
+        <h1>Lead pipeline.</h1>
+        <div style="font-family:var(--font-data);font-size:12px;color:var(--text-muted);margin-top:2px;" id="crm-subtitle">Loading...</div>
         <div class="sub" id="crm-sub">Loading leads…</div>
       </div>
       <div class="header-right">
@@ -191,37 +227,86 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
       </div>
     </div>
 
+    <div class="crm-tabs">
+      <div class="crm-tab on" id="tab-outbound" onclick="switchTab('outbound')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        Outbound <span class="crm-tab-badge" id="tab-outbound-cnt">0</span>
+      </div>
+      <div class="crm-tab" id="tab-inbound" onclick="switchTab('inbound')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Inbound <span class="crm-tab-badge" id="tab-inbound-cnt">0</span>
+      </div>
+    </div>
+
+    <div id="outbound-section" style="flex:1;overflow:hidden;display:flex;flex-direction:column;">
     <div class="stage-filters" id="stage-filters"></div>
 
     <div class="crm-body">
       <div class="list-col">
         <div class="search-bar"><input id="search" placeholder="Search handle, name, niche…" oninput="renderList()"></div>
+        <div style="display:flex;gap:6px;padding:6px 12px 2px;align-items:center;flex-wrap:wrap;">
+          <span style="font-family:var(--font-data);font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim);margin-right:2px;">Sort</span>
+          <select id="sort-field" onchange="renderList()" style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:4px 8px;color:var(--text);font-family:var(--font-data);font-size:11px;outline:none;cursor:pointer;">
+            <option value="created_at">Date Added</option>
+            <option value="ig_handle">Alphabetical</option>
+            <option value="stage">Stage</option>
+            <option value="qualifier">Qualifier</option>
+            <option value="followup_count">Followups</option>
+            <option value="next_followup_at">Next Followup</option>
+          </select>
+          <select id="sort-dir" onchange="renderList()" style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:4px 8px;color:var(--text);font-family:var(--font-data);font-size:11px;outline:none;cursor:pointer;">
+            <option value="desc">↓ Descending</option>
+            <option value="asc">↑ Ascending</option>
+          </select>
+        </div>
         <div class="lead-list" id="lead-list"><div class="empty loading">Loading…</div></div>
       </div>
       <div class="detail-col" id="detail-col">
         <div class="detail-placeholder">Select a lead to view details</div>
       </div>
     </div>
+    </div><!-- end outbound-section -->
+
+    <div id="inbound-section" style="display:none;flex:1;overflow:hidden;flex-direction:column;border-top:1px solid var(--border);">
+      <div class="inbound-body" id="inbound-body">
+        <div class="inbound-empty">
+          <div class="inbound-empty-icon">↙</div>
+          <div class="inbound-empty-text">No inbound leads yet</div>
+          <div class="inbound-empty-sub">Inbound leads come from people who reach out to you — via DMs replying to your content, referrals, or your qualify form. They'll appear here automatically.</div>
+        </div>
+      </div>
+    </div>
   </main>
 </div>
 
 <script>
-const SLUG_FN = `(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()`;
+const SLUG_FN = `(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()`;
 
 const STAGES=[
   {stage:-1,label:'All',dot:'#ffffff40'},
+  {stage:0,label:'Fresh Lead',dot:'#4FC3F7'},
   {stage:1,label:'Opener Sent',dot:'#ffffff60'},
   {stage:2,label:'Quill Offer',dot:'#fbbf24'},
   {stage:3,label:'Setup Qs',dot:'#60a5fa'},
   {stage:4,label:'Quill Delivered',dot:'#a78bfa'},
   {stage:5,label:'Transition Sent',dot:'#fb923c'},
   {stage:6,label:'Call Booked',dot:'#4ade80'},
-  {stage:0,label:'Dead',dot:'#ffffff20'},
+  {stage:7,label:'Unqualified',dot:'#f87171'},
   {stage:9,label:'Closed',dot:'#4FC3F7'},
 ];
-const STAGE_LABEL={0:'Dead',1:'Opener Sent',2:'Quill Offer Sent',3:'Setup Questions Asked',4:'Quill Delivered',5:'Transition Sent',6:'Call Booked',9:'Closed'};
+const STAGE_LABEL={0:'Fresh Lead',1:'Opener Sent',2:'Quill Offer Sent',3:'Setup Questions Asked',4:'Quill Delivered',5:'Transition Sent',6:'Call Booked',7:'Unqualified',9:'Closed'};
 
-let leads=[],filter=-1,selId=null;
+let leads=[],filter=-1,selId=null,activeTab='outbound';
+
+function switchTab(tab) {
+  activeTab = tab;
+  document.getElementById('tab-outbound').classList.toggle('on', tab==='outbound');
+  document.getElementById('tab-inbound').classList.toggle('on', tab==='inbound');
+  document.getElementById('outbound-section').style.display = tab==='outbound' ? 'flex' : 'none';
+  const inboundEl = document.getElementById('inbound-section');
+  inboundEl.style.display = tab==='inbound' ? 'flex' : 'none';
+  inboundEl.style.flexDirection = 'column';
+}
 
 function dot(stage){return STAGES.find(s=>s.stage===stage)?.dot||'#ffffff30';}
 function urgency(l){
@@ -238,7 +323,8 @@ function getSupabaseToken(){
 
 function renderFilters(){
   document.getElementById('stage-filters').innerHTML=STAGES.map(s=>{
-    const cnt=s.stage===-1?leads.length:leads.filter(l=>l.stage===s.stage).length;
+    const ob=leads.filter(l=>!l.source||l.source!=='inbound');
+    const cnt=s.stage===-1?ob.length:ob.filter(l=>l.stage===s.stage).length;
     return`<div class="chip ${filter===s.stage?'on':''}" onclick="setFilter(${s.stage})">
       ${s.stage!==-1?`<span class="chip-dot" style="background:${s.dot}"></span>`:''}
       ${s.label}<span class="chip-cnt">${cnt}</span>
@@ -250,10 +336,23 @@ function setFilter(s){filter=s;renderFilters();renderList();}
 
 function renderList(){
   const q=document.getElementById('search').value.toLowerCase();
+  const sortField=document.getElementById('sort-field')?.value||'created_at';
+  const sortDir=document.getElementById('sort-dir')?.value||'desc';
+  const qualOrder={hot:0,warm:1,cold:2};
+
   const rows=leads.filter(l=>{
+    const isOutbound = !l.source || l.source !== 'inbound';
     const ms=filter===-1||l.stage===filter;
     const mq=!q||l.ig_handle.toLowerCase().includes(q)||(l.full_name||'').toLowerCase().includes(q)||(l.niche||'').toLowerCase().includes(q);
-    return ms&&mq;
+    return isOutbound&&ms&&mq;
+  }).sort((a,b)=>{
+    let av=a[sortField],bv=b[sortField];
+    if(sortField==='qualifier'){av=qualOrder[a.qualifier]??9;bv=qualOrder[b.qualifier]??9;}
+    if(av==null&&bv==null)return 0;
+    if(av==null)return 1;
+    if(bv==null)return -1;
+    const cmp=av<bv?-1:av>bv?1:0;
+    return sortDir==='asc'?cmp:-cmp;
   });
   const el=document.getElementById('lead-list');
   if(!rows.length){el.innerHTML='<div class="empty">No leads</div>';return;}
@@ -265,7 +364,7 @@ function renderList(){
       <span class="l-dot" style="background:${dot(l.stage)}"></span>
       <div class="l-info">
         <div class="l-handle">@${l.ig_handle}</div>
-        <div class="l-sub">${[l.niche,STAGE_LABEL[l.stage]].filter(Boolean).join(' · ')}</div>
+        <div class="l-sub">${[l.niche,STAGE_LABEL[l.stage],l.created_at?new Date(l.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):null].filter(Boolean).join(' · ')}</div>
       </div>
       <div class="l-right">${ub}${qt}</div>
     </div>`;
@@ -277,7 +376,7 @@ function selectLead(id){selId=id;renderList();renderDetail(leads.find(l=>l.id===
 function renderDetail(l){
   const col=document.getElementById('detail-col');
   if(!l){col.innerHTML='<div class="detail-placeholder">Select a lead to view details</div>';return;}
-  const stageOpts=[1,2,3,4,5,6,0,9].map(v=>`<option value="${v}" ${l.stage==v?'selected':''}>${STAGE_LABEL[v]}</option>`).join('');
+  const stageOpts=[0,1,2,3,4,5,6,7,9].map(v=>`<option value="${v}" ${l.stage==v?'selected':''}>${STAGE_LABEL[v]}</option>`).join('');
   const profile=[[l.niche,'Niche'],[l.follower_count&&l.follower_count.toLocaleString(),'Followers'],[l.location,'Location'],[l.bio_notes,'Bio note']].filter(r=>r[0]);
   const timeline=[[l.opener_sent_at,'Opener sent'],[l.last_message_at,'Last message'],[l.next_followup_at,'Next follow-up'],[String(l.followup_count||0),'Follow-ups']].filter(r=>r[0]);
   const intel=[[l.their_offer,'Offer'],[l.their_icp,'ICP'],[l.their_result,'Result'],[l.their_pain,'Pain'],[l.their_content_style,'Style'],[l.their_phrases,'Phrases']].filter(r=>r[0]);
@@ -327,9 +426,15 @@ async function loadLeads(){
     leads=await r.json();
     const overdue=leads.filter(l=>urgency(l)==='overdue').length;
     const today=leads.filter(l=>urgency(l)==='today').length;
-    document.getElementById('crm-sub').textContent=`${leads.length} leads · ${leads.filter(l=>l.stage===9).length} closed · ${leads.filter(l=>l.stage>0&&l.stage<9).length} active`;
+    const unqualifiedCount=leads.filter(l=>l.stage===7).length;
+    const qualifiedCount=leads.filter(l=>l.stage===6||l.stage===9).length;
+    document.getElementById('crm-sub').textContent=`${leads.length} leads · ${leads.filter(l=>l.stage===9).length} closed · ${leads.filter(l=>l.stage>0&&l.stage<9&&l.stage!==7).length} active · ${qualifiedCount} qualified · ${unqualifiedCount} unqualified`;
     const pill=document.getElementById('followup-pill');
     if(overdue+today>0){pill.style.display='flex';pill.textContent=`${overdue+today} follow-up${overdue+today>1?'s':''} due`;}
+    const outboundLeads = leads.filter(l => !l.source || l.source !== 'inbound');
+    const inboundLeads = leads.filter(l => l.source === 'inbound');
+    document.getElementById('tab-outbound-cnt').textContent = outboundLeads.length;
+    document.getElementById('tab-inbound-cnt').textContent = inboundLeads.length;
     renderFilters();renderList();
     if(selId){const u=leads.find(l=>l.id===selId);if(u)renderDetail(u);}
   }catch(e){
@@ -357,7 +462,7 @@ if (new URLSearchParams(window.location.search).get('addlead') === '1') {
 <div class="upload-overlay" id="uploadOverlay" onclick="if(event.target===this)closeUpload()">
   <div class="upload-box">
     <div class="upload-title">Add Lead via <span>Screenshot</span></div>
-    <div style="font-family:var(--font-data);font-size:11px;color:var(--text-dim);">Claude reads the profile → qualifies → writes opener → saves to CRM. Run <code style="background:rgba(79,195,247,0.08);padding:1px 6px;border-radius:4px;color:var(--accent);font-size:10px;">node qualify-server/server.js</code> first.</div>
+    <div style="font-family:var(--font-data);font-size:11px;color:var(--text-dim);">Echo reads the profile → qualifies → writes opener → saves to CRM. Run <code style="background:rgba(79,195,247,0.08);padding:1px 6px;border-radius:4px;color:var(--accent);font-size:10px;">node qualify-server/server.js</code> first.</div>
     <div class="upload-drop" id="uploadDrop" onclick="document.getElementById('uploadFileInput').click()"
       ondragover="event.preventDefault();this.classList.add('drag')"
       ondragleave="this.classList.remove('drag')"
@@ -424,6 +529,17 @@ async function submitScreenshots() {
   const btn = document.getElementById('uploadSubmit');
   const status = document.getElementById('uploadStatus');
   btn.disabled = true;
+
+  // Check if qualify server is reachable before wasting time
+  status.textContent = 'Checking server…';
+  try {
+    await fetch('http://localhost:3001/qualify', { method: 'OPTIONS', signal: AbortSignal.timeout(3000) });
+  } catch(e) {
+    status.innerHTML = '⚠️ Qualify server not reachable.<br><br><strong>This feature only works on your Mac.</strong><br>Open this page in a browser on your Mac, then run:<br><code style="background:rgba(79,195,247,0.08);padding:2px 6px;border-radius:4px;color:#4FC3F7">node qualify-server/server.js</code>';
+    btn.disabled = false;
+    return;
+  }
+
   status.textContent = `Converting ${_uploadFiles.length} screenshot(s)…`;
 
   // Convert all to base64
@@ -434,29 +550,61 @@ async function submitScreenshots() {
     r.readAsDataURL(f);
   })));
 
-  status.textContent = `Claude is qualifying ${images.length} profile(s)… (this takes ~15s each)`;
+  // Process in batches of 5 to avoid timeouts with large uploads
+  const BATCH = 5;
+  const allResults = [];
+  const totalBatches = Math.ceil(images.length / BATCH);
 
   try {
-    const resp = await fetch('http://localhost:3001/qualify', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ images })
-    });
+    for (let b = 0; b < totalBatches; b++) {
+      const batch = images.slice(b * BATCH, (b + 1) * BATCH);
+      status.textContent = `Echo is qualifying… ${Math.min((b+1)*BATCH, images.length)} / ${images.length} profiles`;
 
-    if (!resp.ok) {
-      const err = await resp.text();
-      if (resp.status === 0 || !resp.status) throw new Error('Server offline — run: node qualify-server/server.js');
-      throw new Error(err);
+      const resp = await fetch('http://localhost:3001/qualify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ images: batch })
+      });
+
+      if (!resp.ok) {
+        const err = await resp.text();
+        throw new Error(err || 'Server error');
+      }
+
+      const data = await resp.json();
+      allResults.push(...data.results);
     }
 
-    const data = await resp.json();
-    const done = data.results.filter(r => r.success).length;
-    const failed = data.results.filter(r => !r.success).length;
-    const disq = data.results.filter(r => r.success && r.lead?.disqualified).length;
+    const done = allResults.filter(r => r.success).length;
+    const dupList = allResults.filter(r => !r.success && r.duplicate);
+    const failList = allResults.filter(r => !r.success && !r.duplicate);
+    const disqList = allResults.filter(r => r.success && r.lead?.disqualified);
+    const disq = disqList.length;
 
-    status.textContent = failed
-      ? `${done} added (${disq} disqualified), ${failed} failed — check server logs`
-      : `✓ ${done} lead${done > 1 ? 's' : ''} added${disq ? ` · ${disq} disqualified` : ''}!`;
+    // Build extra info HTML
+    let extraHtml = '';
+    if (disqList.length) {
+      extraHtml += `<div style="margin-top:10px;padding:10px 12px;background:rgba(248,113,113,0.06);border:1px solid rgba(248,113,113,0.2);border-radius:8px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:#f87171;margin-bottom:6px;">UNQUALIFIED (${disq})</div>
+        ${disqList.map(r => `<div style="font-size:11px;color:rgba(255,255,255,0.6);padding:2px 0;">@${r.lead.ig_handle} — ${r.lead.disqualify_reason || 'no reason'}</div>`).join('')}
+      </div>`;
+    }
+    if (dupList.length) {
+      extraHtml += `<div style="margin-top:8px;padding:10px 12px;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.2);border-radius:8px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:#fbbf24;margin-bottom:6px;">DUPLICATES SKIPPED (${dupList.length})</div>
+        ${dupList.map(r => `<div style="font-size:11px;color:rgba(255,255,255,0.6);padding:2px 0;">@${r.ig_handle} — already in CRM</div>`).join('')}
+      </div>`;
+    }
+
+    const summary = `✓ ${done} added${disq ? ` · ${disq} unqualified` : ''}${dupList.length ? ` · ${dupList.length} duplicate${dupList.length>1?'s':''}` : ''}${failList.length ? ` · ${failList.length} failed` : ''}`;
+    status.innerHTML = summary + extraHtml;
+
+    // Toast notification
+    const toast = document.createElement('div');
+    toast.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:9999;background:#0f1923;border:1px solid rgba(79,195,247,0.3);border-radius:10px;padding:12px 18px;font-family:var(--font-data);font-size:13px;color:#fff;box-shadow:0 8px 32px rgba(0,0,0,0.4);max-width:320px;';
+    toast.innerHTML = `<div style="color:#4FC3F7;font-weight:700;margin-bottom:3px;">Echo done</div><div style="color:rgba(255,255,255,0.7);font-size:12px;">${done} added${disq ? ` · ${disq} unqualified` : ''}${dupList.length ? ` · ${dupList.length} duplicate${dupList.length>1?'s':''} skipped` : ''}${failList.length ? ` · ${failList.length} failed` : ''}</div>`;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 6000);
 
   } catch(e) {
     status.textContent = `Error: ${e.message}`;
@@ -464,11 +612,70 @@ async function submitScreenshots() {
     return;
   }
 
-  setTimeout(() => {
-    closeUpload();
-    loadLeads();
-  }, 2000);
+  const hasDetails = disqList.length || dupList.length;
+  setTimeout(() => { closeUpload(); loadLeads(); }, hasDetails ? 8000 : 2500);
 }
+</script>
+  <script>if("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js");</script>
+
+<script>
+(function sidebarAgentStatus() {
+  var AGENTS = [
+    {name:'Scout',color:'#4FC3F7'},{name:'Quill',color:'#fbbf24'},{name:'Pulse',color:'#4ade80'},
+    {name:'Hunter',color:'#f472b6'},{name:'Echo',color:'#4ade80'},{name:'Pilot',color:'#38bdf8'},
+    {name:'Forge',color:'#e879f9'},{name:'Edge',color:'#f97316'}
+  ];
+  function getStatuses() {
+    var s = {};
+    AGENTS.forEach(function(a){s[a.name]='idle';});
+    try {
+      var tasks = JSON.parse(localStorage.getItem('ctrl_agent_tasks_v1')||'{}');
+      Object.values(tasks).forEach(function(t){
+        if(t.status==='running') s[t.agent]='working';
+        else if(t.status==='queued' && s[t.agent]!=='working') s[t.agent]='queued';
+      });
+    } catch(e){}
+    return s;
+  }
+  function render() {
+    var el = document.getElementById('sidebar-agent-status-list');
+    if(!el) return;
+    var statuses = getStatuses();
+    el.innerHTML = AGENTS.map(function(a){
+      var st = statuses[a.name]||'idle';
+      var dotColor = st==='working'?'#fbbf24':st==='queued'?'#fbbf24':'rgba(255,255,255,0.15)';
+      var stLabel = st==='working'?'running':st==='queued'?'queued':'idle';
+      return '<div style="display:flex;align-items:center;gap:8px;padding:5px 16px;cursor:pointer;" onclick="window.location.href=window.location.href.replace(/\/[^\/]*$/, \'/agents\')">'
+        +'<div style="width:6px;height:6px;border-radius:50%;flex-shrink:0;background:'+dotColor+';"></div>'
+        +'<span style="font-family:var(--font-data);font-size:11px;font-weight:500;color:rgba(255,255,255,0.35);flex:1;">'+a.name+'</span>'
+        +'<span style="font-family:var(--font-data);font-size:9px;color:rgba(255,255,255,0.18);">'+stLabel+'</span>'
+        +'</div>';
+    }).join('');
+  }
+  document.addEventListener('DOMContentLoaded', render);
+  setInterval(render, 5000);
+})();
+</script>
+<script>
+(function updatePageSubtitle(){
+  var sess={};try{sess=JSON.parse(localStorage.getItem("sb_session")||"{}");}catch(e){}
+  var SUPA=sess.client_supabase_url||"https://cscfbuhwlfhblxprkwnh.supabase.co";
+  var KEY=sess.client_supabase_anon||"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA";
+  var hdrs={"apikey":KEY,"Authorization":"Bearer "+(sess.access_token||KEY)};
+  var page=window.location.pathname.split("/").filter(Boolean).pop()||"dashboard";
+  async function go(){
+    try{
+      if(["dashboard",""].indexOf(page)>-1){var r=await fetch(SUPA+"/rest/v1/outreach_leads?select=id,status",{headers:hdrs});if(r.ok){var d=await r.json();var a=d.filter(function(x){return["new","contacted","following_up"].indexOf(x.status)>-1;}).length;var el=document.getElementById("dash-subtitle");if(el)el.textContent=a+" active leads in pipeline.";}}
+      if(page==="clients"){var r=await fetch(SUPA+"/rest/v1/clients?select=id,status",{headers:hdrs});if(r.ok){var d=await r.json();var a=d.filter(function(x){return x.status==="active";}).length;var el=document.getElementById("clients-subtitle");if(el)el.textContent=a+" active install"+(a!==1?"s":"")+".";}else{var el=document.getElementById("clients-subtitle");if(el)el.textContent="Manage client installs.";}}
+      if(page==="crm"){var r=await fetch(SUPA+"/rest/v1/outreach_leads?select=id,status",{headers:hdrs});if(r.ok){var d=await r.json();var el=document.getElementById("crm-subtitle");if(el)el.textContent=d.length+" leads · "+d.filter(function(x){return x.status==="new";}).length+" new.";}else{var el=document.getElementById("crm-subtitle");if(el)el.textContent="Track and manage outreach leads.";}}
+      if(page==="sales-calls"){var r=await fetch(SUPA+"/rest/v1/outreach_leads?select=id,status&status=eq.booked",{headers:hdrs});if(r.ok){var d=await r.json();var el=document.getElementById("calls-subtitle");if(el)el.textContent=d.length+" call"+(d.length!==1?"s":"")+" booked.";}else{var el=document.getElementById("calls-subtitle");if(el)el.textContent="Review and log discovery calls.";}}
+      if(page==="pipeline"){try{var board=JSON.parse(localStorage.getItem("ctrl_pipeline_board")||"{}");var s=Array.isArray(board.scripting)?board.scripting.length:0;var el=document.getElementById("pipeline-subtitle");if(el)el.textContent=s+" script"+(s!==1?"s":"")+" ready to film.";}catch(ee){}}
+      if(page==="agents"){try{var tasks=JSON.parse(localStorage.getItem("ctrl_agent_tasks_v1")||"{}");var run=Object.values(tasks).filter(function(t){return t.status==="running";}).length;var el=document.getElementById("agents-subtitle");if(el)el.textContent=run>0?run+" agent"+(run!==1?"s":"")+" running now.":"8 agents ready.";}catch(ee){}}
+      if(page==="sops"){var r=await fetch(SUPA+"/rest/v1/sops?select=id",{headers:hdrs});if(r.ok){var d=await r.json();var el=document.getElementById("sops-subtitle");if(el)el.textContent=d.length+" procedure"+(d.length!==1?"s":"")+" documented.";}else{var el=document.getElementById("sops-subtitle");if(el)el.textContent="Standard operating procedures.";}}
+    }catch(e){}
+  }
+  document.addEventListener("DOMContentLoaded",go);
+})();
 </script>
 </body>
 </html>

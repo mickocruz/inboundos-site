@@ -1,0 +1,129 @@
+{
+  "name": "Screenshot → Lead Qualifier",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "screenshot-lead",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-node",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "screenshot-lead"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract base64 images array from body\nconst body = $input.first().json.body || $input.first().json;\nconst images = body.images || [];\nconst items = [];\nfor (const img of images) {\n  items.push({ json: { image_base64: img, original_body: body } });\n}\nif (items.length === 0) {\n  items.push({ json: { image_base64: null, original_body: body } });\n}\nreturn items;"
+      },
+      "id": "split-images",
+      "name": "Split Images",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key", "value": "={{ $credentials.value }}" },
+            { "name": "anthropic-version", "value": "2023-06-01" },
+            { "name": "content-type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "=",
+              "value": "={{ JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 1024, messages: [{ role: 'user', content: [{ type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: $json.image_base64.replace(/^data:image\\/[a-z]+;base64,/, '') } }, { type: 'text', text: 'You are a lead qualifier for an Instagram outreach agency (InboundOS). We help small business owners and agency owners grow using short-form video content. Analyze this Instagram profile screenshot.\\n\\nReturn ONLY valid JSON with these exact fields:\\n{\\n  \"ig_handle\": \"username without @\",\\n  \"full_name\": \"display name or empty string\",\\n  \"niche\": \"2-3 word niche description\",\\n  \"followers\": \"follower count as shown e.g. 12.4K\",\\n  \"qualifier\": \"hot or warm or cold\",\\n  \"qualifier_reason\": \"one sentence on why this score\",\\n  \"disqualified\": false,\\n  \"disqualify_reason\": \"null if not disqualified, otherwise specific reason\",\\n  \"opener_text\": \"a genuine 2-3 sentence personalized DM opener referencing something specific from their profile — sounds human, no pitch yet\"\\n}\\n\\nQualifier logic:\\n- hot: 5K-100K followers, posts reels, clear business/agency niche, looks active\\n- warm: 1K-5K or 100K+ followers, some content activity, unclear niche\\n- cold: under 1K followers, no clear niche, looks inactive\\n\\nDisqualify (set disqualified: true) if ANY of these:\\n- Looks like a content agency or social media agency themselves (competitor)\\n- Under 500 followers\\n- No income signal — purely personal account, meme page, or teen account\\n- Already a marketing/ads agency\\n- Inactive (no recent posts visible)\\n- Celebrity or mega-influencer (over 500K, unreachable)\\n\\nIf disqualified, set opener_text to empty string.\\n\\nReturn ONLY the JSON object, no markdown, no explanation.' }] }] }) }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "claude-vision",
+      "name": "Claude Vision",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "anthropic-key",
+          "name": "Anthropic API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse Claude response into lead fields\nconst response = $input.first().json;\nlet content = '';\ntry {\n  content = response.content[0].text;\n} catch(e) {\n  throw new Error('Claude response malformed: ' + JSON.stringify(response));\n}\n\n// Strip markdown code fences if present\ncontent = content.replace(/^```json\\n?/, '').replace(/\\n?```$/, '').trim();\n\nlet lead;\ntry {\n  lead = JSON.parse(content);\n} catch(e) {\n  throw new Error('Claude did not return valid JSON: ' + content);\n}\n\nreturn [{ json: lead }];"
+      },
+      "id": "parse-lead",
+      "name": "Parse Lead",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://cscfbuhwlfhblxprkwnh.supabase.co/rest/v1/outreach_leads",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8" },
+            { "name": "Authorization", "value": "Bearer sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8" },
+            { "name": "Content-Type", "value": "application/json" },
+            { "name": "Prefer", "value": "return=representation" }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "=",
+              "value": "={{ JSON.stringify({ ig_handle: $json.ig_handle, full_name: $json.full_name || '', niche: $json.niche || '', followers: $json.followers || '', qualifier: $json.qualifier || 'warm', opener_text: $json.opener_text || '', notes: ($json.disqualified ? '⚠️ DISQUALIFIED: ' + $json.disqualify_reason : $json.qualifier_reason) || '', stage: 0, source: 'screenshot' }) }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "save-supabase",
+      "name": "Save to Supabase",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ success: true, lead: $json }) }}",
+        "options": {}
+      },
+      "id": "respond",
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1340, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": { "main": [[{ "node": "Split Images", "type": "main", "index": 0 }]] },
+    "Split Images": { "main": [[{ "node": "Claude Vision", "type": "main", "index": 0 }]] },
+    "Claude Vision": { "main": [[{ "node": "Parse Lead", "type": "main", "index": 0 }]] },
+    "Parse Lead": { "main": [[{ "node": "Save to Supabase", "type": "main", "index": 0 }]] },
+    "Save to Supabase": { "main": [[{ "node": "Respond", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "staticData": null,
+  "tags": [],
+  "meta": { "instanceId": "inboundos-screenshot-lead" }
+}

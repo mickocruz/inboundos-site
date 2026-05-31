@@ -34,6 +34,13 @@ Deno.serve(async (req) => {
     .eq('username', username.toLowerCase().trim())
     .single();
 
+  // Fetch service key from clients table
+  const { data: clientRow } = await supabase
+    .from('clients')
+    .select('client_supabase_service, client_supabase_url, client_supabase_anon')
+    .eq('client_id', user?.client_id)
+    .single();
+
   if (lookupErr || !user || !user.email) {
     return new Response(JSON.stringify({ error: 'Incorrect username' }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
   }
@@ -60,8 +67,9 @@ Deno.serve(async (req) => {
       expires_at: session.session.expires_at,
       client_id: user.client_id,
       client_slug: user.client_slug,
-      client_supabase_url: Deno.env.get('SUPABASE_URL')!,
-      client_supabase_anon: Deno.env.get('SUPABASE_ANON_KEY')!,
+      client_supabase_url: clientRow?.client_supabase_url || Deno.env.get('SUPABASE_URL')!,
+      client_supabase_anon: clientRow?.client_supabase_anon || Deno.env.get('SUPABASE_ANON_KEY')!,
+      client_supabase_service: clientRow?.client_supabase_service || '',
     }),
     { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
   );

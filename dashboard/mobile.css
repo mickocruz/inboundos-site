@@ -223,4 +223,44 @@
     width:100%!important;min-width:0!important;max-width:100%!important;
     background:transparent!important;border-left:none!important;
   }
+
+  /* ── ROI / generic grid overrides ── */
+  /* 4-col → 2-col */
+  .g4{grid-template-columns:1fr 1fr!important;gap:8px!important;}
+  /* 3-col → 2-col (not 1, keeps it balanced) */
+  .g3{grid-template-columns:1fr 1fr!important;gap:8px!important;}
+  /* 2-col stays 2-col */
+  .g2{gap:8px!important;}
+
+  /* Stat cards — smaller text so nothing clips */
+  .sc{padding:12px 14px!important;min-height:90px!important;}
+  .slbl{font-size:8px!important;letter-spacing:1.2px!important;margin-bottom:6px!important;}
+  .sval{font-size:24px!important;letter-spacing:-0.8px!important;}
+  .ssub{font-size:9px!important;}
+
+  /* Rates grid — 2×3 */
+  .rates-grid{grid-template-columns:1fr 1fr!important;gap:8px!important;}
+  .rate-card{padding:12px 14px!important;}
+  .rate-val{font-size:22px!important;}
+  .rate-lbl{font-size:8px!important;letter-spacing:1.2px!important;}
+  .rate-sub{font-size:9px!important;}
+
+  /* Live Data button — don't let it clip off edge */
+  .hright{flex-wrap:wrap!important;gap:6px!important;max-width:100%!important;}
+  .hright > *{flex-shrink:0!important;}
+
+  /* Time filter row — scrollable, no clip */
+  .tbar-wrap, [style*="display:flex"][style*="gap:4px"]{
+    overflow-x:auto!important;
+    -webkit-overflow-scrolling:touch!important;
+    flex-wrap:nowrap!important;
+  }
+
+  /* Hero card on ROI */
+  .hero{padding:18px!important;flex-direction:column!important;align-items:flex-start!important;}
+  .hero-stats{gap:16px 24px!important;}
+
+  /* ── PWA safe area (iPhone notch + home bar) ── */
+  .sidebar{padding-top:env(safe-area-inset-top)!important;}
+  .main{padding-bottom:calc(80px + env(safe-area-inset-bottom))!important;}
 }

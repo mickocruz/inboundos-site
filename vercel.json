@@ -53,6 +53,14 @@
       "destination": "/dashboard/dashboard.html"
     },
     {
+      "source": "/:client/command",
+      "destination": "/dashboard/command.html"
+    },
+    {
+      "source": "/:client/vault",
+      "destination": "/dashboard/vault.html"
+    },
+    {
       "source": "/:client/clients",
       "destination": "/dashboard/clients.html"
     },
@@ -109,6 +117,14 @@
       "destination": "/dashboard/performance.html"
     },
     {
+      "source": "/command",
+      "destination": "/dashboard/command.html"
+    },
+    {
+      "source": "/vault",
+      "destination": "/dashboard/vault.html"
+    },
+    {
       "source": "/agents",
       "destination": "/dashboard/agents.html"
     },
@@ -135,6 +151,14 @@
     {
       "source": "/roi",
       "destination": "/dashboard/roi.html"
+    },
+    {
+      "source": "/:client/chat",
+      "destination": "/dashboard/chat.html"
+    },
+    {
+      "source": "/chat",
+      "destination": "/dashboard/chat.html"
     }
   ]
 }

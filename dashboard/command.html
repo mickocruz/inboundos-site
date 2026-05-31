@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script>(function(){var s=null;try{s=JSON.parse(localStorage.getItem("sb_session")||"null");}catch(e){}if(!s||!s.access_token||!s.client_slug){window.location.href="/login?from="+encodeURIComponent(window.location.pathname);return;}var exp=s.expires_at?s.expires_at*1000:0;if(exp&&exp<Date.now()){localStorage.removeItem("sb_session");window.location.href="/login?from="+encodeURIComponent(window.location.pathname);return;}var seg=window.location.pathname.split("/").filter(Boolean)[0];if(seg&&seg!==s.client_slug){window.location.href="/login?from="+encodeURIComponent(window.location.pathname);}})();</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InboundOS — Command Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
+<style>
+@font-face {
+  font-family: 'NHGrotesk';
+  src: url('/dashboard/fonts/NHGrotesk-Black.otf') format('opentype');
+  font-weight: 900;
+  font-style: normal;
+}
+:root {
+  --bg: #0D1117;
+  --surface: rgba(255,255,255,0.015);
+  --card: rgba(255,255,255,0.02);
+  --card-hover: rgba(255,255,255,0.035);
+  --border: rgba(255,255,255,0.07);
+  --border-glow: rgba(79,195,247,0.2);
+  --accent: #4FC3F7;
+  --accent-dim: rgba(79,195,247,0.07);
+  --text: #ffffff;
+  --text-muted: rgba(255,255,255,0.3);
+  --text-dim: rgba(255,255,255,0.22);
+  --green: #4ade80;
+  --yellow: #fbbf24;
+  --red: #f87171;
+  --orange: #f97316;
+  --sidebar-w: 180px;
+  --font-head: 'NHGrotesk','Arial Black',Arial,sans-serif;
+  --font-data: 'DM Sans',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font-data);font-size:14px;overflow:hidden;}
+body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 55% at 50% -5%,rgba(79,195,247,0.07) 0%,transparent 65%),radial-gradient(ellipse 45% 50% at 95% 15%,rgba(79,195,247,0.04) 0%,transparent 55%);pointer-events:none;z-index:0;}
+.layout{display:flex;height:100vh;position:relative;z-index:1;}
+
+/* SIDEBAR */
+.sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);background:rgba(7,11,18,0.82);border-right:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column;padding:0 0 16px;backdrop-filter:blur(32px) saturate(160%);z-index:10;overflow-y:auto;scrollbar-width:none;}
+.sidebar::-webkit-scrollbar{display:none;}
+.sidebar-logo-wrap{padding:18px 16px 14px;border-bottom:1px solid var(--border);margin-bottom:8px;cursor:pointer;}
+.sidebar-logo-text{font-family:var(--font-head);font-size:17px;font-weight:900;letter-spacing:-0.5px;line-height:1;user-select:none;}
+.nav-section{padding:10px 0 4px;}
+.nav-section-label{font-family:var(--font-data);font-size:9px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--text-dim);padding:0 16px;margin-bottom:4px;}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 16px;cursor:pointer;transition:all 0.15s;color:var(--text-muted);font-family:var(--font-data);font-size:13px;font-weight:500;border-left:2px solid transparent;}
+.nav-item svg{width:14px;height:14px;flex-shrink:0;opacity:0.7;}
+.nav-item:hover{background:rgba(79,195,247,0.04);color:rgba(255,255,255,0.75);}
+.nav-item.active{color:#4FC3F7;border-left-color:#4FC3F7;background:rgba(79,195,247,0.06);}
+.nav-item.active svg{opacity:1;}
+
+/* AGENT STATUS IN SIDEBAR */
+.sidebar-agents{padding:10px 0 4px;}
+.sidebar-agents-label{font-family:var(--font-data);font-size:9px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--text-dim);padding:0 16px;margin-bottom:6px;}
+.sidebar-agent-row{display:flex;align-items:center;gap:8px;padding:5px 16px;cursor:pointer;transition:all 0.15s;}
+.sidebar-agent-row:hover{background:rgba(255,255,255,0.025);}
+.sa-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;background:rgba(255,255,255,0.15);}
+.sa-dot.active{background:var(--green);}
+.sa-dot.working{background:var(--yellow);}
+.sa-dot.error{background:var(--red);}
+.sa-name{font-family:var(--font-data);font-size:11px;font-weight:500;color:var(--text-muted);flex:1;}
+.sa-status{font-family:var(--font-data);font-size:9px;color:var(--text-dim);}
+
+.sidebar-bottom{margin-top:auto;padding:12px 16px 0;border-top:1px solid var(--border);}
+.mk-avatar-wrap{display:flex;align-items:center;gap:10px;}
+.mk-name{font-family:var(--font-data);font-size:12px;font-weight:600;color:#fff;line-height:1.2;}
+.mk-role{font-family:var(--font-data);font-size:10px;color:rgba(255,255,255,0.42);}
+
+/* MAIN */
+.main{flex:1;overflow-y:auto;overflow-x:hidden;padding:22px 24px;display:flex;flex-direction:column;gap:18px;scrollbar-width:thin;scrollbar-color:rgba(79,195,247,0.12) transparent;}
+.main::-webkit-scrollbar{width:3px;}
+
+/* HEADER */
+.header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+.header-left h1{font-family:var(--font-head);font-size:22px;font-weight:900;letter-spacing:-0.5px;}
+.header-left .subtitle{font-family:var(--font-data);font-size:12px;color:var(--text-muted);margin-top:2px;}
+.live-badge{display:flex;align-items:center;gap:6px;padding:5px 10px;background:rgba(74,222,128,0.07);border:1px solid rgba(74,222,128,0.2);border-radius:20px;font-family:var(--font-data);font-size:10px;font-weight:600;color:var(--green);}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse-green 2s infinite;}
+@keyframes pulse-green{0%,100%{opacity:1;}50%{opacity:0.4;}}
+
+/* STAT CARDS */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:4px;transition:border-color 0.15s;}
+.stat-card:hover{border-color:var(--border-glow);}
+.stat-label{font-family:var(--font-data);font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;display:flex;align-items:center;gap:6px;}
+.stat-label svg{width:12px;height:12px;opacity:0.6;}
+.stat-val{font-family:var(--font-head);font-size:28px;font-weight:900;letter-spacing:-1px;color:var(--text);line-height:1;}
+.stat-sub{font-family:var(--font-data);font-size:10px;color:var(--text-dim);margin-top:2px;}
+
+/* SECTION LABEL */
+.section-label{font-family:var(--font-data);font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);display:flex;align-items:center;gap:8px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* AGENT CARDS ROW */
+.agent-chat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.agent-chat-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all 0.15s;position:relative;}
+.agent-chat-card:hover{border-color:var(--border-glow);background:rgba(79,195,247,0.03);}
+.acc-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.acc-icon svg{width:16px;height:16px;flex-shrink:0;}
+.acc-info{flex:1;min-width:0;}
+.acc-name{font-family:var(--font-head);font-size:12px;font-weight:900;letter-spacing:-0.2px;}
+.acc-role{font-family:var(--font-data);font-size:9px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.acc-badge{font-family:var(--font-data);font-size:8px;font-weight:600;padding:2px 6px;border-radius:8px;text-transform:uppercase;letter-spacing:0.5px;flex-shrink:0;}
+.acc-badge.idle{color:var(--text-dim);background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);}
+.acc-badge.working{color:var(--yellow);background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);}
+.acc-badge.active{color:var(--green);background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);}
+
+/* TWO-COL BOTTOM */
+.bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+
+/* NEEDS REVIEW */
+.panel-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.panel-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);}
+.panel-title{font-family:var(--font-head);font-size:13px;font-weight:900;letter-spacing:-0.2px;}
+.panel-count{font-family:var(--font-data);font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;background:rgba(249,115,22,0.1);border:1px solid rgba(249,115,22,0.25);color:var(--orange);}
+.review-item{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);transition:background 0.12s;}
+.review-item:last-child{border-bottom:none;}
+.review-item:hover{background:rgba(255,255,255,0.015);}
+.ri-left{flex:1;min-width:0;}
+.ri-title{font-family:var(--font-data);font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ri-meta{font-family:var(--font-data);font-size:10px;color:var(--text-muted);margin-top:2px;display:flex;align-items:center;gap:6px;}
+.ri-tag{font-family:var(--font-data);font-size:9px;font-weight:600;padding:1px 6px;border-radius:6px;background:rgba(79,195,247,0.08);border:1px solid rgba(79,195,247,0.2);color:var(--accent);}
+.ri-pending{font-family:var(--font-data);font-size:8px;font-weight:600;padding:2px 7px;border-radius:8px;background:rgba(251,191,36,0.07);border:1px solid rgba(251,191,36,0.2);color:var(--yellow);text-transform:uppercase;letter-spacing:0.4px;flex-shrink:0;}
+.review-btn{font-family:var(--font-data);font-size:10px;font-weight:600;color:var(--accent);background:var(--accent-dim);border:1px solid rgba(79,195,247,0.2);border-radius:6px;padding:4px 10px;cursor:pointer;transition:all 0.15s;white-space:nowrap;flex-shrink:0;}
+.review-btn:hover{background:rgba(79,195,247,0.14);border-color:rgba(79,195,247,0.4);}
+.empty-state{padding:24px 16px;text-align:center;font-family:var(--font-data);font-size:11px;color:var(--text-dim);}
+
+/* TASK LOG */
+.log-item{display:flex;align-items:flex-start;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,0.04);transition:background 0.12s;}
+.log-item:last-child{border-bottom:none;}
+.log-item:hover{background:rgba(255,255,255,0.012);}
+.log-time{font-family:var(--font-data);font-size:9px;color:var(--text-dim);white-space:nowrap;flex-shrink:0;padding-top:2px;min-width:36px;}
+.log-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.15);flex-shrink:0;margin-top:4px;}
+.log-dot.done{background:var(--green);}
+.log-text{font-family:var(--font-data);font-size:11px;color:rgba(255,255,255,0.6);line-height:1.45;flex:1;}
+.log-done{font-family:var(--font-data);font-size:8px;font-weight:700;padding:2px 7px;border-radius:6px;background:rgba(74,222,128,0.07);border:1px solid rgba(74,222,128,0.18);color:var(--green);text-transform:uppercase;letter-spacing:0.5px;flex-shrink:0;}
+
+/* WORKFLOWS */
+.workflow-item{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,0.04);transition:background 0.12s;}
+.workflow-item:last-child{border-bottom:none;}
+.workflow-item:hover{background:rgba(255,255,255,0.012);}
+.wf-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;}
+.wf-icon svg{width:14px;height:14px;flex-shrink:0;}
+.wf-info{flex:1;min-width:0;}
+.wf-name{font-family:var(--font-data);font-size:11px;font-weight:600;color:var(--text);}
+.wf-agent{font-family:var(--font-data);font-size:9px;color:var(--text-muted);margin-top:1px;}
+.wf-freq{font-family:var(--font-data);font-size:9px;color:var(--text-dim);flex-shrink:0;}
+.wf-status{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.wf-status.on{background:var(--green);}
+.wf-status.off{background:rgba(255,255,255,0.15);}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;}
+</style>
+<link rel="stylesheet" href="/dashboard/mobile.css?v=8">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0D1117">
+</head>
+<body>
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-logo-wrap" onclick="location.href='/'"><div class="sidebar-logo-text"><span style="color:#fff;">Inbound</span><span style="color:#4FC3F7;">OS</span></div></div>
+    <div class="nav-section"><div class="nav-section-label">Command</div>
+      <div class="nav-item active" onclick="navTo('command')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>Command Center</div>
+      <div class="nav-item" onclick="navTo('dashboard')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>Dashboard</div>
+      <div class="nav-item" onclick="navTo('agents')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="10" width="20" height="12" rx="2"/><path d="M12 2a5 5 0 0 1 5 5v3H7V7a5 5 0 0 1 5-5z"/><circle cx="12" cy="16" r="1.2" fill="currentColor" stroke="none"/></svg>Agents</div>
+    </div>
+    <div class="nav-section"><div class="nav-section-label">Content</div>
+      <div class="nav-item" onclick="navTo('performance')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="4" height="20" rx="1"/><rect x="10" y="8" width="4" height="14" rx="1"/><rect x="18" y="4" width="4" height="18" rx="1"/></svg>Instagram</div>
+      <div class="nav-item" onclick="navTo('pipeline')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Content Pipeline</div>
+      <div class="nav-item" onclick="navTo('research')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Research</div>
+    </div>
+    <div class="nav-section"><div class="nav-section-label">Revenue</div>
+      <div class="nav-item" onclick="navTo('clients')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Clients</div>
+      <div class="nav-item" onclick="navTo('crm')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v4H3z"/><path d="M3 10h18v4H3z"/><path d="M3 17h18v4H3z"/></svg>CRM</div>
+      <div class="nav-item" onclick="navTo('sales-calls')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.74 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.66 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Sales Calls</div>
+      <div class="nav-item" onclick="navTo('roi')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>ROI Report</div>
+    </div>
+    <div class="nav-section"><div class="nav-section-label">Intelligence</div>
+            <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/vault'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Company Database</div>
+<div class="nav-item" onclick="navTo('sops')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>SOPs</div>
+      <div class="nav-item" onclick="navTo('org-chart')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><path d="M12 7v3M12 10l-5 7M12 10l5 7"/></svg>Org Chart</div>
+    </div>
+
+    <!-- LIVE AGENT STATUS -->
+    <div class="sidebar-agents">
+      <div class="sidebar-agents-label">Agents</div>
+      <div id="sidebar-agent-list"></div>
+    </div>
+
+    
+    <div class="sidebar-bottom"><div class="mk-avatar-wrap" style="cursor:pointer;"><img src="/micko.jpg" alt="MK" style="width:32px;height:32px;object-fit:cover;border-radius:50%;border:1px solid rgba(79,195,247,0.2);"/><div><div class="mk-name">Micko Cruz</div><div class="mk-role">Founder · InboundOS</div></div></div></div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- HEADER -->
+    <div class="header">
+      <div class="header-left">
+        <h1 class="header-left" style="font-family:var(--font-head);font-size:22px;font-weight:900;letter-spacing:-0.5px;">Command Center</h1>
+        <div class="subtitle">Review the work that moves content, leads, and booked calls.</div>
+      </div>
+      <div class="live-badge"><div class="live-dot"></div>Live</div>
+    </div>
+
+    <!-- STAT CARDS -->
+    <div class="stat-row">
+      <div class="stat-card">
+        <div class="stat-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/></svg>Scripts This Week</div>
+        <div class="stat-val" id="cc-scripts">—</div>
+        <div class="stat-sub">Ready to film</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Active Leads</div>
+        <div class="stat-val" id="cc-leads">—</div>
+        <div class="stat-sub">New or in sequence</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.74 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.66 2h3a2 2 0 0 1 2 1.72"/></svg>Calls Booked</div>
+        <div class="stat-val" id="cc-calls">—</div>
+        <div class="stat-sub">Manual source of truth</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>DMs Sent</div>
+        <div class="stat-val" id="cc-dms">—</div>
+        <div class="stat-sub">This week</div>
+      </div>
+    </div>
+
+    <!-- CHAT WITH AN AGENT -->
+    <div class="section-label">Chat with an Agent</div>
+    <div class="agent-chat-row" id="agent-chat-grid"></div>
+
+    <!-- BOTTOM GRID -->
+    <div class="bottom-grid">
+
+      <!-- NEEDS REVIEW -->
+      <div class="panel-card">
+        <div class="panel-header">
+          <div class="panel-title">Needs Review</div>
+          <div class="panel-count" id="review-count">0 open</div>
+        </div>
+        <div id="review-list"><div class="empty-state">No items pending review.</div></div>
+      </div>
+
+      <!-- TASK LOG -->
+      <div class="panel-card">
+        <div class="panel-header">
+          <div class="panel-title">Task Log</div>
+          <div style="font-family:var(--font-data);font-size:10px;color:var(--text-dim);" id="log-count">0 entries</div>
+        </div>
+        <div id="task-log-list" style="max-height:320px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,0.06) transparent;"><div class="empty-state">No activity yet.</div></div>
+      </div>
+
+    </div>
+
+    <!-- PRIMARY WORKFLOWS -->
+    <div class="section-label">Primary Workflows</div>
+    <div class="panel-card">
+      <div id="workflow-list"></div>
+    </div>
+
+    <div style="height:24px;"></div>
+  </main>
+</div>
+
+<script>
+// NAV
+function getSlug() {
+  var v = document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');
+  var s = v ? v[2] : '';
+  if (!s) {
+    var pages = ['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','login'];
+    var p = window.location.pathname.split('/').filter(Boolean);
+    var seg = p[0] || '';
+    s = pages.indexOf(seg) === -1 ? seg : '';
+  }
+  if (!s) { window.location.href = '/login'; return ''; }
+  return s;
+}
+function navTo(page) { location.href = '/' + getSlug() + '/' + page; }
+
+// AGENT CONFIG — SVG icons matching agents.html
+const AGENT_SVGS = {
+  Scout:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg>`,
+  Quill:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>`,
+  Pulse:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="2,12 6,12 8,4 10,20 12,12 14,16 16,10 18,12 22,12"/></svg>`,
+  Hunter: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/></svg>`,
+  Echo:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>`,
+  Pilot:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polygon points="16.24,7.76 14.12,14.12 7.76,16.24 9.88,9.88 16.24,7.76" fill="currentColor" stroke="none" opacity="0.7"/><circle cx="12" cy="12" r="1.5" fill="#ffffff" stroke="none"/></svg>`,
+  Forge:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>`,
+  Edge:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>`,
+};
+const AGENTS = [
+  { name:'Scout',  color:'#4FC3F7', role:'Content Researcher' },
+  { name:'Quill',  color:'#fbbf24', role:'Script Writer' },
+  { name:'Pulse',  color:'#4ade80', role:'Competitor Intel' },
+  { name:'Hunter', color:'#f472b6', role:'Lead Scraper' },
+  { name:'Echo',   color:'#4ade80', role:'DM Qualifier' },
+  { name:'Pilot',  color:'#38bdf8', role:'Client Mgmt' },
+  { name:'Forge',  color:'#e879f9', role:'System Builder' },
+  { name:'Edge',   color:'#f97316', role:'Call Reviewer' },
+];
+
+const TASK_STORE = 'ctrl_agent_tasks_v1';
+
+function loadTasks() {
+  try { return JSON.parse(localStorage.getItem(TASK_STORE) || '{}'); } catch(e) { return {}; }
+}
+
+// AGENT STATUS
+function getAgentStatuses() {
+  const tasks = loadTasks();
+  const statuses = {};
+  AGENTS.forEach(a => { statuses[a.name] = 'idle'; });
+  Object.values(tasks).forEach(t => {
+    if (t.status === 'running') statuses[t.agent] = 'working';
+    else if (t.status === 'queued') statuses[t.agent] = statuses[t.agent] === 'working' ? 'working' : 'queued';
+  });
+  return statuses;
+}
+
+// SIDEBAR AGENT LIST
+function renderSidebarAgents() {
+  const statuses = getAgentStatuses();
+  const el = document.getElementById('sidebar-agent-list');
+  el.innerHTML = AGENTS.map(a => {
+    const st = statuses[a.name] || 'idle';
+    const dotClass = st === 'working' ? 'working' : st === 'queued' ? 'working' : 'idle';
+    const stLabel = st === 'working' ? 'running' : st === 'queued' ? 'queued' : 'idle';
+    return `<div class="sidebar-agent-row" onclick="navTo('agents')">
+      <div class="sa-dot ${dotClass}"></div>
+      <div class="sa-name">${a.name}</div>
+      <div class="sa-status">${stLabel}</div>
+    </div>`;
+  }).join('');
+}
+
+// AGENT CHAT ROW (first 4 agents shown)
+function renderAgentChatGrid() {
+  const statuses = getAgentStatuses();
+  const el = document.getElementById('agent-chat-grid');
+  el.innerHTML = AGENTS.map(a => {
+    const st = statuses[a.name] || 'idle';
+    const badgeClass = st === 'working' ? 'working' : 'idle';
+    const badgeLabel = st === 'working' ? 'Working' : 'Idle';
+    return `<div class="agent-chat-card" onclick="navTo('agents')">
+      <div class="acc-icon" style="background:${a.color}18;color:${a.color};width:32px;height:32px;">${AGENT_SVGS[a.name]||''}</div>
+      <div class="acc-info">
+        <div class="acc-name" style="color:${a.color};">${a.name}</div>
+        <div class="acc-role">${a.role}</div>
+      </div>
+      <div class="acc-badge ${badgeClass}">${badgeLabel}</div>
+    </div>`;
+  }).join('');
+}
+
+// STAT CARDS — pull from localStorage (pipeline board + tasks)
+function renderStats() {
+  // Scripts: count from pipeline board scripting column
+  try {
+    const board = JSON.parse(localStorage.getItem('ctrl_pipeline_board') || '{}');
+    const scripts = Array.isArray(board.scripting) ? board.scripting.length : 0;
+    document.getElementById('cc-scripts').textContent = scripts || '—';
+  } catch(e) { document.getElementById('cc-scripts').textContent = '—'; }
+
+  // DMs: count echo tasks completed this week
+  try {
+    const tasks = loadTasks();
+    const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+    const dms = Object.values(tasks).filter(t => t.agent === 'Echo' && t.status === 'completed' && t.createdAt > weekAgo).length;
+    document.getElementById('cc-dms').textContent = dms || '—';
+  } catch(e) { document.getElementById('cc-dms').textContent = '—'; }
+
+  // Leads + Calls: pull from Supabase
+  loadSupabaseStats();
+}
+
+async function loadSupabaseStats() {
+  try {
+    const sess = JSON.parse(localStorage.getItem('sb_session') || '{}');
+    const url = sess.client_supabase_url || 'https://cscfbuhwlfhblxprkwnh.supabase.co';
+    const anon = sess.client_supabase_anon || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
+
+    // Active leads
+    const leadsRes = await fetch(`${url}/rest/v1/outreach_leads?select=id,status&status=in.(new,contacted,following_up)`, {
+      headers: { 'apikey': anon, 'Authorization': 'Bearer ' + (sess.access_token || anon) }
+    });
+    if (leadsRes.ok) {
+      const leads = await leadsRes.json();
+      document.getElementById('cc-leads').textContent = leads.length || 0;
+    }
+
+    // Calls booked
+    const callsRes = await fetch(`${url}/rest/v1/outreach_leads?select=id,status&status=eq.booked`, {
+      headers: { 'apikey': anon, 'Authorization': 'Bearer ' + (sess.access_token || anon) }
+    });
+    if (callsRes.ok) {
+      const calls = await callsRes.json();
+      document.getElementById('cc-calls').textContent = calls.length || 0;
+    }
+  } catch(e) {}
+}
+
+// NEEDS REVIEW — Quill scripts pending approval in pipeline
+function renderNeedsReview() {
+  try {
+    const board = JSON.parse(localStorage.getItem('ctrl_pipeline_board') || '{}');
+    const scripting = Array.isArray(board.scripting) ? board.scripting : [];
+    const pending = scripting.filter(s => !s.approved);
+    const el = document.getElementById('review-list');
+    document.getElementById('review-count').textContent = pending.length + ' open';
+    if (!pending.length) {
+      el.innerHTML = '<div class="empty-state">All caught up. Nothing pending review.</div>';
+      return;
+    }
+    el.innerHTML = pending.slice(0, 6).map(s => `
+      <div class="review-item">
+        <div class="ri-left">
+          <div class="ri-title">${escHtml(s.title || s.hook || 'Untitled Script')}</div>
+          <div class="ri-meta">
+            <span class="ri-tag">${escHtml(s.label || 'Quill')}</span>
+            <span>Stage 3</span>
+          </div>
+        </div>
+        <div class="ri-pending">Pending</div>
+        <button class="review-btn" onclick="navTo('pipeline')">Review →</button>
+      </div>`).join('');
+  } catch(e) {}
+}
+
+// TASK LOG — system-wide, all agents
+function renderTaskLog() {
+  const tasks = loadTasks();
+  const sorted = Object.values(tasks).sort((a,b) => b.updatedAt - a.updatedAt).slice(0, 20);
+  const el = document.getElementById('task-log-list');
+  document.getElementById('log-count').textContent = sorted.length + ' entries';
+  if (!sorted.length) {
+    el.innerHTML = '<div class="empty-state">No activity yet. Run an agent to see logs here.</div>';
+    return;
+  }
+  el.innerHTML = sorted.map(t => {
+    const isDone = t.status === 'completed';
+    const time = formatTime(t.updatedAt);
+    const agentConf = AGENTS.find(a => a.name === t.agent) || {};
+    const taskDesc = typeof t.task === 'object' ? (t.task.title || t.task.desc || t.agent + ' task') : (t.task || t.agent + ' task');
+    return `<div class="log-item">
+      <div class="log-time">${time}</div>
+      <div class="log-dot ${isDone ? 'done' : ''}"></div>
+      <div class="log-text"><span style="color:${agentConf.color||'var(--accent)'};">${t.agent}</span> — ${escHtml(taskDesc)}</div>
+      ${isDone ? '<div class="log-done">Done</div>' : ''}
+    </div>`;
+  }).join('');
+}
+
+// PRIMARY WORKFLOWS
+const WORKFLOWS = [
+  { name:'Daily Script Generation', agent:'Quill', color:'#fbbf24', freq:'Daily 9AM PHT', on:true },
+  { name:'Content Research', agent:'Scout', color:'#4FC3F7', freq:'Daily 6AM PHT', on:true },
+  { name:'Competitor Intel Sweep', agent:'Pulse', color:'#4ade80', freq:'Weekly Mon 9AM', on:true },
+  { name:'IG Auto Scheduler', agent:'Pilot', color:'#38bdf8', freq:'Every 5 min', on:true },
+  { name:'Lead Qualification', agent:'Echo', color:'#4ade80', freq:'On Demand', on:false },
+  { name:'Call Review', agent:'Edge', color:'#f97316', freq:'On Demand', on:false },
+];
+
+function renderWorkflows() {
+  const el = document.getElementById('workflow-list');
+  el.innerHTML = WORKFLOWS.map(w => `
+    <div class="workflow-item">
+      <div class="wf-icon" style="background:${w.color}15;color:${w.color};width:28px;height:28px;">${AGENT_SVGS[w.agent]||''}</div>
+      <div class="wf-info">
+        <div class="wf-name">${w.name}</div>
+        <div class="wf-agent">${w.agent}</div>
+      </div>
+      <div class="wf-freq">${w.freq}</div>
+      <div class="wf-status ${w.on ? 'on' : 'off'}"></div>
+    </div>`).join('');
+}
+
+// UTILS
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function formatTime(ts) {
+  if (!ts) return '—';
+  const d = new Date(ts);
+  const now = new Date();
+  const diff = now - d;
+  if (diff < 60000) return 'Now';
+  if (diff < 3600000) return Math.floor(diff/60000) + 'm';
+  if (diff < 86400000) return Math.floor(diff/3600000) + 'h';
+  return d.toLocaleDateString('en',{month:'short',day:'numeric'});
+}
+
+// INIT
+function init() {
+  renderSidebarAgents();
+  renderAgentChatGrid();
+  renderStats();
+  renderNeedsReview();
+  renderTaskLog();
+  renderWorkflows();
+  // Refresh agent status every 5s
+  setInterval(() => {
+    renderSidebarAgents();
+    renderAgentChatGrid();
+    renderTaskLog();
+  }, 5000);
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script>(function(){var s=null;try{s=JSON.parse(localStorage.getItem("sb_session")||"null");}catch(e){}if(!s||!s.access_token||!s.client_slug){window.location.href="/login?from="+encodeURIComponent(window.location.pathname);return;}var exp=s.expires_at?s.expires_at*1000:0;if(exp&&exp<Date.now()){localStorage.removeItem("sb_session");window.location.href="/login?from="+encodeURIComponent(window.location.pathname);return;}var seg=window.location.pathname.split("/").filter(Boolean)[0];if(seg&&seg!==s.client_slug){window.location.href="/login?from="+encodeURIComponent(window.location.pathname);}})();</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InboundOS — Company Database</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
+<style>
+@font-face { font-family:'NHGrotesk'; src:url('/dashboard/fonts/NHGrotesk-Black.otf') format('opentype'); font-weight:900; }
+:root {
+  --bg:#0D1117; --surface:rgba(255,255,255,0.015); --card:rgba(255,255,255,0.02); --card-hover:rgba(255,255,255,0.035);
+  --border:rgba(255,255,255,0.07); --border-glow:rgba(79,195,247,0.2); --accent:#4FC3F7; --accent-dim:rgba(79,195,247,0.07);
+  --text:#ffffff; --text-muted:rgba(255,255,255,0.3); --text-dim:rgba(255,255,255,0.22);
+  --green:#4ade80; --yellow:#fbbf24; --red:#f87171; --sidebar-w:180px;
+  --font-head:'NHGrotesk','Arial Black',Arial,sans-serif; --font-data:'DM Sans',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font-data);font-size:14px;overflow:hidden;}
+body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 55% at 50% -5%,rgba(79,195,247,0.07) 0%,transparent 65%),radial-gradient(ellipse 45% 50% at 95% 15%,rgba(79,195,247,0.04) 0%,transparent 55%);pointer-events:none;z-index:0;}
+.layout{display:flex;height:100vh;position:relative;z-index:1;}
+
+/* SIDEBAR */
+.sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);background:rgba(7,11,18,0.82);border-right:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column;padding:0 0 16px;backdrop-filter:blur(32px) saturate(160%);z-index:10;overflow-y:auto;scrollbar-width:none;}
+.sidebar::-webkit-scrollbar{display:none;}
+.sidebar-logo-wrap{padding:18px 16px 14px;border-bottom:1px solid var(--border);margin-bottom:8px;cursor:pointer;}
+.sidebar-logo-text{font-family:var(--font-head);font-size:17px;font-weight:900;letter-spacing:-0.5px;line-height:1;user-select:none;}
+.nav-section{padding:10px 0 4px;}
+.nav-section-label{font-family:var(--font-data);font-size:9px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--text-dim);padding:0 16px;margin-bottom:4px;}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 16px;cursor:pointer;transition:all 0.15s;color:var(--text-muted);font-family:var(--font-data);font-size:13px;font-weight:500;border-left:2px solid transparent;}
+.nav-item svg{width:14px;height:14px;flex-shrink:0;opacity:0.7;}
+.nav-item:hover{background:rgba(79,195,247,0.04);color:rgba(255,255,255,0.75);}
+.nav-item.active{color:#4FC3F7;border-left-color:#4FC3F7;background:rgba(79,195,247,0.06);}
+.nav-item.active svg{opacity:1;}
+.sidebar-bottom{margin-top:auto;padding:12px 16px 0;border-top:1px solid var(--border);}
+.mk-avatar-wrap{display:flex;align-items:center;gap:10px;cursor:pointer;}
+.mk-name{font-family:var(--font-data);font-size:12px;font-weight:600;color:#fff;line-height:1.2;}
+.mk-role{font-family:var(--font-data);font-size:10px;color:rgba(255,255,255,0.42);}
+
+/* MAIN */
+.main{flex:1;overflow-y:auto;overflow-x:hidden;padding:22px 24px;display:flex;flex-direction:column;gap:18px;scrollbar-width:thin;scrollbar-color:rgba(79,195,247,0.12) transparent;}
+.main::-webkit-scrollbar{width:3px;}
+
+/* HEADER */
+.header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+.search-vault{display:flex;align-items:center;gap:8px;padding:7px 14px;background:var(--card);border:1px solid var(--border);border-radius:8px;font-family:var(--font-data);font-size:12px;color:var(--text-muted);cursor:pointer;transition:all 0.15s;}
+.search-vault:hover{border-color:var(--border-glow);color:var(--text);}
+.search-vault svg{width:13px;height:13px;opacity:0.5;}
+
+/* STATS */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:4px;transition:border-color 0.15s;}
+.stat-card:hover{border-color:var(--border-glow);}
+.stat-label{font-family:var(--font-data);font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;display:flex;align-items:center;justify-content:space-between;}
+.stat-synced{font-family:var(--font-data);font-size:8px;font-weight:600;padding:1px 6px;border-radius:8px;background:rgba(74,222,128,0.07);border:1px solid rgba(74,222,128,0.18);color:var(--green);text-transform:uppercase;letter-spacing:0.4px;}
+.stat-val{font-family:var(--font-head);font-size:28px;font-weight:900;letter-spacing:-1px;color:var(--text);line-height:1;}
+
+/* SECTION */
+.section-label{font-family:var(--font-data);font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);display:flex;align-items:center;gap:8px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* FOLDER GRID */
+.folder-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.folder-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;cursor:pointer;transition:all 0.15s;}
+.folder-card:hover{border-color:var(--border-glow);background:rgba(79,195,247,0.03);}
+.folder-info{flex:1;min-width:0;}
+.folder-name{font-family:var(--font-head);font-size:13px;font-weight:900;letter-spacing:-0.2px;color:var(--text);}
+.folder-desc{font-family:var(--font-data);font-size:10px;color:var(--text-muted);margin-top:3px;}
+.folder-linked{font-family:var(--font-data);font-size:8px;font-weight:600;padding:2px 7px;border-radius:8px;background:rgba(79,195,247,0.07);border:1px solid rgba(79,195,247,0.2);color:var(--accent);text-transform:uppercase;letter-spacing:0.4px;flex-shrink:0;margin-top:2px;}
+.obsidian-btn{display:flex;align-items:center;gap:5px;padding:5px 10px;background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.2);border-radius:7px;font-family:var(--font-data);font-size:10px;font-weight:600;color:#a78bfa;cursor:pointer;transition:all 0.15s;}
+.obsidian-btn:hover{background:rgba(124,58,237,0.14);}
+
+/* DOC CARDS */
+.doc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+.doc-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:10px;transition:border-color 0.15s;}
+.doc-card:hover{border-color:var(--border-glow);}
+.doc-header{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
+.doc-name{font-family:var(--font-head);font-size:14px;font-weight:900;letter-spacing:-0.3px;color:var(--text);}
+.doc-path{font-family:var(--font-data);font-size:9px;color:var(--text-dim);margin-top:2px;}
+.doc-type-badge{font-family:var(--font-data);font-size:8px;font-weight:600;padding:2px 7px;border-radius:8px;text-transform:uppercase;letter-spacing:0.4px;flex-shrink:0;}
+.doc-type-user{background:rgba(79,195,247,0.07);border:1px solid rgba(79,195,247,0.2);color:var(--accent);}
+.doc-type-system{background:rgba(124,58,237,0.07);border:1px solid rgba(124,58,237,0.2);color:#a78bfa;}
+.doc-type-agent{background:rgba(74,222,128,0.07);border:1px solid rgba(74,222,128,0.2);color:var(--green);}
+.doc-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.doc-backlinks{font-family:var(--font-data);font-size:10px;font-weight:600;padding:2px 8px;border-radius:7px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.45);}
+.doc-readable{font-family:var(--font-data);font-size:8px;font-weight:600;padding:2px 7px;border-radius:7px;background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.15);color:var(--green);text-transform:uppercase;letter-spacing:0.4px;}
+.doc-preview{font-family:var(--font-data);font-size:11px;color:rgba(255,255,255,0.45);line-height:1.55;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+.doc-footer{display:flex;align-items:center;justify-content:space-between;padding-top:8px;border-top:1px solid rgba(255,255,255,0.05);}
+.doc-synced{font-family:var(--font-data);font-size:9px;color:var(--text-dim);}
+.doc-edit-btn{font-family:var(--font-data);font-size:10px;font-weight:600;padding:4px 12px;background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--text-muted);cursor:pointer;transition:all 0.15s;}
+.doc-edit-btn:hover{border-color:var(--border-glow);color:var(--accent);}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;}
+
+/* TABLE TABS */
+.table-tab{font-family:var(--font-data);font-size:11px;font-weight:600;padding:5px 12px;border-radius:7px;border:1px solid var(--border);background:transparent;color:var(--text-muted);cursor:pointer;transition:all 0.15s;}
+.table-tab:hover{border-color:var(--border-glow);color:var(--text);}
+.table-tab.active{background:rgba(79,195,247,0.08);border-color:rgba(79,195,247,0.3);color:var(--accent);}
+
+/* DB TABLE */
+.db-table{width:100%;border-collapse:collapse;font-family:var(--font-data);font-size:11px;}
+.db-table th{padding:8px 12px;text-align:left;font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-dim);border-bottom:1px solid var(--border);white-space:nowrap;position:sticky;top:0;background:#0a0e14;}
+.db-table td{padding:8px 12px;color:rgba(255,255,255,0.7);border-bottom:1px solid rgba(255,255,255,0.04);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.db-table tr:hover td{background:rgba(79,195,247,0.03);}
+
+/* SEARCH MODAL */
+.search-modal{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;align-items:flex-start;justify-content:center;padding-top:80px;z-index:100;backdrop-filter:blur(4px);}
+.search-modal.open{display:flex;}
+.search-box{background:#0f1520;border:1px solid rgba(79,195,247,0.3);border-radius:14px;width:520px;max-height:400px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 80px rgba(0,0,0,0.6);}
+.search-input-wrap{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--border);}
+.search-input-wrap svg{width:16px;height:16px;color:var(--accent);flex-shrink:0;}
+.search-input{flex:1;background:transparent;border:none;outline:none;font-family:var(--font-data);font-size:14px;color:var(--text);}
+.search-results{overflow-y:auto;max-height:320px;padding:8px 0;}
+.search-result-item{display:flex;align-items:center;gap:10px;padding:10px 18px;cursor:pointer;transition:background 0.12s;}
+.search-result-item:hover{background:rgba(79,195,247,0.05);}
+.sr-name{font-family:var(--font-data);font-size:13px;font-weight:600;color:var(--text);flex:1;}
+.sr-folder{font-family:var(--font-data);font-size:10px;color:var(--text-dim);}
+</style>
+<link rel="stylesheet" href="/dashboard/mobile.css?v=8">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0D1117">
+</head>
+<body>
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-logo-wrap" onclick="navTo('dashboard')"><div class="sidebar-logo-text"><span style="color:#fff;">Inbound</span><span style="color:#4FC3F7;">OS</span></div></div>
+    <div class="nav-section"><div class="nav-section-label">Command</div>
+      <div class="nav-item" onclick="navTo('command')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>Command Center</div>
+      <div class="nav-item" onclick="navTo('dashboard')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>Dashboard</div>
+      <div class="nav-item" onclick="navTo('agents')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="10" width="20" height="12" rx="2"/><path d="M12 2a5 5 0 0 1 5 5v3H7V7a5 5 0 0 1 5-5z"/><circle cx="12" cy="16" r="1.2" fill="currentColor" stroke="none"/></svg>Agents</div>
+    </div>
+    <div class="nav-section"><div class="nav-section-label">Content</div>
+      <div class="nav-item" onclick="navTo('performance')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="4" height="20" rx="1"/><rect x="10" y="8" width="4" height="14" rx="1"/><rect x="18" y="4" width="4" height="18" rx="1"/></svg>Instagram</div>
+      <div class="nav-item" onclick="navTo('pipeline')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Content Pipeline</div>
+      <div class="nav-item" onclick="navTo('research')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Research</div>
+    </div>
+    <div class="nav-section"><div class="nav-section-label">Revenue</div>
+      <div class="nav-item" onclick="navTo('clients')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Clients</div>
+      <div class="nav-item" onclick="navTo('crm')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v4H3z"/><path d="M3 10h18v4H3z"/><path d="M3 17h18v4H3z"/></svg>CRM</div>
+      <div class="nav-item" onclick="navTo('sales-calls')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.74 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.66 2h3a2 2 0 0 1 2 1.72"/></svg>Sales Calls</div>
+      <div class="nav-item" onclick="navTo('roi')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>ROI Report</div>
+    </div>
+    <div class="nav-section"><div class="nav-section-label">Intelligence</div>
+      <div class="nav-item active" onclick="navTo('vault')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Company Database</div>
+      <div class="nav-item" onclick="navTo('sops')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>SOPs</div>
+      <div class="nav-item" onclick="navTo('org-chart')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><path d="M12 7v3M12 10l-5 7M12 10l5 7"/></svg>Org Chart</div>
+    </div>
+    <!-- LIVE AGENT STATUS -->
+    <div style="padding:10px 0 4px;">
+      <div style="font-family:var(--font-data);font-size:9px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:rgba(255,255,255,0.22);padding:0 16px;margin-bottom:6px;">Agents</div>
+      <div id="sidebar-agent-status-list"></div>
+    </div>
+    <div class="sidebar-bottom"><div class="mk-avatar-wrap"><img src="/micko.jpg" alt="MK" style="width:32px;height:32px;object-fit:cover;border-radius:50%;border:1px solid rgba(79,195,247,0.2);"/><div><div class="mk-name">Micko Cruz</div><div class="mk-role">Founder · InboundOS</div></div></div></div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- HEADER -->
+    <div class="header">
+      <div>
+        <div style="font-family:var(--font-head);font-size:22px;font-weight:900;letter-spacing:-0.5px;">Company Database.</div>
+        <div style="font-family:var(--font-data);font-size:12px;color:var(--text-muted);margin-top:2px;" id="db-subtitle">Loading…</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;padding:5px 10px;background:rgba(74,222,128,0.07);border:1px solid rgba(74,222,128,0.2);border-radius:20px;font-family:var(--font-data);font-size:10px;font-weight:600;color:#4ade80;">
+        <div style="width:6px;height:6px;border-radius:50%;background:#4ade80;"></div>Live
+      </div>
+    </div>
+
+    <!-- STAT CARDS -->
+    <div class="stat-row">
+      <div class="stat-card">
+        <div class="stat-label">Outreach Leads <span class="stat-synced">live</span></div>
+        <div class="stat-val" id="count-leads">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Clients <span class="stat-synced">live</span></div>
+        <div class="stat-val" id="count-clients">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">SOPs <span class="stat-synced">live</span></div>
+        <div class="stat-val" id="count-sops">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Sales Calls <span class="stat-synced">live</span></div>
+        <div class="stat-val" id="count-calls">—</div>
+      </div>
+    </div>
+
+    <!-- TABLE SELECTOR -->
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+      <button class="table-tab active" onclick="switchTable('outreach_leads')" id="tab-outreach_leads">Outreach Leads</button>
+      <button class="table-tab" onclick="switchTable('clients')" id="tab-clients">Clients</button>
+      <button class="table-tab" onclick="switchTable('sops')" id="tab-sops">SOPs</button>
+      <button class="table-tab" onclick="switchTable('sales_calls')" id="tab-sales_calls">Sales Calls</button>
+      <div style="flex:1;"></div>
+      <input id="db-search" placeholder="Filter rows…" oninput="filterRows(this.value)" style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-family:var(--font-data);font-size:12px;color:var(--text);outline:none;width:180px;" />
+    </div>
+
+    <!-- DATA TABLE -->
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;flex:1;display:flex;flex-direction:column;min-height:300px;">
+      <div style="overflow-x:auto;overflow-y:auto;max-height:420px;" id="db-table-wrap">
+        <div style="padding:40px;text-align:center;font-family:var(--font-data);font-size:12px;color:var(--text-dim);">Loading…</div>
+      </div>
+      <div style="padding:10px 16px;border-top:1px solid var(--border);font-family:var(--font-data);font-size:10px;color:var(--text-dim);display:flex;align-items:center;justify-content:space-between;">
+        <span id="db-row-count">—</span>
+        <span id="db-table-name" style="text-transform:uppercase;letter-spacing:1px;">—</span>
+      </div>
+    </div>
+
+    <div style="height:8px;"></div>
+  </main>
+</div>
+
+<!-- SEARCH MODAL -->
+<div class="search-modal" id="searchModal" onclick="if(event.target===this)closeSearch()">
+  <div class="search-box">
+    <div class="search-input-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input class="search-input" id="searchInput" placeholder="Search vault docs…" oninput="filterSearch(this.value)" autocomplete="off">
+    </div>
+    <div class="search-results" id="searchResults"></div>
+  </div>
+</div>
+
+<script>
+function getSlug() {
+  var v = document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');
+  var s = v ? v[2] : '';
+  if (!s) {
+    var pages = ['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','chat','login'];
+    var p = window.location.pathname.split('/').filter(Boolean);
+    var seg = p[0] || '';
+    s = pages.indexOf(seg) === -1 ? seg : '';
+  }
+  if (!s) { window.location.href = '/login'; return ''; }
+  return s;
+}
+function navTo(page) { location.href = '/' + getSlug() + '/' + page; }
+
+const SUPA_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co';
+const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
+
+const TABLES = {
+  outreach_leads: { label: 'Outreach Leads', cols: ['ig_handle','full_name','niche','stage_label','follower_count','location','created_at'] },
+  clients:        { label: 'Clients',         cols: ['name','company','status','mrr','phase','next_action','client_since'] },
+  sops:           { label: 'SOPs',            cols: ['id','title','category','updated_at'] },
+  sales_calls:    { label: 'Sales Calls',     cols: ['id','name','status','booked_at','outcome'] }
+};
+
+let currentTable = 'outreach_leads';
+let allRows = [];
+
+async function sbFetch(table, select, limit) {
+  limit = limit || 500;
+  var sess = null;
+  try { sess = JSON.parse(localStorage.getItem('sb_session') || 'null'); } catch(e){}
+  var key = (sess && sess.client_supabase_anon) || ANON_KEY;
+  var url = SUPA_URL + '/rest/v1/' + table + '?select=' + select + '&limit=' + limit + '&order=created_at.desc';
+  var r = await fetch(url, { headers: { 'apikey': key, 'Authorization': 'Bearer ' + key, 'Prefer': 'count=exact' } });
+  var count = 0;
+  var cr = r.headers.get('content-range');
+  if (cr) count = parseInt(cr.split('/')[1]) || 0;
+  var data = await r.json();
+  return { data: Array.isArray(data) ? data : [], count };
+}
+
+async function loadCounts() {
+  var tables = ['outreach_leads','clients','sops','sales_calls'];
+  var ids = ['count-leads','count-clients','count-sops','count-calls'];
+  for (var i = 0; i < tables.length; i++) {
+    try {
+      var r = await sbFetch(tables[i], 'id', 1);
+      document.getElementById(ids[i]).textContent = r.count;
+    } catch(e) { document.getElementById(ids[i]).textContent = '0'; }
+  }
+  // subtitle
+  var leadsCount = document.getElementById('count-leads').textContent;
+  document.getElementById('db-subtitle').textContent = leadsCount + ' leads · ' + document.getElementById('count-clients').textContent + ' clients · Live Supabase data';
+}
+
+async function loadTable(tableName) {
+  var wrap = document.getElementById('db-table-wrap');
+  wrap.innerHTML = '<div style="padding:40px;text-align:center;font-family:var(--font-data);font-size:12px;color:var(--text-dim);">Loading…</div>';
+  document.getElementById('db-table-name').textContent = TABLES[tableName].label;
+  try {
+    var cols = TABLES[tableName].cols;
+    var r = await sbFetch(tableName, cols.join(','), 200);
+    allRows = r.data;
+    renderTable(allRows, cols);
+    document.getElementById('db-row-count').textContent = allRows.length + ' rows';
+  } catch(e) {
+    wrap.innerHTML = '<div style="padding:40px;text-align:center;font-family:var(--font-data);font-size:12px;color:var(--text-dim);">No data or table empty.</div>';
+  }
+}
+
+function renderTable(rows, cols) {
+  var wrap = document.getElementById('db-table-wrap');
+  if (!rows.length) {
+    wrap.innerHTML = '<div style="padding:40px;text-align:center;font-family:var(--font-data);font-size:12px;color:var(--text-dim);">No records found.</div>';
+    return;
+  }
+  var html = '<table class="db-table"><thead><tr>' + cols.map(function(c){ return '<th>' + c.replace(/_/g,' ') + '</th>'; }).join('') + '</tr></thead><tbody>';
+  rows.forEach(function(row) {
+    html += '<tr>' + cols.map(function(c) {
+      var v = row[c];
+      if (v === null || v === undefined) v = '';
+      if (typeof v === 'string' && v.length > 60) v = v.slice(0,60) + '…';
+      if (typeof v === 'string' && (c.includes('_at') || c === 'client_since')) {
+        try { v = new Date(v).toLocaleDateString('en', {month:'short', day:'numeric', year:'numeric'}); } catch(e){}
+      }
+      return '<td title="' + String(v).replace(/"/g,'&quot;') + '">' + (v === '' ? '<span style="color:var(--text-dim);">—</span>' : v) + '</td>';
+    }).join('') + '</tr>';
+  });
+  html += '</tbody></table>';
+  wrap.innerHTML = html;
+}
+
+function switchTable(tableName) {
+  currentTable = tableName;
+  document.querySelectorAll('.table-tab').forEach(function(b){ b.classList.remove('active'); });
+  var el = document.getElementById('tab-' + tableName);
+  if (el) el.classList.add('active');
+  document.getElementById('db-search').value = '';
+  loadTable(tableName);
+}
+
+function filterRows(q) {
+  if (!q) { renderTable(allRows, TABLES[currentTable].cols); document.getElementById('db-row-count').textContent = allRows.length + ' rows'; return; }
+  var filtered = allRows.filter(function(row) {
+    return Object.values(row).some(function(v){ return String(v).toLowerCase().includes(q.toLowerCase()); });
+  });
+  renderTable(filtered, TABLES[currentTable].cols);
+  document.getElementById('db-row-count').textContent = filtered.length + ' of ' + allRows.length + ' rows';
+}
+
+// Sidebar agent status
+(function(){
+  var AGENTS = [{name:'Scout'},{name:'Quill'},{name:'Pulse'},{name:'Hunter'},{name:'Echo'},{name:'Pilot'},{name:'Forge'},{name:'Edge'}];
+  function render() {
+    var el = document.getElementById('sidebar-agent-status-list'); if(!el) return;
+    var s = {}; AGENTS.forEach(function(a){s[a.name]='idle';});
+    try { var tasks=JSON.parse(localStorage.getItem('ctrl_agent_tasks_v1')||'{}'); Object.values(tasks).forEach(function(t){if(t.status==='running')s[t.agent]='working'; else if(t.status==='queued'&&s[t.agent]!=='working')s[t.agent]='queued';}); } catch(e){}
+    el.innerHTML = AGENTS.map(function(a){var st=s[a.name]||'idle';var dotColor=st==='working'?'#fbbf24':'rgba(255,255,255,0.15)';return '<div style="display:flex;align-items:center;gap:8px;padding:5px 16px;cursor:pointer;" onclick="navTo('agents')"><div style="width:6px;height:6px;border-radius:50%;flex-shrink:0;background:'+dotColor+';"></div><span style="font-family:var(--font-data);font-size:11px;font-weight:500;color:rgba(255,255,255,0.35);flex:1;">'+a.name+'</span><span style="font-family:var(--font-data);font-size:9px;color:rgba(255,255,255,0.18);">'+st+'</span></div>';}).join('');
+  }
+  document.addEventListener('DOMContentLoaded', render);
+  setInterval(render, 5000);
+})();
+
+document.addEventListener('DOMContentLoaded', function() {
+  loadCounts();
+  loadTable('outreach_leads');
+});
+</script>
+<script>if("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js");</script>
+</body>
+</html>

@@ -576,7 +576,7 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
           <span class="agent-status-badge st-idle">Idle</span>
         </div>
         <div class="agent-name-lg">Scout</div>
-        <div class="agent-role-lg">Content Researcher · Daily 6AM PHT</div>
+        <div class="agent-role-lg">AI News Scraper · n8n · Scheduled</div>
         <div class="agent-prog-bar"><div class="agent-prog-fill" data-target="0" style="background:var(--accent);"></div></div>
         <div class="agent-prog-pct" style="color:var(--accent);">0%</div>
       </div>
@@ -588,10 +588,10 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
           <span class="agent-status-badge st-idle">Idle</span>
         </div>
         <div class="agent-name-lg">Quill</div>
-        <div class="agent-role-lg">Scriptwriter + Caption Writer · On Demand</div>
+        <div class="agent-role-lg">Script + Caption Writer · n8n Webhook · Opus 4.8</div>
         <div class="agent-prog-bar"><div class="agent-prog-fill" data-target="0" style="background:var(--yellow);"></div></div>
         <div class="agent-prog-pct" style="color:var(--yellow);">0%</div>
-        <button class="agent-dispatch" id="quill-run-btn" style="background:rgba(251,191,36,0.1);border-color:rgba(251,191,36,0.3);color:#fbbf24;margin-top:10px;" onclick="runQuill()">Run Quill</button>
+        <button class="agent-dispatch" id="quill-run-btn" style="background:rgba(251,191,36,0.1);border-color:rgba(251,191,36,0.3);color:#fbbf24;margin-top:auto;" onclick="runQuill()">Run Quill</button>
       </div>
 
       <!-- Pulse -->
@@ -601,7 +601,7 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
           <span class="agent-status-badge st-idle">Idle</span>
         </div>
         <div class="agent-name-lg">Pulse</div>
-        <div class="agent-role-lg">Competitor Researcher + Analytics Specialist · Weekly Mon 9AM PHT</div>
+        <div class="agent-role-lg">Competitor Scrape + Analyze · n8n · Weekly Mon 9AM PHT</div>
         <div class="agent-prog-bar"><div class="agent-prog-fill" data-target="0" style="background:var(--green);"></div></div>
         <div class="agent-prog-pct" style="color:var(--green);">0%</div>
         <div class="pulse-result-panel" id="pulseRollupPanel"></div>
@@ -614,7 +614,7 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
           <span class="agent-status-badge st-idle">Idle</span>
         </div>
         <div class="agent-name-lg">Hunter</div>
-        <div class="agent-role-lg">Lead Research · On Demand</div>
+        <div class="agent-role-lg">IG Lead Research · n8n · Daily 8AM PHT</div>
         <div class="agent-prog-bar"><div class="agent-prog-fill" data-target="0" style="background:#f472b6;"></div></div>
         <div class="agent-prog-pct" style="color:#f472b6;">0%</div>
       </div>
@@ -626,10 +626,10 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
           <span class="agent-status-badge st-idle">Idle</span>
         </div>
         <div class="agent-name-lg">Echo</div>
-        <div class="agent-role-lg">Cold DM Writer · On Demand</div>
+        <div class="agent-role-lg">Cold DM Writer · n8n + Claude CLI · On Demand</div>
         <div class="agent-prog-bar"><div class="agent-prog-fill" data-target="0" style="background:#4ade80;"></div></div>
         <div class="agent-prog-pct" style="color:#4ade80;">0%</div>
-        <button class="agent-dispatch" style="background:rgba(74,222,128,0.1);border-color:rgba(74,222,128,0.3);color:#4ade80;margin-top:10px;" onclick="runEcho()">Run Echo</button>
+        <button class="agent-dispatch" style="background:rgba(74,222,128,0.1);border-color:rgba(74,222,128,0.3);color:#4ade80;margin-top:auto;" onclick="runEcho()">Run Echo</button>
       </div>
 
       <!-- Pilot -->
@@ -639,7 +639,7 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
           <span class="agent-status-badge st-idle">Idle</span>
         </div>
         <div class="agent-name-lg">Pilot</div>
-        <div class="agent-role-lg">Client Management · On Demand</div>
+        <div class="agent-role-lg">IG Auto Scheduler · n8n · Every 5 Min</div>
         <div class="agent-prog-bar"><div class="agent-prog-fill" data-target="0" style="background:#38bdf8;"></div></div>
         <div class="agent-prog-pct" style="color:#38bdf8;">0%</div>
       </div>
@@ -651,10 +651,10 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
           <span class="agent-status-badge st-idle" id="forge-status-badge">Idle</span>
         </div>
         <div class="agent-name-lg">Forge</div>
-        <div class="agent-role-lg">Client Onboarding · On Demand</div>
+        <div class="agent-role-lg">System Builder · n8n Webhook + Claude CLI · On Demand</div>
         <div class="agent-prog-bar"><div class="agent-prog-fill" data-target="0" style="background:#e879f9;"></div></div>
         <div class="agent-prog-pct" style="color:#e879f9;">0%</div>
-        <button class="agent-dispatch" style="background:rgba(232,121,249,0.1);border-color:rgba(232,121,249,0.3);color:#e879f9;margin-top:10px;" onclick="openForgeModal()">Run Forge</button>
+        <button class="agent-dispatch" style="background:rgba(232,121,249,0.1);border-color:rgba(232,121,249,0.3);color:#e879f9;margin-top:auto;" onclick="openForgeModal()">Run Forge</button>
       </div>
 
       <!-- Edge -->
@@ -664,7 +664,7 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
           <span class="agent-status-badge st-idle">Idle</span>
         </div>
         <div class="agent-name-lg">Edge</div>
-        <div class="agent-role-lg">Sales Call Reviewer · On Demand</div>
+        <div class="agent-role-lg">Sales Call Reviewer · Claude Sonnet 4.6 · On Demand</div>
         <div class="agent-prog-bar"><div class="agent-prog-fill" data-target="0" style="background:#f97316;"></div></div>
         <div class="agent-prog-pct" style="color:#f97316;">0%</div>
       </div>
@@ -1827,9 +1827,9 @@ async function runForge() {
 // Inject model label + run count into each agent card
 (function injectModelRunCount() {
   const MODEL_MAP = {
-    Scout: 'Claude Haiku 4.5', Quill: 'Claude Sonnet 4.6', Pulse: 'Claude Haiku 4.5',
-    Hunter: 'Claude Haiku 4.5', Echo: 'Claude Sonnet 4.6', Pilot: 'Claude Sonnet 4.6',
-    Forge: 'Claude Opus 4.8', Edge: 'Claude Sonnet 4.6'
+    Scout: 'n8n · Web Scraper', Quill: 'Claude Opus 4.8', Pulse: 'n8n · Scraper + Analyzer',
+    Hunter: 'n8n · Lead Research', Echo: 'n8n + Claude CLI', Pilot: 'n8n · IG Auto Scheduler',
+    Forge: 'n8n + Claude CLI', Edge: 'Claude Sonnet 4.6'
   };
   function getRunCounts() {
     try {

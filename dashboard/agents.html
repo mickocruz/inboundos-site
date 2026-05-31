@@ -63,7 +63,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .section-label::after{content:'';flex:1;height:1px;background:var(--border);}
 
 /* AGENT CARDS */
-.agents-row{display:grid;grid-template-columns:repeat(8,1fr);gap:10px;align-items:stretch;}
+.agents-row{display:grid;grid-template-columns:repeat(8,minmax(120px,1fr));gap:10px;align-items:stretch;}
 .agent-exp{padding:14px 12px;display:flex;flex-direction:column;gap:0;align-items:center;text-align:center;justify-content:flex-start;}
 .agent-top{display:flex;align-items:flex-start;justify-content:center;margin-bottom:10px;}
 .agent-avatar-lg{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;position:relative;flex-shrink:0;margin:0 auto 10px;border:2px solid transparent;}
@@ -73,8 +73,8 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .agent-status-badge.st-active{color:var(--green);border-color:rgba(74,222,128,0.25);background:rgba(74,222,128,0.07);}
 .agent-status-badge.st-error{color:var(--red);border-color:rgba(248,113,113,0.25);background:rgba(248,113,113,0.07);}
 .agent-name-lg{font-family:var(--font-head);font-size:12px;font-weight:900;letter-spacing:-0.2px;margin-bottom:1px;text-align:center;width:100%;height:22px;display:flex;align-items:center;justify-content:center;}
-.agent-role-lg{font-family:var(--font-data);font-size:9px;color:var(--text-muted);margin-bottom:8px;text-align:center;width:100%;min-height:36px;height:36px;display:flex;align-items:center;justify-content:center;}
-.agent-prog-bar{height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;margin-bottom:5px;}
+.agent-role-lg{font-family:var(--font-data);font-size:9px;color:var(--text-muted);margin-bottom:8px;text-align:center;width:100%;height:44px;overflow:hidden;display:flex;align-items:center;justify-content:center;line-height:1.4;}
+.agent-prog-bar{height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;margin-bottom:5px;width:100%;}
 .agent-prog-fill{height:100%;border-radius:2px;transition:width 1.2s cubic-bezier(0.4,0,0.2,1);width:0%;}
 .agent-prog-pct{font-family:var(--font-head);font-size:11px;font-weight:900;letter-spacing:-0.2px;margin-bottom:3px;}
 .agent-current-task{font-family:var(--font-data);font-size:10px;color:var(--text-muted);line-height:1.4;margin-bottom:12px;}
@@ -576,7 +576,7 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
           <span class="agent-status-badge st-idle">Idle</span>
         </div>
         <div class="agent-name-lg">Scout</div>
-        <div class="agent-role-lg">AI News Scraper · n8n · Scheduled</div>
+        <div class="agent-role-lg">AI News · n8n · Scheduled</div>
         <div class="agent-prog-bar"><div class="agent-prog-fill" data-target="0" style="background:var(--accent);"></div></div>
         <div class="agent-prog-pct" style="color:var(--accent);">0%</div>
       </div>
@@ -588,7 +588,7 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
           <span class="agent-status-badge st-idle">Idle</span>
         </div>
         <div class="agent-name-lg">Quill</div>
-        <div class="agent-role-lg">Script + Caption Writer · n8n Webhook · Opus 4.8</div>
+        <div class="agent-role-lg">Scripts + Captions · n8n · Opus 4.8</div>
         <div class="agent-prog-bar"><div class="agent-prog-fill" data-target="0" style="background:var(--yellow);"></div></div>
         <div class="agent-prog-pct" style="color:var(--yellow);">0%</div>
         <button class="agent-dispatch" id="quill-run-btn" style="background:rgba(251,191,36,0.1);border-color:rgba(251,191,36,0.3);color:#fbbf24;margin-top:auto;" onclick="runQuill()">Run Quill</button>
@@ -601,7 +601,7 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
           <span class="agent-status-badge st-idle">Idle</span>
         </div>
         <div class="agent-name-lg">Pulse</div>
-        <div class="agent-role-lg">Competitor Scrape + Analyze · n8n · Weekly Mon 9AM PHT</div>
+        <div class="agent-role-lg">Competitor Intel · n8n · Weekly Mon 9AM</div>
         <div class="agent-prog-bar"><div class="agent-prog-fill" data-target="0" style="background:var(--green);"></div></div>
         <div class="agent-prog-pct" style="color:var(--green);">0%</div>
         <div class="pulse-result-panel" id="pulseRollupPanel"></div>
@@ -614,7 +614,7 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
           <span class="agent-status-badge st-idle">Idle</span>
         </div>
         <div class="agent-name-lg">Hunter</div>
-        <div class="agent-role-lg">IG Lead Research · n8n · Daily 8AM PHT</div>
+        <div class="agent-role-lg">Lead Research · n8n · Daily 8AM PHT</div>
         <div class="agent-prog-bar"><div class="agent-prog-fill" data-target="0" style="background:#f472b6;"></div></div>
         <div class="agent-prog-pct" style="color:#f472b6;">0%</div>
       </div>
@@ -626,7 +626,7 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
           <span class="agent-status-badge st-idle">Idle</span>
         </div>
         <div class="agent-name-lg">Echo</div>
-        <div class="agent-role-lg">Cold DM Writer · n8n + Claude CLI · On Demand</div>
+        <div class="agent-role-lg">Cold DM Writer · n8n + Claude</div>
         <div class="agent-prog-bar"><div class="agent-prog-fill" data-target="0" style="background:#4ade80;"></div></div>
         <div class="agent-prog-pct" style="color:#4ade80;">0%</div>
         <button class="agent-dispatch" style="background:rgba(74,222,128,0.1);border-color:rgba(74,222,128,0.3);color:#4ade80;margin-top:auto;" onclick="runEcho()">Run Echo</button>
@@ -639,7 +639,7 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
           <span class="agent-status-badge st-idle">Idle</span>
         </div>
         <div class="agent-name-lg">Pilot</div>
-        <div class="agent-role-lg">IG Auto Scheduler · n8n · Every 5 Min</div>
+        <div class="agent-role-lg">IG Auto Scheduler · n8n · Every 5m</div>
         <div class="agent-prog-bar"><div class="agent-prog-fill" data-target="0" style="background:#38bdf8;"></div></div>
         <div class="agent-prog-pct" style="color:#38bdf8;">0%</div>
       </div>
@@ -651,7 +651,7 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
           <span class="agent-status-badge st-idle" id="forge-status-badge">Idle</span>
         </div>
         <div class="agent-name-lg">Forge</div>
-        <div class="agent-role-lg">System Builder · n8n Webhook + Claude CLI · On Demand</div>
+        <div class="agent-role-lg">System Builder · n8n + Claude</div>
         <div class="agent-prog-bar"><div class="agent-prog-fill" data-target="0" style="background:#e879f9;"></div></div>
         <div class="agent-prog-pct" style="color:#e879f9;">0%</div>
         <button class="agent-dispatch" style="background:rgba(232,121,249,0.1);border-color:rgba(232,121,249,0.3);color:#e879f9;margin-top:auto;" onclick="openForgeModal()">Run Forge</button>
@@ -664,7 +664,7 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
           <span class="agent-status-badge st-idle">Idle</span>
         </div>
         <div class="agent-name-lg">Edge</div>
-        <div class="agent-role-lg">Sales Call Reviewer · Claude Sonnet 4.6 · On Demand</div>
+        <div class="agent-role-lg">Call Reviewer · Sonnet 4.6</div>
         <div class="agent-prog-bar"><div class="agent-prog-fill" data-target="0" style="background:#f97316;"></div></div>
         <div class="agent-prog-pct" style="color:#f97316;">0%</div>
       </div>

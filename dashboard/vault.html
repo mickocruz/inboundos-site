@@ -37,6 +37,16 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .mk-avatar-wrap{display:flex;align-items:center;gap:10px;cursor:pointer;}
 .mk-name{font-family:var(--font-data);font-size:12px;font-weight:600;color:#fff;line-height:1.2;}
 .mk-role{font-family:var(--font-data);font-size:10px;color:rgba(255,255,255,0.42);}
+/* SIDEBAR AGENTS */
+.sidebar-agents{padding:10px 0 4px;}
+.sidebar-agents-label{font-family:var(--font-data);font-size:9px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--text-dim);padding:0 16px;margin-bottom:6px;}
+.sidebar-agent-row{display:flex;align-items:center;gap:10px;padding:8px 16px;cursor:pointer;transition:all 0.15s;}
+.sidebar-agent-row:hover{background:rgba(255,255,255,0.025);}
+.sa-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;background:rgba(255,255,255,0.15);}
+.sa-dot.working{background:var(--yellow);}
+.sa-dot.queued{background:var(--yellow);}
+.sa-name{font-family:var(--font-data);font-size:12px;font-weight:600;color:rgba(255,255,255,0.55);flex:1;}
+.sa-status{font-family:var(--font-data);font-size:10px;color:var(--text-dim);}
 
 /* MAIN */
 .main{flex:1;overflow-y:auto;overflow-x:hidden;padding:22px 24px;display:flex;flex-direction:column;gap:18px;scrollbar-width:thin;scrollbar-color:rgba(79,195,247,0.12) transparent;}
@@ -143,13 +153,13 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
       <div class="nav-item" onclick="navTo('roi')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>ROI Report</div>
     </div>
     <div class="nav-section"><div class="nav-section-label">Intelligence</div>
-      <div class="nav-item active" onclick="navTo('vault')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Company Database</div>
+      <div class="nav-item active" onclick="navTo('database')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Company Database</div>
       <div class="nav-item" onclick="navTo('sops')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>SOPs</div>
       <div class="nav-item" onclick="navTo('org-chart')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><path d="M12 7v3M12 10l-5 7M12 10l5 7"/></svg>Org Chart</div>
     </div>
     <!-- LIVE AGENT STATUS -->
-    <div style="padding:10px 0 4px;">
-      <div style="font-family:var(--font-data);font-size:9px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:rgba(255,255,255,0.22);padding:0 16px;margin-bottom:6px;">Agents</div>
+    <div class="sidebar-agents">
+      <div class="sidebar-agents-label">Agents</div>
       <div id="sidebar-agent-status-list"></div>
     </div>
     <div class="sidebar-bottom"><div class="mk-avatar-wrap"><img src="/micko.jpg" alt="MK" style="width:32px;height:32px;object-fit:cover;border-radius:50%;border:1px solid rgba(79,195,247,0.2);"/><div><div class="mk-name">Micko Cruz</div><div class="mk-role">Founder · InboundOS</div></div></div></div>
@@ -161,7 +171,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
     <!-- HEADER -->
     <div class="header">
       <div>
-        <div style="font-family:var(--font-head);font-size:22px;font-weight:900;letter-spacing:-0.5px;">Company Database.</div>
+        <div style="font-family:var(--font-head);font-size:22px;font-weight:900;letter-spacing:-0.5px;">Company Database</div>
         <div style="font-family:var(--font-data);font-size:12px;color:var(--text-muted);margin-top:2px;" id="db-subtitle">Loading…</div>
       </div>
       <div style="display:flex;align-items:center;gap:6px;padding:5px 10px;background:rgba(74,222,128,0.07);border:1px solid rgba(74,222,128,0.2);border-radius:20px;font-family:var(--font-data);font-size:10px;font-weight:600;color:#4ade80;">
@@ -244,22 +254,24 @@ const SUPA_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co';
 const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
 
 const TABLES = {
-  outreach_leads: { label: 'Outreach Leads', cols: ['ig_handle','full_name','niche','stage_label','follower_count','location','created_at'] },
-  clients:        { label: 'Clients',         cols: ['name','company','status','mrr','phase','next_action','client_since'] },
-  sops:           { label: 'SOPs',            cols: ['id','title','category','updated_at'] },
-  sales_calls:    { label: 'Sales Calls',     cols: ['id','name','status','booked_at','outcome'] }
+  outreach_leads: { label: 'Outreach Leads', cols: ['ig_handle','full_name','niche','stage_label','follower_count','location','created_at'], order: 'created_at.desc' },
+  clients:        { label: 'Clients',         cols: ['name','company','status','mrr','phase','next_action','client_since'], order: 'name.asc' },
+  sops:           { label: 'SOPs',            cols: ['id','title','category','updated_at'], order: 'updated_at.desc' },
+  sales_calls:    { label: 'Sales Calls',     cols: ['id','name','status','booked_at','outcome'], order: 'booked_at.desc' }
 };
 
 let currentTable = 'outreach_leads';
 let allRows = [];
 
-async function sbFetch(table, select, limit) {
+async function sbFetch(table, select, limit, order) {
   limit = limit || 500;
+  order = order || 'id.desc';
   var sess = null;
   try { sess = JSON.parse(localStorage.getItem('sb_session') || 'null'); } catch(e){}
   var key = (sess && sess.client_supabase_anon) || ANON_KEY;
-  var url = SUPA_URL + '/rest/v1/' + table + '?select=' + select + '&limit=' + limit + '&order=created_at.desc';
+  var url = SUPA_URL + '/rest/v1/' + table + '?select=' + select + '&limit=' + limit + '&order=' + order;
   var r = await fetch(url, { headers: { 'apikey': key, 'Authorization': 'Bearer ' + key, 'Prefer': 'count=exact' } });
+  if (!r.ok) { return { data: [], count: 0 }; }
   var count = 0;
   var cr = r.headers.get('content-range');
   if (cr) count = parseInt(cr.split('/')[1]) || 0;
@@ -269,10 +281,11 @@ async function sbFetch(table, select, limit) {
 
 async function loadCounts() {
   var tables = ['outreach_leads','clients','sops','sales_calls'];
+  var orders = ['created_at.desc','name.asc','updated_at.desc','booked_at.desc'];
   var ids = ['count-leads','count-clients','count-sops','count-calls'];
   for (var i = 0; i < tables.length; i++) {
     try {
-      var r = await sbFetch(tables[i], 'id', 1);
+      var r = await sbFetch(tables[i], 'id', 1, orders[i]);
       document.getElementById(ids[i]).textContent = r.count;
     } catch(e) { document.getElementById(ids[i]).textContent = '0'; }
   }
@@ -287,7 +300,8 @@ async function loadTable(tableName) {
   document.getElementById('db-table-name').textContent = TABLES[tableName].label;
   try {
     var cols = TABLES[tableName].cols;
-    var r = await sbFetch(tableName, cols.join(','), 200);
+    var order = TABLES[tableName].order || 'id.desc';
+    var r = await sbFetch(tableName, cols.join(','), 200, order);
     allRows = r.data;
     renderTable(allRows, cols);
     document.getElementById('db-row-count').textContent = allRows.length + ' rows';
@@ -343,7 +357,16 @@ function filterRows(q) {
     var el = document.getElementById('sidebar-agent-status-list'); if(!el) return;
     var s = {}; AGENTS.forEach(function(a){s[a.name]='idle';});
     try { var tasks=JSON.parse(localStorage.getItem('ctrl_agent_tasks_v1')||'{}'); Object.values(tasks).forEach(function(t){if(t.status==='running')s[t.agent]='working'; else if(t.status==='queued'&&s[t.agent]!=='working')s[t.agent]='queued';}); } catch(e){}
-    el.innerHTML = AGENTS.map(function(a){var st=s[a.name]||'idle';var dotColor=st==='working'?'#fbbf24':'rgba(255,255,255,0.15)';return '<div style="display:flex;align-items:center;gap:8px;padding:5px 16px;cursor:pointer;" onclick="navTo('agents')"><div style="width:6px;height:6px;border-radius:50%;flex-shrink:0;background:'+dotColor+';"></div><span style="font-family:var(--font-data);font-size:11px;font-weight:500;color:rgba(255,255,255,0.35);flex:1;">'+a.name+'</span><span style="font-family:var(--font-data);font-size:9px;color:rgba(255,255,255,0.18);">'+st+'</span></div>';}).join('');
+    el.innerHTML = AGENTS.map(function(a){
+      var st=s[a.name]||'idle';
+      var dotClass=st==='working'?'sa-dot working':st==='queued'?'sa-dot queued':'sa-dot';
+      var stLabel=st==='working'?'running':st==='queued'?'queued':'idle';
+      return '<div class="sidebar-agent-row" onclick="navTo(\'agents\')">'
+        +'<div class="'+dotClass+'"></div>'
+        +'<span class="sa-name">'+a.name+'</span>'
+        +'<span class="sa-status">'+stLabel+'</span>'
+        +'</div>';
+    }).join('');
   }
   document.addEventListener('DOMContentLoaded', render);
   setInterval(render, 5000);

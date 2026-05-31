@@ -389,7 +389,7 @@ async function sendMessage(agent) {
   const abortTimer = setTimeout(() => abortCtrlMap[agent].abort(), 30000);
 
   try {
-    const res = await fetch('http://localhost:3001/agent/chat', {
+    const res = await fetch('/api/agent/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ agent, messages: histories[agent].slice(-20) }),
@@ -469,7 +469,7 @@ async function openSkillModal(agent) {
   document.getElementById('skillModal').classList.add('open');
 
   try {
-    const res = await fetch(`http://localhost:3001/agent/skill/${agent.toLowerCase()}`);
+    const res = await fetch(`/api/agent/skill/${agent.toLowerCase()}`);
     if (!res.ok) throw new Error('Failed to load skill');
     const text = await res.text();
     document.getElementById('skillTextarea').value = text;
@@ -493,7 +493,7 @@ async function saveSkill() {
   document.getElementById('modalStatus').textContent = 'Saving…';
 
   try {
-    const res = await fetch(`http://localhost:3001/agent/skill/${currentSkillAgent.toLowerCase()}`, {
+    const res = await fetch(`/api/agent/skill/${currentSkillAgent.toLowerCase()}`, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
       body: content,
@@ -674,7 +674,7 @@ function cancelStream(agent) {
 <script>
 // Check if chat is available (API key set)
 (function() {
-  fetch('http://localhost:3001/agent/chat', {
+  fetch('/api/agent/chat', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ agent: '_check', messages: [] }),

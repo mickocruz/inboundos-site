@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script>(function(){function gc(n){var v=document.cookie.match("(^|;) ?"+n+"=([^;]*)(;|$)");return v?v[2]:null;}var auth=gc("ctrl_auth"),slug=gc("ctrl_slug");if(!auth||!slug){window.location.href="/login?from="+encodeURIComponent(window.location.pathname);return;}var seg=window.location.pathname.split("/").filter(Boolean)[0];if(seg&&seg!==slug){window.location.href="/login?from="+encodeURIComponent(window.location.pathname);}})();</script>
+<head><script>(function(){function gc(n){var v=document.cookie.match("(^|;) ?"+n+"=([^;]*)(;|$)");return v?v[2]:null;}var auth=gc("ctrl_auth"),slug=gc("ctrl_slug");var sb=null;try{sb=JSON.parse(localStorage.getItem("sb_session")||"null");}catch(e){}var sbValid=!!(sb&&sb.access_token);var sbExp=sbValid&&sb.expires_at?sb.expires_at*1000:0;if(sbExp&&sbExp<Date.now()){localStorage.removeItem("sb_session");sb=null;sbValid=false;}if(sbValid&&!slug&&sb.client_slug){slug=sb.client_slug;}var loggedIn=(auth&&slug)||sbValid;if(!loggedIn||!slug){window.location.href="/login?from="+encodeURIComponent(window.location.pathname);return;}var seg=window.location.pathname.split("/").filter(Boolean)[0];if(seg&&seg!==slug){window.location.href="/login?from="+encodeURIComponent(window.location.pathname);}})();</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>InboundOS - Research</title>
-<link rel="preload" href="/NHGDisplay95Black.otf" as="font" type="font/otf" crossorigin>
+<link rel="preload" href="/dashboard/fonts/NHGrotesk-Black.otf" as="font" type="font/otf" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
@@ -404,9 +404,12 @@ function applyCompetitorData(profiles, latestViral = {}) {
 }
 
 async function refreshCompetitors() {
+  // TODO: competitor grid container not yet in DOM
   const btn = document.getElementById('comp-refresh-btn');
   const status = document.getElementById('comp-status');
-  btn.disabled = true; status.textContent = 'Scraping…';
+  if (!document.getElementById('comp-grid')) return;
+  if (btn) btn.disabled = true;
+  if (status) status.textContent = 'Scraping…';
   document.querySelectorAll('.comp-card').forEach(c => c.classList.add('loading'));
   try {
     const data = await fetch(`${PROXY}/apify/instagram`, {
@@ -417,11 +420,11 @@ async function refreshCompetitors() {
     if (data.error) throw new Error(data.error);
     localStorage.setItem(COMP_CACHE, JSON.stringify({ profiles: data.profiles||[], latestViral: data.latestViral||{}, ts: Date.now() }));
     applyCompetitorData(data.profiles||[], data.latestViral||{});
-    status.textContent = 'Updated just now';
+    if (status) status.textContent = 'Updated just now';
     loadScoutIntel();
   } catch(e) {
-    status.textContent = 'Failed — ' + e.message;
-  } finally { btn.disabled = false; document.querySelectorAll('.comp-card').forEach(c => c.classList.remove('loading')); }
+    if (status) status.textContent = 'Failed — ' + e.message;
+  } finally { if (btn) btn.disabled = false; document.querySelectorAll('.comp-card').forEach(c => c.classList.remove('loading')); }
 }
 
 function renderHandleList() {
@@ -858,7 +861,7 @@ loadSwipeFile();
 <script>
 // ── HOOK SWEEP ──
 const HOOKS_SB_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co';
-const HOOKS_SB_KEY = 'sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8';
+const HOOKS_SB_KEY = (JSON.parse(localStorage.getItem('sb_session')||'{}').client_supabase_anon) || 'sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8';
 let _hooksAll = [];
 let _hooksFiltered = [];
 let _hookPage = 0;

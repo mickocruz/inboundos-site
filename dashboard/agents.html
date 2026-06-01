@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>InboundOS - Agents</title>
-<link rel="preload" href="/NHGDisplay95Black.otf" as="font" type="font/otf" crossorigin>
+<link rel="preload" href="/dashboard/fonts/NHGrotesk-Black.otf" as="font" type="font/otf" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
@@ -1515,7 +1515,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeAssig
 
 // ── FORGE MODAL ──
 const SUPABASE_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co';
-const SUPABASE_ANON = 'sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8';
+const SUPABASE_ANON = (JSON.parse(localStorage.getItem('sb_session')||'{}').client_supabase_anon) || 'sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8';
 const FORGE_WEBHOOK = 'http://localhost:5678/webhook/forge';
 const QUALIFY_SERVER = 'http://localhost:3001';
 

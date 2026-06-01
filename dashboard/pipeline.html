@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>InboundOS - Pipeline</title>
-<link rel="preload" href="/NHGDisplay95Black.otf" as="font" type="font/otf" crossorigin>
+<link rel="preload" href="/dashboard/fonts/NHGrotesk-Black.otf" as="font" type="font/otf" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
@@ -705,23 +705,6 @@ function closeModal() {
   pendingCard = null; pendingCol = null;
 }
 
-function confirmSchedule() {
-  const dt = document.getElementById('modal-datetime').value;
-  const plats = [...document.querySelectorAll('.plat-opt.sel')].map(p => p.textContent.trim());
-  if (pendingCard && pendingCol) {
-    pendingCol.appendChild(pendingCard);
-    if (dt) {
-      const d = new Date(dt);
-      const label = d.toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
-      const meta = pendingCard.querySelector('.kcard-meta');
-      meta.innerHTML = `<span class="ktag" style="background:rgba(79,195,247,0.09);color:var(--accent);">${label}</span>`;
-    }
-    updateCounts();
-    serializeBoard();
-  }
-  closeModal();
-}
-
 function togglePlat(el) { el.classList.toggle('sel'); }
 
 function updateCounts() {
@@ -833,7 +816,8 @@ function loadPipelineIdeas() {
   try {
     const ideas = JSON.parse(raw);
     if (!ideas.length) return;
-    const col = document.getElementById('col-ideas');
+    const col = document.getElementById('col-ideas') || document.getElementById('col-scripting');
+    if (!col) return;
     [...ideas].reverse().forEach(idea => {
       const title = (typeof idea === 'string') ? idea : (idea.title || '');
       const id = (typeof idea === 'object' && idea.id) ? idea.id : 'idea-' + Date.now() + '-' + Math.random().toString(36).slice(2);
@@ -860,7 +844,8 @@ function addCard() {
   const title = prompt('Card title:');
   if (!title) return;
   forgetDeletedTitle(title);
-  const col = document.getElementById('col-ideas');
+  const col = document.getElementById('col-ideas') || document.getElementById('col-scripting');
+  if (!col) return;
   const card = document.createElement('div');
   card.className = 'kcard';
   card.draggable = true;

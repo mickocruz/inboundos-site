@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>InboundOS - Dashboard</title>
-<link rel="preload" href="/NHGDisplay95Black.otf" as="font" type="font/otf" crossorigin>
+<link rel="preload" href="/dashboard/fonts/NHGrotesk-Black.otf" as="font" type="font/otf" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
@@ -1308,6 +1308,7 @@ function siEsc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').
 
 async function loadSalesFiles() {
   const list = document.getElementById('salesFileList');
+  if (!list) return;
   try {
     const data = await fetch(`${PROXY}/sales-intel/files`).then(r => r.json());
     if (data.error || !data.files.length) {
@@ -1350,8 +1351,10 @@ async function processSingleFile(filename, btn) {
   } catch(e) {
     btn.disabled = false;
     btn.textContent = 'Retry';
-    result.style.display = 'block';
-    result.innerHTML = `<div style="font-family:var(--font-data);font-size:10px;color:var(--red);">Error: ${siEsc(e.message)}</div>`;
+    if (result) {
+      result.style.display = 'block';
+      result.innerHTML = `<div style="font-family:var(--font-data);font-size:10px;color:var(--red);">Error: ${siEsc(e.message)}</div>`;
+    }
   }
 }
 
@@ -1370,8 +1373,10 @@ async function processAllNewFiles(btn) {
     loadSalesFiles();
     refreshSystemStatus();
   } catch(e) {
-    result.style.display = 'block';
-    result.innerHTML = `<div style="font-family:var(--font-data);font-size:10px;color:var(--red);">Error: ${siEsc(e.message)}</div>`;
+    if (result) {
+      result.style.display = 'block';
+      result.innerHTML = `<div style="font-family:var(--font-data);font-size:10px;color:var(--red);">Error: ${siEsc(e.message)}</div>`;
+    }
   } finally {
     btn.disabled = false;
     btn.textContent = 'Process All New';
@@ -1380,6 +1385,7 @@ async function processAllNewFiles(btn) {
 
 function showSalesIntelResult(results) {
   const result = document.getElementById('salesIntelResult');
+  if (!result) return;
   if (!results.length) { result.style.display = 'none'; return; }
   const last = results[results.length - 1];
   if (last.error) { result.style.display = 'block'; result.innerHTML = `<div style="font-family:var(--font-data);font-size:10px;color:var(--red);">Error in ${siEsc(last.filename)}: ${siEsc(last.error)}</div>`; return; }
@@ -1498,6 +1504,8 @@ function applyIGData(profile, reels, page) {
   const viewVals = last7.map(r => r.videoPlayCount||r.viewsCount||r.likesCount||0);
 
   if (page === 'dash') {
+    const igRoot = document.getElementById('ig-followers');
+    if (!igRoot) return;
     document.getElementById('ig-followers').textContent = fmtNum(followers);
     document.getElementById('ig-views').textContent = fmtNum(avgViews);
     document.getElementById('ig-eng').textContent = engRate;
@@ -1554,13 +1562,15 @@ async function refreshIGData(page) {
   try {
     const raw = localStorage.getItem(CACHE_KEY);
     if (!raw) {
-      document.getElementById('ig-last-updated').textContent = 'No cache — click ↻ Refresh to fetch live data';
+      const noCacheEl = document.getElementById('ig-last-updated');
+      if (noCacheEl) noCacheEl.textContent = 'No cache — click ↻ Refresh to fetch live data';
       return;
     }
     const {profile, reels, ts} = JSON.parse(raw);
     applyIGData(profile, reels, 'dash');
     const age = Math.round((Date.now()-ts)/60000);
-    document.getElementById('ig-last-updated').textContent = `Cached data · ${age}m ago`;
+    const cachedEl = document.getElementById('ig-last-updated');
+    if (cachedEl) cachedEl.textContent = `Cached data · ${age}m ago`;
   } catch(e) { /* ignore */ }
 })();
 

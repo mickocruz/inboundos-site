@@ -19,8 +19,14 @@ import argparse, json, re, os, sys, glob
 import urllib.request, urllib.error
 
 # ── YOUR MASTER SUPABASE ──────────────────────────────────────
-MASTER_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co'
-MASTER_SVC = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTQ2MzIyNSwiZXhwIjoyMDk1MDM5MjI1fQ.8ik968LXAthPkd6nkKOOOFlzTbR-94A22l5T_9T17GE'
+MASTER_URL = os.environ.get('INBOUNDOS_MASTER_URL', 'https://cscfbuhwlfhblxprkwnh.supabase.co')
+# Service-role key is read from the environment — NEVER hardcode it (it grants full DB access).
+# Set it before running:  export INBOUNDOS_MASTER_SVC="eyJ...your-service-role-key..."
+MASTER_SVC = os.environ.get('INBOUNDOS_MASTER_SVC')
+if not MASTER_SVC:
+    sys.exit('ERROR: INBOUNDOS_MASTER_SVC is not set.\n'
+             '  Run:  export INBOUNDOS_MASTER_SVC="<your Supabase service_role key>"\n'
+             '  (Find it in Supabase → Project Settings → API → service_role.)')
 
 SCRIPT_DIR  = os.path.dirname(os.path.abspath(__file__))
 WORKFLOWS_DIR = os.path.join(SCRIPT_DIR, '..', 'workflows')

@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>InboundOS - Clients</title>
-<link rel="preload" href="/NHGDisplay95Black.otf" as="font" type="font/otf" crossorigin>
+<link rel="preload" href="/dashboard/fonts/NHGrotesk-Black.otf" as="font" type="font/otf" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
@@ -242,7 +242,7 @@ html,body{font-family:'DM Sans',sans-serif!important;}
       </div>
       <div class="header-right">
         <div class="pill pill-green">$1K / mo MRR</div>
-        <div class="pill pill-accent" onclick="alert('Add client flow — coming soon')">+ Add Client</div>
+        <div class="pill pill-accent" title="Coming soon" style="opacity:0.45;cursor:not-allowed;pointer-events:none;">+ Add Client (Soon)</div>
       </div>
     </div>
 
@@ -395,9 +395,9 @@ function renderRoster() {
       </div>
       <span class="cs-badge badge-${c.status==='active'?'active':'prospect'}">${c.status==='active'?'Active':'Prospect'}</span>
     </div>`).join('') + `
-  <div class="add-client" onclick="alert('Add client flow')">
+  <div class="add-client" title="Coming soon" style="opacity:0.45;cursor:not-allowed;pointer-events:none;">
     <div class="add-icon">+</div>
-    <div class="add-text">Add client</div>
+    <div class="add-text">Add client (Soon)</div>
   </div>`;
 }
 

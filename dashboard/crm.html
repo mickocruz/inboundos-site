@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>InboundOS - CRM</title>
-<link rel="preload" href="/NHGDisplay95Black.otf" as="font" type="font/otf" crossorigin>
+<link rel="preload" href="/dashboard/fonts/NHGrotesk-Black.otf" as="font" type="font/otf" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
@@ -208,6 +208,12 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 <script>
 const SLUG_FN = `(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()`;
 
+const _sb = JSON.parse(localStorage.getItem('sb_session') || '{}');
+const SB_URL = _sb.client_supabase_url || 'https://cscfbuhwlfhblxprkwnh.supabase.co';
+const SB_KEY = _sb.client_supabase_anon || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
+const SB_TOKEN = _sb.access_token || SB_KEY;
+const CLIENT_ID = _sb.client_id || 'micko_cruz';
+
 const STAGES=[
   {stage:-1,label:'All',dot:'#ffffff40'},
   {stage:1,label:'Opener Sent',dot:'#ffffff60'},
@@ -305,9 +311,9 @@ async function save(id){
   btn.disabled=true;btn.textContent='Saving…';
   const patch={stage:parseInt(document.getElementById(`ssel-${id}`).value),notes:document.getElementById(`notes-${id}`).value};
   try{
-    const r=await fetch(`https://cscfbuhwlfhblxprkwnh.supabase.co/rest/v1/outreach_leads?id=eq.${id}`,{
+    const r=await fetch(`${SB_URL}/rest/v1/outreach_leads?id=eq.${id}`,{
       method:'PATCH',
-      headers:{'Content-Type':'application/json','apikey':'sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8','Authorization':'Bearer sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8','Prefer':'return=minimal'},
+      headers:{'Content-Type':'application/json','apikey': SB_KEY,'Authorization':'Bearer ' + SB_TOKEN,'Prefer':'return=minimal'},
       body:JSON.stringify(patch)
     });
     if(!r.ok)throw new Error(await r.text());
@@ -320,8 +326,8 @@ async function save(id){
 async function loadLeads(){
   document.getElementById('lead-list').innerHTML='<div class="empty loading">Loading…</div>';
   try{
-    const r=await fetch('https://cscfbuhwlfhblxprkwnh.supabase.co/rest/v1/outreach_leads?select=*&order=updated_at.desc',{
-      headers:{'apikey':'sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8','Authorization':'Bearer sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8'}
+    const r=await fetch(`${SB_URL}/rest/v1/outreach_leads?client_id=eq.${CLIENT_ID}&select=*&order=updated_at.desc`,{
+      headers:{'apikey': SB_KEY,'Authorization':'Bearer ' + SB_TOKEN}
     });
     if(!r.ok)throw new Error(await r.text());
     leads=await r.json();

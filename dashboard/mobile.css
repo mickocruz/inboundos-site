@@ -263,4 +263,95 @@
   /* ── PWA safe area (iPhone notch + home bar) ── */
   .sidebar{padding-top:env(safe-area-inset-top)!important;}
   .main{padding-bottom:calc(80px + env(safe-area-inset-bottom))!important;}
+
+  /* ── COMMAND — stat row 4-col → 2x2 ── */
+  .stat-row{grid-template-columns:1fr 1fr!important;gap:8px!important;}
+  .stat-card{padding:12px 14px!important;}
+  .stat-val{font-size:22px!important;}
+  .stat-label{font-size:9px!important;}
+
+  /* ── COMMAND — agent chat grid 4-col → 2x2 ── */
+  .agent-chat-row{grid-template-columns:1fr 1fr!important;gap:8px!important;}
+  .agent-chat-card{padding:10px 10px!important;}
+  .acc-name{font-size:11px!important;}
+  .acc-role{font-size:8px!important;}
+
+  /* ── COMMAND — bottom grid 2-col → 1-col ── */
+  .bottom-grid{grid-template-columns:1fr!important;gap:12px!important;}
+
+  /* ── FLYWHEEL — horizontal scroll strip ── */
+  .flywheel-steps{
+    display:flex!important;
+    flex-direction:row!important;
+    overflow-x:auto!important;
+    -webkit-overflow-scrolling:touch!important;
+    scroll-snap-type:x mandatory!important;
+    gap:0!important;
+    scrollbar-width:none!important;
+  }
+  .flywheel-steps::-webkit-scrollbar{display:none!important;}
+  .flywheel-step{
+    min-width:100px!important;
+    flex-shrink:0!important;
+    scroll-snap-align:start!important;
+    padding:14px 8px!important;
+  }
+  .flywheel-step-label{font-size:8px!important;}
+  .flywheel-step-val{font-size:16px!important;}
+  .flywheel-step-detail{font-size:8px!important;}
+  .step-arrow{display:none!important;}
+
+  /* ── CRM — mobile: list full width, detail as overlay ── */
+  .crm-body{flex-direction:column!important;overflow:visible!important;}
+  .list-col{
+    width:100%!important;min-width:0!important;
+    border-right:none!important;border-bottom:1px solid var(--border)!important;
+    overflow:visible!important;height:auto!important;max-height:none!important;
+  }
+  .lead-list{max-height:none!important;overflow:visible!important;}
+  .detail-col{
+    width:100%!important;min-width:0!important;
+    border-left:none!important;border-top:1px solid var(--border)!important;
+    overflow:visible!important;height:auto!important;
+  }
+  .detail-placeholder{display:none!important;}
+  .d-grid{grid-template-columns:90px 1fr!important;}
+  .d-handle{font-size:18px!important;}
+  .crm-tabs{padding:0 14px!important;gap:4px!important;}
+  .stage-filters{padding:8px 14px 10px!important;}
+
+  /* ── ROI — rates grid 5-col → 2-col ── */
+  .rates-grid{grid-template-columns:1fr 1fr!important;gap:8px!important;}
+  /* Charts row 2-col → 1-col */
+  .charts-row,.chart-row,.g2{grid-template-columns:1fr!important;gap:10px!important;}
+  /* chart-card min-height + chart canvas explicit height */
+  .chart-card{min-height:200px!important;padding:14px 14px!important;}
+  .chart-wrap{min-height:160px!important;height:160px!important;}
+  .chart-wrap canvas{max-width:100%!important;}
+  /* ROI time filter row scrollable */
+  .time-filter-row,.tbar{overflow-x:auto!important;flex-wrap:nowrap!important;-webkit-overflow-scrolling:touch!important;}
+  /* ROI main must scroll, not clip */
+  .main{overflow-y:auto!important;overflow-x:hidden!important;height:auto!important;min-height:0!important;}
+  /* Funnel rows */
+  .funnel-wrap{padding:14px!important;}
+  .frow{gap:6px!important;}
+  .flbl{font-size:10px!important;min-width:70px!important;}
+  /* ROI lead donut — stack vertically on mobile */
+  #lead-legend{flex-wrap:wrap!important;gap:6px!important;}
+  [style*="display:flex"][style*="align-items:center"][style*="gap:24px"]{flex-direction:column!important;align-items:flex-start!important;}
+  /* Rate cards */
+  .rate-card{padding:12px!important;}
+  .rate-val{font-size:20px!important;}
+  .rate-lbl{font-size:8px!important;}
+  /* Time table */
+  .ttable{padding:14px!important;}
+  .trow{gap:8px!important;flex-wrap:wrap!important;}
+
+  /* ── PIPELINE — ensure board scrolls properly ── */
+  .pipe-stats{grid-template-columns:1fr 1fr!important;gap:8px!important;}
+  .pipe-stat{padding:10px 10px!important;}
+  .pipe-stat-val{font-size:20px!important;}
+
+  /* ── SECTION LABELS ── */
+  .section-label{font-size:9px!important;letter-spacing:1.5px!important;}
 }

@@ -1001,6 +1001,8 @@
       source: new URLSearchParams(window.location.search).get('ref') || 'direct'
     };
 
+    let applicationId = null;
+
     try {
       const res = await fetch(`${SUPABASE_URL}/rest/v1/applications`, {
         method: 'POST',
@@ -1008,18 +1010,42 @@
           'apikey': SUPABASE_ANON,
           'Authorization': `Bearer ${SUPABASE_ANON}`,
           'Content-Type': 'application/json',
-          'Prefer': 'return=minimal'
+          'Prefer': 'return=representation'
         },
         body: JSON.stringify(payload)
       });
 
-      if (!res.ok) {
+      if (res.ok) {
+        const rows = await res.json();
+        if (rows && rows[0]) applicationId = rows[0].id;
+      } else {
         const errBody = await res.text();
         console.error('Supabase error:', res.status, errBody);
-        // Still show success — don't block user on DB errors
       }
     } catch (e) {
       console.error('Submit error:', e);
+    }
+
+    // Trigger Forge webhook — fire and forget, non-blocking
+    if (applicationId) {
+      fetch('http://localhost:5678/webhook/forge-apply', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          application_id: applicationId,
+          name: payload.name,
+          email: payload.email,
+          instagram: payload.instagram,
+          business: payload.business,
+          revenue: payload.revenue,
+          blocker: payload.blocker,
+          other_blocker: payload.other_blocker,
+          duration: payload.duration,
+          investment: payload.investment,
+          why_now: payload.why_now,
+          source: payload.source
+        })
+      }).catch(() => {}); // silent fail — user experience not affected
     }
 
     show('screen-success');

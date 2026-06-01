@@ -153,6 +153,35 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .wf-status.off{background:rgba(255,255,255,0.15);}
 
 .card{background:var(--card);border:1px solid var(--border);border-radius:12px;}
+
+/* FLYWHEEL HEALTH */
+.flywheel-wrap{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.flywheel-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);}
+.flywheel-title{font-family:var(--font-head);font-size:13px;font-weight:900;letter-spacing:-0.2px;}
+.flywheel-sub{font-family:var(--font-data);font-size:10px;color:var(--text-dim);margin-top:2px;}
+.flywheel-steps{display:grid;grid-template-columns:repeat(6,1fr);gap:0;}
+.flywheel-step{display:flex;flex-direction:column;align-items:center;padding:16px 8px;position:relative;border-right:1px solid var(--border);}
+.flywheel-step:last-child{border-right:none;}
+.flywheel-step-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:8px;position:relative;}
+.flywheel-step-icon svg{width:16px;height:16px;}
+.flywheel-step-label{font-family:var(--font-data);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);text-align:center;margin-bottom:4px;}
+.flywheel-step-val{font-family:var(--font-head);font-size:18px;font-weight:900;letter-spacing:-0.5px;line-height:1;text-align:center;}
+.flywheel-step-detail{font-family:var(--font-data);font-size:9px;color:var(--text-dim);text-align:center;margin-top:3px;}
+.step-arrow{position:absolute;right:-7px;top:50%;transform:translateY(-50%);z-index:2;color:var(--text-dim);font-size:10px;line-height:1;}
+.fw-green{color:var(--green);}
+.fw-yellow{color:var(--yellow);}
+.fw-red{color:var(--red);}
+.fw-blue{color:var(--accent);}
+.fw-purple{color:#a78bfa;}
+.fw-orange{color:#fb923c;}
+.fw-icon-green{background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.2);}
+.fw-icon-yellow{background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.2);}
+.fw-icon-red{background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.2);}
+.fw-icon-blue{background:rgba(79,195,247,0.1);border:1px solid rgba(79,195,247,0.2);}
+.fw-icon-purple{background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.2);}
+.fw-icon-orange{background:rgba(251,146,60,0.1);border:1px solid rgba(251,146,60,0.2);}
+.fw-blocker{display:inline-flex;align-items:center;gap:3px;font-family:var(--font-data);font-size:8px;font-weight:700;padding:2px 6px;border-radius:6px;background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.2);color:var(--red);margin-top:4px;text-transform:uppercase;letter-spacing:0.3px;}
+.fw-ok{display:inline-flex;align-items:center;gap:3px;font-family:var(--font-data);font-size:8px;font-weight:700;padding:2px 6px;border-radius:6px;background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.18);color:var(--green);margin-top:4px;text-transform:uppercase;letter-spacing:0.3px;}
 </style>
 <link rel="stylesheet" href="/dashboard/mobile.css?v=8">
 <link rel="manifest" href="/manifest.json">
@@ -229,6 +258,92 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
         <div class="stat-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>DMs Sent</div>
         <div class="stat-val" id="cc-dms">—</div>
         <div class="stat-sub">This week</div>
+      </div>
+    </div>
+
+    <!-- FLYWHEEL HEALTH -->
+    <div class="section-label">Flywheel Health</div>
+    <div class="flywheel-wrap">
+      <div class="flywheel-header">
+        <div>
+          <div class="flywheel-title">Content → Lead → Client</div>
+          <div class="flywheel-sub">Each step pulls from Supabase. Red = blocker. Green = flowing.</div>
+        </div>
+        <div id="fw-last-updated" style="font-family:var(--font-data);font-size:10px;color:var(--text-dim);"></div>
+      </div>
+      <div class="flywheel-steps">
+
+        <!-- Step 1: Research -->
+        <div class="flywheel-step">
+          <div class="flywheel-step-icon fw-icon-blue" id="fw-icon-1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#4FC3F7" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          </div>
+          <div class="flywheel-step-label">Research</div>
+          <div class="flywheel-step-val fw-blue" id="fw-val-1">—</div>
+          <div class="flywheel-step-detail" id="fw-detail-1">AI news items</div>
+          <div id="fw-badge-1"></div>
+          <div class="step-arrow">›</div>
+        </div>
+
+        <!-- Step 2: Scripts -->
+        <div class="flywheel-step">
+          <div class="flywheel-step-icon fw-icon-yellow" id="fw-icon-2">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="1.8"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg>
+          </div>
+          <div class="flywheel-step-label">Scripts</div>
+          <div class="flywheel-step-val fw-yellow" id="fw-val-2">—</div>
+          <div class="flywheel-step-detail" id="fw-detail-2">Ready to film</div>
+          <div id="fw-badge-2"></div>
+          <div class="step-arrow">›</div>
+        </div>
+
+        <!-- Step 3: Posted -->
+        <div class="flywheel-step">
+          <div class="flywheel-step-icon fw-icon-green" id="fw-icon-3">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="1.8"><rect x="2" y="2" width="4" height="20" rx="1"/><rect x="10" y="8" width="4" height="14" rx="1"/><rect x="18" y="4" width="4" height="18" rx="1"/></svg>
+          </div>
+          <div class="flywheel-step-label">Posted</div>
+          <div class="flywheel-step-val fw-green" id="fw-val-3">—</div>
+          <div class="flywheel-step-detail" id="fw-detail-3">Published reels</div>
+          <div id="fw-badge-3"></div>
+          <div class="step-arrow">›</div>
+        </div>
+
+        <!-- Step 4: Leads -->
+        <div class="flywheel-step">
+          <div class="flywheel-step-icon fw-icon-purple" id="fw-icon-4">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div class="flywheel-step-label">Leads</div>
+          <div class="flywheel-step-val fw-purple" id="fw-val-4">—</div>
+          <div class="flywheel-step-detail" id="fw-detail-4">Active in CRM</div>
+          <div id="fw-badge-4"></div>
+          <div class="step-arrow">›</div>
+        </div>
+
+        <!-- Step 5: Calls -->
+        <div class="flywheel-step">
+          <div class="flywheel-step-icon fw-icon-orange" id="fw-icon-5">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fb923c" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.74 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.66 2h3a2 2 0 0 1 2 1.72"/></svg>
+          </div>
+          <div class="flywheel-step-label">Calls</div>
+          <div class="flywheel-step-val fw-orange" id="fw-val-5">—</div>
+          <div class="flywheel-step-detail" id="fw-detail-5">Booked this week</div>
+          <div id="fw-badge-5"></div>
+          <div class="step-arrow">›</div>
+        </div>
+
+        <!-- Step 6: Clients -->
+        <div class="flywheel-step">
+          <div class="flywheel-step-icon fw-icon-green" id="fw-icon-6">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="1.8"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <div class="flywheel-step-label">Clients</div>
+          <div class="flywheel-step-val fw-green" id="fw-val-6">—</div>
+          <div class="flywheel-step-detail" id="fw-detail-6">Active clients</div>
+          <div id="fw-badge-6"></div>
+        </div>
+
       </div>
     </div>
 
@@ -498,6 +613,74 @@ function formatTime(ts) {
   return d.toLocaleDateString('en',{month:'short',day:'numeric'});
 }
 
+// FLYWHEEL HEALTH
+async function renderFlywheel() {
+  try {
+    const sess = JSON.parse(localStorage.getItem('sb_session') || '{}');
+    const url = sess.client_supabase_url || 'https://cscfbuhwlfhblxprkwnh.supabase.co';
+    const anon = sess.client_supabase_anon || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
+    const hdrs = { 'apikey': anon, 'Authorization': 'Bearer ' + (sess.access_token || anon) };
+
+    const weekAgo = new Date(Date.now() - 7*24*60*60*1000).toISOString();
+
+    const [newsRes, scriptsRes, publishedRes, leadsRes, callsRes, clientsRes] = await Promise.all([
+      fetch(`${url}/rest/v1/ai_news?select=id&order=created_at.desc&limit=1`, { headers: hdrs }),
+      fetch(`${url}/rest/v1/agent_items?select=id&status=eq.scripting`, { headers: hdrs }),
+      fetch(`${url}/rest/v1/agent_items?select=id&status=eq.published&updated_at=gte.${weekAgo}`, { headers: hdrs }),
+      fetch(`${url}/rest/v1/outreach_leads?select=id,stage&stage=gte.1&stage=lte.5`, { headers: hdrs }),
+      fetch(`${url}/rest/v1/outreach_leads?select=id,stage&stage=eq.6`, { headers: hdrs }),
+      fetch(`${url}/rest/v1/clients?select=id,phase&phase=neq.Churned`, { headers: hdrs }),
+    ]);
+
+    // Step 1: Research (ai_news count)
+    let newsCount = 0;
+    if (newsRes.ok) {
+      const hdrs2 = { ...hdrs, 'Prefer': 'count=exact', 'Range': '0-0' };
+      const r2 = await fetch(`${url}/rest/v1/ai_news?select=id`, { headers: { ...hdrs, 'Prefer': 'count=exact', 'Range': '0-0' } });
+      const range = r2.headers.get('content-range');
+      newsCount = range ? parseInt(range.split('/')[1]) || 0 : 0;
+    }
+    setFwStep(1, newsCount, 'AI news items', newsCount > 0);
+
+    // Step 2: Scripts to film
+    const scripts = scriptsRes.ok ? (await scriptsRes.json()).length : 0;
+    setFwStep(2, scripts, 'Ready to film', scripts > 0);
+
+    // Step 3: Published this week
+    const posted = publishedRes.ok ? (await publishedRes.json()).length : 0;
+    setFwStep(3, posted, 'This week', posted >= 3);
+
+    // Step 4: Active leads
+    const leads = leadsRes.ok ? (await leadsRes.json()).length : 0;
+    setFwStep(4, leads, 'Active in CRM', leads > 0);
+
+    // Step 5: Calls booked
+    const calls = callsRes.ok ? (await callsRes.json()).length : 0;
+    setFwStep(5, calls, 'Booked', calls > 0);
+
+    // Step 6: Active clients
+    const clients = clientsRes.ok ? (await clientsRes.json()).length : 0;
+    setFwStep(6, clients, 'Active clients', clients > 0);
+
+    document.getElementById('fw-last-updated').textContent = 'Updated ' + new Date().toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit'});
+  } catch(e) {
+    console.warn('Flywheel load error', e);
+  }
+}
+
+function setFwStep(n, val, detail, healthy) {
+  const valEl = document.getElementById('fw-val-' + n);
+  const detEl = document.getElementById('fw-detail-' + n);
+  const badgeEl = document.getElementById('fw-badge-' + n);
+  if (valEl) valEl.textContent = val;
+  if (detEl) detEl.textContent = detail;
+  if (badgeEl) {
+    badgeEl.innerHTML = healthy
+      ? '<span class="fw-ok">OK</span>'
+      : '<span class="fw-blocker">Blocker</span>';
+  }
+}
+
 // INIT
 function init() {
   renderSidebarAgents();
@@ -506,12 +689,14 @@ function init() {
   renderNeedsReview();
   renderTaskLog();
   renderWorkflows();
-  // Refresh agent status every 5s
+  renderFlywheel();
+  // Refresh agent status every 5s, flywheel every 60s
   setInterval(() => {
     renderSidebarAgents();
     renderAgentChatGrid();
     renderTaskLog();
   }, 5000);
+  setInterval(renderFlywheel, 60000);
 }
 
 document.addEventListener('DOMContentLoaded', init);

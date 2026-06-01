@@ -1,0 +1,130 @@
+{
+  "name": "Workflow 3 — DM Lead Tracker (Outreach → Booking)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "workflow3-update-lead",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "wf3-webhook",
+      "name": "Webhook — Update Lead Stage",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 300],
+      "notes": "POST body: { lead_id, stage, note? }\nStages: 0=identified, 1=dm_sent, 2=dm_replied, 3=form_sent, 4=form_filled, 5=call_booked, 6=call_completed, 7=closed, 8=lost"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $input.first().json.body || $input.first().json;\nconst stage = parseInt(body.stage);\nconst lead_id = body.lead_id;\n\nif (!lead_id || isNaN(stage)) {\n  throw new Error('Missing lead_id or stage in request body');\n}\n\nconst stageFields = {\n  1: { dm_sent_at: new Date().toISOString() },\n  2: { dm_replied_at: new Date().toISOString() },\n  3: { form_sent_at: new Date().toISOString() },\n  4: { form_filled_at: new Date().toISOString() },\n  5: { call_booked_at: new Date().toISOString() },\n  6: { call_outcome: body.call_outcome || null },\n  7: { call_outcome: 'closed' },\n  8: { call_outcome: 'lost' },\n};\n\nconst patch = {\n  stage,\n  stage_updated_at: new Date().toISOString(),\n  ...(body.notes ? { notes: body.notes } : {}),\n  ...(stageFields[stage] || {})\n};\n\nreturn [{ json: { lead_id, patch } }];"
+      },
+      "id": "wf3-build-patch",
+      "name": "Build Supabase Patch",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [440, 300]
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://cscfbuhwlfhblxprkwnh.supabase.co/rest/v1/outreach_leads?id=eq.{{ $json.lead_id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8" },
+            { "name": "Authorization", "value": "Bearer sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8" },
+            { "name": "Content-Type", "value": "application/json" },
+            { "name": "Prefer", "value": "return=minimal" }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "body", "value": "={{ JSON.stringify($json.patch) }}" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "wf3-supabase-patch",
+      "name": "Patch Lead in Supabase",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            { "value1": "={{ $('wf3-build-patch').item.json.patch.stage }}", "operation": "equal", "value2": 5 }
+          ]
+        }
+      },
+      "id": "wf3-check-call-booked",
+      "name": "Is Call Booked?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [920, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.telegram.org/bot{{ $env.TELEGRAM_BOT_TOKEN }}/sendMessage",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "chat_id", "value": "={{ $env.TELEGRAM_CHAT_ID }}" },
+            {
+              "name": "text",
+              "value": "=📞 *Call Booked!*\n\nLead ID: `{{ $('wf3-build-patch').item.json.lead_id }}`\nStage: Call Booked (5)\nTime: {{ new Date().toLocaleString('en-PH', {timeZone:'Asia/Manila'}) }}\n\nCheck CRM → https://inboundos.vercel.app/micko-cruz/crm"
+            },
+            { "name": "parse_mode", "value": "Markdown" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "wf3-telegram-call-booked",
+      "name": "Telegram — Call Booked Alert",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1160, 200]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"success\": true, \"stage\": {{ $('wf3-build-patch').item.json.patch.stage }} }"
+      },
+      "id": "wf3-respond",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1160, 400]
+    }
+  ],
+  "connections": {
+    "Webhook — Update Lead Stage": {
+      "main": [[{ "node": "Build Supabase Patch", "type": "main", "index": 0 }]]
+    },
+    "Build Supabase Patch": {
+      "main": [[{ "node": "Patch Lead in Supabase", "type": "main", "index": 0 }]]
+    },
+    "Patch Lead in Supabase": {
+      "main": [[{ "node": "Is Call Booked?", "type": "main", "index": 0 }]]
+    },
+    "Is Call Booked?": {
+      "main": [
+        [{ "node": "Telegram — Call Booked Alert", "type": "main", "index": 0 }],
+        [{ "node": "Respond to Webhook", "type": "main", "index": 0 }]
+      ]
+    },
+    "Telegram — Call Booked Alert": {
+      "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "description": "Workflow 3 — DM Lead Tracker. Webhook POST to /workflow3-update-lead with { lead_id, stage, note?, call_outcome? }. Updates outreach_leads stage in Supabase. Fires Telegram alert when call is booked (stage=5). Stage map: 0=identified, 1=dm_sent, 2=dm_replied, 3=form_sent, 4=form_filled, 5=call_booked, 6=call_completed, 7=closed, 8=lost."
+  }
+}

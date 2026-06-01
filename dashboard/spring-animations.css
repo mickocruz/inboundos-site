@@ -1,5 +1,13 @@
 /* ── Spring Animations — shared across all dashboard pages ── */
 
+/* On mobile: skip animation, show all cards immediately */
+@media(max-width:768px){
+  .card,.cs-card,.client-profile,.checklist-panel,.agent-card,.ops-card,
+  .ov-card,.insight-card,.reel-card,.stat-card,.kcard,.sop-card,.swipe-card{
+    opacity:1!important;transform:none!important;
+  }
+}
+
 /* Stagger entrance targets */
 .card,
 .cs-card,

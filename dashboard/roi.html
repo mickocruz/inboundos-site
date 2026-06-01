@@ -19,6 +19,13 @@
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font-data);font-size:14px;overflow:hidden;}
+@media(max-width:768px){
+  html,body{height:auto!important;overflow:auto!important;overflow-x:hidden!important;}
+  .layout{height:auto!important;min-height:100vh!important;flex-direction:column!important;}
+  .main{overflow:visible!important;height:auto!important;padding:14px 14px 80px!important;}
+  .chart-wrap{min-height:160px!important;height:160px!important;position:relative!important;}
+  canvas{max-width:100%!important;}
+}
 @media(max-width:900px){html,body{height:auto!important;overflow:auto!important;}.layout{height:auto!important;min-height:100vh;}.main{overflow:visible!important;height:auto!important;}}
 body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 55% at 50% -5%,rgba(79,195,247,0.07) 0%,transparent 65%),radial-gradient(ellipse 45% 50% at 95% 15%,rgba(79,195,247,0.04) 0%,transparent 55%);pointer-events:none;z-index:0;}
 .layout{display:flex;height:100vh;position:relative;z-index:1;}
@@ -715,8 +722,15 @@ function buildRevenueChart(calls) {
 loadAll().then(() => {
   const obs = new IntersectionObserver((entries) => {
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('s-visible'); obs.unobserve(e.target); } });
-  }, { threshold: 0.05 });
+  }, { threshold: 0.01, rootMargin: '0px 0px 100px 0px' });
   document.querySelectorAll('.card').forEach(c => obs.observe(c));
+
+  // On mobile, Chart.js renders before CSS reflow — force resize after layout settles
+  if (window.innerWidth <= 768) {
+    setTimeout(() => {
+      [chartActivity, chartLeads, chartRevenue].forEach(c => { if (c) c.resize(); });
+    }, 300);
+  }
 });
 </script>
   <script>if("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js");</script>

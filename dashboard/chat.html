@@ -388,9 +388,10 @@ async function sendMessage(agent) {
   const abortTimer = setTimeout(() => abortCtrlMap[agent].abort(), 30000);
 
   try {
+    const _sess = JSON.parse(localStorage.getItem('sb_session') || '{}');
     const res = await fetch('/api/agent/chat', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + (_sess.access_token || '') },
       body: JSON.stringify({ agent, messages: histories[agent].slice(-20) }),
       signal: abortCtrlMap[agent].signal,
     });
@@ -468,7 +469,8 @@ async function openSkillModal(agent) {
   document.getElementById('skillModal').classList.add('open');
 
   try {
-    const res = await fetch(`/api/agent/skill/${agent.toLowerCase()}`);
+    const _sess2 = JSON.parse(localStorage.getItem('sb_session') || '{}');
+    const res = await fetch(`/api/agent/skill/${agent.toLowerCase()}`, { headers: { 'Authorization': 'Bearer ' + (_sess2.access_token || '') } });
     if (!res.ok) throw new Error('Failed to load skill');
     const text = await res.text();
     document.getElementById('skillTextarea').value = text;
@@ -492,9 +494,10 @@ async function saveSkill() {
   document.getElementById('modalStatus').textContent = 'Saving…';
 
   try {
+    const _sess3 = JSON.parse(localStorage.getItem('sb_session') || '{}');
     const res = await fetch(`/api/agent/skill/${currentSkillAgent.toLowerCase()}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
+      headers: { 'Content-Type': 'text/plain', 'Authorization': 'Bearer ' + (_sess3.access_token || '') },
       body: content,
     });
     if (!res.ok) throw new Error('Save failed');
@@ -673,9 +676,10 @@ function cancelStream(agent) {
 <script>
 // Check if chat is available (API key set)
 (function() {
+  const _sessCheck = JSON.parse(localStorage.getItem('sb_session') || '{}');
   fetch('/api/agent/chat', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + (_sessCheck.access_token || '') },
     body: JSON.stringify({ agent: '_check', messages: [] }),
   }).then(res => res.json()).then(data => {
     if (data.error === 'NO_API_KEY') {

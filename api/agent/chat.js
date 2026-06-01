@@ -26,9 +26,32 @@ async function getSkill(agent) {
   } catch { return null; }
 }
 
+function verifySession(req) {
+  const auth = req.headers['authorization'] || '';
+  const token = auth.startsWith('Bearer ') ? auth.slice(7) : null;
+  if (!token) return false;
+  try {
+    const parts = token.split('.');
+    if (parts.length !== 3) return false;
+    const payload = JSON.parse(Buffer.from(parts[1], 'base64url').toString());
+    if (!payload.sub) return false;
+    if (payload.exp && payload.exp * 1000 < Date.now()) return false;
+    return true;
+  } catch { return false; }
+}
+
 export default async function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', 'https://inboundos.vercel.app');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  if (req.method === 'OPTIONS') return res.status(204).end();
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  if (!verifySession(req)) {
+    return res.status(401).json({ error: 'Unauthorized' });
   }
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -56,7 +79,6 @@ export default async function handler(req, res) {
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection', 'keep-alive');
-  res.setHeader('Access-Control-Allow-Origin', '*');
 
   try {
     const stream = await anthropic.messages.stream({

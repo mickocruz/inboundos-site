@@ -117,8 +117,7 @@ input:focus{border-color:rgba(79,195,247,0.4);}
 
 <script>
 // ── ADMIN GATE ────────────────────────────────────────────────
-// Simple local password — keeps randos out, not Fort Knox
-const ADMIN_PW = '@1nb0und0$!';
+// Password checked server-side — never exposed in source code
 
 function togglePw(id, btn) {
   const inp = document.getElementById(id);
@@ -129,13 +128,24 @@ function togglePw(id, btn) {
     : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
 }
 
-function checkGate() {
+async function checkGate() {
   const pw = document.getElementById('gate-pw').value;
-  if (pw === ADMIN_PW) {
-    document.getElementById('gate').style.display = 'none';
-    document.getElementById('main').style.display = 'block';
-  } else {
-    document.getElementById('gate-err').style.display = 'block';
+  const errEl = document.getElementById('gate-err');
+  errEl.style.display = 'none';
+  try {
+    const res = await fetch('/api/admin/verify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: pw }),
+    });
+    if (res.ok) {
+      document.getElementById('gate').style.display = 'none';
+      document.getElementById('main').style.display = 'block';
+    } else {
+      errEl.style.display = 'block';
+    }
+  } catch {
+    errEl.style.display = 'block';
   }
 }
 document.getElementById('gate-pw').addEventListener('keydown', e => { if (e.key === 'Enter') checkGate(); });

@@ -121,7 +121,8 @@ async function login() {
 
     const params = new URLSearchParams(window.location.search);
     const from = params.get('from');
-    window.location.href = from || '/' + data.client_slug + '/dashboard';
+    const safeTo = (from && from.startsWith('/') && !from.startsWith('//')) ? from : '/' + data.client_slug + '/dashboard';
+    window.location.href = safeTo;
   } catch (e) {
     err.style.display = 'block';
     err.textContent = 'Network error. Try again.';

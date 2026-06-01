@@ -325,7 +325,8 @@ function renderTable(rows, cols) {
       if (typeof v === 'string' && (c.includes('_at') || c === 'client_since')) {
         try { v = new Date(v).toLocaleDateString('en', {month:'short', day:'numeric', year:'numeric'}); } catch(e){}
       }
-      return '<td title="' + String(v).replace(/"/g,'&quot;') + '">' + (v === '' ? '<span style="color:var(--text-dim);">—</span>' : v) + '</td>';
+      var safe = String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+      return '<td title="' + safe + '">' + (v === '' ? '<span style="color:var(--text-dim);">—</span>' : safe) + '</td>';
     }).join('') + '</tr>';
   });
   html += '</tbody></table>';

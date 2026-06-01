@@ -155,7 +155,7 @@ async function saveToSupabase(lead) {
 }
 
 const server = http.createServer(async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', 'https://inboundos.vercel.app');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
@@ -219,7 +219,7 @@ const server = http.createServer(async (req, res) => {
   res.end(JSON.stringify({ results }));
 });
 
-server.listen(PORT, () => {
+server.listen(PORT, '127.0.0.1', () => {
   console.log(`\n✓ InboundOS Qualify Server running at http://localhost:${PORT}`);
   console.log(`  POST /qualify  — { images: ["data:image/jpeg;base64,..."] }`);
   console.log(`  Skill: ${SKILL_PATH}`);

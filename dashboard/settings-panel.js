@@ -82,7 +82,10 @@
 
   async function fetchProfile() {
     try {
-      const res = await fetch(`${SB_URL}/rest/v1/ctrl_users?select=id,username,full_name,role,avatar_url&limit=1`, { headers: authHeaders() });
+      const session = JSON.parse(localStorage.getItem('sb_session') || '{}');
+      const userId = session.client_id;
+      if (!userId) return null;
+      const res = await fetch(`${SB_URL}/rest/v1/ctrl_users?select=id,username,full_name,role,avatar_url&client_id=eq.${encodeURIComponent(userId)}&limit=1`, { headers: authHeaders() });
       if (!res.ok) throw new Error();
       const rows = await res.json();
       return rows[0] || null;
@@ -90,6 +93,9 @@
   }
 
   async function saveProfile(id, data) {
+    const session = JSON.parse(localStorage.getItem('sb_session') || '{}');
+    const userId = session.client_id;
+    if (!userId || String(id) !== String(userId)) return;
     await fetch(`${SB_URL}/rest/v1/ctrl_users?id=eq.${id}`, {
       method: 'PATCH',
       headers: { ...authHeaders(), 'Prefer': 'return=minimal' },

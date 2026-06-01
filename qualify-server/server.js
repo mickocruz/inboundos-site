@@ -41,8 +41,8 @@ Output ONLY valid JSON with this exact structure:
   "qualifier": "hot or warm or cold",
   "disqualified": false,
   "disqualify_reason": null,
-  "opener_text": "the Stage 1 DM opener — all lowercase, 1-2 sentences, one specific detail from profile",
-  "notes": "the specific profile detail you used to personalize — prioritize story highlights or link in bio over generic bio text"
+  "opener_text": "the Stage 1 cold DM opener — follow this exact format: 'hey [first name], i love your content — [1 specific personalized detail from their profile: a stat, achievement, niche angle, or something unique you noticed]. [smooth transition phrase — vary between: 'i did notice X though,', 'only thing is i noticed X,', 'one thing i did notice though, X'] you haven't been posting consistently, so i went ahead and built an AI scriptwriter trained for [their niche] — hooks, frameworks, anti-AI vocab & all that, what's a good email i can send it to?' — all lowercase, casual, never start a sentence with I except after a comma, personalized detail must be specific not generic",
+  "notes": "the specific profile detail you used to personalize — must be verifiable from the screenshot: a stat, years of experience, press mention, client result, unique positioning, or specific content angle. never use 'great content' or generic compliments"
 }
 
 Qualifier (based on business signal, NOT follower count):

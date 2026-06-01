@@ -222,6 +222,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
       <div class="header-right">
         <div class="pill pill-warn" id="followup-pill" style="display:none"></div>
         <div class="pill pill-upload" onclick="openUpload()">+ Add Lead</div>
+        <div class="pill" id="revise-openers-btn" onclick="reviseAllOpeners()" title="Regenerate all openers using the latest DM formula">↺ Revise Openers</div>
         <div class="pill" onclick="loadLeads()">↻ Refresh</div>
       </div>
     </div>
@@ -450,6 +451,82 @@ function copyOpener(btn, encoded) {
 }
 
 loadLeads();
+
+// ── REVISE ALL OPENERS ──────────────────────────────────────────
+async function reviseAllOpeners() {
+  const btn = document.getElementById('revise-openers-btn');
+
+  // Check qualify server
+  try {
+    await fetch('http://localhost:3001/qualify', { method: 'OPTIONS', signal: AbortSignal.timeout(3000) });
+  } catch(e) {
+    alert('Qualify server not running.\n\nRun: node qualify-server/server.js\n\nThen try again.');
+    return;
+  }
+
+  const qualified = leads.filter(l => !l.disqualified && l.qualifier !== 'cold' && l.stage <= 1);
+  if (!qualified.length) { alert('No leads to revise (only updates Fresh Lead / Opener Sent stages).'); return; }
+
+  if (!confirm(`Revise openers for ${qualified.length} lead(s) using the new DM formula?\n\nThis rewrites opener_text for all Fresh Lead + Opener Sent stage leads.`)) return;
+
+  btn.textContent = `↺ Revising 0/${qualified.length}…`;
+  btn.style.pointerEvents = 'none';
+  btn.style.opacity = '0.5';
+
+  const OPENER_FORMULA = (l) => {
+    const name = (l.full_name || l.ig_handle || '').split(' ')[0].toLowerCase() || 'there';
+    const niche = l.niche || 'your niche';
+    const detail = l.notes || '';
+    const transitions = [
+      "i did notice you haven't been posting consistently though,",
+      "only thing is i noticed you haven't been posting consistently,",
+      "one thing i did notice though, you haven't been posting consistently,",
+      "i did notice the posting's been inconsistent though,",
+    ];
+    const t = transitions[Math.floor(Math.random() * transitions.length)];
+    const detailLine = detail ? ` — ${detail}.` : '.';
+    return `hey ${name}, i love your content${detailLine} ${t} so i went ahead and built an AI scriptwriter trained for ${niche} — hooks, frameworks, anti-AI vocab & all that, what's a good email i can send it to?`;
+  };
+
+  let done = 0;
+  const sess = JSON.parse(localStorage.getItem('sb_session') || '{}');
+  const url = sess.client_supabase_url || 'https://cscfbuhwlfhblxprkwnh.supabase.co';
+  const anon = sess.client_supabase_anon || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
+
+  for (const l of qualified) {
+    const newOpener = OPENER_FORMULA(l);
+    try {
+      await fetch(`${url}/rest/v1/outreach_leads?id=eq.${l.id}`, {
+        method: 'PATCH',
+        headers: {
+          'apikey': anon,
+          'Authorization': 'Bearer ' + (sess.access_token || anon),
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({ opener_text: newOpener })
+      });
+      l.opener_text = newOpener;
+      done++;
+      btn.textContent = `↺ Revising ${done}/${qualified.length}…`;
+    } catch(e) {
+      console.warn('Failed to revise opener for', l.ig_handle, e);
+    }
+  }
+
+  btn.textContent = `✓ ${done} Revised`;
+  btn.style.opacity = '1';
+  setTimeout(() => {
+    btn.textContent = '↺ Revise Openers';
+    btn.style.pointerEvents = '';
+  }, 3000);
+
+  // Re-render current detail if selected lead was revised
+  if (selId) {
+    const updated = leads.find(l => l.id === selId);
+    if (updated) renderDetail(updated);
+  }
+}
 
 // Auto-open Add Lead modal if redirected from Echo
 if (new URLSearchParams(window.location.search).get('addlead') === '1') {

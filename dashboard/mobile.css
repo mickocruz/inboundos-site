@@ -311,10 +311,14 @@
   .lead-list{max-height:none!important;overflow:visible!important;}
   .detail-col{
     width:100%!important;min-width:0!important;
-    border-left:none!important;border-top:1px solid var(--border)!important;
-    overflow:visible!important;height:auto!important;
+    border-left:none!important;border-top:1px solid rgba(255,255,255,0.07)!important;
+    overflow:visible!important;height:auto!important;min-height:40px!important;
   }
   .detail-placeholder{display:none!important;}
+  .detail-inner{padding:16px 14px!important;}
+  .d-head{flex-direction:column!important;gap:8px!important;align-items:flex-start!important;}
+  .opener-box{font-size:13px!important;line-height:1.6!important;padding-bottom:36px!important;}
+  .opener-copy{top:auto!important;bottom:8px!important;}
   .d-grid{grid-template-columns:90px 1fr!important;}
   .d-handle{font-size:18px!important;}
   .crm-tabs{padding:0 14px!important;gap:4px!important;}

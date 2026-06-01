@@ -168,7 +168,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 </style>
 <style>:root{--font-body:'DM Sans',sans-serif;}html,body{font-family:'DM Sans',sans-serif!important;}</style>
 <link rel="stylesheet" href="/dashboard/spring-animations.css"/>
-<link rel="stylesheet" href="/dashboard/mobile.css?v=9"/>
+<link rel="stylesheet" href="/dashboard/mobile.css?v=10"/>
 <link rel="stylesheet" href="/dashboard/settings-panel.css"/>
 <script src="/dashboard/settings-panel.js"></script>
   <link rel="manifest" href="/manifest.json">
@@ -370,7 +370,13 @@ function renderList(){
   }).join('');
 }
 
-function selectLead(id){selId=id;renderList();renderDetail(leads.find(l=>l.id===id));}
+function selectLead(id){
+  selId=id;renderList();renderDetail(leads.find(l=>l.id===id));
+  if(window.innerWidth<=768){
+    const col=document.getElementById('detail-col');
+    if(col) setTimeout(()=>col.scrollIntoView({behavior:'smooth',block:'start'}),50);
+  }
+}
 
 function renderDetail(l){
   const col=document.getElementById('detail-col');

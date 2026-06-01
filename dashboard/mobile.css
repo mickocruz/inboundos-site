@@ -301,6 +301,14 @@
   .flywheel-step-detail{font-size:8px!important;}
   .step-arrow{display:none!important;}
 
+  /* ── CRM — page header compact ── */
+  .page-header{padding:14px 14px 10px!important;flex-wrap:nowrap!important;gap:10px!important;align-items:flex-start!important;}
+  .page-header h1{font-size:22px!important;}
+  .page-header .sub{font-size:10px!important;}
+  .header-right{flex-direction:column!important;gap:6px!important;align-items:flex-end!important;flex-shrink:0!important;}
+  .pill{padding:7px 14px!important;font-size:12px!important;font-weight:600!important;border-radius:10px!important;white-space:nowrap!important;}
+  .pill-upload{background:rgba(79,195,247,0.12)!important;}
+
   /* ── CRM — mobile: list full width, detail as overlay ── */
   .crm-body{flex-direction:column!important;overflow:visible!important;}
   .list-col{

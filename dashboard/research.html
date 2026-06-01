@@ -65,7 +65,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .section-label::after{content:'';flex:1;height:1px;background:var(--border);}
 
 
-/* ── PAGE-SPECIFIC ── */
+/*  PAGE-SPECIFIC  */
 /* Competitor Cards */
 .competitor-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
 .comp-card{padding:16px;}
@@ -189,7 +189,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 
 
 
-/* ── FONT SCALE + FONT FIX ── */
+/*  FONT SCALE + FONT FIX  */
 /* Titles: NHGrotesk — already set. Body: DM Sans — already set. Sidebar/titles: original. */
 /* Only boost main content body text */
 
@@ -269,12 +269,12 @@ html,body{font-family:'DM Sans',sans-serif!important;}
       <button class="swipe-filter" data-stage="TOFU">TOFU</button>
       <button class="swipe-filter" data-stage="MOFU">MOFU</button>
       <button class="swipe-filter" data-stage="BOFU">BOFU</button>
-      <button class="swipe-filter" data-steal="true">⭐ Steal-Worthy</button>
+      <button class="swipe-filter" data-steal="true"> Steal-Worthy</button>
     </div>
     <div style="display:flex;gap:6px;margin-left:auto;" id="swipeSortBtns">
-      <button class="swipe-filter active" data-sort="views">👁 Views</button>
-      <button class="swipe-filter" data-sort="likes">❤️ Likes</button>
-      <button class="swipe-filter" data-sort="comments">💬 Comments</button>
+      <button class="swipe-filter active" data-sort="views"> Views</button>
+      <button class="swipe-filter" data-sort="likes"> Likes</button>
+      <button class="swipe-filter" data-sort="comments"> Comments</button>
     </div>
     </div>
     <div id="swipeGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;"></div>
@@ -287,7 +287,7 @@ html,body{font-family:'DM Sans',sans-serif!important;}
     </div>
     <div class="hook-search-wrap">
       <input class="hook-search" id="hookSearch" type="text" placeholder="Search 1,000+ hooks…" oninput="hookSearchDebounce()">
-      <button class="hook-page-btn" onclick="hookRandomize()" style="white-space:nowrap;">⚡ Random 30</button>
+      <button class="hook-page-btn" onclick="hookRandomize()" style="white-space:nowrap;"> Random 30</button>
     </div>
     <div class="hook-grid" id="hookGrid"></div>
     <div class="hook-pagination" id="hookPagination"></div>
@@ -299,7 +299,7 @@ html,body{font-family:'DM Sans',sans-serif!important;}
 <div class="swipe-modal-overlay" id="swipeModalOverlay" onclick="if(event.target===this)closeSwipeModal()">
   <div class="swipe-modal-box" id="swipeModalBox">
     <div class="swipe-modal-embed" id="swipeModalEmbed">
-      <button class="swipe-modal-close" onclick="closeSwipeModal()">✕</button>
+      <button class="swipe-modal-close" onclick="closeSwipeModal()"></button>
     </div>
     <div class="swipe-modal-info">
       <div class="swipe-modal-hook" id="swipeModalHook"></div>
@@ -316,7 +316,7 @@ html,body{font-family:'DM Sans',sans-serif!important;}
   <div style="background:#0f1824;border:1px solid rgba(79,195,247,0.28);border-radius:16px;width:400px;max-width:calc(100vw - 40px);padding:24px;box-shadow:0 0 60px rgba(79,195,247,0.1),0 24px 60px rgba(0,0,0,0.6);transform:translateY(12px);transition:transform 0.2s;" id="compEditorBox">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
       <div style="font-family:var(--font-head);font-size:14px;font-weight:900;letter-spacing:-0.3px;">Edit <span style="color:var(--accent);">Competitors</span></div>
-      <button onclick="closeCompetitorEditor()" style="background:none;border:none;color:var(--text-muted);font-size:18px;cursor:pointer;padding:2px 6px;border-radius:4px;line-height:1;">✕</button>
+      <button onclick="closeCompetitorEditor()" style="background:none;border:none;color:var(--text-muted);font-size:18px;cursor:pointer;padding:2px 6px;border-radius:4px;line-height:1;"></button>
     </div>
     <div style="font-family:var(--font-head);font-size:8.5px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">Current Handles</div>
     <div id="compHandleList" style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px;max-height:200px;overflow-y:auto;"></div>
@@ -337,7 +337,7 @@ const COMP_CACHE = 'ctrl_competitors_v1';
 const DEFAULT_HANDLES = ['chriswesst', 'innovalos', 'chatto.gpt'];
 function proxyImg(url) { return url ? `${PROXY}/proxy-image?url=${encodeURIComponent(url)}` : ''; }
 const AVATAR_STYLES = ['background:rgba(79,195,247,0.1);','background:rgba(251,191,36,0.1);','background:rgba(74,222,128,0.1);','background:rgba(167,139,250,0.1);','background:rgba(248,113,113,0.1);'];
-const AVATAR_EMOJIS = ['🏔️','⚡','🎯','🔥','💎'];
+const AVATAR_EMOJIS = ['','','','',''];
 let _compHandles = [...DEFAULT_HANDLES];
 
 function fmtNum(n) {
@@ -401,7 +401,7 @@ function applyCompetitorData(profiles, latestViral = {}) {
     if (nicheEl) { nicheEl.textContent = p.biography || p.bio || p.fullName || ''; nicheEl.style.color = ''; }
     if (p.profilePicUrl) {
       const avatarEl = card.querySelector('.comp-avatar');
-      if (avatarEl) avatarEl.innerHTML = `<img src="${escapeAttr(proxyImg(p.profilePicUrl))}" style="width:100%;height:100%;object-fit:cover;border-radius:10px;" onerror="this.parentElement.textContent='👤'">`;
+      if (avatarEl) avatarEl.innerHTML = `<img src="${escapeAttr(proxyImg(p.profilePicUrl))}" style="width:100%;height:100%;object-fit:cover;border-radius:10px;" onerror="this.parentElement.textContent=''">`;
     }
     const reel = latestViral[handle] || null;
     const latest = card.querySelector('.comp-latest');
@@ -444,7 +444,7 @@ function renderHandleList() {
   list.innerHTML = _compHandles.length ? _compHandles.map((h, i) => `
     <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.025);border:1px solid var(--border);border-radius:7px;padding:8px 10px;">
       <span style="font-family:var(--font-data);font-size:11px;color:var(--text);">@${escapeHtml(h)}</span>
-      <button onclick="removeCompHandle(${i})" style="background:transparent;border:none;color:var(--text-dim);font-size:13px;cursor:pointer;padding:0 4px;line-height:1;transition:color 0.15s;" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text-dim)'">✕</button>
+      <button onclick="removeCompHandle(${i})" style="background:transparent;border:none;color:var(--text-dim);font-size:13px;cursor:pointer;padding:0 4px;line-height:1;transition:color 0.15s;" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text-dim)'"></button>
     </div>`).join('') : `<div style="font-family:var(--font-data);font-size:11px;color:var(--text-dim);padding:8px 0;">No competitors added yet</div>`;
 }
 
@@ -603,19 +603,19 @@ function buildReelCard(reel) {
       ${thumb
         ? `<img class="reel-thumb" src="${escapeAttr(proxyImg(thumb))}" alt="" loading="lazy" onerror="this.style.display='none'">`
         : `<div class="reel-thumb" style="background:rgba(79,195,247,0.05);width:100%;height:100%;"></div>`}
-      <div class="reel-play"><div class="reel-play-icon">▶</div></div>
+      <div class="reel-play"><div class="reel-play-icon"></div></div>
     </a>
     <div class="reel-body">
       <div class="reel-caption">${escapeHtml(caption)}</div>
       ${transcript
-        ? `<button class="reel-transcript-toggle" data-open="0">▸ Transcript</button>
+        ? `<button class="reel-transcript-toggle" data-open="0"> Transcript</button>
            <div class="reel-transcript-body">${escapeHtml(transcript)}</div>`
         : `<span style="font-family:var(--font-data);font-size:8px;color:var(--text-dim);opacity:0.5;">No transcript</span>`}
       <div class="reel-metrics">
-        <span class="reel-metric">👁 <b>${fmtNum(reel.views)}</b></span>
-        <span class="reel-metric">❤️ <b>${fmtNum(reel.likes)}</b></span>
-        <span class="reel-metric">💬 <b>${fmtNum(reel.comments)}</b></span>
-        ${reel.saves ? `<span class="reel-metric">🔖 <b>${fmtNum(reel.saves)}</b></span>` : ''}
+        <span class="reel-metric"> <b>${fmtNum(reel.views)}</b></span>
+        <span class="reel-metric"> <b>${fmtNum(reel.likes)}</b></span>
+        <span class="reel-metric"> <b>${fmtNum(reel.comments)}</b></span>
+        ${reel.saves ? `<span class="reel-metric"> <b>${fmtNum(reel.saves)}</b></span>` : ''}
       </div>
       <button class="add-queue-btn">+ Add to Ideas</button>
     </div>`;
@@ -625,7 +625,7 @@ function buildReelCard(reel) {
     toggle.addEventListener('click', () => {
       const open = toggle.dataset.open === '1';
       toggle.dataset.open = open ? '0' : '1';
-      toggle.textContent = open ? '▸ Transcript' : '▾ Transcript';
+      toggle.textContent = open ? ' Transcript' : ' Transcript';
       body.classList.toggle('open', !open);
     });
   }
@@ -652,11 +652,11 @@ function addReelToQueue(btn) {
       url: reel.url,
       thumbnail: reel.thumbnail,
       scripted: false,
-      tagText: `◈ @${reel.username}`,
+      tagText: ` @${reel.username}`,
       tagStyle: 'background:rgba(225,48,108,0.09);color:#e1306c;',
     });
     localStorage.setItem('ctrl_pipeline_board', JSON.stringify(board));
-    btn.textContent = 'Added ✓';
+    btn.textContent = 'Added ';
     btn.className = 'add-queue-btn added';
     btn.disabled = true;
   } catch(e) {
@@ -680,13 +680,13 @@ function addReelToQueue(btn) {
       el.style.cursor = '';
       el.style.pointerEvents = '';
       el.removeAttribute('title');
-      el.innerHTML = el.innerHTML.replace('🔒 Chat', 'Chat');
+      el.innerHTML = el.innerHTML.replace(' Chat', 'Chat');
     }
   }).catch(() => { /* server offline — stay locked */ });
 })();
 </script>
 <script>
-// ── SWIPE FILE — Supabase content_bucket ──
+//  SWIPE FILE — Supabase content_bucket 
 const _sbSession = JSON.parse(localStorage.getItem('sb_session') || '{}');
 const SB_URL = _sbSession.client_supabase_url || 'https://cscfbuhwlfhblxprkwnh.supabase.co';
 const SB_ANON = _sbSession.client_supabase_anon || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
@@ -755,13 +755,13 @@ function renderSwipeFile() {
     const stage = r.funnel_stage || '';
     const stageClass = stage === 'TOFU' ? 'swipe-tag-tofu' : stage === 'MOFU' ? 'swipe-tag-mofu' : stage === 'BOFU' ? 'swipe-tag-bofu' : 'swipe-tag-neutral';
     const hookType = r.hook_type ? `<span class="swipe-tag swipe-tag-neutral">${escapeHtml(r.hook_type)}</span>` : '';
-    const steal = r.steal_worthy ? `<span class="swipe-tag swipe-tag-steal">⭐ Steal</span>` : '';
+    const steal = r.steal_worthy ? `<span class="swipe-tag swipe-tag-steal"> Steal</span>` : '';
     const sortVal = r[_activeSort];
     const sortLabel = { views: 'views', likes: 'likes', comments: 'comments' }[_activeSort] || 'views';
     const statText = sortVal ? fmtNum(sortVal) + ' ' + sortLabel : '';
     const displayText = r.hook || r.reel_title || '—';
     const comp = r.competitor || '';
-    const initials = comp.replace('@','').slice(0,2).toUpperCase() || '▶';
+    const initials = comp.replace('@','').slice(0,2).toUpperCase() || '';
     const accent = accentForStage(stage);
     const grad = compGrad(comp);
     const hasLink = !!r.reel_url;
@@ -821,7 +821,7 @@ function openSwipeModal(idx) {
   metaEl.innerHTML = [
     stage ? `<span class="swipe-tag ${stageClass}">${stage}</span>` : '',
     r.hook_type ? `<span class="swipe-tag swipe-tag-neutral">${escapeHtml(r.hook_type)}</span>` : '',
-    r.steal_worthy ? `<span class="swipe-tag swipe-tag-steal">⭐ Steal-Worthy</span>` : '',
+    r.steal_worthy ? `<span class="swipe-tag swipe-tag-steal"> Steal-Worthy</span>` : '',
     r.competitor ? `<span class="swipe-tag swipe-tag-neutral">${escapeHtml(r.competitor)}</span>` : '',
     r.views ? `<span class="swipe-views" style="margin-left:0;">${fmtNum(r.views)} views</span>` : '',
   ].filter(Boolean).join('');
@@ -835,7 +835,7 @@ function openSwipeModal(idx) {
   }
 
   // Modal embed — use IG official blockquote embed for public reels
-  const closeBtn = `<button class="swipe-modal-close" onclick="closeSwipeModal()">✕</button>`;
+  const closeBtn = `<button class="swipe-modal-close" onclick="closeSwipeModal()"></button>`;
   if (r.reel_url) {
     const scMatch = r.reel_url.match(/\/reel\/([A-Za-z0-9_-]+)/);
     const sc = scMatch ? scMatch[1] : '';
@@ -870,7 +870,7 @@ document.addEventListener('keydown', e => {
 loadSwipeFile();
 </script>
 <script>
-// ── HOOK SWEEP ──
+//  HOOK SWEEP 
 const HOOKS_SB_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co';
 const HOOKS_SB_KEY = 'sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8';
 let _hooksAll = [];
@@ -938,7 +938,7 @@ function renderHooks() {
   if (!slice.length) { grid.innerHTML = `<div class="swipe-empty" style="grid-column:1/-1;">No hooks match</div>`; pag.innerHTML = ''; return; }
   grid.innerHTML = slice.map(h => {
     const inspoBtn = h.inspo_url
-      ? `<button class="hook-example-btn" onclick="event.stopPropagation();window.open('${escapeHtml(h.inspo_url)}','_blank','noopener')">▶ See Example</button>`
+      ? `<button class="hook-example-btn" onclick="event.stopPropagation();window.open('${escapeHtml(h.inspo_url)}','_blank','noopener')"> See Example</button>`
       : `<span style="font-size:9px;color:var(--text-dim);">No example</span>`;
     const cardClick = h.inspo_url ? `onclick="window.open('${escapeHtml(h.inspo_url)}','_blank','noopener')"` : '';
     return `<div class="hook-card" id="hcard-${h.id}" ${cardClick}>
@@ -961,7 +961,7 @@ function copyHook(id, btn) {
   const card = document.getElementById(`hcard-${id}`);
   const text = card ? card.querySelector('.hook-text').textContent : '';
   navigator.clipboard.writeText(text).then(() => {
-    btn.textContent = '✓ Copied'; btn.classList.add('done'); card.classList.add('copied');
+    btn.textContent = ' Copied'; btn.classList.add('done'); card.classList.add('copied');
     setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('done'); card.classList.remove('copied'); }, 1800);
   });
 }

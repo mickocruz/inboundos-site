@@ -17,7 +17,7 @@
       font-display: block;
     }
 
-    /* ── Reset ── */
+    /*  Reset  */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
@@ -47,7 +47,7 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ── Nav ── */
+    /*  Nav  */
     nav {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -81,11 +81,11 @@
       color: var(--gray);
     }
 
-    /* ── Screens ── */
+    /*  Screens  */
     .screen { display: none; }
     .screen.active { display: block; }
 
-    /* ── Hero Layout ── */
+    /*  Hero Layout  */
     .hero-wrap {
       min-height: 100vh;
       display: flex;
@@ -138,7 +138,7 @@
 
     .hero-sub strong { color: var(--white); font-weight: 600; }
 
-    /* ── CTA Button ── */
+    /*  CTA Button  */
     .btn-cta {
       display: inline-flex;
       align-items: center;
@@ -169,7 +169,7 @@
       letter-spacing: 0.04em;
     }
 
-    /* ── Stat Strip ── */
+    /*  Stat Strip  */
     .stat-strip {
       display: flex;
       align-items: center;
@@ -210,7 +210,7 @@
       color: var(--gray);
     }
 
-    /* ── Form Layout ── */
+    /*  Form Layout  */
     .form-wrap {
       max-width: 680px;
       margin: 0 auto;
@@ -450,7 +450,7 @@
       line-height: 1.5;
     }
 
-    /* ── End screens ── */
+    /*  End screens  */
     .end-wrap {
       min-height: 100vh;
       display: flex;
@@ -508,7 +508,7 @@
 
     .end-link:hover { border-color: var(--blue); }
 
-    /* ── Footer ── */
+    /*  Footer  */
     footer {
       border-top: 1px solid var(--border);
       padding: 24px 40px;
@@ -533,7 +533,7 @@
       letter-spacing: 0.06em;
     }
 
-    /* ── Responsive ── */
+    /*  Responsive  */
     @media (max-width: 640px) {
       nav { padding: 0 20px; }
       footer { padding: 20px; flex-direction: column; gap: 8px; text-align: center; }
@@ -544,7 +544,7 @@
       .btn-back, .btn-next, .btn-submit { width: 100%; justify-content: center; }
     }
 
-    /* ── Other blocker textarea ── */
+    /*  Other blocker textarea  */
     #other-wrap { margin-top: 8px; display: none; }
   </style>
 </head>
@@ -556,9 +556,9 @@
   <span class="nav-tag">Application</span>
 </nav>
 
-<!-- ═══════════════════════════════════════════
+<!-- 
      SCREEN: INTRO
-═══════════════════════════════════════════ -->
+ -->
 <div class="screen active" id="screen-intro">
 
   <div class="hero-wrap">
@@ -583,14 +583,14 @@
 
   <footer>
     <span class="footer-logo"><span>Inbound</span>OS</span>
-    <span class="footer-copy">© 2026 InboundOS. All rights reserved.</span>
+    <span class="footer-copy"> 2026 InboundOS. All rights reserved.</span>
   </footer>
 
 </div>
 
-<!-- ═══════════════════════════════════════════
+<!-- 
      SCREEN: FORM
-═══════════════════════════════════════════ -->
+ -->
 <div class="screen" id="screen-form">
   <div class="form-wrap">
 
@@ -605,7 +605,7 @@
 
     <form id="app-form" novalidate>
 
-      <!-- ── Step 1: Identity ── -->
+      <!--  Step 1: Identity  -->
       <div class="step active" id="step-1">
         <div class="step-eyebrow">Who you are</div>
         <div class="step-question">Name &amp; Instagram handle.</div>
@@ -627,7 +627,7 @@
         </div>
       </div>
 
-      <!-- ── Step 2: Business ── -->
+      <!--  Step 2: Business  -->
       <div class="step" id="step-2">
         <div class="step-eyebrow">Your business</div>
         <div class="step-question">What do you do<br>&amp; who do you help?</div>
@@ -642,7 +642,7 @@
         </div>
       </div>
 
-      <!-- ── Step 3: Revenue ── -->
+      <!--  Step 3: Revenue  -->
       <div class="step" id="step-3">
         <div class="step-eyebrow">Where you're at</div>
         <div class="step-question">Current monthly revenue.</div>
@@ -693,7 +693,7 @@
         </div>
       </div>
 
-      <!-- ── Step 4: Blocker ── -->
+      <!--  Step 4: Blocker  -->
       <div class="step" id="step-4">
         <div class="step-eyebrow">The real problem</div>
         <div class="step-question">What's the #1 thing<br>blocking you right now?</div>
@@ -748,7 +748,7 @@
         </div>
       </div>
 
-      <!-- ── Step 5: Duration ── -->
+      <!--  Step 5: Duration  -->
       <div class="step" id="step-5">
         <div class="step-eyebrow">Urgency check</div>
         <div class="step-question">How long has this<br>been a problem?</div>
@@ -792,7 +792,7 @@
         </div>
       </div>
 
-      <!-- ── Step 6: Investment ── -->
+      <!--  Step 6: Investment  -->
       <div class="step" id="step-6">
         <div class="step-eyebrow">Investment</div>
         <div class="step-question">Are you prepared to<br>invest in solving this?</div>
@@ -829,7 +829,7 @@
         </div>
       </div>
 
-      <!-- ── Step 7: Why now + email ── -->
+      <!--  Step 7: Why now + email  -->
       <div class="step" id="step-7">
         <div class="step-eyebrow">Final question</div>
         <div class="step-question">Why are you<br>applying right now?</div>
@@ -860,13 +860,13 @@
 
   <footer>
     <span class="footer-logo"><span>Inbound</span>OS</span>
-    <span class="footer-copy">© 2026 InboundOS</span>
+    <span class="footer-copy"> 2026 InboundOS</span>
   </footer>
 </div>
 
-<!-- ═══════════════════════════════════════════
+<!-- 
      SCREEN: DISQUALIFY
-═══════════════════════════════════════════ -->
+ -->
 <div class="screen" id="screen-disqualify">
   <div class="end-wrap">
     <div class="end-label muted">Application reviewed</div>
@@ -882,13 +882,13 @@
   </div>
   <footer>
     <span class="footer-logo"><span>Inbound</span>OS</span>
-    <span class="footer-copy">© 2026 InboundOS</span>
+    <span class="footer-copy"> 2026 InboundOS</span>
   </footer>
 </div>
 
-<!-- ═══════════════════════════════════════════
+<!-- 
      SCREEN: SUCCESS
-═══════════════════════════════════════════ -->
+ -->
 <div class="screen" id="screen-success">
   <div class="end-wrap">
     <div class="end-label blue">Application received</div>
@@ -899,7 +899,7 @@
   </div>
   <footer>
     <span class="footer-logo"><span>Inbound</span>OS</span>
-    <span class="footer-copy">© 2026 InboundOS</span>
+    <span class="footer-copy"> 2026 InboundOS</span>
   </footer>
 </div>
 

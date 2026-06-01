@@ -81,7 +81,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 
 
 
-/* ── FONT SCALE + FONT FIX ── */
+/*  FONT SCALE + FONT FIX  */
 /* Titles: NHGrotesk — already set. Body: DM Sans — already set. Sidebar/titles: original. */
 /* Only boost main content body text */
 
@@ -235,7 +235,7 @@ loadSOPs();
       el.style.cursor = '';
       el.style.pointerEvents = '';
       el.removeAttribute('title');
-      el.innerHTML = el.innerHTML.replace('🔒 Chat', 'Chat');
+      el.innerHTML = el.innerHTML.replace(' Chat', 'Chat');
     }
   }).catch(() => { /* server offline — stay locked */ });
 })();

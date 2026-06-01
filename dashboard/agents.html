@@ -237,13 +237,13 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 
 
 
-/* ══ PREMIUM v3 — Apple-feel ══════════════════════════════════ */
+/*  PREMIUM v3 — Apple-feel  */
 
 :root { --font-body: 'DM Sans', sans-serif; }
 html, body { font-family: 'DM Sans', sans-serif !important; }
 
 
-/* ── Agent cards — liquid glass ── */
+/*  Agent cards — liquid glass  */
 .agents-row { gap: 12px !important; }
 
 .card.agent-exp {
@@ -287,7 +287,7 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
   position: relative !important;
 }
 
-/* ── Avatar — rounded square, SVG icon ── */
+/*  Avatar — rounded square, SVG icon  */
 .agent-avatar-lg {
   width: 52px !important;
   height: 52px !important;
@@ -333,7 +333,7 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
   .card.agent-exp { opacity: 1 !important; transform: none !important; }
 }
 
-/* ── Status badge — dot + text, no pill ── */
+/*  Status badge — dot + text, no pill  */
 .agent-status-badge {
   display: inline-flex !important;
   align-items: center !important;
@@ -458,7 +458,7 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
 .agent-dispatch:hover { transform: scale(1.03) !important; }
 .agent-dispatch:active { transform: scale(0.94) !important; transition: transform 0.08s ease !important; }
 
-/* ── Section labels ── */
+/*  Section labels  */
 .section-label {
   font-family: 'DM Sans', 'Arial Black', sans-serif !important;
   font-size: 8px !important;
@@ -467,7 +467,7 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
   text-transform: uppercase !important;
 }
 
-/* ── Kanban — colored left borders ── */
+/*  Kanban — colored left borders  */
 #col-queued { border-left: 2px solid rgba(251,191,36,0.5) !important; }
 #col-running { border-left: 2px solid rgba(79,195,247,0.5) !important; }
 #col-completed { border-left: 2px solid rgba(74,222,128,0.5) !important; }
@@ -475,12 +475,12 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
 .kanban-card-task { font-family: 'DM Sans', sans-serif !important; font-size: 12px !important; color: rgba(255,255,255,0.8) !important; line-height: 1.5 !important; }
 .kanban-cards:empty::after { content: '— empty —'; display: block; padding: 28px 16px; font-family: 'DM Sans', sans-serif; font-size: 10px; color: rgba(255,255,255,0.1); text-align: center; letter-spacing: 2px; text-transform: uppercase; }
 
-/* ── Activity log ── */
+/*  Activity log  */
 .log-text { font-family: 'DM Sans', sans-serif !important; font-size: 12px !important; color: rgba(255,255,255,0.7) !important; line-height: 1.5 !important; }
 .log-time { font-size: 10px !important; color: rgba(255,255,255,0.18) !important; }
 #logList .log-list:empty::after { content: 'No activity recorded yet'; display: block; padding: 24px 16px; font-family: 'DM Sans', sans-serif; font-size: 11px; color: rgba(255,255,255,0.12); text-align: center; }
 
-/* ── Ideas queue ── */
+/*  Ideas queue  */
 .idea-title { font-family: 'DM Sans', 'Arial Black', sans-serif !important; font-size: 13px !important; letter-spacing: -0.3px !important; line-height: 1.3 !important; }
 .idea-angle { font-family: 'DM Sans', sans-serif !important; font-size: 12px !important; color: rgba(255,255,255,0.45) !important; line-height: 1.5 !important; }
 .idea-script-text { font-family: 'DM Sans', sans-serif !important; font-size: 13px !important; line-height: 1.7 !important; color: rgba(255,255,255,0.6) !important; max-height: 80px !important; }
@@ -502,7 +502,7 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
 }
 @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
-/* ── Control panel sidebar ── */
+/*  Control panel sidebar  */
 .ds-title { font-family: 'DM Sans', 'Arial Black', sans-serif !important; font-size: 9px !important; letter-spacing: 3px !important; }
 .ds-section { font-family: 'DM Sans', 'Arial Black', sans-serif !important; font-size: 8px !important; letter-spacing: 2.5px !important; color: rgba(255,255,255,0.18) !important; }
 .ds-stat-val { font-family: 'DM Sans', 'Arial Black', sans-serif !important; font-size: 26px !important; letter-spacing: -1px !important; line-height: 1 !important; }
@@ -729,7 +729,7 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
   <div class="modal-box" style="width:520px;">
     <div class="modal-head">
       <div class="modal-title">Run <span style="color:#e879f9;">Forge</span></div>
-      <button class="modal-close" onclick="closeForgeModal()">✕</button>
+      <button class="modal-close" onclick="closeForgeModal()"></button>
     </div>
 
     <div class="modal-label">Client</div>
@@ -756,7 +756,7 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
   <div class="modal-box">
     <div class="modal-head">
       <div class="modal-title">Task — <span id="taskDetailAgent">Scout</span></div>
-      <button class="modal-close" onclick="closeTaskDetail()">✕</button>
+      <button class="modal-close" onclick="closeTaskDetail()"></button>
     </div>
     <div class="modal-label">Info</div>
     <div class="preset-chips" id="taskDetailInfo"></div>
@@ -782,34 +782,34 @@ document.addEventListener('DOMContentLoaded', () => {
 <script>
 const AGENT_PRESETS = {
   Scout: [
-    { icon:'💡', title:'Generate Angles', desc:'Write 5 TOFU/MOFU angles from existing transcripts → content-bucket.md' },
-    { icon:'📋', title:'Competitor Research', desc:'Read latest Pulse transcripts, extract content angles' },
+    { icon:'', title:'Generate Angles', desc:'Write 5 TOFU/MOFU angles from existing transcripts → content-bucket.md' },
+    { icon:'', title:'Competitor Research', desc:'Read latest Pulse transcripts, extract content angles' },
   ],
   Quill: [],
   Pulse: [
-    { icon:'🧠', title:'Analyze Transcripts', desc:'Run intel extraction on saved competitor transcripts' },
-    { icon:'📊', title:'Weekly Analytics Review', desc:'Enter top performers — maps to next week\'s script angles' },
+    { icon:'', title:'Analyze Transcripts', desc:'Run intel extraction on saved competitor transcripts' },
+    { icon:'', title:'Weekly Analytics Review', desc:'Enter top performers — maps to next week\'s script angles' },
   ],
   Hunter: [
-    { icon:'🎯', title:'Find New Leads', desc:'Scrape IG profiles by niche + keyword' },
-    { icon:'✅', title:'Qualify Existing Leads', desc:'Score saved profiles by follower count + engagement' },
+    { icon:'', title:'Find New Leads', desc:'Scrape IG profiles by niche + keyword' },
+    { icon:'', title:'Qualify Existing Leads', desc:'Score saved profiles by follower count + engagement' },
   ],
   Echo: [
-    { icon:'✍️', title:'Write DMs for All Leads', desc:'Personalized opener + offer per profile in Hunter list' },
-    { icon:'🎯', title:'Write DMs for Specific Niche', desc:'Filter by niche then write targeted DMs' },
+    { icon:'', title:'Write DMs for All Leads', desc:'Personalized opener + offer per profile in Hunter list' },
+    { icon:'', title:'Write DMs for Specific Niche', desc:'Filter by niche then write targeted DMs' },
   ],
   Pilot: [
-    { icon:'📋', title:'Full Client Check-in', desc:'Pull all deliverables, flag overdue, update status' },
-    { icon:'📝', title:'Update Client Report', desc:'Draft or update weekly report for active client' },
+    { icon:'', title:'Full Client Check-in', desc:'Pull all deliverables, flag overdue, update status' },
+    { icon:'', title:'Update Client Report', desc:'Draft or update weekly report for active client' },
   ],
   Forge: [
-    { icon:'🔧', title:'Build New Automation', desc:'Design + code a cron, script, or workflow' },
-    { icon:'⚡', title:'Optimize Existing System', desc:'Review and improve a current automation' },
-    { icon:'📄', title:'Write SOP', desc:'Document a system or process to Company Database' },
+    { icon:'', title:'Build New Automation', desc:'Design + code a cron, script, or workflow' },
+    { icon:'', title:'Optimize Existing System', desc:'Review and improve a current automation' },
+    { icon:'', title:'Write SOP', desc:'Document a system or process to Company Database' },
   ],
   Edge: [
-    { icon:'🎙️', title:'Review Call Transcript', desc:'Upload transcript → surfaces objections, missed signals, suggested answers' },
-    { icon:'📊', title:'Objection Report', desc:'Pull all logged objections across calls, ranked by frequency' },
+    { icon:'', title:'Review Call Transcript', desc:'Upload transcript → surfaces objections, missed signals, suggested answers' },
+    { icon:'', title:'Objection Report', desc:'Pull all logged objections across calls, ranked by frequency' },
   ],
 };
 const PROXY = 'http://localhost:3001';
@@ -818,7 +818,7 @@ const KANBAN_STORE = 'ctrl_kanban_state';
 const PIPELINE_STORE = 'ctrl_pipeline_board';
 const SCRIPT_NS = 'ctrl_script_';
 const REAL_AGENTS = ['Scout', 'Quill', 'Pulse', 'Hunter', 'Echo', 'Pilot', 'Forge', 'Edge'];
-const ICONS = {Scout:'🔍', Quill:'✍️', Pulse:'📊', Hunter:'🎯', Echo:'💬', Pilot:'🧭', Forge:'🔧', Edge:'📡'};
+const ICONS = {Scout:'', Quill:'', Pulse:'', Hunter:'', Echo:'', Pilot:'', Forge:'', Edge:''};
 const BG_MAP = {Scout:'rgba(79,195,247,0.1)', Quill:'rgba(251,191,36,0.1)', Pulse:'rgba(74,222,128,0.1)', Hunter:'rgba(244,114,182,0.1)', Echo:'rgba(74,222,128,0.1)', Pilot:'rgba(56,189,248,0.1)', Forge:'rgba(232,121,249,0.1)', Edge:'rgba(249,115,22,0.1)'};
 let runningProgressTimers = {};
 let _currentAgent = '';
@@ -843,7 +843,7 @@ function getTaskRecord(cardEl) {
   const tasks = loadTasks(); const id = cardEl?.dataset?.taskId; return tasks[id] || null;
 }
 
-/* ── KANBAN ── */
+/*  KANBAN  */
 function buildKanbanCard(record, col) {
   const div = document.createElement('div');
   div.className = 'kanban-card';
@@ -860,7 +860,7 @@ function buildKanbanCard(record, col) {
   }
   div.innerHTML = `
     <div class="kanban-card-top">
-      <div class="kanban-card-icon" style="background:${BG_MAP[record.agent]||'rgba(79,195,247,0.1)'};">${ICONS[record.agent]||'🤖'}</div>
+      <div class="kanban-card-icon" style="background:${BG_MAP[record.agent]||'rgba(79,195,247,0.1)'};">${ICONS[record.agent]||''}</div>
       <span class="kanban-card-agent">${escapeText(record.agent)}</span>
     </div>
     <div class="kanban-card-task">${escapeText(record.task)}</div>
@@ -1025,9 +1025,9 @@ async function handleAnalyticsUpload(input) {
 
     contentEl.innerHTML = `
       <div style="margin-bottom:6px;color:var(--accent);font-weight:600;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;">Analytics Extracted</div>
-      ${data.mostViewed ? `<div style="margin-bottom:4px;"><span style="color:var(--text-muted);">👁 Most Viewed:</span> ${data.mostViewed}</div>` : ''}
-      ${data.mostLiked ? `<div style="margin-bottom:4px;"><span style="color:var(--text-muted);">❤️ Most Liked:</span> ${data.mostLiked}</div>` : ''}
-      ${data.mostCommented ? `<div style="margin-bottom:4px;"><span style="color:var(--text-muted);">💬 Most Commented:</span> ${data.mostCommented}</div>` : ''}
+      ${data.mostViewed ? `<div style="margin-bottom:4px;"><span style="color:var(--text-muted);"> Most Viewed:</span> ${data.mostViewed}</div>` : ''}
+      ${data.mostLiked ? `<div style="margin-bottom:4px;"><span style="color:var(--text-muted);"> Most Liked:</span> ${data.mostLiked}</div>` : ''}
+      ${data.mostCommented ? `<div style="margin-bottom:4px;"><span style="color:var(--text-muted);"> Most Commented:</span> ${data.mostCommented}</div>` : ''}
       ${data.notes ? `<div style="margin-top:6px;color:var(--text-muted);font-size:9.5px;">${data.notes}</div>` : ''}
     `;
     resultsEl.style.display = 'block';
@@ -1102,7 +1102,7 @@ function prependLogItem(agent, task, timeLabel, ts) {
   const item = document.createElement('div');
   item.className = 'log-item';
   item.dataset.ts = ts || Date.now();
-  item.innerHTML = `<div class="log-icon" style="background:rgba(79,195,247,0.14);">⚡</div><div class="log-body"><div class="log-text"><strong>${escapeText(agent)}</strong> assigned: ${escapeText(task)}</div><div class="log-time">${timeLabel}</div></div>`;
+  item.innerHTML = `<div class="log-icon" style="background:rgba(79,195,247,0.14);"></div><div class="log-body"><div class="log-text"><strong>${escapeText(agent)}</strong> assigned: ${escapeText(task)}</div><div class="log-time">${timeLabel}</div></div>`;
   const list = document.querySelector('#logList .log-list');
   if (list) list.prepend(item);
 }
@@ -1135,7 +1135,7 @@ function formatTaskResult(record) {
   }
   if (record.result.kind === 'scout_research') {
     const ideas = (record.result.ideas || []).map(i => `• ${escapeText(i.title)}${i.angle ? ' — ' + escapeText(i.angle) : ''}`).join('<br>');
-    const tips = (record.result.tips || []).map(t => `💡 ${escapeText(t.tip || '')}`).join('<br>');
+    const tips = (record.result.tips || []).map(t => ` ${escapeText(t.tip || '')}`).join('<br>');
     return `${escapeText(record.result.summary || 'Scout complete.')}<br><br><strong>Ideas:</strong><br>${ideas || '—'}<br><br><strong>AI Tips:</strong><br>${tips || '—'}`;
   }
   if (record.result.kind === 'quill_script') {
@@ -1163,7 +1163,7 @@ function addScoutIdeasToPipeline(ideas) {
   const deleted = loadDeletedPipelineCards();
   ideas.forEach(idea => {
     if (!deleted.includes(idea.id) && !deleted.includes(idea.title) && !board.ideas.some(item => item.title === idea.title)) {
-      board.ideas.unshift({ id: idea.id, title: idea.title, scripted: false, tagText: idea.tagText || idea.platform || '◈ IG Reel', tagStyle: idea.tagStyle || 'background:rgba(225,48,108,0.09);color:#e1306c;' });
+      board.ideas.unshift({ id: idea.id, title: idea.title, scripted: false, tagText: idea.tagText || idea.platform || ' IG Reel', tagStyle: idea.tagStyle || 'background:rgba(225,48,108,0.09);color:#e1306c;' });
     }
   });
   savePipelineBoard(board);
@@ -1183,7 +1183,7 @@ function resolveQuillIdea(task) {
 function saveQuillScriptToPipeline(result, sourceIdea) {
   const board = loadPipelineBoard();
   board.ideas = board.ideas.filter(item => item.id !== sourceIdea.id && item.title !== sourceIdea.title);
-  const card = { id: sourceIdea.id || result.card.id, title: result.title, scripted: true, tagText: '✓ Scripted', tagStyle: 'background:rgba(74,222,128,0.09);color:var(--green);' };
+  const card = { id: sourceIdea.id || result.card.id, title: result.title, scripted: true, tagText: ' Scripted', tagStyle: 'background:rgba(74,222,128,0.09);color:var(--green);' };
   if (!board.scripting.some(item => item.title === card.title)) board.scripting.unshift(card);
   savePipelineBoard(board);
   localStorage.setItem(SCRIPT_NS + card.id, result.script || '');
@@ -1301,7 +1301,7 @@ function dispatch(btn) {
   const record = upsertTask(makeTaskRecord(agent, task));
   logActivity(agent, task);
   addQueueRow(record);
-  btn.textContent = 'Sent ✓'; btn.style.background = 'var(--green)';
+  btn.textContent = 'Sent '; btn.style.background = 'var(--green)';
   setTimeout(() => { btn.textContent = 'Send'; btn.style.background = 'var(--accent)'; input.value = ''; }, 2500);
 }
 
@@ -1442,7 +1442,7 @@ function restoreIdeaCardState(card) {
     if (progressWrap) progressWrap.style.display = 'block';
   } else if (state.status === 'done') {
     btn.style.display = 'none';
-    if (statusEl) { statusEl.style.display = 'inline'; statusEl.textContent = 'Scripted ✓'; statusEl.style.color = 'var(--green)'; }
+    if (statusEl) { statusEl.style.display = 'inline'; statusEl.textContent = 'Scripted '; statusEl.style.color = 'var(--green)'; }
     if (state.script && scriptText) { scriptText.style.display = 'block'; scriptText.textContent = state.script; }
   } else if (state.status === 'failed') {
     if (statusEl) { statusEl.style.display = 'inline'; statusEl.textContent = 'Failed — retry'; statusEl.style.color = 'var(--red)'; }
@@ -1469,7 +1469,7 @@ async function scriptIdea(btn) {
     if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
     const script = (data.scripts || [])[0];
     if (progressWrap) progressWrap.style.display = 'none';
-    if (statusEl) { statusEl.textContent = 'Scripted ✓'; statusEl.style.color = 'var(--green)'; }
+    if (statusEl) { statusEl.textContent = 'Scripted '; statusEl.style.color = 'var(--green)'; }
     if (script && scriptText) { scriptText.style.display = 'block'; scriptText.textContent = script.script || ''; }
     btn.style.display = 'none';
     setIdeaScriptState(ideaId, { status: 'done', script: script?.script || '' });
@@ -1478,7 +1478,7 @@ async function scriptIdea(btn) {
       const board = loadPipelineBoard();
       const ideaTitle = card.querySelector('.idea-title')?.textContent || script.title || ideaId;
       board.ideas = board.ideas.filter(i => i.id !== ideaId && i.title !== ideaTitle);
-      const pCard = { id: ideaId, title: ideaTitle, scripted: true, tagText: '✓ Scripted', tagStyle: 'background:rgba(74,222,128,0.09);color:var(--green);' };
+      const pCard = { id: ideaId, title: ideaTitle, scripted: true, tagText: ' Scripted', tagStyle: 'background:rgba(74,222,128,0.09);color:var(--green);' };
       if (!board.scripting.some(i => i.id === ideaId)) board.scripting.unshift(pCard);
       savePipelineBoard(board);
       localStorage.setItem(SCRIPT_NS + ideaId, script.script || '');
@@ -1531,7 +1531,7 @@ window.addEventListener('load', () => {
         const item = document.createElement('div');
         item.className = 'log-item';
         item.dataset.ts = entry.time;
-        item.innerHTML = `<div class="log-icon" style="background:rgba(79,195,247,0.14);">⚡</div><div class="log-body"><div class="log-text"><strong>${escapeText(entry.agent)}</strong> assigned: ${escapeText(entry.task)}</div><div class="log-time">${relativeTime(entry.time)}</div></div>`;
+        item.innerHTML = `<div class="log-icon" style="background:rgba(79,195,247,0.14);"></div><div class="log-body"><div class="log-text"><strong>${escapeText(entry.agent)}</strong> assigned: ${escapeText(entry.task)}</div><div class="log-time">${relativeTime(entry.time)}</div></div>`;
         list.appendChild(item);
       });
     } catch(e) {}
@@ -1547,7 +1547,7 @@ window.addEventListener('load', () => {
 
 document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeAssignModal(); closeTaskDetail(); closeForgeModal(); } });
 
-// ── FORGE MODAL ──
+//  FORGE MODAL 
 const SUPABASE_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co';
 const SUPABASE_ANON = 'sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8';
 const FORGE_WEBHOOK = 'http://localhost:5678/webhook/forge';
@@ -1621,10 +1621,10 @@ async function runQuill() {
             } catch(e) {}
 
             // Log to activity (feeds dashboard live sidebar)
-            logActivity('Quill', ok ? '5 scripts generated ✓' : 'Script generation failed ✗');
+            logActivity('Quill', ok ? '5 scripts generated ' : 'Script generation failed ');
 
             document.querySelectorAll('#quill-run-btn, #quill-run-btn-pipeline').forEach(b => {
-              if (b) { b.textContent = ok ? '✓ Done' : '✗ Failed'; b.disabled = false; }
+              if (b) { b.textContent = ok ? ' Done' : ' Failed'; b.disabled = false; }
             });
             setTimeout(() => {
               document.querySelectorAll('#quill-run-btn, #quill-run-btn-pipeline').forEach(b => {
@@ -1721,10 +1721,10 @@ async function runForge() {
       body: JSON.stringify({ onboarding: rows[0], transcript, brand_docs: brandDocs })
     });
 
-    statusMsg.textContent = '✓ Forge is running. Check output in n8n.';
+    statusMsg.textContent = ' Forge is running. Check output in n8n.';
     document.getElementById('forge-status-badge').textContent = 'Running';
     document.getElementById('forge-status-badge').className = 'agent-status-badge st-active';
-    btn.textContent = 'Sent ✓';
+    btn.textContent = 'Sent ';
   } catch(e) {
     statusMsg.textContent = 'Error: could not reach webhook. Check n8n is running.';
     btn.disabled = false;
@@ -1733,7 +1733,7 @@ async function runForge() {
 }
 </script>
 <script>
-// ── SUPABASE AGENT STATUS ─────────────────────────────────────
+//  SUPABASE AGENT STATUS 
 (async function loadAgentRunsFromSupabase() {
   const _sbSess = JSON.parse(localStorage.getItem('sb_session') || '{}');
   const SUPA_URL = _sbSess.client_supabase_url || 'https://cscfbuhwlfhblxprkwnh.supabase.co';

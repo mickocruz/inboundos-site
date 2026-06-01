@@ -399,7 +399,7 @@ async function sendMessage(agent) {
       let errData = {};
       try { errData = await res.json(); } catch {}
       if (res.status === 402 || errData.error === 'NO_API_KEY') {
-        bubble.innerHTML = '🔒 <b>Chat unavailable</b> — requires an Anthropic API key.<br><span style="font-size:11px;color:var(--text-muted)">Add ANTHROPIC_API_KEY to your .env file to enable agent chat.</span>';
+        bubble.innerHTML = ' <b>Chat unavailable</b> — requires an Anthropic API key.<br><span style="font-size:11px;color:var(--text-muted)">Add ANTHROPIC_API_KEY to your .env file to enable agent chat.</span>';
       } else {
         bubble.textContent = `Error: ${errData.error || errData.message || 'Request failed'}`;
         bubble.style.color = 'var(--red)';
@@ -461,7 +461,7 @@ async function sendMessage(agent) {
 async function openSkillModal(agent) {
   if (currentSkillAgent) return;
   currentSkillAgent = agent;
-  document.getElementById('modalTitle').textContent = `✏️ ${agent} — ${agent.toLowerCase()}-skill.md`;
+  document.getElementById('modalTitle').textContent = ` ${agent} — ${agent.toLowerCase()}-skill.md`;
   document.getElementById('modalStatus').textContent = 'Loading…';
   document.getElementById('saveSkillBtn').disabled = true;
   document.getElementById('skillTextarea').value = '';
@@ -509,7 +509,7 @@ document.getElementById('skillModal').addEventListener('click', function(e) {
   if (e.target === this) closeSkillModal();
 });
 
-// ── Markdown renderer ───────────────────────────────────────
+//  Markdown renderer 
 function renderMarkdown(text) {
   // Escape HTML first
   let s = text
@@ -534,7 +534,7 @@ function renderMarkdown(text) {
   return s;
 }
 
-// ── Clarify popup ────────────────────────────────────────────
+//  Clarify popup 
 let clarifyAgent = null;
 let clarifyQuestions = []; // [{label, type:'text'|'choice', options:[], inputId, selectedValue}]
 
@@ -711,7 +711,7 @@ function cancelStream(agent) {
       var dotClass='sa-dot'+(st==='working'?' working':st==='queued'?' working':'');
       var stLabel=st==='working'?'running':st==='queued'?'queued':'idle';
       var slug=getSlugChat();
-      return '<div class="sidebar-agent-row" onclick="window.location.href='/'+(slug?slug+'/':'')+'agents'">'
+      return '<div class="sidebar-agent-row" onclick="window.location.href=\'/'+(slug?slug+'/':'')+'agents\'">'
         +'<div class="'+dotClass+'"></div>'
         +'<span class="sa-name">'+a.name+'</span>'
         +'<span class="sa-status">'+stLabel+'</span>'

@@ -135,7 +135,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 
 
 
-/* ── FONT SCALE + FONT FIX ── */
+/*  FONT SCALE + FONT FIX  */
 /* Titles: NHGrotesk — already set. Body: DM Sans — already set. Sidebar/titles: original. */
 /* Only boost main content body text */
 
@@ -234,12 +234,12 @@ html,body{font-family:'DM Sans',sans-serif!important;}
     <!-- INSTAGRAM REELS -->
     <div class="section-label" style="display:flex;align-items:center;gap:10px;">
       Instagram Reels
-      <span id="perf-live-badge" style="font-size:10px;font-family:var(--font-data);font-weight:600;letter-spacing:0.5px;padding:2px 8px;border-radius:20px;background:rgba(79,195,247,0.1);color:var(--accent);border:1px solid rgba(79,195,247,0.28);animation:livePulse 2s ease-in-out infinite;">● LIVE</span>
+      <span id="perf-live-badge" style="font-size:10px;font-family:var(--font-data);font-weight:600;letter-spacing:0.5px;padding:2px 8px;border-radius:20px;background:rgba(79,195,247,0.1);color:var(--accent);border:1px solid rgba(79,195,247,0.28);animation:livePulse 2s ease-in-out infinite;"> LIVE</span>
     </div>
     <div class="platform-section" id="perf-ig-section">
       <div class="plat-head">
         <div class="plat-identity">
-          <div class="plat-icon" style="background:rgba(225,48,108,0.09);color:#e1306c;">◈</div>
+          <div class="plat-icon" style="background:rgba(225,48,108,0.09);color:#e1306c;"></div>
           <div>
             <div class="plat-name" id="perf-ig-name">Micko | AI Content Systems</div>
             <div class="plat-handle" id="perf-ig-handle">@inboundos · 32 followers · 208 following</div>
@@ -274,7 +274,7 @@ html,body{font-family:'DM Sans',sans-serif!important;}
 </div>
 
 <script>
-// ── PIPELINE IDEAS BRIDGE ─────────────────────────────────────
+//  PIPELINE IDEAS BRIDGE 
 function repurposeIdea(btn, title, platform) {
   try {
     const raw = localStorage.getItem('ctrl_pipeline_ideas');
@@ -282,13 +282,13 @@ function repurposeIdea(btn, title, platform) {
     ideas.push({ title, platform });
     localStorage.setItem('ctrl_pipeline_ideas', JSON.stringify(ideas));
   } catch(e) {}
-  btn.textContent = 'Added ✓';
+  btn.textContent = 'Added ';
   btn.style.color = 'var(--green)';
   btn.style.borderColor = 'rgba(74,222,128,0.3)';
   btn.disabled = true;
 }
 
-// ── APIFY INSTAGRAM LIVE DATA ─────────────────────────────────
+//  APIFY INSTAGRAM LIVE DATA 
 const PROXY        = 'http://localhost:3001';
 const IG_USERNAME  = 'inboundos';
 const CACHE_KEY    = 'ctrl_ig_reels_v2';
@@ -377,8 +377,8 @@ function applyIGData(profile, reels, page) {
         const caption = (r.caption||'No caption').replace(/</g,'&lt;').replace(/>/g,'&gt;');
         const thumb = r.displayUrl||r.thumbnailUrl||r.previewImageUrl||'';
         const thumbEl = thumb
-          ? `<img src="${thumb}" alt="" loading="lazy" onerror="this.parentElement.innerHTML='<div class=reel-thumb-placeholder>◈</div>'">`
-          : `<div class="reel-thumb-placeholder">◈</div>`;
+          ? `<img src="${thumb}" alt="" loading="lazy" onerror="this.parentElement.innerHTML='<div class=reel-thumb-placeholder></div>'">`
+          : `<div class="reel-thumb-placeholder"></div>`;
         const rankEl = i < 3
           ? `<div class="reel-rank-badge" style="background:${rankBgs[i]};color:${rankTxts[i]};">${i+1}</div>`
           : '';
@@ -391,8 +391,8 @@ function applyIGData(profile, reels, page) {
           <div class="reel-info">
             <div class="reel-caption">${caption}</div>
             <div class="reel-stats">
-              <span class="reel-stat">♥ <strong>${fmtNum(likes)}</strong></span>
-              <span class="reel-stat">💬 <strong>${fmtNum(comments)}</strong></span>
+              <span class="reel-stat"> <strong>${fmtNum(likes)}</strong></span>
+              <span class="reel-stat"> <strong>${fmtNum(comments)}</strong></span>
               <span class="reel-stat">eng <strong style="color:${parseFloat(er)>5?'var(--green)':'var(--text-muted)'};">${er}</strong></span>
             </div>
           </div>
@@ -456,7 +456,7 @@ async function refreshIGData(page) {
   } catch(e) { /* ignore bad cache */ }
 })();
 
-// ── GOAL PROGRESS (sync with client tab) ─────────────────────
+//  GOAL PROGRESS (sync with client tab) 
 (function updateGoalProgress() {
   try {
     const count = parseInt(localStorage.getItem('ctrl_client_count') || '1', 10);
@@ -493,7 +493,7 @@ document.head.appendChild(style);
       el.style.cursor = '';
       el.style.pointerEvents = '';
       el.removeAttribute('title');
-      el.innerHTML = el.innerHTML.replace('🔒 Chat', 'Chat');
+      el.innerHTML = el.innerHTML.replace(' Chat', 'Chat');
     }
   }).catch(() => { /* server offline — stay locked */ });
 })();

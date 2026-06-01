@@ -185,7 +185,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 @keyframes ab3{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(40px,-50px) scale(0.94);}}
 @media(prefers-reduced-motion:reduce){.amb{animation:none!important;}.kcard{opacity:1!important;transform:none!important;transition:none!important;}}
 
-/* ── SCHEDULE MODAL ── */
+/*  SCHEDULE MODAL  */
 .sched-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.65);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:500;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.2s ease;}
 .sched-overlay.open{opacity:1;pointer-events:all;}
 .sched-box{background:#0d1820;border:1px solid rgba(79,195,247,0.2);border-radius:18px;padding:28px;width:340px;max-width:92vw;box-shadow:0 32px 80px rgba(0,0,0,0.7),0 0 40px rgba(79,195,247,0.06);transform:scale(0.9) translateY(12px);opacity:0;transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1),opacity 0.2s ease;}
@@ -218,7 +218,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .sched-drive-hint{font-family:var(--font-data);font-size:10px;color:var(--text-dim);margin-top:6px;padding-left:2px;}
 .sched-drive-ok{font-family:var(--font-data);font-size:10px;color:var(--green);margin-top:6px;padding-left:2px;}
 
-/* ── CALENDAR VIEW ── */
+/*  CALENDAR VIEW  */
 .view-toggle{display:flex;gap:6px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:3px;}
 .view-btn{padding:5px 14px;border-radius:5px;font-family:var(--font-data);font-size:11px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--text-muted);transition:all 0.15s;}
 .view-btn.active{background:rgba(79,195,247,0.12);color:var(--accent);}
@@ -243,7 +243,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 
 
 
-/* ── FONT SCALE + FONT FIX ── */
+/*  FONT SCALE + FONT FIX  */
 /* Titles: NHGrotesk — already set. Body: DM Sans — already set. Sidebar/titles: original. */
 /* Only boost main content body text */
 
@@ -384,7 +384,7 @@ html,body{font-family:'DM Sans',sans-serif!important;}
         <textarea class="sched-input sched-caption-ta" id="sched-caption" placeholder="Instagram caption…" rows="4"></textarea>
       </div>
       <div class="sched-field">
-        <label class="sched-label">🎬 Video</label>
+        <label class="sched-label"> Video</label>
         <!-- Upload zone -->
         <div id="sched-upload-zone" onclick="document.getElementById('sched-file-input').click()" ondragover="event.preventDefault();this.style.borderColor='rgba(79,195,247,0.5)'" ondragleave="this.style.borderColor=''" ondrop="onVideoFileDrop(event)"
           style="border:1.5px dashed rgba(79,195,247,0.25);border-radius:10px;padding:18px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;transition:border-color 0.2s;background:rgba(79,195,247,0.03);">
@@ -395,7 +395,7 @@ html,body{font-family:'DM Sans',sans-serif!important;}
         <input type="file" id="sched-file-input" accept="video/*" style="display:none" onchange="onVideoFileSelect(this)">
         <!-- fallback: direct URL paste -->
         <input class="sched-input" type="url" id="sched-video-url" placeholder="Or paste a direct video URL…" style="margin-top:8px;font-size:11px;" oninput="onVideoUrlInput(this)">
-        <div id="sched-video-ok" style="font-family:'DM Sans',sans-serif;font-size:10px;color:#4ade80;margin-top:4px;display:none;">✓ Video ready</div>
+        <div id="sched-video-ok" style="font-family:'DM Sans',sans-serif;font-size:10px;color:#4ade80;margin-top:4px;display:none;"> Video ready</div>
       </div>
       <div class="sched-field">
         <label class="sched-label">Date</label>
@@ -422,7 +422,7 @@ html,body{font-family:'DM Sans',sans-serif!important;}
         <div class="script-modal-title">Script<span>.</span></div>
         <div class="script-modal-card-name" id="script-modal-card-name">—</div>
       </div>
-      <button class="script-modal-close" onclick="closeScriptModal()">✕ Close</button>
+      <button class="script-modal-close" onclick="closeScriptModal()"> Close</button>
     </div>
     <div class="script-modal-loading" id="script-modal-loading">
       <div class="script-modal-spinner"></div>
@@ -440,7 +440,7 @@ html,body{font-family:'DM Sans',sans-serif!important;}
       </div>
     </div>
     <div class="script-modal-footer">
-      <button class="script-modal-btn script-modal-btn-save" onclick="saveScriptModal()">✓ Save &amp; Move to Editing</button>
+      <button class="script-modal-btn script-modal-btn-save" onclick="saveScriptModal()"> Save &amp; Move to Editing</button>
       <button class="script-modal-btn script-modal-btn-copy" onclick="copyScriptModal()">⎘ Copy Script</button>
       <button class="script-modal-btn script-modal-btn-discard" onclick="trashFromModal()"><svg width="12" height="13" viewBox="0 0 24 26" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right:6px;vertical-align:middle"><rect x="3" y="6" width="18" height="17" rx="2" stroke="currentColor" stroke-width="2"/><path d="M1 6h22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="9" y1="11" x2="9" y2="19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="15" y1="11" x2="15" y2="19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Delete</button>
     </div>
@@ -501,9 +501,9 @@ html,body{font-family:'DM Sans',sans-serif!important;}
     <div class="modal-field">
       <label class="modal-label">Platform</label>
       <div class="modal-platform">
-        <div class="plat-opt" onclick="togglePlat(this)">♪ TikTok</div>
-        <div class="plat-opt" onclick="togglePlat(this)">◈ Instagram</div>
-        <div class="plat-opt" onclick="togglePlat(this)">▶ YouTube</div>
+        <div class="plat-opt" onclick="togglePlat(this)"> TikTok</div>
+        <div class="plat-opt" onclick="togglePlat(this)"> Instagram</div>
+        <div class="plat-opt" onclick="togglePlat(this)"> YouTube</div>
       </div>
     </div>
     <div class="modal-actions">
@@ -514,7 +514,7 @@ html,body{font-family:'DM Sans',sans-serif!important;}
 </div>
 
 <script>
-// ── FUNNEL MODAL ──────────────────────────────────────────────
+//  FUNNEL MODAL 
 let pendingScriptBtn = null;
 let pendingFunnelCtx = {};
 
@@ -553,7 +553,7 @@ function closeFunnelModal() {
   document.getElementById('funnel-modal').classList.remove('open');
 }
 
-// ── DRAG & DROP (desktop) ──────────────────────────────────────
+//  DRAG & DROP (desktop) 
 let dragCard = null;
 let dragFromCol = null;
 
@@ -646,7 +646,7 @@ function onDrop(e, colId) {
   dragCard = null;
 }
 
-// ── MOVE TO NEXT STAGE (mobile button) ────────────────────────
+//  MOVE TO NEXT STAGE (mobile button) 
 const COL_ORDER = ['scripting','editing','scheduled','published'];
 
 function moveCardToNext(e, btn) {
@@ -751,7 +751,7 @@ function updateCounts() {
   });
 }
 
-// ── BOARD PERSISTENCE ─────────────────────────────────────────
+//  BOARD PERSISTENCE 
 function escapeHtml(str) {
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
@@ -776,7 +776,7 @@ function dataToCard(data) {
   card.dataset.id = data.id;
   card.setAttribute('ondragstart', 'onDragStart(event,this)');
 
-  // Label tag — MOFU/TOFU/platform. Never show "✓ Scripted" here (separate badge below)
+  // Label tag — MOFU/TOFU/platform. Never show " Scripted" here (separate badge below)
   const isScriptedTag = data.tagText && data.tagText.includes('Scripted');
   const labelText  = (!isScriptedTag && data.tagText) ? data.tagText : '';
   const labelStyle = (!isScriptedTag && data.tagStyle) ? data.tagStyle : '';
@@ -786,7 +786,7 @@ function dataToCard(data) {
 
   // Script-it button — shown only when NOT scripted
   const scriptBtnHtml = !data.scripted
-    ? `<button class="script-btn" onclick="event.stopPropagation();openFunnelModal(this)">✦ Script it</button>`
+    ? `<button class="script-btn" onclick="event.stopPropagation();openFunnelModal(this)"> Script it</button>`
     : '';
 
   // Discard — always far right
@@ -852,7 +852,7 @@ function loadPipelineIdeas() {
       const title = (typeof idea === 'string') ? idea : (idea.title || '');
       const id = (typeof idea === 'object' && idea.id) ? idea.id : 'idea-' + Date.now() + '-' + Math.random().toString(36).slice(2);
       if (isDeletedCard({ id, title })) return;
-      const platform = (typeof idea === 'object' && (idea.platform || idea.tagText)) ? (idea.platform || idea.tagText) : '◈ IG Reel';
+      const platform = (typeof idea === 'object' && (idea.platform || idea.tagText)) ? (idea.platform || idea.tagText) : ' IG Reel';
       const tagStyle = platform.includes('TikTok') ? 'background:rgba(255,0,80,0.09);color:#ff2d55;'
         : platform.includes('YT') ? 'background:rgba(255,0,0,0.09);color:#ff4444;'
         : 'background:rgba(225,48,108,0.09);color:#e1306c;';
@@ -883,7 +883,7 @@ function addCard() {
   card.innerHTML = `
     <div class="kcard-title">${title}</div>
     <div class="kcard-meta">
-      <button class="script-btn" onclick="event.stopPropagation();openFunnelModal(this)">✦ Script it</button>
+      <button class="script-btn" onclick="event.stopPropagation();openFunnelModal(this)"> Script it</button>
       <button class="trash-btn" title="Delete script" onclick="trashCard(event,this)"><svg width="12" height="13" viewBox="0 0 24 26" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="6" width="18" height="17" rx="2" stroke="#f87171" stroke-width="2"/><path d="M1 6h22" stroke="#f87171" stroke-width="2" stroke-linecap="round"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" stroke="#f87171" stroke-width="2" stroke-linecap="round"/><line x1="9" y1="11" x2="9" y2="19" stroke="#f87171" stroke-width="2" stroke-linecap="round"/><line x1="15" y1="11" x2="15" y2="19" stroke="#f87171" stroke-width="2" stroke-linecap="round"/></svg></button>
     </div>`;
   col.prepend(card);
@@ -981,7 +981,7 @@ async function trashFromModal() {
   serializeBoard();
 }
 
-// ── SCRIPT MODAL ─────────────────────────────────────────────
+//  SCRIPT MODAL 
 const PROXY = 'http://localhost:3001';
 const SCRIPT_NS = 'ctrl_script_';
 
@@ -1011,7 +1011,7 @@ function openScriptModal(card, loading = false) {
   const colId = card.closest('.col-body')?.dataset.col || 'scripting';
   const label = NEXT_LABEL[colId] || 'Save';
   const saveBtn = document.querySelector('.script-modal-btn-save');
-  if (saveBtn) saveBtn.textContent = '✓ ' + label;
+  if (saveBtn) saveBtn.textContent = ' ' + label;
 }
 
 function closeScriptModal() {
@@ -1126,7 +1126,7 @@ function copyScriptModal() {
         'transition:opacity 0.2s ease,transform 0.2s ease',
         'backdrop-filter:blur(12px)','-webkit-backdrop-filter:blur(12px)',
       ].join(';');
-      toast.textContent = '✓ Copied to clipboard';
+      toast.textContent = ' Copied to clipboard';
       document.body.appendChild(toast);
     }
     requestAnimationFrame(() => {
@@ -1143,7 +1143,7 @@ function copyScriptModal() {
     const btn = document.querySelector('.script-modal-btn-copy');
     if (btn) {
       const orig = btn.textContent;
-      btn.textContent = '✓ Copied!';
+      btn.textContent = ' Copied!';
       btn.style.background = 'rgba(74,222,128,0.15)';
       btn.style.borderColor = 'rgba(74,222,128,0.4)';
       btn.style.color = '#4ade80';
@@ -1202,10 +1202,10 @@ function openSavedScriptModal(card) {
   resizeScriptTextareas();
 }
 
-// ── DRAWER TABS (no-op kept for compat) ──────────────────────
+//  DRAWER TABS (no-op kept for compat) 
 function switchDrawerTab(tab) {}
 
-// Called when "✦ Script it" is clicked on an idea card
+// Called when " Script it" is clicked on an idea card
 async function generateScript(btn, funnelCtx = {}) {
   const card  = btn.closest('.kcard');
   const title = card.querySelector('.kcard-title').textContent.trim();
@@ -1270,7 +1270,7 @@ async function generateScript(btn, funnelCtx = {}) {
   }
 }
 
-// ── DRAWER TABS ───────────────────────────────────────────────
+//  DRAWER TABS 
 function switchDrawerTab(tab) {
   // Tabs removed — single unified view, no-op
 }
@@ -1311,7 +1311,7 @@ function saveScript() {
   closeDrawer();
 }
 
-// ── SUPABASE CONFIG ───────────────────────────────────────────
+//  SUPABASE CONFIG 
 const _sbSession = JSON.parse(localStorage.getItem('sb_session') || '{}');
 const SUPA_URL      = _sbSession.client_supabase_url || 'https://cscfbuhwlfhblxprkwnh.supabase.co';
 const SUPA_KEY      = _sbSession.client_supabase_anon || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
@@ -1405,7 +1405,7 @@ function onVideoFileSelect(input) {
 async function uploadVideoFile(file) {
   const MAX_MB = 50;
   if (file.size > MAX_MB * 1024 * 1024) {
-    showPipeToast(`⚠ Video too large (max ${MAX_MB}MB). Compress first.`, '#f87171');
+    showPipeToast(` Video too large (max ${MAX_MB}MB). Compress first.`, '#f87171');
     return;
   }
   const label = document.getElementById('sched-upload-label');
@@ -1440,12 +1440,12 @@ async function uploadVideoFile(file) {
     }
     const publicUrl = `${SUPA_URL}/storage/v1/object/public/reels/${path}`;
     urlEl.value     = publicUrl;
-    prog.textContent = `✓ ${file.name} (${(file.size/1024/1024).toFixed(1)}MB)`;
+    prog.textContent = ` ${file.name} (${(file.size/1024/1024).toFixed(1)}MB)`;
     prog.style.color = '#4ade80';
     ok.style.display = '';
-    ok.textContent   = '✓ Video uploaded and ready';
+    ok.textContent   = ' Video uploaded and ready';
   } catch (e) {
-    prog.textContent = `✕ Upload failed: ${e.message.slice(0,60)}`;
+    prog.textContent = ` Upload failed: ${e.message.slice(0,60)}`;
     prog.style.color = '#f87171';
     label.style.display = '';
     console.error('Upload error:', e);
@@ -1555,7 +1555,7 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-// ── SCHEDULE MODAL ────────────────────────────────────────────
+//  SCHEDULE MODAL 
 let _schedCard = null;
 let _schedTargetCol = null;
 
@@ -1646,7 +1646,7 @@ async function confirmSchedule() {
     document.body.appendChild(toast);
   }
   const d = new Date(scheduledAt);
-  toast.textContent = `✓ Scheduled for ${d.toLocaleDateString('en-US',{month:'short',day:'numeric'})} at ${d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})}`;
+  toast.textContent = ` Scheduled for ${d.toLocaleDateString('en-US',{month:'short',day:'numeric'})} at ${d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})}`;
   requestAnimationFrame(() => { toast.style.opacity='1'; toast.style.transform='translateX(-50%) translateY(0)'; });
   clearTimeout(toast._hide);
   toast._hide = setTimeout(() => { toast.style.opacity='0'; toast.style.transform='translateX(-50%) translateY(20px)'; }, 3000);
@@ -1658,7 +1658,7 @@ async function confirmSchedule() {
   if (document.getElementById('calendar-view').classList.contains('active')) renderCalendar();
 }
 
-// ── VIEW TOGGLE ────────────────────────────────────────────────
+//  VIEW TOGGLE 
 function switchView(view) {
   const board = document.getElementById('board');
   const cal = document.getElementById('calendar-view');
@@ -1681,7 +1681,7 @@ function switchView(view) {
   }
 }
 
-// ── CALENDAR RENDER ────────────────────────────────────────────
+//  CALENDAR RENDER 
 function renderCalendar() {
   const wrap = document.getElementById('calendar-view');
 
@@ -1740,7 +1740,7 @@ function renderCalendar() {
   wrap.innerHTML = html || '<div class="cal-empty">No scheduled posts in the next 6 weeks.</div>';
 }
 
-// ── MOBILE STAT FILTER ────────────────────────────────────────
+//  MOBILE STAT FILTER 
 (function(){
   var activeFilter = null;
   var cols = {
@@ -1824,12 +1824,12 @@ async function runQuill() {
             // Log activity (feeds dashboard sidebar)
             try {
               const log = JSON.parse(localStorage.getItem('ctrl_activity_log') || '[]');
-              log.unshift({ agent: 'Quill', task: ok ? '5 scripts generated ✓' : 'Script generation failed ✗', time: Date.now() });
+              log.unshift({ agent: 'Quill', task: ok ? '5 scripts generated ' : 'Script generation failed ', time: Date.now() });
               if (log.length > 50) log.length = 50;
               localStorage.setItem('ctrl_activity_log', JSON.stringify(log));
             } catch(e) {}
 
-            btn.textContent = ok ? '✓ Done' : '✗ Failed'; btn.disabled = false;
+            btn.textContent = ok ? ' Done' : ' Failed'; btn.disabled = false;
             setTimeout(() => { btn.textContent = 'Run Quill'; }, 4000);
           }
         }
@@ -1847,7 +1847,7 @@ async function runQuill() {
   }
 }
 
-// ── Posting loading modal ──
+//  Posting loading modal 
 function showPostingModal(text) {
   let m = document.getElementById('posting-modal');
   if (!m) {
@@ -1878,7 +1878,7 @@ function updatePostingModal(text, sub) {
 function postingModalResult(ok, text) {
   const m = document.getElementById('posting-modal'); if (!m) return;
   m.querySelector('#posting-spinner').style.display = 'none';
-  m.querySelector('#posting-modal-text').innerHTML = (ok ? '<span style="color:#4ade80;font-size:22px;">✓</span><br>' : '<span style="color:#f87171;font-size:22px;">✕</span><br>') + text;
+  m.querySelector('#posting-modal-text').innerHTML = (ok ? '<span style="color:#4ade80;font-size:22px;"></span><br>' : '<span style="color:#f87171;font-size:22px;"></span><br>') + text;
   m.querySelector('#posting-modal-sub').textContent = '';
   setTimeout(() => hidePostingModal(), ok ? 2200 : 4500);
 }
@@ -1900,13 +1900,13 @@ async function postNow() {
     const field = document.getElementById('sched-video-url');
     field.focus();
     field.style.borderColor = 'rgba(248,113,113,0.6)';
-    showPipeToast('⚠ Add a video URL before posting', '#f87171');
+    showPipeToast(' Add a video URL before posting', '#f87171');
     return;
   }
 
   // need a real Supabase row to post — local-only cards can't be posted
   if (!supaId) {
-    showPipeToast('⚠ This card isn\'t saved yet — can\'t post', '#f87171');
+    showPipeToast(' This card isn\'t saved yet — can\'t post', '#f87171');
     return;
   }
 

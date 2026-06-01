@@ -86,7 +86,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 
 
 
-/* ── FONT SCALE + FONT FIX ── */
+/*  FONT SCALE + FONT FIX  */
 /* Titles: NHGrotesk — already set. Body: DM Sans — already set. Sidebar/titles: original. */
 /* Only boost main content body text */
 
@@ -157,7 +157,7 @@ html,body{font-family:'DM Sans',sans-serif!important;}
     <div class="section-label">Call Log</div>
     <div class="card" id="callsCard">
       <div class="empty-state">
-        <div class="empty-icon">📞</div>
+        <div class="empty-icon"></div>
         <div class="empty-text" id="callsEmptyText">Loading…</div>
       </div>
     </div>
@@ -192,7 +192,7 @@ async function loadCalls() {
 
     const card = document.getElementById('callsCard');
     if (!calls.length) {
-      card.innerHTML = `<div class="empty-state"><div class="empty-icon">📞</div><div class="empty-text">No calls logged yet</div><div class="empty-sub">Click "+ Log Call" to add your first sales call</div></div>`;
+      card.innerHTML = `<div class="empty-state"><div class="empty-icon"></div><div class="empty-text">No calls logged yet</div><div class="empty-sub">Click "+ Log Call" to add your first sales call</div></div>`;
       return;
     }
     card.innerHTML = `<table class="calls-table">
@@ -210,7 +210,7 @@ async function loadCalls() {
       </tr>`).join('')}</tbody>
     </table>`;
   } catch(e) {
-    document.getElementById('callsCard').innerHTML = `<div class="empty-state"><div class="empty-icon">📞</div><div class="empty-text">Run schema SQL first</div></div>`;
+    document.getElementById('callsCard').innerHTML = `<div class="empty-state"><div class="empty-icon"></div><div class="empty-text">Run schema SQL first</div></div>`;
     document.getElementById('statTotal').textContent = '0';
     document.getElementById('statQualified').textContent = '0';
     document.getElementById('statClosed').textContent = '0';

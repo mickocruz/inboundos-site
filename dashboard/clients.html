@@ -115,7 +115,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .cl-item:hover .cl-text{color:var(--text);}
 .cl-check{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;margin-top:1px;}
 .cl-check.checked{background:var(--green);border-color:var(--green);}
-.cl-check.checked::after{content:'✓';font-size:9px;color:var(--bg);font-weight:700;}
+.cl-check.checked::after{content:'';font-size:9px;color:var(--bg);font-weight:700;}
 .cl-text{font-family:var(--font-data);font-size:11px;color:var(--text-muted);line-height:1.4;transition:color 0.2s;}
 .cl-text.checked{text-decoration:line-through;color:var(--text-dim);}
 .cl-due{font-family:var(--font-data);font-size:9px;color:var(--text-dim);margin-left:auto;flex-shrink:0;padding-top:1px;}
@@ -194,7 +194,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 
 
 
-/* ── FONT SCALE + FONT FIX ── */
+/*  FONT SCALE + FONT FIX  */
 /* Titles: NHGrotesk — already set. Body: DM Sans — already set. Sidebar/titles: original. */
 /* Only boost main content body text */
 
@@ -306,7 +306,7 @@ html,body{font-family:'DM Sans',sans-serif!important;}
   <div class="td-box">
     <div class="td-head">
       <div class="td-title" id="tdTitle">Task</div>
-      <button class="td-close" onclick="closeTaskDetail()">✕</button>
+      <button class="td-close" onclick="closeTaskDetail()"></button>
     </div>
     <div class="td-label">Deadline</div>
     <div class="td-chips" id="tdDeadline"></div>
@@ -327,7 +327,7 @@ html,body{font-family:'DM Sans',sans-serif!important;}
   <div class="td-box">
     <div class="td-head">
       <div class="td-title">New Task</div>
-      <button class="td-close" onclick="closeAddTask()">✕</button>
+      <button class="td-close" onclick="closeAddTask()"></button>
     </div>
     <div class="td-label">Task Name</div>
     <input id="newTaskName" placeholder="e.g. Send monthly report" style="width:100%;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:9px 12px;font-family:var(--font-body);font-size:12px;color:var(--text);outline:none;margin-bottom:2px;" onfocus="this.style.borderColor='var(--border-glow)'" onblur="this.style.borderColor='var(--border)'">
@@ -342,7 +342,7 @@ html,body{font-family:'DM Sans',sans-serif!important;}
 </div>
 
 <script>
-// ── SUPABASE ──
+//  SUPABASE 
 const _sbSession = JSON.parse(localStorage.getItem('sb_session') || '{}');
 const SB_URL = _sbSession.client_supabase_url || 'https://cscfbuhwlfhblxprkwnh.supabase.co';
 const SB_ANON = _sbSession.client_supabase_anon || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
@@ -366,7 +366,7 @@ function escHtml(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// ── FETCH ──
+//  FETCH 
 async function loadClients() {
   try {
     const res = await fetch(`${SB_URL}/rest/v1/clients?select=*&order=created_at.asc`, { headers: SB_HEADERS });
@@ -389,7 +389,7 @@ async function loadTasks(clientId) {
   return res.json();
 }
 
-// ── ROSTER ──
+//  ROSTER 
 function renderRoster() {
   const strip = document.getElementById('clientStrip');
   const header = document.querySelector('.header-left .date');
@@ -402,7 +402,7 @@ function renderRoster() {
 
   strip.innerHTML = _clients.map((c, i) => `
     <div class="card cs-card${_activeClient?.id === c.id ? ' active-client' : ''}" data-client-idx="${i}" onclick="selectClientByIdx(${i})">
-      <div class="cs-avatar" style="background:rgba(79,195,247,0.1);">${escHtml(c.emoji||'👤')}</div>
+      <div class="cs-avatar" style="background:rgba(79,195,247,0.1);">${escHtml(c.emoji||'')}</div>
       <div>
         <div class="cs-name">${escHtml(c.name)}</div>
         <div class="cs-sub">${escHtml(c.niche||c.company||'')}</div>
@@ -444,7 +444,7 @@ async function selectClient(client) {
   }
 }
 
-// ── PROFILE PANEL ──
+//  PROFILE PANEL 
 function renderClientProfile(c) {
   const panel = document.getElementById('clientProfile');
   if (!panel) return;
@@ -453,7 +453,7 @@ function renderClientProfile(c) {
   panel.innerHTML = `
     <div class="cp-header">
       <div class="cp-identity">
-        <div class="cp-avatar" style="background:rgba(79,195,247,0.1);">${escHtml(c.emoji||'👤')}</div>
+        <div class="cp-avatar" style="background:rgba(79,195,247,0.1);">${escHtml(c.emoji||'')}</div>
         <div>
           <div class="cp-name">${escHtml(c.name)}</div>
           <div class="cp-company">${escHtml(c.company||'')}</div>
@@ -490,11 +490,11 @@ function renderClientProfile(c) {
       <div class="na-label">Next Action</div>
       <div class="na-text">${escHtml(c.next_action)}</div>
       ${c.next_action_due ? `<div class="na-due">Due: ${new Date(c.next_action_due).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</div>` : ''}
-      <button class="na-btn" onclick="this.textContent='Done ✓';this.style.background='var(--green)'">Mark Complete</button>
+      <button class="na-btn" onclick="this.textContent='Done ';this.style.background='var(--green)'">Mark Complete</button>
     </div>` : ''}`;
 }
 
-// ── TASKS ──
+//  TASKS 
 function renderChecklist(tasks) {
   const panel = document.getElementById('clientChecklist');
   if (!panel) return;
@@ -516,7 +516,7 @@ function renderChecklist(tasks) {
           <div class="cl-check${t.done?' checked':''}" onclick="toggleCheck(this.closest('.cl-item'))"></div>
           <button class="cl-text-btn${t.done?' checked':''}" onclick="openTaskDetail(this.closest('.cl-item'))">${escHtml(t.title)}</button>
           <div class="cl-due">${escHtml(t.due_date||'')}</div>
-          <button class="cl-remove" onclick="removeTask(this.closest('.cl-item'))">✕</button>
+          <button class="cl-remove" onclick="removeTask(this.closest('.cl-item'))"></button>
         </div>`;
     });
     html += `</div>`;
@@ -524,7 +524,7 @@ function renderChecklist(tasks) {
   panel.innerHTML = html;
 }
 
-// ── TASK INTERACTIONS ──
+//  TASK INTERACTIONS 
 function toggleCheck(item) {
   const check = item.querySelector('.cl-check');
   const textBtn = item.querySelector('.cl-text-btn');
@@ -582,14 +582,14 @@ function confirmAddTask() {
     <div class="cl-check" onclick="toggleCheck(this.closest('.cl-item'))"></div>
     <button class="cl-text-btn" onclick="openTaskDetail(this.closest('.cl-item'))">${escHtml(name)}</button>
     <div class="cl-due">${escHtml(due)}</div>
-    <button class="cl-remove" onclick="removeTask(this.closest('.cl-item'))">✕</button>`;
+    <button class="cl-remove" onclick="removeTask(this.closest('.cl-item'))"></button>`;
   if (cl) cl.appendChild(item);
   closeAddTask();
 }
 
 document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeTaskDetail(); closeAddTask(); } });
 
-// ── LIVE IG METRICS ──
+//  LIVE IG METRICS 
 const LM_CACHE_KEY_DEFAULT = 'client_christian_live_v1';
 
 function setMetric(id, val, color) {
@@ -626,7 +626,7 @@ async function refreshClientMetrics(handle, cacheKey) {
   }
 }
 
-// ── INIT ──
+//  INIT 
 loadClients();
 </script>
 <script>
@@ -645,7 +645,7 @@ loadClients();
       el.style.cursor = '';
       el.style.pointerEvents = '';
       el.removeAttribute('title');
-      el.innerHTML = el.innerHTML.replace('🔒 Chat', 'Chat');
+      el.innerHTML = el.innerHTML.replace(' Chat', 'Chat');
     }
   }).catch(() => { /* server offline — stay locked */ });
 })();

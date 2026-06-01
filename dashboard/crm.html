@@ -433,7 +433,7 @@ async function save(id){
     });
     if(!r.ok)throw new Error(await r.text());
     l.stage=patch.stage;l.notes=patch.notes;
-    btn.textContent='Saved ✓';renderFilters();renderList();
+    btn.textContent='Saved ';renderFilters();renderList();
     setTimeout(()=>{if(btn){btn.textContent='Save';btn.disabled=false;}},1500);
   }catch(e){btn.textContent='Error';btn.disabled=false;console.error(e);}
 }
@@ -467,7 +467,7 @@ async function loadLeads(){
 
 function copyOpener(btn, encoded) {
   navigator.clipboard.writeText(decodeURIComponent(encoded)).then(() => {
-    btn.textContent = '✓ Copied'; btn.classList.add('done');
+    btn.textContent = ' Copied'; btn.classList.add('done');
     setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('done'); }, 1800);
   });
 }
@@ -486,7 +486,7 @@ if (new URLSearchParams(window.location.search).get('addlead') === '1') {
     <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px 10px;border-bottom:1px solid rgba(255,255,255,0.07);flex-shrink:0;">
       <div style="width:36px;height:4px;background:rgba(255,255,255,0.15);border-radius:2px;margin:0 auto;position:absolute;left:50%;transform:translateX(-50%);top:10px;"></div>
       <span style="font-family:'NHGrotesk','Arial Black',sans-serif;font-size:14px;font-weight:900;color:#fff;">Lead Detail</span>
-      <button onclick="closeMobileDetail()" style="background:transparent;border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);border-radius:7px;padding:5px 12px;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;">✕ Close</button>
+      <button onclick="closeMobileDetail()" style="background:transparent;border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);border-radius:7px;padding:5px 12px;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;"> Close</button>
     </div>
     <div id="mobile-detail-body" style="overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0;scrollbar-width:none;"></div>
   </div>
@@ -515,7 +515,7 @@ if (new URLSearchParams(window.location.search).get('addlead') === '1') {
 </div>
 
 <script>
-// ── SCREENSHOT UPLOAD + QUALIFY ──
+//  SCREENSHOT UPLOAD + QUALIFY 
 let _uploadFiles = [];
 
 function openUpload() {
@@ -548,7 +548,7 @@ function renderPreviews() {
     const url = URL.createObjectURL(f);
     return `<div class="upload-thumb-wrap">
       <img class="upload-thumb" src="${url}" alt="">
-      <button class="upload-thumb-rm" onclick="removeFile(${i})">✕</button>
+      <button class="upload-thumb-rm" onclick="removeFile(${i})"></button>
     </div>`;
   }).join('');
   document.getElementById('uploadSubmit').disabled = _uploadFiles.length === 0;
@@ -569,7 +569,7 @@ async function submitScreenshots() {
   try {
     await fetch('http://localhost:3001/qualify', { method: 'OPTIONS', signal: AbortSignal.timeout(3000) });
   } catch(e) {
-    status.innerHTML = '⚠️ Qualify server not reachable.<br><br><strong>This feature only works on your Mac.</strong><br>Open this page in a browser on your Mac, then run:<br><code style="background:rgba(79,195,247,0.08);padding:2px 6px;border-radius:4px;color:#4FC3F7">node qualify-server/server.js</code>';
+    status.innerHTML = ' Qualify server not reachable.<br><br><strong>This feature only works on your Mac.</strong><br>Open this page in a browser on your Mac, then run:<br><code style="background:rgba(79,195,247,0.08);padding:2px 6px;border-radius:4px;color:#4FC3F7">node qualify-server/server.js</code>';
     btn.disabled = false;
     return;
   }
@@ -630,7 +630,7 @@ async function submitScreenshots() {
       </div>`;
     }
 
-    const summary = `✓ ${done} added${disq ? ` · ${disq} unqualified` : ''}${dupList.length ? ` · ${dupList.length} duplicate${dupList.length>1?'s':''}` : ''}${failList.length ? ` · ${failList.length} failed` : ''}`;
+    const summary = ` ${done} added${disq ? ` · ${disq} unqualified` : ''}${dupList.length ? ` · ${dupList.length} duplicate${dupList.length>1?'s':''}` : ''}${failList.length ? ` · ${failList.length} failed` : ''}`;
     status.innerHTML = summary + extraHtml;
 
     // Toast notification

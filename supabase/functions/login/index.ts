@@ -34,10 +34,10 @@ Deno.serve(async (req) => {
     .eq('username', username.toLowerCase().trim())
     .single();
 
-  // Fetch service key from clients table
+  // Fetch client config (never return service key to browser)
   const { data: clientRow } = await supabase
     .from('clients')
-    .select('client_supabase_service, client_supabase_url, client_supabase_anon')
+    .select('client_supabase_url, client_supabase_anon')
     .eq('client_id', user?.client_id)
     .single();
 
@@ -69,7 +69,6 @@ Deno.serve(async (req) => {
       client_slug: user.client_slug,
       client_supabase_url: clientRow?.client_supabase_url || Deno.env.get('SUPABASE_URL')!,
       client_supabase_anon: clientRow?.client_supabase_anon || Deno.env.get('SUPABASE_ANON_KEY')!,
-      client_supabase_service: clientRow?.client_supabase_service || '',
     }),
     { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
   );

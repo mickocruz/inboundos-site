@@ -167,6 +167,22 @@
     {
       "source": "/chat",
       "destination": "/dashboard/chat.html"
+    },
+    {
+      "source": "/:client/edge",
+      "destination": "/dashboard/edge.html"
+    },
+    {
+      "source": "/edge",
+      "destination": "/dashboard/edge.html"
+    },
+    {
+      "source": "/:client/metrics",
+      "destination": "/dashboard/metrics.html"
+    },
+    {
+      "source": "/metrics",
+      "destination": "/dashboard/metrics.html"
     }
   ]
 }

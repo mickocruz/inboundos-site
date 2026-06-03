@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script>(function(){var s=null;try{s=JSON.parse(localStorage.getItem("sb_session")||"null");}catch(e){}if(!s||!s.access_token||!s.client_slug){window.location.href="/login?from="+encodeURIComponent(window.location.pathname);return;}var exp=s.expires_at?s.expires_at*1000:0;if(exp&&exp<Date.now()){localStorage.removeItem("sb_session");window.location.href="/login?from="+encodeURIComponent(window.location.pathname);return;}})();</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InboundOS - Metrics</title>
+<link rel="preload" href="/NHGDisplay95Black.otf" as="font" type="font/otf" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
+<style>
+@font-face { font-family:'NHGrotesk'; src:url('/dashboard/fonts/NHGrotesk-Black.otf') format('opentype'); font-weight:900; }
+:root {
+  --bg:#0D1117; --card:rgba(255,255,255,0.02); --border:rgba(255,255,255,0.07); --border-glow:rgba(79,195,247,0.2);
+  --accent:#4FC3F7; --accent-dim:rgba(79,195,247,0.07);
+  --text:#ffffff; --text-muted:rgba(255,255,255,0.3); --text-dim:rgba(255,255,255,0.18);
+  --green:#4ade80; --yellow:#fbbf24; --red:#f87171;
+  --sidebar-w:180px;
+  --font-head:'NHGrotesk','Arial Black',Arial,sans-serif; --font-data:'DM Sans',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font-data);font-size:14px;}
+body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 55% at 50% -5%,rgba(79,195,247,0.07) 0%,transparent 65%);pointer-events:none;z-index:0;}
+.layout{display:flex;height:100vh;position:relative;z-index:1;}
+.sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);background:rgba(7,11,18,0.82);border-right:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column;padding:0 0 16px;backdrop-filter:blur(32px);z-index:10;overflow-y:auto;scrollbar-width:none;}
+.sidebar::-webkit-scrollbar{display:none;}
+.sidebar-logo-wrap{padding:18px 16px 14px;border-bottom:1px solid var(--border);margin-bottom:8px;cursor:pointer;}
+.logo-text{font-family:var(--font-head);font-size:17px;font-weight:900;letter-spacing:-0.5px;}
+.logo-text span{color:var(--accent);}
+.nav-section{padding:10px 0 4px;}
+.nav-section-label{font-size:11px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--text-dim);padding:0 16px;margin-bottom:4px;}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 16px;cursor:pointer;transition:all 0.15s;color:var(--text-muted);font-size:13px;font-weight:500;border-left:2px solid transparent;text-decoration:none;}
+.nav-item:hover{background:rgba(79,195,247,0.04);color:rgba(255,255,255,0.75);}
+.nav-item.active{color:var(--accent);border-left-color:var(--accent);background:rgba(79,195,247,0.06);}
+.nav-item svg{width:14px;height:14px;flex-shrink:0;opacity:0.7;}
+.sidebar-bottom{margin-top:auto;padding:12px 16px 0;border-top:1px solid var(--border);}
+.main{flex:1;overflow-y:auto;padding:28px 32px;display:flex;flex-direction:column;gap:28px;}
+.page-header{display:flex;align-items:flex-end;justify-content:space-between;flex-shrink:0;}
+.page-title{font-family:var(--font-head);font-size:26px;font-weight:900;letter-spacing:-1px;line-height:1;}
+.page-title span{color:var(--accent);}
+.page-sub{font-size:11px;color:var(--text-muted);margin-top:4px;}
+.section-label{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+.section-label::after{content:'';flex:1;height:1px;background:rgba(79,195,247,0.12);}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.stat-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;}
+.stat-label{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);margin-bottom:6px;}
+.stat-val{font-family:var(--font-head);font-size:28px;font-weight:900;letter-spacing:-1px;line-height:1;}
+.stat-sub{font-size:10px;color:var(--text-dim);margin-top:4px;}
+.table-wrap{border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+table{width:100%;border-collapse:collapse;font-size:12px;}
+thead tr{border-bottom:1px solid rgba(255,255,255,0.06);}
+th{text-align:left;padding:10px 16px;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-dim);font-weight:700;}
+td{padding:11px 16px;color:rgba(255,255,255,0.7);border-bottom:1px solid rgba(255,255,255,0.03);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,0.015);}
+.badge{font-size:10px;text-transform:uppercase;letter-spacing:1px;padding:2px 8px;border-radius:20px;font-weight:700;}
+.badge-active{background:rgba(74,222,128,0.1);color:var(--green);border:1px solid rgba(74,222,128,0.2);}
+.badge-past_due{background:rgba(251,191,36,0.1);color:var(--yellow);border:1px solid rgba(251,191,36,0.2);}
+.badge-cancelled,.badge-paused{background:rgba(248,113,113,0.1);color:var(--red);border:1px solid rgba(248,113,113,0.2);}
+.empty{color:var(--text-dim);font-size:12px;padding:24px;text-align:center;}
+.loading{color:var(--text-dim);font-size:12px;padding:24px;text-align:center;animation:pulse 1.5s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+.refresh-btn{font-size:11px;color:var(--text-dim);background:var(--card);border:1px solid var(--border);border-radius:8px;padding:6px 12px;cursor:pointer;transition:all 0.15s;font-family:var(--font-data);}
+.refresh-btn:hover{color:var(--accent);border-color:var(--border-glow);}
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-logo-wrap" onclick="window.location.href='/'">
+      <div class="logo-text">Inbound<span>OS</span></div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-label">Dashboard</div>
+      <a class="nav-item" href="/command">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Command
+      </a>
+      <a class="nav-item" href="/pipeline">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Pipeline
+      </a>
+      <a class="nav-item" href="/crm">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        CRM
+      </a>
+      <a class="nav-item active" href="/metrics">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Metrics
+      </a>
+      <a class="nav-item" href="/agents">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+        Agents
+      </a>
+    </div>
+    <div class="sidebar-bottom">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <img src="/micko.jpg" alt="MK" style="width:32px;height:32px;object-fit:cover;border-radius:50%;border:1px solid rgba(79,195,247,0.2);">
+        <div>
+          <div style="font-size:12px;font-weight:600;">Micko Cruz</div>
+          <div style="font-size:10px;color:var(--text-muted);">Founder · InboundOS</div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Metrics <span>&</span> Analytics</div>
+        <div class="page-sub" id="as-of">Loading...</div>
+      </div>
+      <button class="refresh-btn" onclick="loadAll()">↻ Refresh</button>
+    </div>
+
+    <!-- ENGAGEMENT -->
+    <section>
+      <div class="section-label">Engagement</div>
+      <div class="stat-grid" id="engagement-grid">
+        <div class="stat"><div class="stat-label">DAU</div><div class="stat-val loading" id="dau">—</div><div class="stat-sub">active today</div></div>
+        <div class="stat"><div class="stat-label">WAU</div><div class="stat-val loading" id="wau">—</div><div class="stat-sub">active this week</div></div>
+        <div class="stat"><div class="stat-label">MAU</div><div class="stat-val loading" id="mau">—</div><div class="stat-sub">active this month</div></div>
+      </div>
+    </section>
+
+    <!-- REVENUE -->
+    <section>
+      <div class="section-label">Revenue</div>
+      <div class="stat-grid" style="margin-bottom:12px;">
+        <div class="stat"><div class="stat-label">Active Clients</div><div class="stat-val" id="active-clients">—</div><div class="stat-sub" id="total-clients"></div></div>
+        <div class="stat"><div class="stat-label">MRR</div><div class="stat-val" id="mrr">—</div><div class="stat-sub">monthly recurring</div></div>
+        <div class="stat"><div class="stat-label">LTV (est.)</div><div class="stat-val" id="ltv">—</div><div class="stat-sub">12-month estimate</div></div>
+      </div>
+      <div class="table-wrap" id="clients-table-wrap">
+        <div class="loading empty">Loading clients...</div>
+      </div>
+    </section>
+
+    <!-- CONTENT FUNNEL -->
+    <section>
+      <div class="section-label">Content Funnel</div>
+      <div class="stat-grid-4">
+        <div class="stat"><div class="stat-label">Generated</div><div class="stat-val" id="scripts-total">—</div></div>
+        <div class="stat"><div class="stat-label">Approved</div><div class="stat-val" id="scripts-approved">—</div></div>
+        <div class="stat"><div class="stat-label">Filmed</div><div class="stat-val" id="scripts-filmed">—</div></div>
+        <div class="stat"><div class="stat-label">Approval Rate</div><div class="stat-val" id="approval-rate">—</div></div>
+      </div>
+    </section>
+
+    <!-- AGENT OUTPUT -->
+    <section>
+      <div class="section-label">Agent Output (Last 30 Days)</div>
+      <div class="stat-grid-4">
+        <div class="stat"><div class="stat-label">Quill</div><div class="stat-val" id="agent-quill">—</div><div class="stat-sub">scripts</div></div>
+        <div class="stat"><div class="stat-label">Scout</div><div class="stat-val" id="agent-scout">—</div><div class="stat-sub">research items</div></div>
+        <div class="stat"><div class="stat-label">Pulse</div><div class="stat-val" id="agent-pulse">—</div><div class="stat-sub">analyses</div></div>
+        <div class="stat"><div class="stat-label">Echo</div><div class="stat-val" id="agent-echo">—</div><div class="stat-sub">leads + DMs</div></div>
+      </div>
+    </section>
+
+    <!-- AI COST -->
+    <section>
+      <div class="section-label">AI Cost (Last 30 Days)</div>
+      <div class="stat-grid" id="ai-cost-grid">
+        <div class="stat"><div class="stat-label">Total Cost</div><div class="stat-val" id="ai-cost">—</div><div class="stat-sub">USD</div></div>
+        <div class="stat"><div class="stat-label">Total Tokens</div><div class="stat-val" id="ai-tokens">—</div></div>
+        <div class="stat"><div class="stat-label">API Calls</div><div class="stat-val" id="ai-calls">—</div></div>
+      </div>
+      <div style="margin-top:8px;font-size:11px;color:var(--text-dim);" id="ai-no-data"></div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+const _sess = JSON.parse(localStorage.getItem('sb_session') || '{}');
+const SUPA_URL  = _sess.client_supabase_url  || 'https://cscfbuhwlfhblxprkwnh.supabase.co';
+const SUPA_ANON = _sess.client_supabase_anon || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
+const SUPA_TOKEN = _sess.access_token || SUPA_ANON;
+
+const H = {
+  'apikey': SUPA_ANON,
+  'Authorization': 'Bearer ' + SUPA_TOKEN,
+  'Content-Type': 'application/json',
+};
+
+async function sbFetch(path) {
+  const r = await fetch(`${SUPA_URL}/rest/v1/${path}`, { headers: H });
+  if (!r.ok) return [];
+  return r.json();
+}
+
+function set(id, val) {
+  const el = document.getElementById(id);
+  if (el) { el.textContent = val; el.classList.remove('loading'); }
+}
+
+async function loadAll() {
+  const now = Date.now();
+  const day1  = new Date(now - 1 * 86400000).toISOString();
+  const day7  = new Date(now - 7 * 86400000).toISOString();
+  const day30 = new Date(now - 30 * 86400000).toISOString();
+
+  document.getElementById('as-of').textContent = 'As of ' + new Date().toLocaleString();
+
+  // Fetch in parallel
+  const [items, billingClients, tokenRows] = await Promise.all([
+    sbFetch('agent_items?select=client_id,created_at,agent,status'),
+    sbFetch('client_billing?select=slug,name,billing_status,mrr_cents,plan').catch(() => []),
+    sbFetch('token_usage?select=input_tokens,output_tokens,cost_cents,workflow,created_at&created_at=gte.' + day30).catch(() => []),
+  ]);
+
+  // ENGAGEMENT
+  const activeIn = (since) => new Set(items.filter(i => i.created_at >= since).map(i => i.client_id)).size;
+  set('dau', activeIn(day1));
+  set('wau', activeIn(day7));
+  set('mau', activeIn(day30));
+
+  // REVENUE
+  const active = billingClients.filter(c => c.billing_status === 'active');
+  const mrr = active.reduce((s, c) => s + (c.mrr_cents || 0), 0) / 100;
+  const ltv = mrr * 12;
+  set('active-clients', active.length);
+  set('total-clients', `of ${billingClients.length} total`);
+  set('mrr', `$${mrr.toFixed(0)}`);
+  set('ltv', `$${ltv.toFixed(0)}`);
+
+  // Clients table
+  const wrap = document.getElementById('clients-table-wrap');
+  if (!billingClients.length) {
+    wrap.innerHTML = '<div class="empty">No billing clients yet. Run the supabase-billing.sql to set up.</div>';
+  } else {
+    wrap.innerHTML = `<table>
+      <thead><tr><th>Client</th><th>Plan</th><th>Status</th><th style="text-align:right">MRR</th></tr></thead>
+      <tbody>${billingClients.map(c => `
+        <tr>
+          <td>${c.name}</td>
+          <td style="color:var(--text-dim);text-transform:capitalize">${c.plan}</td>
+          <td><span class="badge badge-${c.billing_status}">${c.billing_status}</span></td>
+          <td style="text-align:right">$${((c.mrr_cents||0)/100).toFixed(0)}/mo</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+  }
+
+  // CONTENT FUNNEL
+  const scripts = items.filter(i => i.agent === 'quill');
+  const approved = scripts.filter(i => i.status === 'approved').length;
+  const filmed = scripts.filter(i => i.status === 'filmed').length;
+  const rate = scripts.length ? Math.round(approved / scripts.length * 100) : 0;
+  set('scripts-total', scripts.length);
+  set('scripts-approved', approved);
+  set('scripts-filmed', filmed);
+  set('approval-rate', rate + '%');
+
+  // AGENT OUTPUT (last 30d)
+  const r30 = items.filter(i => i.created_at >= day30);
+  const byAgent = {};
+  r30.forEach(i => byAgent[i.agent] = (byAgent[i.agent] || 0) + 1);
+  set('agent-quill', byAgent.quill || 0);
+  set('agent-scout', byAgent.scout || 0);
+  set('agent-pulse', byAgent.pulse || 0);
+  set('agent-echo', byAgent.echo || 0);
+
+  // AI COST
+  if (!tokenRows.length) {
+    set('ai-cost', '$0.00');
+    set('ai-tokens', '0');
+    set('ai-calls', '0');
+    document.getElementById('ai-no-data').textContent = 'No token usage logged yet. Connect n8n workflows to POST /api/token-usage to start tracking.';
+  } else {
+    const totalCost = tokenRows.reduce((s, r) => s + Number(r.cost_cents), 0);
+    const totalTokens = tokenRows.reduce((s, r) => s + r.input_tokens + r.output_tokens, 0);
+    set('ai-cost', '$' + (totalCost / 100).toFixed(4));
+    set('ai-tokens', totalTokens.toLocaleString());
+    set('ai-calls', tokenRows.length);
+  }
+}
+
+loadAll();
+</script>
+</body>
+</html>

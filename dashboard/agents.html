@@ -1555,7 +1555,8 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeAssig
 //  FORGE MODAL 
 const SUPABASE_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co';
 const SUPABASE_ANON = 'sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8';
-const FORGE_WEBHOOK = 'http://localhost:5678/webhook/forge';
+const N8N_BASE = localStorage.getItem('n8n_base_url') || 'http://localhost:5678';
+const FORGE_WEBHOOK = `${N8N_BASE}/webhook/forge`;
 const QUALIFY_SERVER = 'http://localhost:3001';
 
 function getSlug() {
@@ -1598,7 +1599,7 @@ async function runQuill() {
   } catch(e) {}
 
   try {
-    const r = await fetch('http://localhost:5678/webhook/quill-trigger', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ source: 'dashboard' }) });
+    const r = await fetch(`${N8N_BASE}/webhook/quill-trigger`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ source: 'dashboard' }) });
     const data = await r.json();
     if (!r.ok) throw new Error(data.error || 'n8n returned ' + r.status);
 

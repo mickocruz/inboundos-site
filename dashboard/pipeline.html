@@ -1008,6 +1008,7 @@ async function trashFromModal() {
 
 //  SCRIPT MODAL 
 const PROXY = 'http://localhost:3001';
+const N8N_BASE = localStorage.getItem('n8n_base_url') || 'http://localhost:5678';
 const SCRIPT_NS = 'ctrl_script_';
 
 let scriptModalCard = null;
@@ -1862,7 +1863,7 @@ async function runQuill() {
   btn.disabled = true; btn.textContent = 'Running…';
 
   try {
-    const r = await fetch('http://localhost:5678/webhook/quill-trigger', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ source: 'dashboard' }) });
+    const r = await fetch(`${N8N_BASE}/webhook/quill-trigger`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ source: 'dashboard' }) });
     const data = await r.json();
     if (!r.ok) throw new Error(data.error || 'n8n returned ' + r.status);
 
@@ -1981,7 +1982,7 @@ async function postNow() {
   // 2) trigger n8n to post immediately
   updatePostingModal('Sending to Instagram…', 'Do not close this tab');
   try {
-    await fetch('http://localhost:5678/webhook/ig-post-now', { method: 'POST', headers: {'Content-Type':'application/json'}, body: '{}' });
+    await fetch(`${N8N_BASE}/webhook/ig-post-now`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: '{}' });
   } catch (e) {
     postingModalResult(false, 'Can\'t reach the posting service.<br>Is n8n running on this machine?');
     return;

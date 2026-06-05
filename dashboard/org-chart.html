@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script>(function(){var s=null;try{s=JSON.parse(localStorage.getItem("sb_session")||"null");}catch(e){}if(!s||!s.access_token||!s.client_slug){window.location.href="/login?from="+encodeURIComponent(window.location.pathname);return;}var exp=s.expires_at?s.expires_at*1000:0;if(exp&&exp<Date.now()){localStorage.removeItem("sb_session");window.location.href="/login?from="+encodeURIComponent(window.location.pathname);return;}var seg=window.location.pathname.split("/").filter(Boolean)[0];if(seg&&seg!==s.client_slug){window.location.href="/login?from="+encodeURIComponent(window.location.pathname);}})();</script>
+<head><script>(function(){if(location.hostname==='localhost'||location.hostname==='127.0.0.1'){if(!localStorage.getItem('sb_session')){localStorage.setItem('sb_session',JSON.stringify({access_token:'local',client_slug:'micko-cruz',expires_at:9999999999}));}return;}var s=null;try{s=JSON.parse(localStorage.getItem("sb_session")||"null");}catch(e){}if(!s||!s.access_token||!s.client_slug){window.location.href="/login?from="+encodeURIComponent(window.location.pathname);return;}var exp=s.expires_at?s.expires_at*1000:0;if(exp&&exp<Date.now()){localStorage.removeItem("sb_session");window.location.href="/login?from="+encodeURIComponent(window.location.pathname);return;}var seg=window.location.pathname.split("/").filter(Boolean)[0];if(seg&&seg!==s.client_slug){window.location.href="/login?from="+encodeURIComponent(window.location.pathname);}})();</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>InboundOS - Org Chart</title>
@@ -30,7 +30,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .sidebar-logo-wrap img{width:100%;height:auto;max-height:36px;object-fit:contain;object-position:left center;}
 .sidebar-logo-text{font-family:var(--font-head);font-size:17px;font-weight:900;letter-spacing:-0.5px;line-height:1;user-select:none;}
 .nav-section{padding:10px 0 4px;}
-.nav-section-label{font-family:var(--font-data);font-size:9px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--text-dim);padding:0 16px;margin-bottom:4px;}
+.nav-section-label{font-family:var(--font-data);font-size:11px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--text-dim);padding:0 16px;margin-bottom:4px;}
 .nav-item{display:flex;align-items:center;gap:9px;padding:8px 16px;cursor:pointer;transition:all 0.15s ease;color:var(--text-muted);position:relative;user-select:none;font-family:var(--font-data);font-size:13px;font-weight:500;border-left:2px solid transparent;}
 .nav-item svg{width:14px;height:14px;flex-shrink:0;opacity:0.7;}
 .nav-item:hover{background:rgba(79,195,247,0.04);color:rgba(255,255,255,0.75);}
@@ -53,7 +53,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .founder-node::after{content:'';position:absolute;bottom:-32px;left:50%;transform:translateX(-50%);width:2px;height:32px;background:rgba(79,195,247,0.25);}
 .founder-name{font-family:var(--font-head);font-size:16px;font-weight:900;letter-spacing:0.5px;color:#ffffff;}
 .founder-role{font-family:var(--font-data);font-size:11px;color:#4FC3F7;margin-top:3px;}
-.founder-tag{font-family:var(--font-head);font-size:8px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-top:6px;}
+.founder-tag{font-family:var(--font-head);font-size:10px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-top:6px;}
 
 .connector-row{position:relative;width:100%;display:flex;justify-content:center;height:32px;}
 .connector-row::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:2px;height:100%;background:rgba(79,195,247,0.15);}
@@ -132,7 +132,7 @@ html,body{font-family:'DM Sans',sans-serif!important;}
     
     <!-- LIVE AGENT STATUS -->
     <div class="sidebar-agents" id="sidebar-agents-section" style="padding:10px 0 4px;">
-      <div style="font-family:var(--font-data);font-size:9px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:rgba(255,255,255,0.22);padding:0 16px;margin-bottom:6px;">Agents</div>
+      <div style="font-family:var(--font-data);font-size:11px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:rgba(255,255,255,0.22);padding:0 16px;margin-bottom:6px;">Agents</div>
       <div id="sidebar-agent-status-list"></div>
     </div>
     <div class="sidebar-bottom"><div class="mk-avatar-wrap" onclick="window.__settingsOpen()" style="cursor:pointer;"><img src="/micko.jpg" alt="MK" style="width:32px;height:32px;object-fit:cover;border-radius:50%;border:1px solid rgba(79,195,247,0.2);"/><div><div class="mk-name">Micko Cruz</div><div class="mk-role">Founder · InboundOS</div></div></div></div>

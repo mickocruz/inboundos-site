@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edge — InboundOS</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0D1117; color: #fff; font-family: 'DM Sans', sans-serif; min-height: 100vh; padding: 40px; }
+  h1 { font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; }
+  h1 span { color: #4FC3F7; }
+  .subtitle { color: #8b949e; margin-top: 4px; margin-bottom: 40px; }
+  .card { background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 28px; margin-bottom: 24px; }
+  .card h2 { font-size: 1rem; font-weight: 600; margin-bottom: 20px; color: #c9d1d9; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group.full { grid-column: 1 / -1; }
+  label { font-size: 0.8rem; color: #8b949e; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+  input, select, textarea { background: #0D1117; border: 1px solid #30363d; border-radius: 8px; padding: 10px 14px; color: #fff; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; outline: none; transition: border-color 0.2s; }
+  input:focus, select:focus, textarea:focus { border-color: #4FC3F7; }
+  textarea { resize: vertical; min-height: 160px; }
+  select option { background: #161b22; }
+  .btn { background: #4FC3F7; color: #0D1117; border: none; border-radius: 8px; padding: 12px 28px; font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: opacity 0.2s; }
+  .btn:hover { opacity: 0.85; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .result-panel { display: none; }
+  .result-panel.visible { display: block; }
+  .summary-text { color: #c9d1d9; line-height: 1.6; }
+  .coaching { background: #1c2128; border-left: 3px solid #4FC3F7; padding: 12px 16px; border-radius: 0 8px 8px 0; color: #c9d1d9; margin-top: 16px; }
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; font-size: 0.75rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.05em; padding: 10px 12px; border-bottom: 1px solid #30363d; }
+  td { padding: 12px; border-bottom: 1px solid #21262d; font-size: 0.875rem; color: #c9d1d9; vertical-align: top; }
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+  .badge-price { background: #1f3a4a; color: #4FC3F7; }
+  .badge-timing { background: #2d2a1f; color: #e3b341; }
+  .badge-trust { background: #2d1f2a; color: #f85149; }
+  .badge-competitor { background: #1f2d2a; color: #3fb950; }
+  .badge-other { background: #21262d; color: #8b949e; }
+  .patterns { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pattern-tag { background: #21262d; border: 1px solid #30363d; border-radius: 20px; padding: 4px 12px; font-size: 0.8rem; color: #8b949e; }
+  .history-table td { max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .outcome-booked { color: #3fb950; }
+  .outcome-lost { color: #f85149; }
+  .outcome-follow_up { color: #e3b341; }
+  .outcome-no_show { color: #8b949e; }
+  .loading { color: #8b949e; font-size: 0.875rem; }
+  .error-msg { color: #f85149; font-size: 0.875rem; margin-top: 8px; }
+</style>
+</head>
+<body>
+<h1>Edge<span>.</span></h1>
+<p class="subtitle">Sales Call Intelligence</p>
+
+<div class="card">
+  <h2>Analyze Call</h2>
+  <form id="edge-form">
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Prospect Name</label>
+        <input type="text" id="prospect_name" required placeholder="John Smith">
+      </div>
+      <div class="form-group">
+        <label>Call Date</label>
+        <input type="date" id="call_date" required>
+      </div>
+      <div class="form-group">
+        <label>Outcome</label>
+        <select id="outcome">
+          <option value="booked">Booked</option>
+          <option value="follow_up">Follow Up</option>
+          <option value="lost">Lost</option>
+          <option value="no_show">No Show</option>
+        </select>
+      </div>
+      <div class="form-group full">
+        <label>Transcript</label>
+        <textarea id="transcript" placeholder="Paste full call transcript here..." required></textarea>
+      </div>
+    </div>
+    <br>
+    <button type="submit" class="btn" id="submit-btn">Analyze Call</button>
+    <span id="error-msg" class="error-msg"></span>
+  </form>
+</div>
+
+<div class="card result-panel" id="result-panel">
+  <h2>Analysis</h2>
+  <p class="summary-text" id="result-summary"></p>
+  <div class="coaching" id="result-coaching"></div>
+  <br>
+  <h2>Objections</h2>
+  <table id="objections-table">
+    <thead><tr><th>Objection</th><th>Category</th><th>Rebuttal</th></tr></thead>
+    <tbody id="objections-body"></tbody>
+  </table>
+  <br>
+  <h2>Patterns</h2>
+  <div class="patterns" id="patterns-list"></div>
+</div>
+
+<div class="card">
+  <h2>Call History</h2>
+  <div id="history-loading" class="loading">Loading...</div>
+  <table id="history-table" style="display:none">
+    <thead><tr><th>Date</th><th>Prospect</th><th>Outcome</th><th>Summary</th></tr></thead>
+    <tbody id="history-body"></tbody>
+  </table>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8';
+const N8N_WEBHOOK = 'http://localhost:5678/webhook/edge-analyze';
+
+document.getElementById('edge-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('submit-btn');
+  const errEl = document.getElementById('error-msg');
+  btn.disabled = true;
+  btn.textContent = 'Analyzing...';
+  errEl.textContent = '';
+  try {
+    const res = await fetch(N8N_WEBHOOK, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        prospect_name: document.getElementById('prospect_name').value,
+        call_date: document.getElementById('call_date').value,
+        outcome: document.getElementById('outcome').value,
+        transcript: document.getElementById('transcript').value
+      })
+    });
+    const data = await res.json();
+    if (data.analysis) renderResult(data.analysis);
+    loadHistory();
+  } catch (err) {
+    errEl.textContent = 'Error: ' + err.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Analyze Call';
+  }
+});
+
+function renderResult(a) {
+  document.getElementById('result-summary').textContent = a.summary || '';
+  document.getElementById('result-coaching').textContent = '💡 ' + (a.coaching_note || '');
+  const tbody = document.getElementById('objections-body');
+  tbody.innerHTML = (a.objections || []).map(o => `
+    <tr>
+      <td>${o.objection}</td>
+      <td><span class="badge badge-${o.category}">${o.category}</span></td>
+      <td>${o.rebuttal}</td>
+    </tr>`).join('');
+  document.getElementById('patterns-list').innerHTML = (a.patterns || []).map(p => `<span class="pattern-tag">${p}</span>`).join('');
+  document.getElementById('result-panel').classList.add('visible');
+}
+
+async function loadHistory() {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/sales_calls?select=*&order=created_at.desc&limit=20`, {
+      headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY }
+    });
+    const rows = await res.json();
+    document.getElementById('history-loading').style.display = 'none';
+    document.getElementById('history-table').style.display = 'table';
+    document.getElementById('history-body').innerHTML = rows.map(r => `
+      <tr>
+        <td>${r.call_date || r.created_at?.slice(0,10)}</td>
+        <td>${r.prospect_name}</td>
+        <td class="outcome-${r.outcome}">${r.outcome}</td>
+        <td>${(r.summary || '').slice(0, 120)}${r.summary?.length > 120 ? '...' : ''}</td>
+      </tr>`).join('');
+  } catch (e) {
+    document.getElementById('history-loading').textContent = 'Could not load history.';
+  }
+}
+
+const today = new Date().toISOString().split('T')[0];
+document.getElementById('call_date').value = today;
+loadHistory();
+</script>
+</body>
+</html>

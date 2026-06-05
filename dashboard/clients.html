@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script>(function(){var s=null;try{s=JSON.parse(localStorage.getItem("sb_session")||"null");}catch(e){}if(!s||!s.access_token||!s.client_slug){window.location.href="/login?from="+encodeURIComponent(window.location.pathname);return;}var exp=s.expires_at?s.expires_at*1000:0;if(exp&&exp<Date.now()){localStorage.removeItem("sb_session");window.location.href="/login?from="+encodeURIComponent(window.location.pathname);return;}var seg=window.location.pathname.split("/").filter(Boolean)[0];if(seg&&seg!==s.client_slug){window.location.href="/login?from="+encodeURIComponent(window.location.pathname);}})();</script>
+<head><script>(function(){if(location.hostname==='localhost'||location.hostname==='127.0.0.1'){if(!localStorage.getItem('sb_session')){localStorage.setItem('sb_session',JSON.stringify({access_token:'local',client_slug:'micko-cruz',expires_at:9999999999}));}return;}var s=null;try{s=JSON.parse(localStorage.getItem("sb_session")||"null");}catch(e){}if(!s||!s.access_token||!s.client_slug){window.location.href="/login?from="+encodeURIComponent(window.location.pathname);return;}var exp=s.expires_at?s.expires_at*1000:0;if(exp&&exp<Date.now()){localStorage.removeItem("sb_session");window.location.href="/login?from="+encodeURIComponent(window.location.pathname);return;}var seg=window.location.pathname.split("/").filter(Boolean)[0];if(seg&&seg!==s.client_slug){window.location.href="/login?from="+encodeURIComponent(window.location.pathname);}})();</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>InboundOS - Clients</title>
@@ -27,7 +27,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .sidebar-logo-wrap img{width:100%;height:auto;max-height:36px;object-fit:contain;object-position:left center;}
 .sidebar-logo-text{font-family:var(--font-head);font-size:17px;font-weight:900;letter-spacing:-0.5px;line-height:1;user-select:none;}
 .nav-section{padding:10px 0 4px;}
-.nav-section-label{font-family:var(--font-data);font-size:9px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--text-dim);padding:0 16px;margin-bottom:4px;}
+.nav-section-label{font-family:var(--font-data);font-size:11px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--text-dim);padding:0 16px;margin-bottom:4px;}
 .nav-item{display:flex;align-items:center;gap:9px;padding:8px 16px;cursor:pointer;transition:all 0.15s ease;color:var(--text-muted);position:relative;user-select:none;font-family:var(--font-data);font-size:13px;font-weight:500;border-left:2px solid transparent;}
 .nav-item svg{width:14px;height:14px;flex-shrink:0;opacity:0.7;}
 .nav-item:hover{background:rgba(79,195,247,0.04);color:rgba(255,255,255,0.75);}
@@ -62,7 +62,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .cs-avatar{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
 .cs-name{font-family:var(--font-head);font-size:12px;font-weight:900;letter-spacing:-0.2px;}
 .cs-sub{font-family:var(--font-data);font-size:9.5px;color:var(--text-muted);margin-top:1px;}
-.cs-badge{margin-left:auto;font-family:var(--font-data);font-size:9px;font-weight:600;padding:3px 8px;border-radius:20px;}
+.cs-badge{margin-left:auto;font-family:var(--font-data);font-size:11px;font-weight:600;padding:3px 8px;border-radius:20px;}
 .badge-active{background:rgba(74,222,128,0.1);color:var(--green);border:1px solid rgba(74,222,128,0.2);}
 .badge-prospect{background:rgba(251,191,36,0.1);color:var(--yellow);border:1px solid rgba(251,191,36,0.2);}
 
@@ -77,11 +77,11 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .cp-since{font-family:var(--font-data);font-size:10px;color:var(--text-muted);margin-top:1px;}
 .cp-revenue{text-align:right;}
 .cp-rev-val{font-family:var(--font-head);font-size:24px;font-weight:900;letter-spacing:-1px;color:var(--green);line-height:1;}
-.cp-rev-lbl{font-family:var(--font-data);font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-top:2px;}
+.cp-rev-lbl{font-family:var(--font-data);font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-top:2px;}
 
 /* PHASE PROGRESS */
 .phase-section{margin-bottom:18px;}
-.phase-label{font-family:var(--font-head);font-size:9px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;}
+.phase-label{font-family:var(--font-head);font-size:11px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;}
 .phase-track{display:flex;gap:4px;margin-bottom:10px;}
 .phase-step{flex:1;height:6px;border-radius:3px;background:rgba(255,255,255,0.06);position:relative;overflow:hidden;transition:all 0.3s;}
 .phase-step.done{background:var(--green);}
@@ -108,17 +108,17 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 /* TASK CHECKLIST */
 .checklist-panel{padding:20px 22px;}
 .cl-section{margin-bottom:16px;}
-.cl-section-title{font-family:var(--font-head);font-size:9px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.cl-section-title{font-family:var(--font-head);font-size:11px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
 .cl-section-title::after{content:'';flex:1;height:1px;background:var(--border);}
 .cl-item{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;}
 .cl-item:last-child{border-bottom:none;}
 .cl-item:hover .cl-text{color:var(--text);}
 .cl-check{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;margin-top:1px;}
 .cl-check.checked{background:var(--green);border-color:var(--green);}
-.cl-check.checked::after{content:'';font-size:9px;color:var(--bg);font-weight:700;}
+.cl-check.checked::after{content:'';font-size:11px;color:var(--bg);font-weight:700;}
 .cl-text{font-family:var(--font-data);font-size:11px;color:var(--text-muted);line-height:1.4;transition:color 0.2s;}
 .cl-text.checked{text-decoration:line-through;color:var(--text-dim);}
-.cl-due{font-family:var(--font-data);font-size:9px;color:var(--text-dim);margin-left:auto;flex-shrink:0;padding-top:1px;}
+.cl-due{font-family:var(--font-data);font-size:11px;color:var(--text-dim);margin-left:auto;flex-shrink:0;padding-top:1px;}
 
 /* COMMS LOG */
 .comms-panel{padding:16px 20px;display:flex;flex-direction:column;gap:10px;}
@@ -128,7 +128,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .comm-body{flex:1;min-width:0;}
 .comm-from{font-family:var(--font-data);font-size:11px;font-weight:600;color:var(--text);margin-bottom:2px;}
 .comm-text{font-family:var(--font-data);font-size:10.5px;color:var(--text-muted);line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.comm-time{font-family:var(--font-data);font-size:9px;color:var(--text-dim);margin-top:3px;}
+.comm-time{font-family:var(--font-data);font-size:11px;color:var(--text-dim);margin-top:3px;}
 .comm-unread{width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:4px;}
 
 /* TASK CONTROLS */
@@ -239,7 +239,7 @@ html,body{font-family:'DM Sans',sans-serif!important;}
     
     <!-- LIVE AGENT STATUS -->
     <div class="sidebar-agents" id="sidebar-agents-section" style="padding:10px 0 4px;">
-      <div style="font-family:var(--font-data);font-size:9px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:rgba(255,255,255,0.22);padding:0 16px;margin-bottom:6px;">Agents</div>
+      <div style="font-family:var(--font-data);font-size:11px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:rgba(255,255,255,0.22);padding:0 16px;margin-bottom:6px;">Agents</div>
       <div id="sidebar-agent-status-list"></div>
     </div>
     <div class="sidebar-bottom"><div class="mk-avatar-wrap" onclick="window.__settingsOpen()" style="cursor:pointer;"><img src="/micko.jpg" alt="MK" style="width:32px;height:32px;object-fit:cover;border-radius:50%;border:1px solid rgba(79,195,247,0.2);"/><div><div class="mk-name">Micko Cruz</div><div class="mk-role">Founder · InboundOS</div></div></div></div>

@@ -285,7 +285,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({\n  client_id: 'micko_cruz',\n  agent: 'quill',\n  type: 'script',\n  content: $('Parse Script JSON').first().json.script || $json.content || '',\n  status: 'pending',\n  metadata: {\n    hook: $json.hook || $('Parse Script JSON').first().json.hook || '',\n    caption: $('Parse Script JSON').first().json.caption || '',\n    funnel_stage: $json.funnel_stage || '',\n    script_number: $json.script_number || 0\n  }\n}) }}",
+        "jsonBody": "={{ JSON.stringify({\n  client_id: 'micko_cruz',\n  agent: 'quill',\n  type: 'script',\n  content: $('Parse Script JSON').first().json.script || $json.content || '',\n  status: 'pending',\n  metadata: {\n    hook: $json.hook || $('Parse Script JSON').first().json.hook || '',\n    caption: $('Parse Script JSON').first().json.caption || '',\n    funnel_stage: $json.funnel_stage || '',\n    script_number: $json.script_number || 0,\n    text_hook: $('Parse Script JSON').first().json.text_hook || $('Parse Script JSON').first().json.hook || ''\n  }\n}) }}",
         "options": {}
       },
       "id": "node-save",
@@ -652,7 +652,7 @@
       "main": [
         [
           {
-            "node": "Build 4 Prompt Payloads",
+            "node": "Build 7 Prompt Payloads",
             "type": "main",
             "index": 0
           }
@@ -681,22 +681,22 @@
         ]
       ]
     },
-    "Build 5 Prompt Payloads": {
+    "Webhook Trigger": {
       "main": [
         [
           {
-            "node": "Split In Batches",
+            "node": "Calculate Day & Week",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Webhook Trigger": {
+    "Build 7 Prompt Payloads": {
       "main": [
         [
           {
-            "node": "Calculate Day & Week",
+            "node": "Split In Batches",
             "type": "main",
             "index": 0
           }

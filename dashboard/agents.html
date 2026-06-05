@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script>(function(){if(location.hostname==='localhost'||location.hostname==='127.0.0.1'){if(!localStorage.getItem('sb_session')){localStorage.setItem('sb_session',JSON.stringify({access_token:'local',client_slug:'micko-cruz',expires_at:9999999999}));}return;}var s=null;try{s=JSON.parse(localStorage.getItem("sb_session")||"null");}catch(e){}if(!s||!s.access_token||!s.client_slug){window.location.href="/login?from="+encodeURIComponent(window.location.pathname);return;}var exp=s.expires_at?s.expires_at*1000:0;if(exp&&exp<Date.now()){localStorage.removeItem("sb_session");window.location.href="/login?from="+encodeURIComponent(window.location.pathname);return;}var seg=window.location.pathname.split("/").filter(Boolean)[0];if(seg&&seg!==s.client_slug){window.location.href="/login?from="+encodeURIComponent(window.location.pathname);}})();</script>
+<head><script>(function(){var _h=location.hostname;var _isLocal=_h==='localhost'||_h==='127.0.0.1'||/^192\.168\./.test(_h)||/^10\./.test(_h)||/^172\.(1[6-9]|2[0-9]|3[01])\./.test(_h);if(_isLocal){if(!localStorage.getItem('sb_session')){localStorage.setItem('sb_session',JSON.stringify({access_token:'local',client_slug:'micko-cruz',expires_at:9999999999}));}document.cookie='ctrl_slug=micko-cruz;path=/;max-age=31536000';return;}var s=null;try{s=JSON.parse(localStorage.getItem("sb_session")||"null");}catch(e){}if(!s||!s.access_token||!s.client_slug){window.location.href="/login?from="+encodeURIComponent(window.location.pathname);return;}var exp=s.expires_at?s.expires_at*1000:0;if(exp&&exp<Date.now()){localStorage.removeItem("sb_session");window.location.href="/login?from="+encodeURIComponent(window.location.pathname);return;}var seg=window.location.pathname.split("/").filter(Boolean)[0];if(seg&&seg!==s.client_slug){window.location.href="/login?from="+encodeURIComponent(window.location.pathname);}})();</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>InboundOS - Agents</title>
@@ -229,6 +229,52 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .modal-assign{background:var(--accent);border:none;border-radius:7px;padding:7px 18px;font-family:var(--font-data);font-size:10px;font-weight:700;color:var(--bg);cursor:pointer;transition:all 0.18s;letter-spacing:0.3px;}
 .modal-assign:hover{box-shadow:0 0 16px rgba(79,195,247,0.35);}
 @keyframes spin{to{transform:rotate(360deg);}}
+
+/* EDGE POPUP MODAL */
+.edge-modal-overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,0.78);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.2s;}
+.edge-modal-overlay.open{opacity:1;pointer-events:all;}
+.edge-modal-box{background:#0D1117;border:1px solid rgba(249,115,22,0.25);border-radius:16px;width:660px;max-width:calc(100vw - 40px);max-height:88vh;overflow-y:auto;padding:28px;box-shadow:0 0 60px rgba(249,115,22,0.08),0 32px 80px rgba(0,0,0,0.7);transform:scale(0.92) translateY(12px);transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1),opacity 0.22s ease;scrollbar-width:thin;scrollbar-color:rgba(249,115,22,0.15) transparent;}
+.edge-modal-overlay.open .edge-modal-box{transform:scale(1) translateY(0);}
+.edge-modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;}
+.edge-modal-title{font-family:var(--font-head);font-size:18px;font-weight:900;letter-spacing:-0.5px;}
+.edge-modal-title span{color:#f97316;}
+.edge-modal-close{background:none;border:none;color:var(--text-muted);font-size:20px;cursor:pointer;padding:2px 6px;border-radius:4px;line-height:1;transition:color 0.15s;}
+.edge-modal-close:hover{color:var(--text);}
+.edge-card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:20px 22px;margin-bottom:18px;}
+.edge-card h2{font-family:var(--font-data);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;}
+.edge-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.edge-form-group{display:flex;flex-direction:column;gap:5px;}
+.edge-form-group.full{grid-column:1/-1;}
+.edge-form-group label{font-family:var(--font-data);font-size:10px;color:rgba(255,255,255,0.4);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;}
+.edge-form-group input,.edge-form-group select,.edge-form-group textarea{background:#0D1117;border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:9px 12px;color:#fff;font-family:var(--font-data);font-size:13px;outline:none;transition:border-color 0.2s;}
+.edge-form-group input:focus,.edge-form-group select:focus,.edge-form-group textarea:focus{border-color:#f97316;}
+.edge-form-group textarea{resize:vertical;min-height:130px;}
+.edge-form-group select option{background:#161b22;}
+.edge-submit-btn{background:#f97316;color:#0D1117;border:none;border-radius:8px;padding:10px 24px;font-family:var(--font-data);font-weight:700;font-size:13px;cursor:pointer;transition:opacity 0.2s;margin-top:4px;}
+.edge-submit-btn:hover{opacity:0.85;}
+.edge-submit-btn:disabled{opacity:0.4;cursor:not-allowed;}
+.edge-error{color:#f85149;font-size:12px;margin-top:6px;}
+.edge-result-panel{display:none;}
+.edge-result-panel.visible{display:block;}
+.edge-summary-text{color:#c9d1d9;line-height:1.6;font-family:var(--font-data);font-size:13px;}
+.edge-coaching{background:rgba(249,115,22,0.06);border-left:3px solid #f97316;padding:10px 14px;border-radius:0 8px 8px 0;color:#c9d1d9;margin-top:14px;font-family:var(--font-data);font-size:13px;}
+.edge-table{width:100%;border-collapse:collapse;margin-top:2px;}
+.edge-table th{text-align:left;font-size:10px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.06em;padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.07);}
+.edge-table td{padding:10px;border-bottom:1px solid rgba(255,255,255,0.05);font-size:13px;color:#c9d1d9;vertical-align:top;font-family:var(--font-data);}
+.edge-badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600;}
+.edge-badge-price{background:#1f3a4a;color:#4FC3F7;}
+.edge-badge-timing{background:#2d2a1f;color:#e3b341;}
+.edge-badge-trust{background:#2d1f2a;color:#f85149;}
+.edge-badge-competitor{background:#1f2d2a;color:#3fb950;}
+.edge-badge-other{background:#21262d;color:#8b949e;}
+.edge-patterns{display:flex;flex-wrap:wrap;gap:7px;}
+.edge-pattern-tag{background:#21262d;border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:3px 11px;font-size:12px;color:#8b949e;font-family:var(--font-data);}
+.edge-history-table td{max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.edge-outcome-booked{color:#3fb950;}
+.edge-outcome-lost{color:#f85149;}
+.edge-outcome-follow_up{color:#e3b341;}
+.edge-outcome-no_show{color:#8b949e;}
+.edge-loading{color:rgba(255,255,255,0.4);font-size:13px;font-family:var(--font-data);}
 </style>
 <style>
 /* mobile layout handled by mobile.css */
@@ -670,7 +716,7 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
         <div class="agent-role-lg">Call Reviewer · Sonnet 4.6</div>
         <div class="agent-prog-bar"><div class="agent-prog-fill" data-target="0" style="background:#f97316;"></div></div>
         <div class="agent-prog-pct" style="color:#f97316;">0%</div>
-        <button class="agent-dispatch" style="background:rgba(249,115,22,0.1);border-color:rgba(249,115,22,0.3);color:#f97316;margin-top:auto;" onclick="openAssignModal('Edge')">Run Edge</button>
+        <button class="agent-dispatch" style="background:rgba(249,115,22,0.1);border-color:rgba(249,115,22,0.3);color:#f97316;margin-top:auto;" onclick="openEdgeModal()">Run Edge</button>
       </div>
 
     </div>
@@ -817,7 +863,7 @@ const AGENT_PRESETS = {
     { icon:'', title:'Objection Report', desc:'Pull all logged objections across calls, ranked by frequency' },
   ],
 };
-const PROXY = 'http://localhost:3001';
+const PROXY = SERVER_BASE;
 const TASK_STORE = 'ctrl_agent_tasks_v1';
 const KANBAN_STORE = 'ctrl_kanban_state';
 const PIPELINE_STORE = 'ctrl_pipeline_board';
@@ -1557,7 +1603,7 @@ const SUPABASE_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co';
 const SUPABASE_ANON = 'sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8';
 const N8N_BASE = localStorage.getItem('n8n_base_url') || 'http://localhost:5678';
 const FORGE_WEBHOOK = `${N8N_BASE}/webhook/forge`;
-const QUALIFY_SERVER = 'http://localhost:3001';
+const QUALIFY_SERVER = SERVER_BASE;
 
 function getSlug() {
   const v = document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');
@@ -1575,7 +1621,7 @@ function runEcho() {
 
 async function runQuill() {
   // Add task card to queue immediately
-  const record = makeTaskRecord('Quill', 'Generate 5 daily scripts with hook selection');
+  const record = makeTaskRecord('Quill', 'Generate 7 daily scripts (2 TOFU + 3 MOFU + 2 BOFU)');
   upsertTask(record);
   renderKanban();
 
@@ -1947,6 +1993,152 @@ async function runForge() {
     }catch(e){}
   }
   document.addEventListener("DOMContentLoaded",go);
+})();
+</script>
+
+<!-- EDGE POPUP MODAL -->
+<div class="edge-modal-overlay" id="edge-modal-overlay" onclick="if(event.target===this)closeEdgeModal()">
+  <div class="edge-modal-box">
+    <div class="edge-modal-head">
+      <div class="edge-modal-title">Edge<span>.</span></div>
+      <button class="edge-modal-close" onclick="closeEdgeModal()">✕</button>
+    </div>
+
+    <div class="edge-card">
+      <h2>Analyze Call</h2>
+      <form id="edge-form" onsubmit="edgeSubmit(event)">
+        <div class="edge-form-grid">
+          <div class="edge-form-group">
+            <label>Prospect Name</label>
+            <input type="text" id="edge-prospect-name" required placeholder="John Smith">
+          </div>
+          <div class="edge-form-group">
+            <label>Call Date</label>
+            <input type="date" id="edge-call-date" required>
+          </div>
+          <div class="edge-form-group">
+            <label>Outcome</label>
+            <select id="edge-outcome">
+              <option value="booked">Booked</option>
+              <option value="follow_up">Follow Up</option>
+              <option value="lost">Lost</option>
+              <option value="no_show">No Show</option>
+            </select>
+          </div>
+          <div class="edge-form-group full">
+            <label>Transcript</label>
+            <textarea id="edge-transcript" placeholder="Paste full call transcript here..." required></textarea>
+          </div>
+        </div>
+        <br>
+        <button type="submit" class="edge-submit-btn" id="edge-submit-btn">Analyze Call</button>
+        <span id="edge-error-msg" class="edge-error"></span>
+      </form>
+    </div>
+
+    <div class="edge-card edge-result-panel" id="edge-result-panel">
+      <h2>Analysis</h2>
+      <p class="edge-summary-text" id="edge-result-summary"></p>
+      <div class="edge-coaching" id="edge-result-coaching"></div>
+      <br>
+      <h2 style="font-family:var(--font-data);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:12px;">Objections</h2>
+      <table class="edge-table">
+        <thead><tr><th>Objection</th><th>Category</th><th>Rebuttal</th></tr></thead>
+        <tbody id="edge-objections-body"></tbody>
+      </table>
+      <br>
+      <h2 style="font-family:var(--font-data);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:12px;">Patterns</h2>
+      <div class="edge-patterns" id="edge-patterns-list"></div>
+    </div>
+
+    <div class="edge-card">
+      <h2>Call History</h2>
+      <div id="edge-history-loading" class="edge-loading">Loading...</div>
+      <table class="edge-table edge-history-table" id="edge-history-table" style="display:none">
+        <thead><tr><th>Date</th><th>Prospect</th><th>Outcome</th><th>Summary</th></tr></thead>
+        <tbody id="edge-history-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const SUPA_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co';
+  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
+  const N8N_WEBHOOK = 'http://localhost:5678/webhook/edge-analyze';
+
+  window.openEdgeModal = function() {
+    document.getElementById('edge-call-date').value = new Date().toISOString().split('T')[0];
+    document.getElementById('edge-modal-overlay').classList.add('open');
+    edgeLoadHistory();
+  };
+
+  window.closeEdgeModal = function() {
+    document.getElementById('edge-modal-overlay').classList.remove('open');
+  };
+
+  window.edgeSubmit = async function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('edge-submit-btn');
+    const errEl = document.getElementById('edge-error-msg');
+    btn.disabled = true;
+    btn.textContent = 'Analyzing...';
+    errEl.textContent = '';
+    try {
+      const res = await fetch(N8N_WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prospect_name: document.getElementById('edge-prospect-name').value,
+          call_date: document.getElementById('edge-call-date').value,
+          outcome: document.getElementById('edge-outcome').value,
+          transcript: document.getElementById('edge-transcript').value
+        })
+      });
+      const data = await res.json();
+      if (data.analysis) edgeRenderResult(data.analysis);
+      edgeLoadHistory();
+    } catch(err) {
+      errEl.textContent = 'Error: ' + err.message;
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Analyze Call';
+    }
+  };
+
+  function edgeRenderResult(a) {
+    document.getElementById('edge-result-summary').textContent = a.summary || '';
+    document.getElementById('edge-result-coaching').textContent = '💡 ' + (a.coaching_note || '');
+    document.getElementById('edge-objections-body').innerHTML = (a.objections || []).map(o =>
+      `<tr><td>${o.objection}</td><td><span class="edge-badge edge-badge-${o.category}">${o.category}</span></td><td>${o.rebuttal}</td></tr>`
+    ).join('');
+    document.getElementById('edge-patterns-list').innerHTML = (a.patterns || []).map(p =>
+      `<span class="edge-pattern-tag">${p}</span>`
+    ).join('');
+    document.getElementById('edge-result-panel').classList.add('visible');
+  }
+
+  async function edgeLoadHistory() {
+    try {
+      const res = await fetch(`${SUPA_URL}/rest/v1/sales_calls?select=*&order=created_at.desc&limit=20`, {
+        headers: { apikey: SUPA_KEY, Authorization: 'Bearer ' + SUPA_KEY }
+      });
+      const rows = await res.json();
+      document.getElementById('edge-history-loading').style.display = 'none';
+      document.getElementById('edge-history-table').style.display = 'table';
+      document.getElementById('edge-history-body').innerHTML = rows.map(r =>
+        `<tr>
+          <td>${r.call_date || (r.created_at||'').slice(0,10)}</td>
+          <td>${r.prospect_name}</td>
+          <td class="edge-outcome-${r.outcome}">${r.outcome}</td>
+          <td>${(r.summary||'').slice(0,100)}${(r.summary||'').length>100?'...':''}</td>
+        </tr>`
+      ).join('');
+    } catch(e) {
+      document.getElementById('edge-history-loading').textContent = 'Could not load history.';
+    }
+  }
 })();
 </script>
 </body>

@@ -154,12 +154,33 @@ async function saveToSupabase(lead) {
   return await res.json();
 }
 
+const STATIC_DIR = path.join(__dirname, '..');
+const MIME = { '.html':'text/html', '.css':'text/css', '.js':'application/javascript', '.json':'application/json', '.png':'image/png', '.jpg':'image/jpeg', '.svg':'image/svg+xml', '.ico':'image/x-icon', '.woff2':'font/woff2', '.woff':'font/woff', '.ttf':'font/ttf' };
+
+function serveStatic(req, res) {
+  let urlPath = req.url.split('?')[0];
+  if (urlPath === '/' || urlPath === '') urlPath = '/index.html';
+  const filePath = path.join(STATIC_DIR, urlPath);
+  const ext = path.extname(filePath);
+  if (!filePath.startsWith(STATIC_DIR)) { res.writeHead(403); res.end('Forbidden'); return; }
+  fs.readFile(filePath, (err, data) => {
+    if (err) { res.writeHead(404); res.end('Not found'); return; }
+    res.writeHead(200, { 'Content-Type': MIME[ext] || 'application/octet-stream' });
+    res.end(data);
+  });
+}
+
 const server = http.createServer(async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://inboundos.vercel.app');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  const origin = req.headers.origin || '';
+  const allowedOrigins = ['https://inboundos.vercel.app', 'http://localhost:3001', 'http://127.0.0.1:3001'];
+  res.setHeader('Access-Control-Allow-Origin', allowedOrigins.includes(origin) ? origin : 'http://localhost:3001');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') { res.writeHead(204); res.end(); return; }
+
+  // Serve static files for GET requests
+  if (req.method === 'GET') { serveStatic(req, res); return; }
 
   // Trigger Quill workflow via n8n API
   if (req.method === 'POST' && req.url === '/run-quill') {
@@ -219,9 +240,17 @@ const server = http.createServer(async (req, res) => {
   res.end(JSON.stringify({ results }));
 });
 
-server.listen(PORT, '127.0.0.1', () => {
-  console.log(`\n✓ InboundOS Qualify Server running at http://localhost:${PORT}`);
-  console.log(`  POST /qualify  — { images: ["data:image/jpeg;base64,..."] }`);
-  console.log(`  Skill: ${SKILL_PATH}`);
-  console.log(`  Supabase: ${SB_URL}\n`);
+server.listen(PORT, '0.0.0.0', () => {
+  const { networkInterfaces } = require('os');
+  const nets = networkInterfaces();
+  let localIP = 'localhost';
+  for (const iface of Object.values(nets)) {
+    for (const n of iface) {
+      if (n.family === 'IPv4' && !n.internal) { localIP = n.address; break; }
+    }
+  }
+  console.log(`\n✓ InboundOS running at:`);
+  console.log(`  Mac:   http://localhost:${PORT}/micko-cruz/agents`);
+  console.log(`  Phone: http://${localIP}:${PORT}/micko-cruz/agents`);
+  console.log(`  n8n:   ${N8N_URL}\n`);
 });

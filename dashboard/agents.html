@@ -739,7 +739,7 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
 
     <div class="modal-label">Client</div>
     <select id="forge-client-select" style="width:100%;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:10px 12px;font-family:var(--font-body);font-size:12px;color:var(--text);outline:none;margin-bottom:16px;cursor:pointer;transition:border-color 0.2s;" onfocus="this.style.borderColor='rgba(232,121,249,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.07)'">
-      <option value="" disabled selected style="background:#ffffff;color:#111111;font-family:'DM Sans',sans-serif;">Loading clients…</option>
+      <option value="" disabled selected style="background:#ffffff;color:#111111;font-family:DM Sans,sans-serif;">Loading clients…</option>
     </select>
 
     <div class="modal-label">Call Transcript</div>
@@ -1634,17 +1634,17 @@ async function runQuill() {
 async function openForgeModal() {
   document.getElementById('forgeModal').classList.add('open');
   const select = document.getElementById('forge-client-select');
-  select.innerHTML = '<option value="" disabled selected style="background:#ffffff;color:#111111;font-family:'DM Sans',sans-serif;">Loading clients…</option>';
+  select.innerHTML = '<option value="" disabled selected style="background:#ffffff;color:#111111;font-family:DM Sans,sans-serif;">Loading clients…</option>';
   try {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/onboarding?select=email,offer&order=created_at.desc`, {
       headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` }
     });
     const clients = await res.json();
     if (!clients.length) {
-      select.innerHTML = '<option value="" disabled selected style="background:#ffffff;color:#111111;font-family:'DM Sans',sans-serif;">No clients found</option>';
+      select.innerHTML = '<option value="" disabled selected style="background:#ffffff;color:#111111;font-family:DM Sans,sans-serif;">No clients found</option>';
       return;
     }
-    select.innerHTML = '<option value="" disabled selected style="background:#ffffff;color:#111111;font-family:'DM Sans',sans-serif;">Select a client…</option>';
+    select.innerHTML = '<option value="" disabled selected style="background:#ffffff;color:#111111;font-family:DM Sans,sans-serif;">Select a client…</option>';
     clients.forEach(c => {
       const opt = document.createElement('option');
       opt.value = c.email;
@@ -1653,7 +1653,7 @@ async function openForgeModal() {
       select.appendChild(opt);
     });
   } catch(e) {
-    select.innerHTML = '<option value="" disabled selected style="background:#ffffff;color:#111111;font-family:'DM Sans',sans-serif;">Error loading clients</option>';
+    select.innerHTML = '<option value="" disabled selected style="background:#ffffff;color:#111111;font-family:DM Sans,sans-serif;">Error loading clients</option>';
   }
 }
 

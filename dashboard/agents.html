@@ -607,7 +607,7 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
         <div class="date" id="agentsHeaderDate">AI Team · Standby</div>
       </div>
       <div class="header-right">
-        <div class="pill pill-green"><div class="status-dot"></div><span id="agentsOnlineCount">7 / 7 Online</span></div>
+        <div class="pill pill-green"><div class="status-dot"></div><span id="agentsOnlineCount">8 / 8 Online</span></div>
       </div>
     </div>
 
@@ -987,7 +987,7 @@ function updateAgentCardsFromTasks() {
   const cpActive = document.getElementById('cp-active');
   const cpQueue = document.getElementById('cp-queue');
   if (cpActions) cpActions.textContent = actionsToday;
-  if (cpActive) cpActive.textContent = activeCount + '/3';
+  if (cpActive) cpActive.textContent = activeCount + '/8';
   if (cpQueue) cpQueue.textContent = queuedCount;
   document.querySelectorAll('[data-cp-agent]').forEach(row => {
     const agent = row.dataset.cpAgent;
@@ -1760,7 +1760,7 @@ async function runForge() {
   const SUPA_URL = _sbSess.client_supabase_url || 'https://cscfbuhwlfhblxprkwnh.supabase.co';
   const SUPA_KEY = _sbSess.client_supabase_anon || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
 
-  // Map Supabase agent names → CTRL card display names
+  // Map Supabase agent names → InboundOS Dashboard card display names
   const AGENT_NAME_MAP = {
     quill: 'Quill', scout: 'Scout', flywheel: 'Flywheel',
     bolt: 'Bolt', forge: 'Forge', pilot: 'Pilot', pulse: 'Pulse'

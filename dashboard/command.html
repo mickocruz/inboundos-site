@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script>(function(){if(location.hostname==='localhost'||location.hostname==='127.0.0.1'){if(!localStorage.getItem('sb_session')){localStorage.setItem('sb_session',JSON.stringify({access_token:'local',client_slug:'micko-cruz',expires_at:9999999999}));}return;}var s=null;try{s=JSON.parse(localStorage.getItem("sb_session")||"null");}catch(e){}if(!s||!s.access_token||!s.client_slug){window.location.href="/login?from="+encodeURIComponent(window.location.pathname);return;}var exp=s.expires_at?s.expires_at*1000:0;if(exp&&exp<Date.now()){localStorage.removeItem("sb_session");window.location.href="/login?from="+encodeURIComponent(window.location.pathname);return;}var seg=window.location.pathname.split("/").filter(Boolean)[0];if(seg&&seg!==s.client_slug){window.location.href="/login?from="+encodeURIComponent(window.location.pathname);}})();</script>
+<head><script>(function(){var _h=location.hostname;var _isLocal=_h==='localhost'||_h==='127.0.0.1'||/^192\.168\./.test(_h)||/^10\./.test(_h)||/^172\.(1[6-9]|2[0-9]|3[01])\./.test(_h);if(_isLocal){if(!localStorage.getItem('sb_session')){localStorage.setItem('sb_session',JSON.stringify({access_token:'local',client_slug:'micko-cruz',expires_at:9999999999}));}document.cookie='ctrl_slug=micko-cruz;path=/;max-age=31536000';return;}var s=null;try{s=JSON.parse(localStorage.getItem("sb_session")||"null");}catch(e){}if(!s||!s.access_token||!s.client_slug){window.location.href="/login?from="+encodeURIComponent(window.location.pathname);return;}var exp=s.expires_at?s.expires_at*1000:0;if(exp&&exp<Date.now()){localStorage.removeItem("sb_session");window.location.href="/login?from="+encodeURIComponent(window.location.pathname);return;}var seg=window.location.pathname.split("/").filter(Boolean)[0];if(seg&&seg!==s.client_slug){window.location.href="/login?from="+encodeURIComponent(window.location.pathname);}})();</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>InboundOS — Command Center</title>
@@ -216,13 +216,13 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
     </div>
 
     <!-- LIVE AGENT STATUS -->
-    <div class="sidebar-agents">
+    <div class="sidebar-agents" id="sidebar-agents-section" style="padding:10px 0 4px;">
       <div class="sidebar-agents-label">Agents</div>
-      <div id="sidebar-agent-list"></div>
+      <div id="sidebar-agent-status-list"></div>
     </div>
 
     
-    <div class="sidebar-bottom"><div class="mk-avatar-wrap" style="cursor:pointer;"><img src="/micko.jpg" alt="MK" style="width:32px;height:32px;object-fit:cover;border-radius:50%;border:1px solid rgba(79,195,247,0.2);"/><div><div class="mk-name">Micko Cruz</div><div class="mk-role">Founder · InboundOS</div></div></div></div>
+    <div class="sidebar-bottom"><div class="mk-avatar-wrap" onclick="window.__settingsOpen&&window.__settingsOpen()" style="cursor:pointer;"><img src="/micko.jpg" alt="MK" style="width:32px;height:32px;object-fit:cover;border-radius:50%;border:1px solid rgba(79,195,247,0.2);"/><div><div class="mk-name">Micko Cruz</div><div class="mk-role">Founder · InboundOS</div></div></div></div>
   </nav>
 
   <!-- MAIN -->
@@ -443,7 +443,7 @@ function getAgentStatuses() {
 // SIDEBAR AGENT LIST
 function renderSidebarAgents() {
   const statuses = getAgentStatuses();
-  const el = document.getElementById('sidebar-agent-list');
+  const el = document.getElementById('sidebar-agent-status-list');
   el.innerHTML = AGENTS.map(a => {
     const st = statuses[a.name] || 'idle';
     const dotClass = st === 'working' ? 'working' : st === 'queued' ? 'working' : 'idle';
@@ -624,7 +624,7 @@ async function renderFlywheel() {
     const weekAgo = new Date(Date.now() - 7*24*60*60*1000).toISOString();
 
     const [newsRes, scriptsRes, publishedRes, leadsRes, callsRes, clientsRes] = await Promise.all([
-      fetch(`${url}/rest/v1/ai_news?select=id&order=created_at.desc&limit=1`, { headers: hdrs }),
+      fetch(`${url}/rest/v1/niche_news?select=id`, { headers: { ...hdrs, 'Prefer': 'count=exact', 'Range': '0-0' } }),
       fetch(`${url}/rest/v1/agent_items?select=id&status=eq.scripting`, { headers: hdrs }),
       fetch(`${url}/rest/v1/agent_items?select=id&status=eq.published&updated_at=gte.${weekAgo}`, { headers: hdrs }),
       fetch(`${url}/rest/v1/outreach_leads?select=id,stage&stage=gte.1&stage=lte.5`, { headers: hdrs }),
@@ -632,12 +632,10 @@ async function renderFlywheel() {
       fetch(`${url}/rest/v1/clients?select=id,phase&phase=neq.Churned`, { headers: hdrs }),
     ]);
 
-    // Step 1: Research (ai_news count)
+    // Step 1: Research (niche_news count)
     let newsCount = 0;
     if (newsRes.ok) {
-      const hdrs2 = { ...hdrs, 'Prefer': 'count=exact', 'Range': '0-0' };
-      const r2 = await fetch(`${url}/rest/v1/ai_news?select=id`, { headers: { ...hdrs, 'Prefer': 'count=exact', 'Range': '0-0' } });
-      const range = r2.headers.get('content-range');
+      const range = newsRes.headers.get('content-range');
       newsCount = range ? parseInt(range.split('/')[1]) || 0 : 0;
     }
     setFwStep(1, newsCount, 'AI news items', newsCount > 0);
@@ -689,14 +687,23 @@ function init() {
   renderNeedsReview();
   renderTaskLog();
   renderWorkflows();
-  renderFlywheel();
-  // Refresh agent status every 5s, flywheel every 60s
+  // Load flywheel from cache if fresh (<5min), else fetch
+  const _fwCache = localStorage.getItem('ctrl_flywheel_cache');
+  if (_fwCache) {
+    try {
+      const { ts } = JSON.parse(_fwCache);
+      if (Date.now() - ts < 5 * 60 * 1000) { /* skip fetch, use cached data */ }
+      else renderFlywheel();
+    } catch(e) { renderFlywheel(); }
+  } else { renderFlywheel(); }
+
+  // Refresh agent status every 5s, flywheel every 5min
   setInterval(() => {
     renderSidebarAgents();
     renderAgentChatGrid();
     renderTaskLog();
   }, 5000);
-  setInterval(renderFlywheel, 60000);
+  setInterval(renderFlywheel, 5 * 60 * 1000);
 }
 
 document.addEventListener('DOMContentLoaded', init);

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script>(function(){if(location.hostname==='localhost'||location.hostname==='127.0.0.1'){if(!localStorage.getItem('sb_session')){localStorage.setItem('sb_session',JSON.stringify({access_token:'local',client_slug:'micko-cruz',expires_at:9999999999}));}return;}var s=null;try{s=JSON.parse(localStorage.getItem("sb_session")||"null");}catch(e){}if(!s||!s.access_token||!s.client_slug){window.location.href="/login?from="+encodeURIComponent(window.location.pathname);return;}var exp=s.expires_at?s.expires_at*1000:0;if(exp&&exp<Date.now()){localStorage.removeItem("sb_session");window.location.href="/login?from="+encodeURIComponent(window.location.pathname);return;}var seg=window.location.pathname.split("/").filter(Boolean)[0];if(seg&&seg!==s.client_slug){window.location.href="/login?from="+encodeURIComponent(window.location.pathname);}})();</script>
+<head><script>(function(){var _h=location.hostname;var _isLocal=_h==='localhost'||_h==='127.0.0.1'||/^192\.168\./.test(_h)||/^10\./.test(_h)||/^172\.(1[6-9]|2[0-9]|3[01])\./.test(_h);if(_isLocal){if(!localStorage.getItem('sb_session')){localStorage.setItem('sb_session',JSON.stringify({access_token:'local',client_slug:'micko-cruz',expires_at:9999999999}));}document.cookie='ctrl_slug=micko-cruz;path=/;max-age=31536000';return;}var s=null;try{s=JSON.parse(localStorage.getItem("sb_session")||"null");}catch(e){}if(!s||!s.access_token||!s.client_slug){window.location.href="/login?from="+encodeURIComponent(window.location.pathname);return;}var exp=s.expires_at?s.expires_at*1000:0;if(exp&&exp<Date.now()){localStorage.removeItem("sb_session");window.location.href="/login?from="+encodeURIComponent(window.location.pathname);return;}var seg=window.location.pathname.split("/").filter(Boolean)[0];if(seg&&seg!==s.client_slug){window.location.href="/login?from="+encodeURIComponent(window.location.pathname);}})();</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>InboundOS - CRM</title>
@@ -170,7 +170,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 <link rel="stylesheet" href="/dashboard/spring-animations.css"/>
 <link rel="stylesheet" href="/dashboard/mobile.css?v=11"/>
 <link rel="stylesheet" href="/dashboard/settings-panel.css"/>
-<script src="/dashboard/settings-panel.js"></script>
+<script src="/dashboard/config.js"></script><script src="/dashboard/settings-panel.js"></script>
   <link rel="manifest" href="/manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -196,8 +196,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
       <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','database','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/clients'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Clients</div>
       <div class="nav-item active" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','database','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/crm'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v4H3z"/><path d="M3 10h18v4H3z"/><path d="M3 17h18v4H3z"/></svg>CRM</div>
       <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','database','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/sales-calls'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.74 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.66 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Sales Calls</div>
-      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','roi','edge','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/roi'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>ROI Report</div>
-      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','roi','edge','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/edge'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>Edge</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','roi','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/roi'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>ROI Report</div>
     </div>
     <div class="nav-section"><div class="nav-section-label">Intelligence</div>
             <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','database','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/database'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Company Database</div>
@@ -406,7 +405,7 @@ function renderDetail(l){
     </div>
     ${l.qualifier?`<div style="display:flex;align-items:center;gap:8px;margin-top:2px;"><span class="q-${l.qualifier}">${l.qualifier.toUpperCase()}</span>${l.followers?`<span style="font-family:var(--font-data);font-size:11px;color:var(--text-dim);">${l.followers} followers</span>`:''}</div>`:''}
     ${profile.length?`<div><div class="sec-head">Profile</div><div class="d-grid">${rows(profile)}</div></div>`:''}
-    ${l.opener_text?`<div><div class="sec-head">AI Opener</div><div class="opener-box">${l.opener_text}<button class="opener-copy" onclick="copyOpener(this,'${encodeURIComponent(l.opener_text)}')">Copy</button></div></div>`:''}
+    ${l.opener_text?`<div><div class="sec-head">AI Opener</div><div class="opener-box" id="opener-${l.id}">${escHtml(l.opener_text)}<button class="opener-copy" onclick="copyOpenerById('${l.id}')">Copy</button></div></div>`:''}
     <div><div class="sec-head">Timeline</div><div class="d-grid">${rows(timeline)}</div></div>
     ${intel.length?`<div><div class="sec-head">Intel (Stage 3)</div><div class="d-grid">${rows(intel)}</div></div>`:''}
     <div><div class="sec-head">Update Stage</div><select class="stage-sel" id="ssel-${l.id}">${stageOpts}</select></div>
@@ -423,9 +422,11 @@ async function save(id){
   btn.disabled=true;btn.textContent='Saving…';
   const patch={stage:parseInt(document.getElementById(`ssel-${id}`).value),notes:document.getElementById(`notes-${id}`).value};
   try{
+    const _sess=JSON.parse(localStorage.getItem('sb_session')||'{}');
+    const _tok=_sess.access_token||'sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8';
     const r=await fetch(`https://cscfbuhwlfhblxprkwnh.supabase.co/rest/v1/outreach_leads?id=eq.${id}`,{
       method:'PATCH',
-      headers:{'Content-Type':'application/json','apikey':'sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8','Authorization':'Bearer sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8','Prefer':'return=minimal'},
+      headers:{'Content-Type':'application/json','apikey':'sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8','Authorization':'Bearer '+_tok,'Prefer':'return=minimal'},
       body:JSON.stringify(patch)
     });
     if(!r.ok)throw new Error(await r.text());
@@ -449,7 +450,19 @@ async function loadLeads(){
     const qualifiedCount=leads.filter(l=>l.stage===6||l.stage===9).length;
     document.getElementById('crm-sub').textContent=`${leads.length} leads · ${leads.filter(l=>l.stage===9).length} closed · ${leads.filter(l=>l.stage>0&&l.stage<9&&l.stage!==7).length} active · ${qualifiedCount} qualified · ${unqualifiedCount} unqualified`;
     const pill=document.getElementById('followup-pill');
-    if(overdue+today>0){pill.style.display='flex';pill.textContent=`${overdue+today} follow-up${overdue+today>1?'s':''} due`;}
+    if(overdue+today>0){
+      pill.style.display='flex';pill.textContent=`${overdue+today} follow-up${overdue+today>1?'s':''} due`;
+      // Push notification via service worker
+      if ('serviceWorker' in navigator && 'Notification' in window) {
+        Notification.requestPermission().then(perm => {
+          if (perm === 'granted') {
+            navigator.serviceWorker.ready.then(reg => {
+              reg.active && reg.active.postMessage({ type: 'FOLLOWUP_CHECK', overdue, today });
+            });
+          }
+        });
+      }
+    }
     const outboundLeads = leads.filter(l => !l.source || l.source !== 'inbound');
     const inboundLeads = leads.filter(l => l.source === 'inbound');
     document.getElementById('tab-outbound-cnt').textContent = outboundLeads.length;
@@ -462,10 +475,14 @@ async function loadLeads(){
   }
 }
 
-function copyOpener(btn, encoded) {
-  navigator.clipboard.writeText(decodeURIComponent(encoded)).then(() => {
-    btn.textContent = ' Copied'; btn.classList.add('done');
-    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('done'); }, 1800);
+function copyOpenerById(leadId) {
+  const box = document.getElementById('opener-' + leadId);
+  const btn = box ? box.querySelector('.opener-copy') : null;
+  const text = box ? box.childNodes[0].textContent.trim() : '';
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(() => {
+    if (btn) { btn.textContent = ' Copied'; btn.classList.add('done'); }
+    setTimeout(() => { if (btn) { btn.textContent = 'Copy'; btn.classList.remove('done'); } }, 1800);
   });
 }
 
@@ -517,9 +534,7 @@ let _uploadFiles = [];
 
 function openUpload() {
   document.getElementById('uploadOverlay').classList.add('open');
-  // Restore saved webhook
-  const saved = localStorage.getItem('n8n_webhook_url');
-  if (saved) document.getElementById('uploadWebhook').value = saved;
+  // (webhook field removed)
 }
 
 function closeUpload() {
@@ -564,7 +579,7 @@ async function submitScreenshots() {
   // Check if qualify server is reachable before wasting time
   status.textContent = 'Checking server…';
   try {
-    await fetch('http://localhost:3001/qualify', { method: 'OPTIONS', signal: AbortSignal.timeout(3000) });
+    await fetch(`${SERVER_BASE}/qualify`, { method: 'OPTIONS', signal: AbortSignal.timeout(3000) });
   } catch(e) {
     status.innerHTML = ' Qualify server not reachable.<br><br><strong>This feature only works on your Mac.</strong><br>Open this page in a browser on your Mac, then run:<br><code style="background:rgba(79,195,247,0.08);padding:2px 6px;border-radius:4px;color:#4FC3F7">node qualify-server/server.js</code>';
     btn.disabled = false;
@@ -591,7 +606,7 @@ async function submitScreenshots() {
       const batch = images.slice(b * BATCH, (b + 1) * BATCH);
       status.textContent = `Echo is qualifying… ${Math.min((b+1)*BATCH, images.length)} / ${images.length} profiles`;
 
-      const resp = await fetch('http://localhost:3001/qualify', {
+      const resp = await fetch(`${SERVER_BASE}/qualify`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ images: batch })

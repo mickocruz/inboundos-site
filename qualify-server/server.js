@@ -19,10 +19,32 @@ if (fs.existsSync(ENV_PATH)) {
 }
 
 const PORT = 3001;
-const SB_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co';
-const SB_KEY = 'sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8';
+const SB_URL = process.env.SUPABASE_URL || 'https://cscfbuhwlfhblxprkwnh.supabase.co';
+const SB_KEY = process.env.SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8';
 const N8N_API_KEY = process.env.N8N_API_KEY || '';
 const N8N_URL = process.env.N8N_URL || 'http://localhost:5678';
+const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN || '8806106449:AAH9ROFiHxmz6FvOcWffL_ra8R34q7hEn0I';
+const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || '956012734';
+
+async function nexusAlert(msg) {
+  try {
+    await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: `🤖 InboundOS\n${msg}`, parse_mode: 'Markdown' })
+    });
+  } catch(e) { /* non-fatal */ }
+}
+
+async function logError(page, message, context) {
+  try {
+    await fetch(`${SB_URL}/rest/v1/error_log`, {
+      method: 'POST',
+      headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ page, error_message: message, context: context || {} })
+    });
+  } catch(e) { /* non-fatal */ }
+}
 const QUILL_WORKFLOW_ID = process.env.QUILL_WORKFLOW_ID || '0QoReLvsYWUaIrIO';
 
 const SKILL_PATH = path.join(os.homedir(), '.claude/skills/inboundos-daily-dm/SKILL.md');
@@ -71,9 +93,20 @@ function readBody(req) {
   });
 }
 
+// Rate limiting: max 20 qualify requests per minute per IP
+const _rateLimitMap = new Map();
+function checkRateLimit(ip) {
+  const now = Date.now();
+  const entry = _rateLimitMap.get(ip) || { count: 0, resetAt: now + 60000 };
+  if (now > entry.resetAt) { entry.count = 0; entry.resetAt = now + 60000; }
+  entry.count++;
+  _rateLimitMap.set(ip, entry);
+  return entry.count <= 20;
+}
+
 async function qualifyImage(base64Image) {
-  // Write image to temp file
-  const tmpImg = path.join(os.tmpdir(), `lead_${Date.now()}.jpg`);
+  // Write image to temp file with random suffix to avoid collisions
+  const tmpImg = path.join(os.tmpdir(), `lead_${Date.now()}_${Math.random().toString(36).slice(2)}.jpg`);
   const b64data = base64Image.replace(/^data:image\/[a-z]+;base64,/, '');
   fs.writeFileSync(tmpImg, Buffer.from(b64data, 'base64'));
 
@@ -157,9 +190,31 @@ async function saveToSupabase(lead) {
 const STATIC_DIR = path.join(__dirname, '..');
 const MIME = { '.html':'text/html', '.css':'text/css', '.js':'application/javascript', '.json':'application/json', '.png':'image/png', '.jpg':'image/jpeg', '.svg':'image/svg+xml', '.ico':'image/x-icon', '.woff2':'font/woff2', '.woff':'font/woff', '.ttf':'font/ttf' };
 
+// Slug-based routes: /{slug}/{page} → /dashboard/{page}.html
+const SLUG_PAGES = ['agents','pipeline','performance','research','clients','sales-calls',
+  'sops','org-chart','crm','command','vault','chat','edge','metrics','roi','database'];
+
+function resolveSlugRoute(urlPath) {
+  const parts = urlPath.split('/').filter(Boolean);
+  // /{slug}/{page} or /{slug}/{page}/
+  if (parts.length >= 2 && SLUG_PAGES.includes(parts[1])) {
+    return `/dashboard/${parts[1]}.html`;
+  }
+  // /{page} where page is a known dashboard page (no slug)
+  if (parts.length === 1 && SLUG_PAGES.includes(parts[0])) {
+    return `/dashboard/${parts[0]}.html`;
+  }
+  return null;
+}
+
 function serveStatic(req, res) {
   let urlPath = req.url.split('?')[0];
   if (urlPath === '/' || urlPath === '') urlPath = '/index.html';
+
+  // Rewrite slug-based nav routes to dashboard HTML files
+  const rewritten = resolveSlugRoute(urlPath);
+  if (rewritten) urlPath = rewritten;
+
   const filePath = path.join(STATIC_DIR, urlPath);
   const ext = path.extname(filePath);
   if (!filePath.startsWith(STATIC_DIR)) { res.writeHead(403); res.end('Forbidden'); return; }
@@ -172,8 +227,10 @@ function serveStatic(req, res) {
 
 const server = http.createServer(async (req, res) => {
   const origin = req.headers.origin || '';
-  const allowedOrigins = ['https://inboundos.vercel.app', 'http://localhost:3001', 'http://127.0.0.1:3001'];
-  res.setHeader('Access-Control-Allow-Origin', allowedOrigins.includes(origin) ? origin : 'http://localhost:3001');
+  // Allow any local network origin (192.168.x.x, 10.x.x.x, 172.16-31.x.x) plus known origins
+  const isLocalNetwork = /^http:\/\/(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+|172\.(1[6-9]|2\d|3[01])\.\d+\.\d+)(:\d+)?$/.test(origin);
+  const allowedOrigins = ['https://inboundos.vercel.app'];
+  res.setHeader('Access-Control-Allow-Origin', (isLocalNetwork || allowedOrigins.includes(origin)) ? origin : 'http://localhost:3001');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
@@ -193,18 +250,90 @@ const server = http.createServer(async (req, res) => {
       const data = await r.json();
       if (!r.ok) throw new Error(data.message || JSON.stringify(data));
       console.log('[Quill] Triggered:', data.data?.executionId || data);
+      nexusAlert('✍️ *Quill* triggered — scripts generating now');
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ success: true, executionId: data.data?.executionId }));
     } catch(e) {
       console.error('[Quill] Error:', e.message);
+      nexusAlert(`❌ *Quill* trigger failed — ${e.message}`);
+      await logError('run-quill', e.message, {});
       res.writeHead(500, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ success: false, error: e.message }));
     }
     return;
   }
 
+  // Run an agent task via Claude CLI
+  if (req.method === 'POST' && req.url === '/agent/run') {
+    let body;
+    try { body = JSON.parse(await readBody(req)); } catch(e) {
+      res.writeHead(400); res.end(JSON.stringify({ error: 'Invalid JSON body' })); return;
+    }
+    const { id, agent, task, ideaTitle, funnelStage } = body;
+    if (!agent || !task) {
+      res.writeHead(400); res.end(JSON.stringify({ error: 'Missing agent or task' })); return;
+    }
+
+    // Build skill path
+    const skillName = agent.toLowerCase();
+    const skillPaths = [
+      path.join(os.homedir(), `.claude/plugins/cache/inboundos-ctrl/inboundos-ctrl-skills/1.0.0/skills/${skillName}/SKILL.md`),
+      path.join(os.homedir(), `.claude/skills/${skillName}.md`),
+    ];
+    let skillContent = '';
+    for (const sp of skillPaths) {
+      try { skillContent = fs.readFileSync(sp, 'utf8'); break; } catch(e) {}
+    }
+
+    const prompt = `You are ${agent}, an InboundOS AI agent. Your task: ${task}.${ideaTitle ? ` Content idea to work with: "${ideaTitle}".` : ''}${funnelStage ? ` Funnel stage: ${funnelStage}.` : ''}
+
+${skillContent ? `--- SKILL ---\n${skillContent.slice(0, 8000)}\n--- END SKILL ---\n\n` : ''}Complete the task. Return ONLY a JSON object with this structure:
+{
+  "kind": "${skillName}_result",
+  "summary": "one sentence summary of what was done",
+  "output": "the full output text, script, or result"
+}`;
+
+    console.log(`[${agent}] Running task: ${task}`);
+    try {
+      const result = await new Promise((resolve, reject) => {
+        const args = ['-p', '--dangerously-skip-permissions', prompt];
+        execFile('claude', args, { timeout: 120000, maxBuffer: 1024 * 1024 * 8 }, (err, stdout, stderr) => {
+          if (err) return reject(new Error(stderr || err.message));
+          let text = stdout.trim().replace(/^```json\n?/, '').replace(/\n?```$/, '').trim();
+          try { resolve(JSON.parse(text)); }
+          catch(e) { resolve({ kind: `${skillName}_result`, summary: task, output: text }); }
+        });
+      });
+      console.log(`[${agent}] Done: ${result.summary || 'complete'}`);
+      nexusAlert(`✅ *${agent}* done — ${result.summary || task}`);
+      // Feature G: Log to Supabase agent_activity for persistent activity log
+      fetch(`${SB_URL}/rest/v1/agent_activity`, {
+        method: 'POST',
+        headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ agent_name: agent, run_date: new Date().toISOString().slice(0,10), output_summary: result.summary || task, raw_json: { task } })
+      }).catch(() => {});
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ task: { id, agent, task, status: 'done', progress: 100, result, updatedAt: Date.now() } }));
+    } catch(e) {
+      console.error(`[${agent}] Error:`, e.message);
+      nexusAlert(`❌ *${agent}* failed — ${e.message}`);
+      await logError(`agent/${agent}`, e.message, { task });
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: e.message }));
+    }
+    return;
+  }
+
   if (req.method !== 'POST' || req.url !== '/qualify') {
     res.writeHead(404); res.end(JSON.stringify({ error: 'Not found' })); return;
+  }
+
+  const clientIP = req.socket.remoteAddress || 'unknown';
+  if (!checkRateLimit(clientIP)) {
+    res.writeHead(429, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'Rate limit exceeded — max 20 requests/min' }));
+    return;
   }
 
   let body;
@@ -233,8 +362,14 @@ const server = http.createServer(async (req, res) => {
     } catch(e) {
       console.error(`  ✗ Error:`, e.message);
       results.push({ success: false, error: e.message });
+      await logError('qualify-server', e.message, { index: i });
     }
   }
+
+  const added = results.filter(r => r.success).length;
+  const failed = results.filter(r => !r.success && !r.duplicate).length;
+  if (added > 0) nexusAlert(`✅ Echo qualified *${added}* lead${added > 1 ? 's' : ''} → CRM${failed ? ` · ${failed} failed` : ''}`);
+  if (failed > 0 && added === 0) nexusAlert(`⚠️ Echo qualify failed — ${failed} error${failed > 1 ? 's' : ''}. Check server.`);
 
   res.writeHead(200, { 'Content-Type': 'application/json' });
   res.end(JSON.stringify({ results }));

@@ -6,4 +6,3 @@
 secrets.json
 *.secret
 node_modules/
-admin/

@@ -63,7 +63,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .section-label::after{content:'';flex:1;height:1px;background:var(--border);}
 
 /* AGENT CARDS */
-.agents-row{display:grid;grid-template-columns:repeat(8,minmax(120px,1fr));gap:10px;align-items:stretch;}
+.agents-row{display:grid;grid-template-columns:repeat(6,minmax(120px,1fr));gap:10px;align-items:stretch;}
 .agent-exp{padding:14px 12px;display:flex;flex-direction:column;gap:0;align-items:center;text-align:center;justify-content:flex-start;}
 .agent-top{display:flex;align-items:flex-start;justify-content:center;margin-bottom:10px;}
 .agent-avatar-lg{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;position:relative;flex-shrink:0;margin:0 auto 10px;border:2px solid transparent;}
@@ -555,7 +555,7 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
 .ds-stat-lbl { font-family: 'DM Sans', sans-serif !important; font-size: 11px !important; color: rgba(255,255,255,0.28) !important; letter-spacing: 0.5px !important; margin-top: 4px !important; }
 .ds-agent-name { font-family: 'DM Sans', sans-serif !important; font-size: 12px !important; font-weight: 600 !important; }
 .ds-agent-status { font-family: 'DM Sans', sans-serif !important; font-size: 10px !important; color: rgba(255,255,255,0.28) !important; }
-</style><link rel="stylesheet" href="/dashboard/mobile.css?v=11"/><link rel="stylesheet" href="/dashboard/settings-panel.css"/><script src="/dashboard/config.js"></script><script src="/dashboard/settings-panel.js"></script>  <link rel="manifest" href="/manifest.json">
+</style><link rel="stylesheet" href="/dashboard/mobile.css?v=14"/><link rel="stylesheet" href="/dashboard/settings-panel.css"/><script src="/dashboard/config.js"></script><script src="/dashboard/settings-panel.js"></script>  <link rel="manifest" href="/manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="InboundOS">
@@ -667,19 +667,6 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
         <button class="agent-dispatch" style="background:rgba(244,114,182,0.1);border-color:rgba(244,114,182,0.3);color:#f472b6;margin-top:auto;" onclick="openAssignModal('Hunter')">Run Hunter</button>
       </div>
 
-      <!-- Echo -->
-      <div class="card agent-exp" style="border-top:2px solid #34d399;">
-        <div class="agent-top">
-          <div class="agent-avatar-lg" style="background:rgba(74,222,128,0.1);color:#4ade80;"><!-- Echo: sound waves --><svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></div>
-          <span class="agent-status-badge st-idle">Idle</span>
-        </div>
-        <div class="agent-name-lg">Echo</div>
-        <div class="agent-role-lg">Cold DM Writer · n8n + Claude</div>
-        <div class="agent-prog-bar"><div class="agent-prog-fill" data-target="0" style="background:#4ade80;"></div></div>
-        <div class="agent-prog-pct" style="color:#4ade80;">0%</div>
-        <button class="agent-dispatch" style="background:rgba(74,222,128,0.1);border-color:rgba(74,222,128,0.3);color:#4ade80;margin-top:auto;" onclick="runEcho()">Run Echo</button>
-      </div>
-
       <!-- Pilot -->
       <div class="card agent-exp" style="border-top:2px solid #38bdf8;">
         <div class="agent-top">
@@ -704,19 +691,6 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
         <div class="agent-prog-bar"><div class="agent-prog-fill" data-target="0" style="background:#e879f9;"></div></div>
         <div class="agent-prog-pct" style="color:#e879f9;">0%</div>
         <button class="agent-dispatch" style="background:rgba(232,121,249,0.1);border-color:rgba(232,121,249,0.3);color:#e879f9;margin-top:auto;" onclick="openForgeModal()">Run Forge</button>
-      </div>
-
-      <!-- Edge -->
-      <div class="card agent-exp" style="border-top:2px solid #f97316;">
-        <div class="agent-top">
-          <div class="agent-avatar-lg" style="background:rgba(249,115,22,0.1);color:#f97316;"><!-- Edge: chart/signal --><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-          <span class="agent-status-badge st-idle">Idle</span>
-        </div>
-        <div class="agent-name-lg">Edge</div>
-        <div class="agent-role-lg">Call Reviewer · Sonnet 4.6</div>
-        <div class="agent-prog-bar"><div class="agent-prog-fill" data-target="0" style="background:#f97316;"></div></div>
-        <div class="agent-prog-pct" style="color:#f97316;">0%</div>
-        <button class="agent-dispatch" style="background:rgba(249,115,22,0.1);border-color:rgba(249,115,22,0.3);color:#f97316;margin-top:auto;" onclick="openEdgeModal()">Run Edge</button>
       </div>
 
     </div>
@@ -845,10 +819,6 @@ const AGENT_PRESETS = {
     { icon:'', title:'Find New Leads', desc:'Scrape IG profiles by niche + keyword' },
     { icon:'', title:'Qualify Existing Leads', desc:'Score saved profiles by follower count + engagement' },
   ],
-  Echo: [
-    { icon:'', title:'Write DMs for All Leads', desc:'Personalized opener + offer per profile in Hunter list' },
-    { icon:'', title:'Write DMs for Specific Niche', desc:'Filter by niche then write targeted DMs' },
-  ],
   Pilot: [
     { icon:'', title:'Full Client Check-in', desc:'Pull all deliverables, flag overdue, update status' },
     { icon:'', title:'Update Client Report', desc:'Draft or update weekly report for active client' },
@@ -858,19 +828,15 @@ const AGENT_PRESETS = {
     { icon:'', title:'Optimize Existing System', desc:'Review and improve a current automation' },
     { icon:'', title:'Write SOP', desc:'Document a system or process to Company Database' },
   ],
-  Edge: [
-    { icon:'', title:'Review Call Transcript', desc:'Upload transcript → surfaces objections, missed signals, suggested answers' },
-    { icon:'', title:'Objection Report', desc:'Pull all logged objections across calls, ranked by frequency' },
-  ],
 };
 const PROXY = SERVER_BASE;
 const TASK_STORE = 'ctrl_agent_tasks_v1';
 const KANBAN_STORE = 'ctrl_kanban_state';
 const PIPELINE_STORE = 'ctrl_pipeline_board';
 const SCRIPT_NS = 'ctrl_script_';
-const REAL_AGENTS = ['Scout', 'Quill', 'Pulse', 'Hunter', 'Echo', 'Pilot', 'Forge', 'Edge'];
-const ICONS = {Scout:'', Quill:'', Pulse:'', Hunter:'', Echo:'', Pilot:'', Forge:'', Edge:''};
-const BG_MAP = {Scout:'rgba(79,195,247,0.1)', Quill:'rgba(251,191,36,0.1)', Pulse:'rgba(74,222,128,0.1)', Hunter:'rgba(244,114,182,0.1)', Echo:'rgba(74,222,128,0.1)', Pilot:'rgba(56,189,248,0.1)', Forge:'rgba(232,121,249,0.1)', Edge:'rgba(249,115,22,0.1)'};
+const REAL_AGENTS = ['Scout', 'Quill', 'Pulse', 'Hunter', 'Pilot', 'Forge'];
+const ICONS = {Scout:'', Quill:'', Pulse:'', Hunter:'', Pilot:'', Forge:''};
+const BG_MAP = {Scout:'rgba(79,195,247,0.1)', Quill:'rgba(251,191,36,0.1)', Pulse:'rgba(74,222,128,0.1)', Hunter:'rgba(244,114,182,0.1)', Pilot:'rgba(56,189,248,0.1)', Forge:'rgba(232,121,249,0.1)'};
 let runningProgressTimers = {};
 let _currentAgent = '';
 let _currentFunnelStage = 'MOFU';
@@ -1614,12 +1580,6 @@ function getSlug() {
   return pages.indexOf(seg) === -1 ? seg : '';
 }
 
-function runEcho() {
-  const slug = getSlug();
-  if (!slug) { window.location.href = '/login'; return; }
-  window.location.href = '/' + slug + '/crm?addlead=1';
-}
-
 async function runQuill() {
   // Add task card to queue immediately
   const record = makeTaskRecord('Quill', 'Generate 7 daily scripts (2 TOFU + 3 MOFU + 2 BOFU)');
@@ -1830,7 +1790,7 @@ async function runForge() {
           metaEl.style.cssText = 'font-family:var(--font-data);font-size:11px;color:rgba(255,255,255,0.25);margin-top:5px;margin-bottom:8px;line-height:1.7;text-align:center;width:100%;min-height:52px;height:auto;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;';
           roleEl.insertAdjacentElement('afterend', metaEl);
         }
-        const ON_DEMAND_AGENTS = ['quill','echo','forge','hunter','pilot'];
+        const ON_DEMAND_AGENTS = ['quill','forge','hunter','pilot'];
         const isOnDemand = ON_DEMAND_AGENTS.includes(run.agent?.toLowerCase()) || run.schedule === 'Not connected' || run.schedule === 'On Demand' || !run.schedule;
         const dim = 'color:rgba(255,255,255,0.45);';
         // Always render 3 rows so every card lines up; use — for empty
@@ -1849,8 +1809,8 @@ async function runForge() {
 (function injectModelRunCount() {
   const MODEL_MAP = {
     Scout: 'n8n · Web Scraper', Quill: 'Claude Opus 4.8', Pulse: 'n8n · Scraper + Analyzer',
-    Hunter: 'n8n · Lead Research', Echo: 'n8n + Claude CLI', Pilot: 'n8n · IG Auto Scheduler',
-    Forge: 'n8n + Claude CLI', Edge: 'Claude Sonnet 4.6'
+    Hunter: 'n8n · Lead Research', Pilot: 'n8n · IG Auto Scheduler',
+    Forge: 'n8n + Claude CLI'
   };
   function getRunCounts() {
     try {
@@ -1888,7 +1848,7 @@ async function runForge() {
   <script>
 // System-wide task log from all agents
 (function renderSysTaskLog() {
-  const AGENT_COLORS = {Scout:'#4FC3F7',Quill:'#fbbf24',Pulse:'#4ade80',Hunter:'#f472b6',Echo:'#4ade80',Pilot:'#38bdf8',Forge:'#e879f9',Edge:'#f97316'};
+  const AGENT_COLORS = {Scout:'#4FC3F7',Quill:'#fbbf24',Pulse:'#4ade80',Hunter:'#f472b6',Pilot:'#38bdf8',Forge:'#e879f9'};
   function fmt(ts) {
     if (!ts) return '—';
     const d = new Date(ts), now = new Date(), diff = now - d;
@@ -1941,8 +1901,7 @@ async function runForge() {
 (function sidebarAgentStatus() {
   var AGENTS = [
     {name:'Scout',color:'#4FC3F7'},{name:'Quill',color:'#fbbf24'},{name:'Pulse',color:'#4ade80'},
-    {name:'Hunter',color:'#f472b6'},{name:'Echo',color:'#4ade80'},{name:'Pilot',color:'#38bdf8'},
-    {name:'Forge',color:'#e879f9'},{name:'Edge',color:'#f97316'}
+    {name:'Hunter',color:'#f472b6'},{name:'Pilot',color:'#38bdf8'},{name:'Forge',color:'#e879f9'}
   ];
   function getStatuses() {
     var s = {};
@@ -1997,150 +1956,5 @@ async function runForge() {
 })();
 </script>
 
-<!-- EDGE POPUP MODAL -->
-<div class="edge-modal-overlay" id="edge-modal-overlay" onclick="if(event.target===this)closeEdgeModal()">
-  <div class="edge-modal-box">
-    <div class="edge-modal-head">
-      <div class="edge-modal-title">Edge<span>.</span></div>
-      <button class="edge-modal-close" onclick="closeEdgeModal()">✕</button>
-    </div>
-
-    <div class="edge-card">
-      <h2>Analyze Call</h2>
-      <form id="edge-form" onsubmit="edgeSubmit(event)">
-        <div class="edge-form-grid">
-          <div class="edge-form-group">
-            <label>Prospect Name</label>
-            <input type="text" id="edge-prospect-name" required placeholder="John Smith">
-          </div>
-          <div class="edge-form-group">
-            <label>Call Date</label>
-            <input type="date" id="edge-call-date" required>
-          </div>
-          <div class="edge-form-group">
-            <label>Outcome</label>
-            <select id="edge-outcome">
-              <option value="booked">Booked</option>
-              <option value="follow_up">Follow Up</option>
-              <option value="lost">Lost</option>
-              <option value="no_show">No Show</option>
-            </select>
-          </div>
-          <div class="edge-form-group full">
-            <label>Transcript</label>
-            <textarea id="edge-transcript" placeholder="Paste full call transcript here..." required></textarea>
-          </div>
-        </div>
-        <br>
-        <button type="submit" class="edge-submit-btn" id="edge-submit-btn">Analyze Call</button>
-        <span id="edge-error-msg" class="edge-error"></span>
-      </form>
-    </div>
-
-    <div class="edge-card edge-result-panel" id="edge-result-panel">
-      <h2>Analysis</h2>
-      <p class="edge-summary-text" id="edge-result-summary"></p>
-      <div class="edge-coaching" id="edge-result-coaching"></div>
-      <br>
-      <h2 style="font-family:var(--font-data);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:12px;">Objections</h2>
-      <table class="edge-table">
-        <thead><tr><th>Objection</th><th>Category</th><th>Rebuttal</th></tr></thead>
-        <tbody id="edge-objections-body"></tbody>
-      </table>
-      <br>
-      <h2 style="font-family:var(--font-data);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:12px;">Patterns</h2>
-      <div class="edge-patterns" id="edge-patterns-list"></div>
-    </div>
-
-    <div class="edge-card">
-      <h2>Call History</h2>
-      <div id="edge-history-loading" class="edge-loading">Loading...</div>
-      <table class="edge-table edge-history-table" id="edge-history-table" style="display:none">
-        <thead><tr><th>Date</th><th>Prospect</th><th>Outcome</th><th>Summary</th></tr></thead>
-        <tbody id="edge-history-body"></tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
-<script>
-(function(){
-  const SUPA_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co';
-  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
-  const N8N_WEBHOOK = 'http://localhost:5678/webhook/edge-analyze';
-
-  window.openEdgeModal = function() {
-    document.getElementById('edge-call-date').value = new Date().toISOString().split('T')[0];
-    document.getElementById('edge-modal-overlay').classList.add('open');
-    edgeLoadHistory();
-  };
-
-  window.closeEdgeModal = function() {
-    document.getElementById('edge-modal-overlay').classList.remove('open');
-  };
-
-  window.edgeSubmit = async function(e) {
-    e.preventDefault();
-    const btn = document.getElementById('edge-submit-btn');
-    const errEl = document.getElementById('edge-error-msg');
-    btn.disabled = true;
-    btn.textContent = 'Analyzing...';
-    errEl.textContent = '';
-    try {
-      const res = await fetch(N8N_WEBHOOK, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          prospect_name: document.getElementById('edge-prospect-name').value,
-          call_date: document.getElementById('edge-call-date').value,
-          outcome: document.getElementById('edge-outcome').value,
-          transcript: document.getElementById('edge-transcript').value
-        })
-      });
-      const data = await res.json();
-      if (data.analysis) edgeRenderResult(data.analysis);
-      edgeLoadHistory();
-    } catch(err) {
-      errEl.textContent = 'Error: ' + err.message;
-    } finally {
-      btn.disabled = false;
-      btn.textContent = 'Analyze Call';
-    }
-  };
-
-  function edgeRenderResult(a) {
-    document.getElementById('edge-result-summary').textContent = a.summary || '';
-    document.getElementById('edge-result-coaching').textContent = '💡 ' + (a.coaching_note || '');
-    document.getElementById('edge-objections-body').innerHTML = (a.objections || []).map(o =>
-      `<tr><td>${o.objection}</td><td><span class="edge-badge edge-badge-${o.category}">${o.category}</span></td><td>${o.rebuttal}</td></tr>`
-    ).join('');
-    document.getElementById('edge-patterns-list').innerHTML = (a.patterns || []).map(p =>
-      `<span class="edge-pattern-tag">${p}</span>`
-    ).join('');
-    document.getElementById('edge-result-panel').classList.add('visible');
-  }
-
-  async function edgeLoadHistory() {
-    try {
-      const res = await fetch(`${SUPA_URL}/rest/v1/sales_calls?select=*&order=created_at.desc&limit=20`, {
-        headers: { apikey: SUPA_KEY, Authorization: 'Bearer ' + SUPA_KEY }
-      });
-      const rows = await res.json();
-      document.getElementById('edge-history-loading').style.display = 'none';
-      document.getElementById('edge-history-table').style.display = 'table';
-      document.getElementById('edge-history-body').innerHTML = rows.map(r =>
-        `<tr>
-          <td>${r.call_date || (r.created_at||'').slice(0,10)}</td>
-          <td>${r.prospect_name}</td>
-          <td class="edge-outcome-${r.outcome}">${r.outcome}</td>
-          <td>${(r.summary||'').slice(0,100)}${(r.summary||'').length>100?'...':''}</td>
-        </tr>`
-      ).join('');
-    } catch(e) {
-      document.getElementById('edge-history-loading').textContent = 'Could not load history.';
-    }
-  }
-})();
-</script>
 </body>
 </html>

@@ -299,7 +299,7 @@ html,body{font-family:'DM Sans',sans-serif!important;}
       <div class="header-left">
         <h1>Content Pipeline</h1>
         <div style="font-family:var(--font-data);font-size:12px;color:var(--text-muted);margin-top:2px;" id="pipeline-subtitle">Loading...</div>
-        <div class="date">Content Board · 17 active items · Drag to move between stages</div>
+        <div class="date" id="pipeline-active-count">Content Board · 0 active items · Drag to move between stages</div>
       </div>
       <div class="header-right" style="display:flex;align-items:center;gap:10px;">
         <div class="view-toggle" style="margin-right:6px;">
@@ -317,11 +317,11 @@ html,body{font-family:'DM Sans',sans-serif!important;}
 
     <!-- STATS ROW -->
     <div class="pipe-stats">
-      <div class="pipe-stat" data-filter-col="scripting"><div class="pipe-stat-val" style="color:var(--yellow);">3</div><div class="pipe-stat-lbl">Scripts to Film</div></div>
+      <div class="pipe-stat" data-filter-col="scripting"><div class="pipe-stat-val" style="color:var(--yellow);">0</div><div class="pipe-stat-lbl">Scripts to Film</div></div>
       <div class="pipe-stat" data-filter-col="filming"><div class="pipe-stat-val" style="color:#f97316;">0</div><div class="pipe-stat-lbl">Filming</div></div>
-      <div class="pipe-stat" data-filter-col="editing"><div class="pipe-stat-val" style="color:var(--purple);">2</div><div class="pipe-stat-lbl">Editing</div></div>
-      <div class="pipe-stat" data-filter-col="scheduled"><div class="pipe-stat-val" style="color:var(--accent);">4</div><div class="pipe-stat-lbl">Scheduled</div></div>
-      <div class="pipe-stat" data-filter-col="published"><div class="pipe-stat-val" style="color:var(--green);">38</div><div class="pipe-stat-lbl">Published</div></div>
+      <div class="pipe-stat" data-filter-col="editing"><div class="pipe-stat-val" style="color:var(--purple);">0</div><div class="pipe-stat-lbl">Editing</div></div>
+      <div class="pipe-stat" data-filter-col="scheduled"><div class="pipe-stat-val" style="color:var(--accent);">0</div><div class="pipe-stat-lbl">Scheduled</div></div>
+      <div class="pipe-stat" data-filter-col="published"><div class="pipe-stat-val" style="color:var(--green);">0</div><div class="pipe-stat-lbl">Published</div></div>
     </div>
 
     <!-- KANBAN BOARD -->
@@ -331,7 +331,7 @@ html,body{font-family:'DM Sans',sans-serif!important;}
         <div class="col-header">
           <span class="col-title">Scripts to Film</span>
           <div style="display:flex;align-items:center;gap:6px;">
-            <span class="col-count" id="count-scripting">3</span>
+            <span class="col-count" id="count-scripting">0</span>
             <button onclick="deleteAllColumn('scripting')" title="Delete all scripts in this column" style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.25);color:#f87171;border-radius:6px;padding:2px 7px;font-family:var(--font-data);font-size:10px;font-weight:600;cursor:pointer;letter-spacing:0.5px;transition:all 0.15s;" onmouseover="this.style.background='rgba(248,113,113,0.2)'" onmouseout="this.style.background='rgba(248,113,113,0.1)'">Delete All</button>
           </div>
         </div>
@@ -355,7 +355,7 @@ html,body{font-family:'DM Sans',sans-serif!important;}
       <div class="col">
         <div class="col-header">
           <span class="col-title">Editing</span>
-          <span class="col-count" id="count-editing">2</span>
+          <span class="col-count" id="count-editing">0</span>
         </div>
         <div class="col-body" id="col-editing" data-col="editing"
           ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event,'editing')">
@@ -366,7 +366,7 @@ html,body{font-family:'DM Sans',sans-serif!important;}
       <div class="col">
         <div class="col-header">
           <span class="col-title">Scheduled</span>
-          <span class="col-count" id="count-scheduled">4</span>
+          <span class="col-count" id="count-scheduled">0</span>
         </div>
         <div class="col-body" id="col-scheduled" data-col="scheduled"
           ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event,'scheduled')">
@@ -377,7 +377,7 @@ html,body{font-family:'DM Sans',sans-serif!important;}
       <div class="col">
         <div class="col-header">
           <span class="col-title">Published</span>
-          <span class="col-count" id="count-published">38</span>
+          <span class="col-count" id="count-published">0</span>
         </div>
         <div class="col-body" id="col-published" data-col="published"
           ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event,'published')">
@@ -665,6 +665,7 @@ function onDrop(e, colId) {
       setTimeout(() => { pendingCard.style.transform = ''; pendingCard.style.transition = ''; }, 450);
     });
     updateCounts();
+    serializeBoard();
     openSchedModal(pendingCard, 'scheduled');
     return;
   }
@@ -681,6 +682,7 @@ function onDrop(e, colId) {
   });
 
   updateCounts();
+  serializeBoard();
   const supaId = dragCard.dataset.supaId;
   const newStatus = COL_STATUS[colId];
   if (supaId && newStatus) supaUpdateStatus(supaId, newStatus);
@@ -780,16 +782,27 @@ function confirmSchedule() {
 function togglePlat(el) { el.classList.toggle('sel'); }
 
 function updateCounts() {
-  ['scripting','editing','scheduled','published'].forEach(id => {
-    const count = document.getElementById('col-'+id).querySelectorAll('.kcard').length;
-    document.getElementById('count-'+id).textContent = count;
-    const stat = document.querySelector('.pipe-stat-val:nth-child(' + ({'scripting':1,'editing':2,'scheduled':3,'published':4}[id]) + ')');
+  const allCols = ['scripting','filming','editing','scheduled','published'];
+  allCols.forEach(id => {
+    const col = document.getElementById('col-'+id);
+    if (!col) return;
+    const count = col.querySelectorAll('.kcard').length;
+    const countEl = document.getElementById('count-'+id);
+    if (countEl) countEl.textContent = count;
   });
+  // update stat bar values (order matches HTML: scripting, filming, editing, scheduled, published)
   const vals = document.querySelectorAll('.pipe-stat-val');
-  const ids = ['scripting','editing','scheduled','published'];
-  ids.forEach((id,i) => {
-    vals[i].textContent = document.getElementById('col-'+id).querySelectorAll('.kcard').length;
+  allCols.forEach((id, i) => {
+    const col = document.getElementById('col-'+id);
+    if (vals[i] && col) vals[i].textContent = col.querySelectorAll('.kcard').length;
   });
+  // update active items count in header
+  const total = allCols.reduce((sum, id) => {
+    const col = document.getElementById('col-'+id);
+    return sum + (col ? col.querySelectorAll('.kcard').length : 0);
+  }, 0);
+  const countEl = document.getElementById('pipeline-active-count');
+  if (countEl) countEl.textContent = `Content Board · ${total} active items · Drag to move between stages`;
 }
 
 //  BOARD PERSISTENCE 
@@ -839,7 +852,7 @@ function dataToCard(data) {
 }
 
 function serializeBoard() {
-  const cols = ['scripting','editing','scheduled','published'];
+  const cols = ['scripting','filming','editing','scheduled','published'];
   const state = {};
   cols.forEach(col => {
     state[col] = [...document.querySelectorAll('#col-'+col+' .kcard')].map(cardToData);
@@ -852,7 +865,7 @@ function restoreBoard() {
   if (!raw) return;
   try {
     const state = JSON.parse(raw);
-    ['scripting','editing','scheduled','published'].forEach(col => {
+    ['scripting','filming','editing','scheduled','published'].forEach(col => {
       const container = document.getElementById('col-' + col);
       if (!Array.isArray(state[col])) return;
       container.innerHTML = '';
@@ -1150,14 +1163,16 @@ async function saveScriptModal(moveCard = true) {
   const caption = document.getElementById('smt-caption').value.trim();
   if (!script) return;
 
-  // Extract hook = first paragraph of script
-  const hook = script.split(/\n\n+/)[0].trim();
+  // Extract hook = first paragraph of script; body = rest
+  const scriptParas = script.split(/\n\n+/);
+  const hook = scriptParas[0].trim();
+  const bodyOnly = scriptParas.slice(1).join('\n\n').trim();
 
   const ns   = scriptModalKeyNs(scriptModalCard);
   const full = [script && 'SCRIPT:\n'+script, caption && 'CAPTION:\n'+caption].filter(Boolean).join('\n\n');
   localStorage.setItem(ns, full);
   localStorage.setItem(ns + '_hook',    hook);
-  localStorage.setItem(ns + '_body',    script);
+  localStorage.setItem(ns + '_body',    bodyOnly);
   localStorage.setItem(ns + '_cta',     '');
   localStorage.setItem(ns + '_caption', caption);
 
@@ -1325,9 +1340,10 @@ async function generateScript(btn, funnelCtx = {}) {
   const bofuType = funnelCtx.bofuType || '';
 
   try {
+    const _plSess = (() => { try { return JSON.parse(localStorage.getItem('sb_session') || '{}'); } catch { return {}; } })();
     const res = await fetch(`${PROXY}/agent/run`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + (_plSess.access_token || '') },
       body: JSON.stringify({
         id: taskId,
         agent: 'Quill',
@@ -1417,7 +1433,9 @@ const _sbSession = JSON.parse(localStorage.getItem('sb_session') || '{}');
 const SUPA_URL      = _sbSession.client_supabase_url || 'https://cscfbuhwlfhblxprkwnh.supabase.co';
 const SUPA_KEY      = _sbSession.client_supabase_anon || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
 const SUPA_ANON     = SUPA_KEY;
-const SUPA_TOKEN    = _sbSession.access_token || SUPA_KEY;
+// Never use a placeholder token ('local') for writes — fall back to anon key which works with RLS policies
+const _rawToken     = _sbSession.access_token;
+const SUPA_TOKEN    = (_rawToken && _rawToken !== 'local') ? _rawToken : SUPA_KEY;
 const SUPA_CLIENT   = _sbSession.client_id || 'micko_cruz';
 
 // status → column id mapping
@@ -1446,7 +1464,11 @@ async function supaUpdateStatus(id, status) {
   const res = await fetch(`${SUPA_URL}/rest/v1/agent_items?id=eq.${id}`, {
     method: 'PATCH', headers: _wHeaders, body: JSON.stringify({ status }),
   });
-  if (!res.ok) console.error('Failed to save card status:', res.status, id, status, await res.text());
+  if (!res.ok) {
+    const errText = await res.text();
+    console.error('Failed to save card status:', res.status, id, status, errText);
+    showPipeToast('⚠ Save failed — check console', '#f87171');
+  }
 }
 
 async function supaUpdateScheduledDate(id, scheduledAt) {
@@ -1555,7 +1577,7 @@ async function uploadVideoFile(file) {
 
 // Map column id → Supabase status (reverse of STATUS_COL)
 const COL_STATUS = { ideas: 'pending', scripting: 'approved', filming: 'filming', editing: 'filmed', scheduled: 'scheduled', published: 'posted' };
-const NEXT_COL  = { scripting: 'editing', editing: 'scheduled', scheduled: 'published', published: null };
+const NEXT_COL  = { scripting: 'filming', filming: 'editing', editing: 'scheduled', scheduled: 'published', published: null };
 const NEXT_LABEL = { scripting: 'Move to Filming', filming: 'Move to Editing', editing: 'Schedule Post', scheduled: 'Move to Published', published: 'Mark Published' };
 
 function funnelStageBadgeStyle(stage) {
@@ -1641,8 +1663,11 @@ async function loadFromSupabase() {
     // Store script fields separately in localStorage
     if (item.content) {
       const ns = SCRIPT_NS + item.id;
-      localStorage.setItem(ns + '_hook',    meta.hook    || '');
-      localStorage.setItem(ns + '_body',    item.content || '');
+      const contentParas = item.content.split(/\n\n+/);
+      const savedHook = meta.hook || contentParas[0] || '';
+      const savedBody = meta.hook ? item.content : contentParas.slice(1).join('\n\n');
+      localStorage.setItem(ns + '_hook',    savedHook);
+      localStorage.setItem(ns + '_body',    savedBody);
       localStorage.setItem(ns + '_cta',     meta.cta     || '');
       localStorage.setItem(ns + '_caption', meta.caption || '');
     }
@@ -1686,8 +1711,11 @@ function buildRealtimeCard(item) {
 
   if (item.content) {
     const ns = SCRIPT_NS + item.id;
-    localStorage.setItem(ns + '_hook',    meta.hook    || '');
-    localStorage.setItem(ns + '_body',    item.content || '');
+    const contentParas = item.content.split(/\n\n+/);
+    const savedHook = meta.hook || contentParas[0] || '';
+    const savedBody = meta.hook ? item.content : contentParas.slice(1).join('\n\n');
+    localStorage.setItem(ns + '_hook',    savedHook);
+    localStorage.setItem(ns + '_body',    savedBody);
     localStorage.setItem(ns + '_cta',     meta.cta     || '');
     localStorage.setItem(ns + '_caption', meta.caption || '');
   }
@@ -1741,9 +1769,27 @@ function initRealtime() {
     .subscribe();
 }
 
-// On load: load from Supabase
+// On load: load from Supabase, then overlay any local-only cards
 (function init() {
-  loadFromSupabase();
+  loadFromSupabase().then(() => {
+    // Restore local-only cards (no supaId) that were saved to localStorage
+    const raw = localStorage.getItem('ctrl_pipeline_board');
+    if (raw) {
+      try {
+        const state = JSON.parse(raw);
+        ['scripting','filming','editing','scheduled','published'].forEach(colId => {
+          if (!Array.isArray(state[colId])) return;
+          const container = document.getElementById('col-' + colId);
+          state[colId].forEach(data => {
+            if (!data.id || document.querySelector(`[data-id="${data.id}"]`)) return; // skip if already loaded from Supabase
+            if (isDeletedCard(data)) return;
+            container.appendChild(dataToCard(data));
+          });
+        });
+        updateCounts();
+      } catch(e) {}
+    }
+  });
   initRealtime();
   // Wire hardcoded / restored cards
   document.querySelectorAll('.kcard').forEach(card => {

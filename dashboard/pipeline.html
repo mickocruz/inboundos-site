@@ -670,23 +670,25 @@ function onDrop(e, colId) {
     return;
   }
 
-  col.appendChild(dragCard);
+  const droppedCard = dragCard;
+  dragCard = null;
+  col.appendChild(droppedCard);
 
   requestAnimationFrame(() => {
-    dragCard.style.transition = 'transform 0.45s cubic-bezier(0.34,1.56,0.64,1), opacity 0.25s ease';
-    dragCard.style.transform = 'scale(1.03)';
-    dragCard.style.opacity = '1';
+    droppedCard.style.transition = 'transform 0.45s cubic-bezier(0.34,1.56,0.64,1), opacity 0.25s ease';
+    droppedCard.style.transform = 'scale(1.03)';
+    droppedCard.style.opacity = '1';
     setTimeout(() => {
-      if (dragCard) { dragCard.style.transform = ''; dragCard.style.transition = ''; }
+      droppedCard.style.transform = '';
+      droppedCard.style.transition = '';
     }, 450);
   });
 
   updateCounts();
   serializeBoard();
-  const supaId = dragCard.dataset.supaId;
+  const supaId = droppedCard.dataset.supaId;
   const newStatus = COL_STATUS[colId];
   if (supaId && newStatus) supaUpdateStatus(supaId, newStatus);
-  dragCard = null;
 }
 
 //  MOVE TO NEXT STAGE (mobile button) 

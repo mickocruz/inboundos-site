@@ -398,7 +398,7 @@ function filterRows(q) {
 
 // Sidebar agent status
 (function(){
-  var AGENTS = [{name:'Argus'},{name:'Apollo'},{name:'Argus'},{name:'Hermes'},{name:'Clio'},{name:'Clio'}];
+  var AGENTS = [{name:'Argus'},{name:'Apollo'},{name:'Hermes'},{name:'Clio'}];
   function render() {
     var el = document.getElementById('sidebar-agent-status-list'); if(!el) return;
     var s = {}; AGENTS.forEach(function(a){s[a.name]='idle';});

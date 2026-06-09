@@ -63,7 +63,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .section-label::after{content:'';flex:1;height:1px;background:var(--border);}
 
 /* AGENT CARDS */
-.agents-row{display:grid;grid-template-columns:repeat(6,minmax(120px,1fr));gap:10px;align-items:stretch;}
+.agents-row{display:grid;grid-template-columns:repeat(4,minmax(180px,1fr));gap:12px;align-items:stretch;}
 .agent-exp{padding:14px 12px;display:flex;flex-direction:column;gap:0;align-items:center;text-align:center;justify-content:flex-start;}
 .agent-top{display:flex;align-items:flex-start;justify-content:center;margin-bottom:10px;}
 .agent-avatar-lg{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;position:relative;flex-shrink:0;margin:0 auto 10px;border:2px solid transparent;}
@@ -607,7 +607,7 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
         <div class="date" id="agentsHeaderDate">AI Team · Standby</div>
       </div>
       <div class="header-right">
-        <div class="pill pill-green"><div class="status-dot"></div><span id="agentsOnlineCount">6 / 6 Online</span></div>
+        <div class="pill pill-green"><div class="status-dot"></div><span id="agentsOnlineCount">4 / 4 Online</span></div>
       </div>
     </div>
 
@@ -615,82 +615,97 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
     <div class="agents-row">
 
       <!-- Argus -->
-      <div class="card agent-exp" style="border-top:2px solid #4FC3F7;">
+      <div class="card agent-exp" id="argusAgentCard" style="border-top:2px solid #4FC3F7;">
         <div class="agent-top">
-          <div class="agent-avatar-lg" style="background:rgba(79,195,247,0.1);color:#4FC3F7;"><!-- Argus: crosshair --><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg></div>
+          <div class="agent-avatar-lg" style="background:rgba(79,195,247,0.1);color:#4FC3F7;">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg>
+          </div>
           <span class="agent-status-badge st-idle">Idle</span>
         </div>
         <div class="agent-name-lg">Argus</div>
-        <div class="agent-role-lg">AI News · n8n · Scheduled</div>
-        <div class="agent-prog-bar"><div class="agent-prog-fill" data-target="0" style="background:var(--accent);"></div></div>
-        <div class="agent-prog-pct" style="color:var(--accent);">0%</div>
+        <div style="font-family:'DM Sans',sans-serif;font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(79,195,247,0.55);margin-bottom:6px;text-align:center;">Chief Intelligence Officer</div>
+        <div style="font-family:'DM Sans',sans-serif;font-size:10px;color:rgba(255,255,255,0.28);text-align:center;margin-bottom:10px;font-style:italic;">The Greek giant with 100 eyes — nothing escapes his watch.</div>
+        <div class="agent-role-lg" style="font-size:11px !important;color:rgba(255,255,255,0.45) !important;min-height:0 !important;margin-bottom:12px !important;">Tracks everything competitors are doing before you even think to look</div>
+        <div class="agent-actions-list">
+          <div class="agent-action-item">Competitor IG analysis · weekly</div>
+          <div class="agent-action-item">Content angle generation</div>
+          <div class="agent-action-item">Weekly intelligence brief</div>
+        </div>
+        <div style="font-family:'DM Sans',sans-serif;font-size:10px;color:rgba(255,255,255,0.2);text-align:center;margin-bottom:12px;letter-spacing:0.3px;">n8n · Scraper + Analyzer · Scheduled</div>
+        <div class="agent-prog-bar"><div class="agent-prog-fill" data-target="0" style="background:#4FC3F7;"></div></div>
+        <div class="agent-prog-pct" style="color:#4FC3F7;">0%</div>
+        <div class="argus-result-panel" id="argusRollupPanel"></div>
         <button class="agent-dispatch" style="background:rgba(79,195,247,0.1);border-color:rgba(79,195,247,0.3);color:#4FC3F7;margin-top:auto;" onclick="openAssignModal('Argus')">Run Argus</button>
       </div>
 
       <!-- Apollo -->
       <div class="card agent-exp" style="border-top:2px solid #fbbf24;">
         <div class="agent-top">
-          <div class="agent-avatar-lg" style="background:rgba(251,191,36,0.1);color:#fbbf24;"><!-- Apollo: pen nib --><svg viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></div>
+          <div class="agent-avatar-lg" style="background:rgba(251,191,36,0.1);color:#fbbf24;">
+            <svg viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
+          </div>
           <span class="agent-status-badge st-idle">Idle</span>
         </div>
         <div class="agent-name-lg">Apollo</div>
-        <div class="agent-role-lg">Scripts + Captions · n8n · Opus 4.8</div>
-        <div class="agent-prog-bar"><div class="agent-prog-fill" data-target="0" style="background:var(--yellow);"></div></div>
-        <div class="agent-prog-pct" style="color:var(--yellow);">0%</div>
-        <button class="agent-dispatch" id="apollo-run-btn" style="background:rgba(251,191,36,0.1);border-color:rgba(251,191,36,0.3);color:#fbbf24;margin-top:auto;" onclick="runApollo()">Run Apollo</button>
-      </div>
-
-      <!-- Argus -->
-      <div class="card agent-exp" id="argusAgentCard" style="border-top:2px solid #4ade80;">
-        <div class="agent-top">
-          <div class="agent-avatar-lg" style="background:rgba(74,222,128,0.1);color:#4ade80;"><!-- Argus: waveform --><svg viewBox="0 0 24 24"><polyline points="2,12 6,12 8,4 10,20 12,12 14,16 16,10 18,12 22,12"/></svg></div>
-          <span class="agent-status-badge st-idle">Idle</span>
+        <div style="font-family:'DM Sans',sans-serif;font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(251,191,36,0.55);margin-bottom:6px;text-align:center;">Head of Content</div>
+        <div style="font-family:'DM Sans',sans-serif;font-size:10px;color:rgba(255,255,255,0.28);text-align:center;margin-bottom:10px;font-style:italic;">Greek god of light and poetry — makes everything sound brilliant.</div>
+        <div class="agent-role-lg" style="font-size:11px !important;color:rgba(255,255,255,0.45) !important;min-height:0 !important;margin-bottom:12px !important;">Scripts, plans, and schedules every piece of content in the flywheel</div>
+        <div class="agent-actions-list">
+          <div class="agent-action-item">7 scripts/day · TOFU + MOFU + BOFU</div>
+          <div class="agent-action-item">Analytics review + direction</div>
+          <div class="agent-action-item">Top performer repurposing</div>
         </div>
-        <div class="agent-name-lg">Argus</div>
-        <div class="agent-role-lg">Competitor Intel · n8n · Weekly Mon 9AM</div>
-        <div class="agent-prog-bar"><div class="agent-prog-fill" data-target="0" style="background:var(--green);"></div></div>
-        <div class="agent-prog-pct" style="color:var(--green);">0%</div>
-        <div class="argus-result-panel" id="argusRollupPanel"></div>
-        <button class="agent-dispatch" style="background:rgba(74,222,128,0.1);border-color:rgba(74,222,128,0.3);color:#4ade80;margin-top:auto;" onclick="openAssignModal('Argus')">Run Argus</button>
+        <div style="font-family:'DM Sans',sans-serif;font-size:10px;color:rgba(255,255,255,0.2);text-align:center;margin-bottom:12px;letter-spacing:0.3px;">n8n · Claude Opus 4.8 · Daily 7AM</div>
+        <div class="agent-prog-bar"><div class="agent-prog-fill" data-target="0" style="background:#fbbf24;"></div></div>
+        <div class="agent-prog-pct" style="color:#fbbf24;">0%</div>
+        <button class="agent-dispatch" id="apollo-run-btn" style="background:rgba(251,191,36,0.1);border-color:rgba(251,191,36,0.3);color:#fbbf24;margin-top:auto;" onclick="runApollo()">Run Apollo</button>
       </div>
 
       <!-- Hermes -->
       <div class="card agent-exp" style="border-top:2px solid #f472b6;">
         <div class="agent-top">
-          <div class="agent-avatar-lg" style="background:rgba(244,114,182,0.1);color:#f472b6;"><!-- Hermes: target --><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/></svg></div>
+          <div class="agent-avatar-lg" style="background:rgba(244,114,182,0.1);color:#f472b6;">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/></svg>
+          </div>
           <span class="agent-status-badge st-idle">Idle</span>
         </div>
         <div class="agent-name-lg">Hermes</div>
-        <div class="agent-role-lg">Lead Research · n8n · Daily 8AM PHT</div>
+        <div style="font-family:'DM Sans',sans-serif;font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(244,114,182,0.55);margin-bottom:6px;text-align:center;">Head of Sales</div>
+        <div style="font-family:'DM Sans',sans-serif;font-size:10px;color:rgba(255,255,255,0.28);text-align:center;margin-bottom:10px;font-style:italic;">Greek messenger god — fastest in the room, always first to reach people.</div>
+        <div class="agent-role-lg" style="font-size:11px !important;color:rgba(255,255,255,0.45) !important;min-height:0 !important;margin-bottom:12px !important;">Finds, qualifies, and opens every lead before you ever touch the DMs</div>
+        <div class="agent-actions-list">
+          <div class="agent-action-item">IG lead scraping by niche</div>
+          <div class="agent-action-item">Profile scoring + qualification</div>
+          <div class="agent-action-item">Personalized cold DM writing</div>
+          <div class="agent-action-item">Pipeline tracking + follow-ups</div>
+        </div>
+        <div style="font-family:'DM Sans',sans-serif;font-size:10px;color:rgba(255,255,255,0.2);text-align:center;margin-bottom:12px;letter-spacing:0.3px;">n8n · Lead Research · Daily 8AM PHT</div>
         <div class="agent-prog-bar"><div class="agent-prog-fill" data-target="0" style="background:#f472b6;"></div></div>
         <div class="agent-prog-pct" style="color:#f472b6;">0%</div>
         <button class="agent-dispatch" style="background:rgba(244,114,182,0.1);border-color:rgba(244,114,182,0.3);color:#f472b6;margin-top:auto;" onclick="openAssignModal('Hermes')">Run Hermes</button>
       </div>
 
       <!-- Clio -->
-      <div class="card agent-exp" style="border-top:2px solid #38bdf8;">
+      <div class="card agent-exp" style="border-top:2px solid #a78bfa;">
         <div class="agent-top">
-          <div class="agent-avatar-lg" style="background:rgba(56,189,248,0.1);color:#38bdf8;"><!-- Clio: compass --><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24,7.76 14.12,14.12 7.76,16.24 9.88,9.88 16.24,7.76" fill="currentColor" stroke="none" opacity="0.7"/><circle cx="12" cy="12" r="1.5" fill="#ffffff" stroke="none"/></svg></div>
-          <span class="agent-status-badge st-idle">Idle</span>
-        </div>
-        <div class="agent-name-lg">Clio</div>
-        <div class="agent-role-lg">IG Auto Scheduler · n8n · Every 5m</div>
-        <div class="agent-prog-bar"><div class="agent-prog-fill" data-target="0" style="background:#38bdf8;"></div></div>
-        <div class="agent-prog-pct" style="color:#38bdf8;">0%</div>
-        <button class="agent-dispatch" style="background:rgba(56,189,248,0.1);border-color:rgba(56,189,248,0.3);color:#38bdf8;margin-top:auto;" onclick="openAssignModal('Clio')">Run Clio</button>
-      </div>
-
-      <!-- Clio -->
-      <div class="card agent-exp" style="border-top:2px solid #e879f9;">
-        <div class="agent-top">
-          <div class="agent-avatar-lg" style="background:rgba(232,121,249,0.1);color:#e879f9;"><!-- Clio: wrench --><svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
+          <div class="agent-avatar-lg" style="background:rgba(167,139,250,0.1);color:#a78bfa;">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24,7.76 14.12,14.12 7.76,16.24 9.88,9.88 16.24,7.76" fill="currentColor" stroke="none" opacity="0.7"/><circle cx="12" cy="12" r="1.5" fill="#ffffff" stroke="none"/></svg>
+          </div>
           <span class="agent-status-badge st-idle" id="clio-status-badge">Idle</span>
         </div>
         <div class="agent-name-lg">Clio</div>
-        <div class="agent-role-lg">System Builder · n8n + Claude</div>
-        <div class="agent-prog-bar"><div class="agent-prog-fill" data-target="0" style="background:#e879f9;"></div></div>
-        <div class="agent-prog-pct" style="color:#e879f9;">0%</div>
-        <button class="agent-dispatch" style="background:rgba(232,121,249,0.1);border-color:rgba(232,121,249,0.3);color:#e879f9;margin-top:auto;" onclick="openClioModal()">Run Clio</button>
+        <div style="font-family:'DM Sans',sans-serif;font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(167,139,250,0.55);margin-bottom:6px;text-align:center;">Chief Operating Officer</div>
+        <div style="font-family:'DM Sans',sans-serif;font-size:10px;color:rgba(255,255,255,0.28);text-align:center;margin-bottom:10px;font-style:italic;">Greek muse of history — remembers everything, misses nothing.</div>
+        <div class="agent-role-lg" style="font-size:11px !important;color:rgba(255,255,255,0.45) !important;min-height:0 !important;margin-bottom:12px !important;">Runs the entire client lifecycle from onboarding through renewal</div>
+        <div class="agent-actions-list">
+          <div class="agent-action-item">Client onboarding · 28-Q intake</div>
+          <div class="agent-action-item">Weekly check-ins + churn watch</div>
+          <div class="agent-action-item">Renewal prep + results review</div>
+        </div>
+        <div style="font-family:'DM Sans',sans-serif;font-size:10px;color:rgba(255,255,255,0.2);text-align:center;margin-bottom:12px;letter-spacing:0.3px;">n8n · Claude CLI · Always On</div>
+        <div class="agent-prog-bar"><div class="agent-prog-fill" data-target="0" style="background:#a78bfa;"></div></div>
+        <div class="agent-prog-pct" style="color:#a78bfa;">0%</div>
+        <button class="agent-dispatch" style="background:rgba(167,139,250,0.1);border-color:rgba(167,139,250,0.3);color:#a78bfa;margin-top:auto;" onclick="openClioModal()">Run Clio</button>
       </div>
 
     </div>
@@ -734,7 +749,7 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
         <div class="ds-stat"><div class="ds-stat-val" id="cp-actions">0</div><div class="ds-stat-lbl">Actions Today</div></div>
         <div class="ds-stat"><div class="ds-stat-val">99%</div><div class="ds-stat-lbl">Uptime</div></div>
-        <div class="ds-stat"><div class="ds-stat-val" id="cp-active">0/6</div><div class="ds-stat-lbl">Agents On</div></div>
+        <div class="ds-stat"><div class="ds-stat-val" id="cp-active">0/4</div><div class="ds-stat-lbl">Agents On</div></div>
         <div class="ds-stat"><div class="ds-stat-val" id="cp-queue">0</div><div class="ds-stat-lbl">In Queue</div></div>
       </div>
 
@@ -808,24 +823,23 @@ document.addEventListener('DOMContentLoaded', () => {
 const AGENT_PRESETS = {
   Argus: [
     { icon:'', title:'Generate Angles', desc:'Write 5 TOFU/MOFU angles from existing transcripts → content-bucket.md' },
-    { icon:'', title:'Competitor Research', desc:'Read latest Argus transcripts, extract content angles' },
+    { icon:'', title:'Competitor Analysis', desc:'Scrape + analyze competitor IG reels — hooks, formats, gaps' },
+    { icon:'', title:'Weekly Intelligence Brief', desc:'Aggregate AI news + competitor data into actionable brief' },
   ],
-  Apollo: [],
-  Argus: [
-    { icon:'', title:'Analyze Transcripts', desc:'Run intel extraction on saved competitor transcripts' },
-    { icon:'', title:'Weekly Analytics Review', desc:'Enter top performers — maps to next week\'s script angles' },
+  Apollo: [
+    { icon:'', title:'Script Batch (7 scripts)', desc:'Generate 2 TOFU + 3 MOFU + 2 BOFU scripts using R.E.E.L. method' },
+    { icon:'', title:'Weekly Content Calendar', desc:'Build Mon–Sun posting plan from analytics + content bucket' },
+    { icon:'', title:'Repurpose Top Performers', desc:'Take best reel from last week → 3 angle variations' },
   ],
   Hermes: [
-    { icon:'', title:'Find New Leads', desc:'Scrape IG profiles by niche + keyword' },
-    { icon:'', title:'Qualify Existing Leads', desc:'Score saved profiles by follower count + engagement' },
+    { icon:'', title:'Find New Leads', desc:'Scrape IG profiles by niche + keyword, score by business signals' },
+    { icon:'', title:'Write Cold DMs', desc:'Generate personalized openers for qualified leads' },
+    { icon:'', title:'Pipeline Review', desc:'Check follow-up status, flag stale leads, update CRM' },
   ],
   Clio: [
-    { icon:'', title:'Full Client Check-in', desc:'Pull all deliverables, flag overdue, update status' },
-    { icon:'', title:'Update Client Report', desc:'Draft or update weekly report for active client' },
-  ],
-  Clio: [
-    { icon:'', title:'Build New Automation', desc:'Design + code a cron, script, or workflow' },
-    { icon:'', title:'Optimize Existing System', desc:'Review and improve a current automation' },
+    { icon:'', title:'Onboard New Client', desc:'Run 28-Q intake, build full client profile, feed Apollo + Argus' },
+    { icon:'', title:'Weekly Client Check-in', desc:'Pull deliverables, flag overdue, draft client update message' },
+    { icon:'', title:'Churn Watch', desc:'Check all clients for risk signals — dark, dropped posting, no feedback' },
     { icon:'', title:'Write SOP', desc:'Document a system or process to Company Database' },
   ],
 };
@@ -834,9 +848,9 @@ const TASK_STORE = 'ctrl_agent_tasks_v1';
 const KANBAN_STORE = 'ctrl_kanban_state';
 const PIPELINE_STORE = 'ctrl_pipeline_board';
 const SCRIPT_NS = 'ctrl_script_';
-const REAL_AGENTS = ['Argus', 'Apollo', 'Argus', 'Hermes', 'Clio', 'Clio'];
-const ICONS = {Argus:'', Apollo:'', Argus:'', Hermes:'', Clio:'', Clio:''};
-const BG_MAP = {Argus:'rgba(79,195,247,0.1)', Apollo:'rgba(251,191,36,0.1)', Argus:'rgba(74,222,128,0.1)', Hermes:'rgba(244,114,182,0.1)', Clio:'rgba(56,189,248,0.1)', Clio:'rgba(232,121,249,0.1)'};
+const REAL_AGENTS = ['Argus', 'Apollo', 'Hermes', 'Clio'];
+const ICONS = {Argus:'', Apollo:'', Hermes:'', Clio:''};
+const BG_MAP = {Argus:'rgba(79,195,247,0.1)', Apollo:'rgba(251,191,36,0.1)', Hermes:'rgba(244,114,182,0.1)', Clio:'rgba(167,139,250,0.1)'};
 let runningProgressTimers = {};
 let _currentAgent = '';
 let _currentFunnelStage = 'MOFU';
@@ -844,8 +858,19 @@ let _currentFunnelStage = 'MOFU';
 function escapeText(str) {
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
+const AGENT_NAME_MAP = {Quill:'Apollo',Scout:'Argus',Hunter:'Hermes',Echo:'Hermes',Forge:'Clio',Pilot:'Clio',Pulse:'Argus'};
+function migrateAgentName(name) { return AGENT_NAME_MAP[name] || name; }
 function loadTasks() {
-  try { return JSON.parse(localStorage.getItem(TASK_STORE) || '{}'); } catch(e) { return {}; }
+  try {
+    const tasks = JSON.parse(localStorage.getItem(TASK_STORE) || '{}');
+    let dirty = false;
+    Object.values(tasks).forEach(t => {
+      const mapped = migrateAgentName(t.agent);
+      if (mapped !== t.agent) { t.agent = mapped; dirty = true; }
+    });
+    if (dirty) localStorage.setItem(TASK_STORE, JSON.stringify(tasks));
+    return tasks;
+  } catch(e) { return {}; }
 }
 function saveTasks(tasks) { localStorage.setItem(TASK_STORE, JSON.stringify(tasks)); }
 function taskId() { return 'task-' + Date.now() + '-' + Math.random().toString(36).slice(2); }
@@ -1809,9 +1834,8 @@ async function runClio() {
 // Inject model label + run count into each agent card
 (function injectModelRunCount() {
   const MODEL_MAP = {
-    Argus: 'n8n · Web Scraper', Apollo: 'Claude Opus 4.8', Argus: 'n8n · Scraper + Analyzer',
-    Hermes: 'n8n · Lead Research', Clio: 'n8n · IG Auto Scheduler',
-    Clio: 'n8n + Claude CLI'
+    Argus: 'n8n · Scraper + Analyzer', Apollo: 'Claude Opus 4.8',
+    Hermes: 'n8n · Lead Research', Clio: 'n8n + Claude CLI'
   };
   function getRunCounts() {
     try {
@@ -1901,8 +1925,8 @@ async function runClio() {
 <script>
 (function sidebarAgentStatus() {
   var AGENTS = [
-    {name:'Argus',color:'#4FC3F7'},{name:'Apollo',color:'#fbbf24'},{name:'Argus',color:'#4ade80'},
-    {name:'Hermes',color:'#f472b6'},{name:'Clio',color:'#38bdf8'},{name:'Clio',color:'#e879f9'}
+    {name:'Argus',color:'#4FC3F7'},{name:'Apollo',color:'#fbbf24'},
+    {name:'Hermes',color:'#f472b6'},{name:'Clio',color:'#a78bfa'}
   ];
   function getStatuses() {
     var s = {};

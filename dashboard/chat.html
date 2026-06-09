@@ -226,12 +226,10 @@ const AGENT_ICONS = {
 };
 
 const AGENTS = [
-  { name: 'Argus',  role: 'Content Research · Daily 12AM',    color: '#4FC3F7' },
-  { name: 'Apollo',  role: 'Script Writing · On Demand',        color: '#fbbf24' },
-  { name: 'Argus',  role: 'Competitor Intel · Weekly',         color: '#4ade80' },
-  { name: 'Hermes', role: 'IG Profile Scraper · On Demand',    color: '#f472b6' },
-  { name: 'Clio',  role: 'Client Management · On Demand',     color: '#38bdf8' },
-  { name: 'Clio',  role: 'System Builder · On Demand',        color: '#e879f9' },
+  { name: 'Argus',  role: 'Chief Intelligence Officer · Scheduled',  color: '#4FC3F7' },
+  { name: 'Apollo', role: 'Head of Content · Daily 7AM',             color: '#fbbf24' },
+  { name: 'Hermes', role: 'Head of Sales · Daily 8AM PHT',           color: '#f472b6' },
+  { name: 'Clio',   role: 'Chief Operating Officer · Always On',     color: '#a78bfa' },
 ];
 
 const histories = {};
@@ -701,7 +699,7 @@ function cancelStream(agent) {
 </script>
 <script>
 (function(){
-  var AGENTS=[{name:'Argus'},{name:'Apollo'},{name:'Argus'},{name:'Hermes'},{name:'Clio'},{name:'Clio'}];
+  var AGENTS=[{name:'Argus'},{name:'Apollo'},{name:'Hermes'},{name:'Clio'}];
   function getSlugChat(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)');return v?v[2]:'';}
   function render(){
     var el=document.getElementById('sidebar-agent-status-list');if(!el)return;

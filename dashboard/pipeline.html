@@ -1469,7 +1469,7 @@ async function supaUpdateStatus(id, status) {
   if (!res.ok) {
     const errText = await res.text();
     console.error('Failed to save card status:', res.status, id, status, errText);
-    showPipeToast('⚠ Save failed — check console', '#f87171');
+    showPipeToast(' Save failed — check console', '#f87171');
   }
 }
 
@@ -2250,9 +2250,9 @@ function showPipeToast(msg, color) {
 <script>
 (function sidebarAgentStatus() {
   var AGENTS = [
-    {name:'Argus',color:'#4FC3F7'},{name:'Apollo',color:'#fbbf24'},{name:'Argus',color:'#4ade80'},
-    {name:'Hermes',color:'#f472b6'},{name:'Clio',color:'#38bdf8'},
-    {name:'Clio',color:'#e879f9'}
+    {name:'Argus',color:'#4FC3F7'},{name:'Apollo',color:'#fbbf24'},
+    
+    {name:'Hermes',color:'#f472b6'},{name:'Clio',color:'#a78bfa'}
   ];
   function getStatuses() {
     var s = {};

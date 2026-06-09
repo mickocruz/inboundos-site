@@ -87,7 +87,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .stat-card:hover{border-color:var(--border-glow);}
 .stat-label{font-family:var(--font-data);font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;display:flex;align-items:center;gap:6px;}
 .stat-label svg{width:12px;height:12px;opacity:0.6;}
-.stat-val{font-family:var(--font-head);font-size:28px;font-weight:900;letter-spacing:-1px;color:var(--text);line-height:1;}
+.stat-val{font-family:var(--font-data);font-size:28px;font-weight:700;letter-spacing:-0.5px;color:var(--text);line-height:1;}
 .stat-sub{font-family:var(--font-data);font-size:10px;color:var(--text-dim);margin-top:2px;}
 
 /* SECTION LABEL */
@@ -101,7 +101,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .acc-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
 .acc-icon svg{width:16px;height:16px;flex-shrink:0;}
 .acc-info{flex:1;min-width:0;}
-.acc-name{font-family:var(--font-head);font-size:12px;font-weight:900;letter-spacing:-0.2px;}
+.acc-name{font-family:var(--font-data);font-size:12px;font-weight:700;letter-spacing:-0.1px;}
 .acc-role{font-family:var(--font-data);font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .acc-badge{font-family:var(--font-data);font-size:10px;font-weight:600;padding:2px 6px;border-radius:8px;text-transform:uppercase;letter-spacing:0.5px;flex-shrink:0;}
 .acc-badge.idle{color:var(--text-dim);background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);}
@@ -114,7 +114,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 /* NEEDS REVIEW */
 .panel-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
 .panel-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);}
-.panel-title{font-family:var(--font-head);font-size:13px;font-weight:900;letter-spacing:-0.2px;}
+.panel-title{font-family:var(--font-data);font-size:13px;font-weight:700;letter-spacing:-0.1px;}
 .panel-count{font-family:var(--font-data);font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;background:rgba(249,115,22,0.1);border:1px solid rgba(249,115,22,0.25);color:var(--orange);}
 .review-item{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);transition:background 0.12s;}
 .review-item:last-child{border-bottom:none;}
@@ -157,7 +157,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 /* FLYWHEEL HEALTH */
 .flywheel-wrap{background:var(--card);border:1px solid var(--border);border-radius:12px;width:100%;min-width:0;}
 .flywheel-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);}
-.flywheel-title{font-family:var(--font-head);font-size:13px;font-weight:900;letter-spacing:-0.2px;}
+.flywheel-title{font-family:var(--font-data);font-size:13px;font-weight:700;letter-spacing:-0.1px;}
 .flywheel-sub{font-family:var(--font-data);font-size:10px;color:rgba(255,255,255,0.6);margin-top:2px;}
 .flywheel-steps{display:grid;grid-template-columns:repeat(6,1fr);gap:0;width:100%;min-width:0;border-top:1px solid var(--border);}
 .flywheel-step{display:flex;flex-direction:column;align-items:center;padding:14px 6px;position:relative;border-right:1px solid var(--border);overflow:visible;}
@@ -165,7 +165,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .flywheel-step-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:8px;position:relative;}
 .flywheel-step-icon svg{width:16px;height:16px;}
 .flywheel-step-label{font-family:var(--font-data);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);text-align:center;margin-bottom:4px;}
-.flywheel-step-val{font-family:var(--font-head);font-size:18px;font-weight:900;letter-spacing:-0.5px;line-height:1;text-align:center;}
+.flywheel-step-val{font-family:var(--font-data);font-size:18px;font-weight:700;letter-spacing:-0.3px;line-height:1;text-align:center;}
 .flywheel-step-detail{font-family:var(--font-data);font-size:11px;color:var(--text-dim);text-align:center;margin-top:3px;}
 .step-arrow{position:absolute;right:-7px;top:50%;transform:translateY(-50%);z-index:2;color:var(--text-dim);font-size:10px;line-height:1;}
 .fw-green{color:var(--green);}
@@ -376,7 +376,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 
     <!-- PRIMARY WORKFLOWS -->
     <div class="section-label">Primary Workflows</div>
-    <div class="panel-card">
+    <div class="panel-card" style="overflow:visible;padding-bottom:2px;">
       <div id="workflow-list"></div>
     </div>
 
@@ -410,18 +410,27 @@ const AGENT_SVGS = {
   Clio:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>`,
 };
 const AGENTS = [
-  { name:'Argus',  color:'#4FC3F7', role:'Content Researcher' },
-  { name:'Apollo',  color:'#fbbf24', role:'Script Writer' },
-  { name:'Argus',  color:'#4ade80', role:'Competitor Intel' },
-  { name:'Hermes', color:'#f472b6', role:'Lead Scraper' },
-  { name:'Clio',  color:'#38bdf8', role:'Client Mgmt' },
-  { name:'Clio',  color:'#e879f9', role:'System Builder' },
+  { name:'Argus',  color:'#4FC3F7', role:'Chief Intelligence Officer' },
+  { name:'Apollo', color:'#fbbf24', role:'Head of Content' },
+  { name:'Hermes', color:'#f472b6', role:'Head of Sales' },
+  { name:'Clio',   color:'#a78bfa', role:'Chief Operating Officer' },
 ];
 
 const TASK_STORE = 'ctrl_agent_tasks_v1';
 
+const AGENT_NAME_MAP = {Quill:'Apollo',Scout:'Argus',Hunter:'Hermes',Echo:'Hermes',Forge:'Clio',Pilot:'Clio',Pulse:'Argus'};
+function migrateAgentName(name) { return AGENT_NAME_MAP[name] || name; }
 function loadTasks() {
-  try { return JSON.parse(localStorage.getItem(TASK_STORE) || '{}'); } catch(e) { return {}; }
+  try {
+    const tasks = JSON.parse(localStorage.getItem(TASK_STORE) || '{}');
+    let dirty = false;
+    Object.values(tasks).forEach(t => {
+      const mapped = migrateAgentName(t.agent);
+      if (mapped !== t.agent) { t.agent = mapped; dirty = true; }
+    });
+    if (dirty) localStorage.setItem(TASK_STORE, JSON.stringify(tasks));
+    return tasks;
+  } catch(e) { return {}; }
 }
 
 // AGENT STATUS
@@ -574,10 +583,12 @@ function renderTaskLog() {
 
 // PRIMARY WORKFLOWS
 const WORKFLOWS = [
-  { name:'Daily Script Generation', agent:'Apollo', color:'#fbbf24', freq:'Daily 9AM PHT', on:true },
-  { name:'Content Research', agent:'Argus', color:'#4FC3F7', freq:'Daily 6AM PHT', on:true },
-  { name:'Competitor Intel Sweep', agent:'Argus', color:'#4ade80', freq:'Weekly Mon 9AM', on:true },
-  { name:'IG Auto Scheduler', agent:'Clio', color:'#38bdf8', freq:'Every 5 min', on:true },
+  { name:'Script Batch (7 scripts)', agent:'Apollo', color:'#fbbf24', freq:'Daily 7AM PHT', on:true },
+  { name:'Content Research + Angles', agent:'Argus', color:'#4FC3F7', freq:'Every 6h', on:true },
+  { name:'Competitor Intel Sweep', agent:'Argus', color:'#4FC3F7', freq:'Weekly Mon 9AM', on:true },
+  { name:'Lead Scraping + DMs', agent:'Hermes', color:'#f472b6', freq:'Daily 8AM PHT', on:true },
+  { name:'IG Auto Scheduler', agent:'Clio', color:'#a78bfa', freq:'Every 5 min', on:true },
+  { name:'Weekly Client Reports', agent:'Clio', color:'#a78bfa', freq:'Monday 9AM', on:true },
 ];
 
 function renderWorkflows() {
@@ -669,7 +680,7 @@ function setFwStep(n, val, detail, healthy) {
   if (badgeEl) {
     badgeEl.innerHTML = healthy
       ? '<span class="fw-ok">OK</span>'
-      : '<span class="fw-blocker">Blocker</span>';
+      : '<span class="fw-blocker">No data</span>';
   }
 }
 

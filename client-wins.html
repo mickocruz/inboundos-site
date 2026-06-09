@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Client Wins — InboundOS</title>
+  <link rel="preload" href="/NHGDisplay95Black.otf" as="font" type="font/otf" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
@@ -56,7 +57,17 @@
       color: var(--white);
       text-decoration: none;
     }
-    .logo span { color: var(--ice); }
+    .logo .os { color: var(--ice); }
+    .nav-links {
+      display: flex; align-items: center; gap: 28px;
+    }
+    .nav-link {
+      font-size: 13px; font-weight: 500;
+      color: rgba(255,255,255,0.5);
+      text-decoration: none;
+      transition: color .2s;
+    }
+    .nav-link:hover, .nav-link.active { color: var(--white); }
     .nav-cta {
       font-family: var(--font-body);
       font-size: 13px; font-weight: 600;
@@ -165,7 +176,6 @@
     .card img {
       width: 100%;
       display: block;
-      /* No cropping — show full image at natural ratio */
     }
     .cap {
       padding: 10px 14px;
@@ -229,6 +239,7 @@
 
     @media (max-width: 768px) {
       nav { padding: 16px 20px; }
+      .nav-links { gap: 16px; }
       .hero { padding: 120px 20px 60px; }
       .container { padding: 0 20px; }
       .grid-3, .grid-2 { grid-template-columns: 1fr; }
@@ -239,9 +250,11 @@
 <body>
 
 <nav id="main-nav">
-  <a href="/landing.html" class="logo">Inbound<span>OS</span></a>
-  <div style="display:flex;align-items:center;gap:14px;">
-    <a href="/landing.html" style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.55);text-decoration:none;transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.55)'">← Back</a>
+  <a href="/" class="logo">Inbound<span class="os">OS</span></a>
+  <div class="nav-links">
+    <a href="/" class="nav-link">Home</a>
+    <a href="/client-wins" class="nav-link active">Client Wins</a>
+    <a href="/about" class="nav-link">About</a>
     <a href="https://calendly.com/inboundos/discovery-call" target="_blank" rel="noopener" class="nav-cta">Book a Call</a>
   </div>
 </nav>
@@ -249,14 +262,13 @@
 <div class="hero">
   <div class="label-chip">Client Results</div>
   <h1>10M+ views.<br>2 clients. Zero ads.</h1>
-  <p class="hero-sub">Organic content, hundreds of inbound DMs, a 597-member buyer community, and $20M+ in closed deals. Micko ran both before InboundOS existed.</p>
+  <p class="hero-sub">Organic content, hundreds of inbound DMs, a 600+ buyer community, and $20M+ in closed deals. Micko ran both before InboundOS existed.</p>
   <p class="hero-note">Now the system does what he did — every day, automatically.</p>
 </div>
 
-
 <div class="container">
 
-  <!-- ── MEENAL ── -->
+  <!-- MEENAL -->
   <section class="client-section">
     <div class="client-tag">Dr. Meenal Kheterpal · @skinnovate_derm · TikTok SMM</div>
     <h2>Started at 7 followers.<br>Hit 4,500 in months.</h2>
@@ -296,7 +308,7 @@
       </div>
     </div>
 
-    <!-- Row 3: TikTok grid screenshot full width -->
+    <!-- Row 3: TikTok grid screenshot -->
     <div class="grid-2">
       <div class="card">
         <img src="/testimonials/meenal-tiktok-grid.jpg" alt="TikTok grid — 3K–8K views per video">
@@ -309,13 +321,13 @@
     </div>
   </section>
 
-  <!-- ── CHRISTIAN ── -->
+  <!-- CHRISTIAN -->
   <section class="client-section">
     <div class="client-tag">Christian Pombo · @creativerealestatedeals · TikTok SMM</div>
-    <h2>Off-market Florida deals.<br>597 buyers in a WhatsApp group.</h2>
+    <h2>Off-market Florida deals.<br>600+ buyers in a WhatsApp group.</h2>
     <p class="section-sub">TikTok content pulled buyers in. Christian closed them. He moved $20M+ in deals — Micko brought the attention that made it possible.</p>
 
-    <!-- Row 1: profile · tiktok · group -->
+    <!-- Row 1: profile · group · deal -->
     <div class="grid-3">
       <div class="card">
         <img src="/testimonials/christian-tiktok-profile-crop.jpg" alt="@creativerealestatedeals — 620 followers, 181 posts">
@@ -327,15 +339,15 @@
       </div>
       <div class="card">
         <img src="/testimonials/christian-1m-deal.jpg" alt="WhatsApp: $1M flip with the bros — wire in, no longer available">
-        <div class="cap"><strong>$1M flip</strong> — "Wire in 🚀 no longer available. Thanks for the assist."</div>
+        <div class="cap"><strong>$1M flip</strong> — "Wire in, no longer available. Thanks for the assist."</div>
       </div>
     </div>
 
     <div class="quote-card">
-      <p class="quote-text">"$1M flip with the bros — Wire in 🚀 no longer available. Thanks for the assist. Stay Sharp! 🇺🇸"</p>
+      <p class="quote-text">"$1M flip with the bros — Wire in, no longer available. Thanks for the assist. Stay Sharp!"</p>
       <div class="quote-who">— Christian Pombo, Creative Deals WhatsApp group</div>
       <div style="margin-top:18px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.06);font-size:13px;color:rgba(255,255,255,0.45);line-height:1.6;">
-        TikTok → inbound DMs → 597-member buyer group → Christian closes. His deals. Micko's content system got buyers in the room.
+        TikTok content → inbound DMs → 600+ buyer group → Christian closes. His deals. Micko's content system got buyers in the room.
       </div>
     </div>
   </section>

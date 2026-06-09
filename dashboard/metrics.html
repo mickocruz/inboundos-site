@@ -33,7 +33,11 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .nav-item:hover{background:rgba(79,195,247,0.04);color:rgba(255,255,255,0.75);}
 .nav-item.active{color:var(--accent);border-left-color:var(--accent);background:rgba(79,195,247,0.06);}
 .nav-item svg{width:14px;height:14px;flex-shrink:0;opacity:0.7;}
+.sidebar-logo-text{font-family:var(--font-head);font-size:17px;font-weight:900;letter-spacing:-0.5px;line-height:1;user-select:none;}
 .sidebar-bottom{margin-top:auto;padding:12px 16px 0;border-top:1px solid var(--border);}
+.mk-avatar-wrap{display:flex;align-items:center;gap:8px;}
+.mk-name{font-size:12px;font-weight:600;color:var(--text);}
+.mk-role{font-size:10px;color:var(--text-muted);}
 .main{flex:1;overflow-y:auto;padding:28px 32px;display:flex;flex-direction:column;gap:28px;}
 .page-header{display:flex;align-items:flex-end;justify-content:space-between;flex-shrink:0;}
 .page-title{font-family:var(--font-head);font-size:26px;font-weight:900;letter-spacing:-1px;line-height:1;}
@@ -59,52 +63,42 @@ tr:hover td{background:rgba(255,255,255,0.015);}
 .badge-past_due{background:rgba(251,191,36,0.1);color:var(--yellow);border:1px solid rgba(251,191,36,0.2);}
 .badge-cancelled,.badge-paused{background:rgba(248,113,113,0.1);color:var(--red);border:1px solid rgba(248,113,113,0.2);}
 .empty{color:var(--text-dim);font-size:12px;padding:24px;text-align:center;}
-.loading{color:var(--text-dim);font-size:12px;padding:24px;text-align:center;animation:pulse 1.5s infinite;}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+.loading{color:var(--text-dim);font-size:12px;padding:24px;text-align:center;animation:argus 1.5s infinite;}
+@keyframes argus{0%,100%{opacity:1;}50%{opacity:0.4;}}
 .refresh-btn{font-size:11px;color:var(--text-dim);background:var(--card);border:1px solid var(--border);border-radius:8px;padding:6px 12px;cursor:pointer;transition:all 0.15s;font-family:var(--font-data);}
 .refresh-btn:hover{color:var(--accent);border-color:var(--border-glow);}
 </style>
+<link rel="stylesheet" href="/dashboard/mobile.css?v=14">
 </head>
 <body>
 <div class="layout">
 
   <!-- SIDEBAR -->
   <nav class="sidebar">
-    <div class="sidebar-logo-wrap" onclick="window.location.href='/'">
-      <div class="logo-text">Inbound<span>OS</span></div>
+    <div class="sidebar-logo-wrap" onclick="location.href='/'"><div class="sidebar-logo-text"><span style="color:#ffffff;">Inbound</span><span style="color:#4FC3F7;">OS</span></div></div>
+    <div class="nav-section"><div class="nav-section-label">Command</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','database','metrics','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/command'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>Command Center</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','database','metrics','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/agents'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="10" width="20" height="12" rx="2"/><path d="M12 2a5 5 0 0 1 5 5v3H7V7a5 5 0 0 1 5-5z"/><circle cx="12" cy="16" r="1.2" fill="currentColor" stroke="none"/></svg>Agents</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','database','metrics','chat','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/chat'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Chat</div>
     </div>
-    <div class="nav-section">
-      <div class="nav-section-label">Dashboard</div>
-      <a class="nav-item" href="/command">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-        Command
-      </a>
-      <a class="nav-item" href="/pipeline">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        Pipeline
-      </a>
-      <a class="nav-item" href="/crm">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        CRM
-      </a>
-      <a class="nav-item active" href="/metrics">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-        Metrics
-      </a>
-      <a class="nav-item" href="/agents">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
-        Agents
-      </a>
+    <div class="nav-section"><div class="nav-section-label">Content</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','database','metrics','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/performance'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="4" height="20" rx="1"/><rect x="10" y="8" width="4" height="14" rx="1"/><rect x="18" y="4" width="4" height="18" rx="1"/></svg>Instagram</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','database','metrics','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/pipeline'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Content Pipeline</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','database','metrics','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/research'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Research</div>
     </div>
-    <div class="sidebar-bottom">
-      <div style="display:flex;align-items:center;gap:10px;">
-        <img src="/micko.jpg" alt="MK" style="width:32px;height:32px;object-fit:cover;border-radius:50%;border:1px solid rgba(79,195,247,0.2);">
-        <div>
-          <div style="font-size:12px;font-weight:600;">Micko Cruz</div>
-          <div style="font-size:10px;color:var(--text-muted);">Founder · InboundOS</div>
-        </div>
-      </div>
+    <div class="nav-section"><div class="nav-section-label">Revenue</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','database','metrics','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/clients'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Clients</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','database','metrics','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/crm'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v4H3z"/><path d="M3 10h18v4H3z"/><path d="M3 17h18v4H3z"/></svg>CRM</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','database','metrics','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/sales-calls'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.74 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.66 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Sales Calls</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','database','metrics','roi','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/roi'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>ROI Report</div>
     </div>
+    <div class="nav-section"><div class="nav-section-label">Intelligence</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','database','metrics','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/database'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Company Database</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','database','metrics','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/sops'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>SOPs</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','database','metrics','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/org-chart'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><path d="M12 7v3M12 10l-5 7M12 10l5 7"/></svg>Org Chart</div>
+      <div class="nav-item active" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','database','metrics','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/metrics'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Metrics</div>
+    </div>
+    <div class="sidebar-bottom"><div class="mk-avatar-wrap" onclick="window.__settingsOpen && window.__settingsOpen()" style="cursor:pointer;"><img src="/micko.jpg" alt="MK" style="width:32px;height:32px;object-fit:cover;border-radius:50%;border:1px solid rgba(79,195,247,0.2);"/><div><div class="mk-name">Micko Cruz</div><div class="mk-role">Founder · InboundOS</div></div></div></div>
   </nav>
 
   <!-- MAIN -->
@@ -155,10 +149,10 @@ tr:hover td{background:rgba(255,255,255,0.015);}
     <section>
       <div class="section-label">Agent Output (Last 30 Days)</div>
       <div class="stat-grid-4">
-        <div class="stat"><div class="stat-label">Quill</div><div class="stat-val" id="agent-quill">—</div><div class="stat-sub">scripts</div></div>
-        <div class="stat"><div class="stat-label">Scout</div><div class="stat-val" id="agent-scout">—</div><div class="stat-sub">research items</div></div>
-        <div class="stat"><div class="stat-label">Pulse</div><div class="stat-val" id="agent-pulse">—</div><div class="stat-sub">analyses</div></div>
-        <div class="stat"><div class="stat-label">Echo</div><div class="stat-val" id="agent-echo">—</div><div class="stat-sub">leads + DMs</div></div>
+        <div class="stat"><div class="stat-label">Apollo</div><div class="stat-val" id="agent-apollo">—</div><div class="stat-sub">scripts</div></div>
+        <div class="stat"><div class="stat-label">Argus</div><div class="stat-val" id="agent-argus">—</div><div class="stat-sub">research items</div></div>
+        <div class="stat"><div class="stat-label">Argus</div><div class="stat-val" id="agent-argus">—</div><div class="stat-sub">analyses</div></div>
+        <div class="stat"><div class="stat-label">Hermes</div><div class="stat-val" id="agent-hermes">—</div><div class="stat-sub">leads + DMs</div></div>
       </div>
     </section>
 
@@ -248,7 +242,7 @@ async function loadAll() {
   }
 
   // CONTENT FUNNEL
-  const scripts = items.filter(i => i.agent === 'quill');
+  const scripts = items.filter(i => i.agent === 'apollo');
   const approved = scripts.filter(i => i.status === 'approved').length;
   const filmed = scripts.filter(i => i.status === 'filmed').length;
   const rate = scripts.length ? Math.round(approved / scripts.length * 100) : 0;
@@ -261,10 +255,10 @@ async function loadAll() {
   const r30 = items.filter(i => i.created_at >= day30);
   const byAgent = {};
   r30.forEach(i => byAgent[i.agent] = (byAgent[i.agent] || 0) + 1);
-  set('agent-quill', byAgent.quill || 0);
-  set('agent-scout', byAgent.scout || 0);
-  set('agent-pulse', byAgent.pulse || 0);
-  set('agent-echo', byAgent.echo || 0);
+  set('agent-apollo', byAgent.apollo || 0);
+  set('agent-argus', byAgent.argus || 0);
+  set('agent-argus', byAgent.argus || 0);
+  set('agent-hermes', byAgent.hermes || 0);
 
   // AI COST
   if (!tokenRows.length) {

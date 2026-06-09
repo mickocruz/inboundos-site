@@ -1,17 +1,15 @@
 import Anthropic from '@anthropic-ai/sdk';
+import { createHmac, timingSafeEqual } from 'crypto';
+import { checkRateLimit } from '../_rateLimit.js';
 
-const SB_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co';
-const SB_KEY = 'sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8';
+const SB_URL = process.env.SUPABASE_URL || 'https://cscfbuhwlfhblxprkwnh.supabase.co';
+const SB_KEY = process.env.SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8';
 
 const AGENT_PERSONAS = {
-  Scout:  'You are Scout, an AI agent for InboundOS. Your job is content research — finding viral trends, competitor content, and topic ideas for agency owners. Be concise, data-driven, and actionable.',
-  Quill:  'You are Quill, an AI agent for InboundOS. Your job is writing Reel scripts using the R.E.E.L. Method — Hook, Educate, Engage, Loop. Be punchy, direct, and write for social video.',
-  Pulse:  'You are Pulse, an AI agent for InboundOS. Your job is competitor intelligence — tracking what other agency owners post, their positioning, and market gaps. Be analytical and strategic.',
-  Hunter: 'You are Hunter, an AI agent for InboundOS. Your job is IG lead research — analyzing profiles to score outreach leads. Be systematic, use business signals not vanity metrics.',
-  Echo:   'You are Echo, an AI agent for InboundOS. Your job is cold DM writing — crafting personalized, non-salesy openers that start conversations. Be human, specific, and curiosity-driven.',
-  Pilot:  'You are Pilot, an AI agent for InboundOS. Your job is client management — onboarding, deliverable tracking, check-ins, and retention. Be organized and client-focused.',
-  Forge:  'You are Forge, an AI agent for InboundOS. Your job is system building — designing automations, workflows, SOPs, and n8n pipelines. Be technical, precise, and document everything.',
-  Edge:   'You are Edge, an AI agent for InboundOS. Your job is sales call review — analyzing call transcripts/recordings to identify objections, buying signals, and coaching opportunities. Be direct and improvement-focused.',
+  Argus:  'You are Argus, CIO of InboundOS. Your job is intelligence — content research, viral trends, competitor analysis, and topic angles for agency owners. Be concise, data-driven, and actionable.',
+  Apollo: 'You are Apollo, Head of Content for InboundOS. Your job is scripting and content strategy — writing Reel scripts using the R.E.E.L. Method, planning weekly calendars, and repurposing top performers. Be punchy, direct, and write for social video.',
+  Hermes: 'You are Hermes, Head of Sales for InboundOS. Your job is outreach — IG lead research, scoring profiles, writing personalized cold DMs, and managing the pipeline. Be systematic and human.',
+  Clio:   'You are Clio, COO of InboundOS. Your job is operations — client onboarding, deliverable tracking, weekly check-ins, churn watch, and retention. Be organized, client-focused, and proactive.',
 };
 
 async function getSkill(agent) {
@@ -36,6 +34,17 @@ function verifySession(req) {
     const payload = JSON.parse(Buffer.from(parts[1], 'base64url').toString());
     if (!payload.sub) return false;
     if (payload.exp && payload.exp * 1000 < Date.now()) return false;
+
+    // Cryptographic signature verification using Supabase JWT secret
+    const jwtSecret = process.env.SUPABASE_JWT_SECRET;
+    if (jwtSecret) {
+      const signingInput = `${parts[0]}.${parts[1]}`;
+      const expected = createHmac('sha256', jwtSecret).update(signingInput).digest('base64url');
+      const actual = parts[2];
+      try {
+        if (!timingSafeEqual(Buffer.from(expected), Buffer.from(actual))) return false;
+      } catch { return false; }
+    }
     return true;
   } catch { return false; }
 }
@@ -50,6 +59,11 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket?.remoteAddress || 'unknown';
+  if (!(await checkRateLimit(`chat:${ip}`, 60, 60 * 1000))) {
+    return res.status(429).json({ error: 'Rate limit exceeded. Try again shortly.' });
+  }
+
   if (!verifySession(req)) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
@@ -60,8 +74,21 @@ export default async function handler(req, res) {
   }
 
   const { agent, messages } = req.body || {};
-  if (!agent || !Array.isArray(messages)) {
-    return res.status(400).json({ error: 'Missing agent or messages' });
+
+  // Validate agent
+  if (!agent || typeof agent !== 'string' || agent.length > 50) {
+    return res.status(400).json({ error: 'Invalid agent' });
+  }
+
+  // Validate messages array
+  if (!Array.isArray(messages) || messages.length === 0 || messages.length > 50) {
+    return res.status(400).json({ error: 'Invalid messages' });
+  }
+
+  for (const m of messages) {
+    if (!m || typeof m !== 'object') return res.status(400).json({ error: 'Malformed message' });
+    if (!['user', 'assistant'].includes(m.role)) return res.status(400).json({ error: 'Invalid message role' });
+    if (typeof m.content !== 'string' || m.content.length > 32000) return res.status(400).json({ error: 'Message too large' });
   }
 
   const persona = AGENT_PERSONAS[agent];

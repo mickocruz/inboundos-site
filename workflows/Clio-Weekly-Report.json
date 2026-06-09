@@ -1,0 +1,130 @@
+{
+  "name": "Clio — Weekly Client Report",
+  "active": false,
+  "settings": { "executionOrder": "v1" },
+  "nodes": [
+    {
+      "parameters": {
+        "rule": { "interval": [{ "field": "weeks", "triggerAtDay": [1], "triggerAtHour": 9 }] }
+      },
+      "id": "b2000000-0000-0000-0000-000000000001",
+      "name": "Monday 9am",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [400, 0]
+    },
+    {
+      "parameters": {
+        "url": "https://cscfbuhwlfhblxprkwnh.supabase.co/rest/v1/clients?status=eq.active&select=*",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8" },
+            { "name": "Authorization", "value": "Bearer sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b2000000-0000-0000-0000-000000000002",
+      "name": "Fetch Active Clients",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [620, 0]
+    },
+    {
+      "parameters": { "fieldToSplitOut": "data", "options": {} },
+      "id": "b2000000-0000-0000-0000-000000000003",
+      "name": "Split Clients",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [840, 0]
+    },
+    {
+      "parameters": {
+        "url": "=https://cscfbuhwlfhblxprkwnh.supabase.co/rest/v1/client_tasks?client_id=eq.{{ $json.id }}&select=*&order=sort_order.asc",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8" },
+            { "name": "Authorization", "value": "Bearer sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b2000000-0000-0000-0000-000000000004",
+      "name": "Fetch Client Tasks",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1060, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "const client = $('Split Clients').item.json;\nconst tasks = $input.first().json || [];\nconst done = tasks.filter(t => t.done).map(t => t.title);\nconst open = tasks.filter(t => !t.done).map(t => `${t.title} (due ${t.due_date || 'n/a'})`);\n\nconst prompt = `You are Clio, the client fulfillment agent for InboundOS. Write this client's weekly report for the founder (Micko) PLUS a short warm client-facing update message Micko can send as-is.\n\nCLIENT: ${client.name} (${client.company || ''}) — ${client.niche || ''}\nPhase: ${client.phase} | MRR: $${client.mrr} | Client since: ${client.client_since}\nMetrics: posts_delivered=${client.posts_delivered}, reels=${client.reels_posted}, follower_growth=${client.follower_growth_pct}%, engagement=${client.avg_engagement_rate}%\nCurrent next action: ${client.next_action || 'none set'}\n\nCOMPLETED TASKS:\n${done.length ? done.map(t => '- ' + t).join('\\n') : '- (none marked done)'}\n\nOPEN / UPCOMING TASKS:\n${open.length ? open.map(t => '- ' + t).join('\\n') : '- (none)'}\n\nReturn ONLY valid JSON, no markdown, this exact shape:\n{\n  \\\"internal_report\\\": {\n    \\\"delivered\\\": [\\\"<what got delivered this week>\\\"],\n    \\\"overdue\\\": [\\\"<anything slipping>\\\"],\n    \\\"risk\\\": \\\"healthy|watch|at_risk\\\",\n    \\\"next_action\\\": \\\"<single most important action for Micko this week>\\\",\n    \\\"summary\\\": \\\"<2 sentence status for Micko, terse>\\\"\n  },\n  \\\"client_update\\\": \\\"<warm, simple, no-jargon message Micko can send the client as-is. 3-5 sentences. Mention a real win and the plan for this week.>\\\"\n}`;\n\nreturn [{ json: { prompt, clientId: client.id, clientName: client.name } }];"
+      },
+      "id": "b2000000-0000-0000-0000-000000000005",
+      "name": "Build Prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1280, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:7821",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ prompt: $json.prompt }) }}",
+        "options": { "timeout": 120000 }
+      },
+      "id": "b2000000-0000-0000-0000-000000000006",
+      "name": "Run Claude CLI",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1500, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json.output || $input.first().json.stdout || '';\nconst clientId = $('Build Prompt').item.json.clientId;\nconst clientName = $('Build Prompt').item.json.clientName;\nlet parsed;\ntry {\n  const clean = raw.replace(/```json?/gi, '').replace(/```/g, '').trim();\n  parsed = JSON.parse(clean);\n} catch(e) {\n  parsed = { internal_report: { summary: 'parse error', risk: 'watch', next_action: '', delivered: [], overdue: [] }, client_update: '' };\n}\nconst r = parsed.internal_report || {};\nreturn [{ json: { clientId, clientName, report: parsed, next_action: r.next_action || '', summary: r.summary || '', client_update: parsed.client_update || '' } }];"
+      },
+      "id": "b2000000-0000-0000-0000-000000000007",
+      "name": "Parse Report",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1720, 0]
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://cscfbuhwlfhblxprkwnh.supabase.co/rest/v1/clients?id=eq.{{ $json.clientId }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8" },
+            { "name": "Authorization", "value": "Bearer sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8" },
+            { "name": "Content-Type", "value": "application/json" },
+            { "name": "Prefer", "value": "return=minimal" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ next_action: $json.next_action, notes: 'WEEKLY (' + $now.format('yyyy-MM-dd') + '): ' + $json.summary + ' | Client update draft: ' + $json.client_update }) }}",
+        "options": {}
+      },
+      "id": "b2000000-0000-0000-0000-000000000008",
+      "name": "Save Report to Client",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1940, 0]
+    }
+  ],
+  "connections": {
+    "Monday 9am": { "main": [[{ "node": "Fetch Active Clients", "type": "main", "index": 0 }]] },
+    "Fetch Active Clients": { "main": [[{ "node": "Split Clients", "type": "main", "index": 0 }]] },
+    "Split Clients": { "main": [[{ "node": "Fetch Client Tasks", "type": "main", "index": 0 }]] },
+    "Fetch Client Tasks": { "main": [[{ "node": "Build Prompt", "type": "main", "index": 0 }]] },
+    "Build Prompt": { "main": [[{ "node": "Run Claude CLI", "type": "main", "index": 0 }]] },
+    "Run Claude CLI": { "main": [[{ "node": "Parse Report", "type": "main", "index": 0 }]] },
+    "Parse Report": { "main": [[{ "node": "Save Report to Client", "type": "main", "index": 0 }]] }
+  },
+  "pinData": {}
+}

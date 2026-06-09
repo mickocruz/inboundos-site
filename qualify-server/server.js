@@ -23,8 +23,26 @@ const SB_URL = process.env.SUPABASE_URL || 'https://cscfbuhwlfhblxprkwnh.supabas
 const SB_KEY = process.env.SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8';
 const N8N_API_KEY = process.env.N8N_API_KEY || '';
 const N8N_URL = process.env.N8N_URL || 'http://localhost:5678';
-const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN || '8806106449:AAH9ROFiHxmz6FvOcWffL_ra8R34q7hEn0I';
-const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || '956012734';
+const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN || '';
+const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || '';
+const INTERNAL_TOKEN = process.env.INTERNAL_TOKEN || '';
+
+function checkAuth(req) {
+  // Accept either a static INTERNAL_TOKEN or a valid non-expired Supabase JWT
+  const headerToken = req.headers['x-internal-token'] || req.headers['authorization']?.replace('Bearer ', '');
+  if (!headerToken) return false;
+  // Static token check (fast path for server-to-server)
+  if (INTERNAL_TOKEN && headerToken === INTERNAL_TOKEN) return true;
+  // JWT check: validate structure + expiry (signature verified by Supabase on DB calls)
+  try {
+    const parts = headerToken.split('.');
+    if (parts.length !== 3) return false;
+    const payload = JSON.parse(Buffer.from(parts[1], 'base64url').toString());
+    if (!payload.sub) return false;
+    if (payload.exp && payload.exp * 1000 < Date.now()) return false;
+    return true;
+  } catch { return false; }
+}
 
 async function nexusAlert(msg) {
   try {
@@ -45,7 +63,7 @@ async function logError(page, message, context) {
     });
   } catch(e) { /* non-fatal */ }
 }
-const QUILL_WORKFLOW_ID = process.env.QUILL_WORKFLOW_ID || '0QoReLvsYWUaIrIO';
+const APOLLO_WORKFLOW_ID = process.env.APOLLO_WORKFLOW_ID || '0QoReLvsYWUaIrIO';
 
 const SKILL_PATH = path.join(os.homedir(), '.claude/skills/inboundos-daily-dm/SKILL.md');
 
@@ -119,7 +137,7 @@ async function qualifyImage(base64Image) {
   const promptWithImage = fullPrompt + `\n\nThe Instagram profile screenshot is saved at: ${tmpImg}\nRead that image file to analyze the profile.`;
 
   return new Promise((resolve, reject) => {
-    const args = ['-p', '--add-dir', os.tmpdir(), '--dangerously-skip-permissions', promptWithImage];
+    const args = ['-p', '--add-dir', os.tmpdir(), '--allowedTools', 'Read', promptWithImage];
     const proc = execFile('claude', args, { timeout: 60000, maxBuffer: 1024 * 1024 * 4 }, (err, stdout, stderr) => {
       fs.unlink(tmpImg, () => {});
       if (err) return reject(new Error(stderr || err.message));
@@ -192,7 +210,7 @@ const MIME = { '.html':'text/html', '.css':'text/css', '.js':'application/javasc
 
 // Slug-based routes: /{slug}/{page} → /dashboard/{page}.html
 const SLUG_PAGES = ['agents','pipeline','performance','research','clients','sales-calls',
-  'sops','org-chart','crm','command','vault','chat','edge','metrics','roi','database'];
+  'sops','org-chart','crm','command','vault','chat','clio','metrics','roi','database'];
 
 function resolveSlugRoute(urlPath) {
   const parts = urlPath.split('/').filter(Boolean);
@@ -239,24 +257,25 @@ const server = http.createServer(async (req, res) => {
   // Serve static files for GET requests
   if (req.method === 'GET') { serveStatic(req, res); return; }
 
-  // Trigger Quill workflow via n8n API
-  if (req.method === 'POST' && req.url === '/run-quill') {
+  // Trigger Apollo workflow via n8n API
+  if (req.method === 'POST' && req.url === '/run-apollo') {
+    if (!checkAuth(req)) { res.writeHead(401, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ error: 'Unauthorized' })); return; }
     try {
-      const r = await fetch(`${N8N_URL}/api/v1/workflows/${QUILL_WORKFLOW_ID}/run`, {
+      const r = await fetch(`${N8N_URL}/api/v1/workflows/${APOLLO_WORKFLOW_ID}/run`, {
         method: 'POST',
         headers: { 'X-N8N-API-KEY': N8N_API_KEY, 'Content-Type': 'application/json' },
         body: JSON.stringify({})
       });
       const data = await r.json();
       if (!r.ok) throw new Error(data.message || JSON.stringify(data));
-      console.log('[Quill] Triggered:', data.data?.executionId || data);
-      nexusAlert('✍️ *Quill* triggered — scripts generating now');
+      console.log('[Apollo] Triggered:', data.data?.executionId || data);
+      nexusAlert('✍️ *Apollo* triggered — scripts generating now');
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ success: true, executionId: data.data?.executionId }));
     } catch(e) {
-      console.error('[Quill] Error:', e.message);
-      nexusAlert(`❌ *Quill* trigger failed — ${e.message}`);
-      await logError('run-quill', e.message, {});
+      console.error('[Apollo] Error:', e.message);
+      nexusAlert(`❌ *Apollo* trigger failed — ${e.message}`);
+      await logError('run-apollo', e.message, {});
       res.writeHead(500, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ success: false, error: e.message }));
     }
@@ -265,6 +284,7 @@ const server = http.createServer(async (req, res) => {
 
   // Run an agent task via Claude CLI
   if (req.method === 'POST' && req.url === '/agent/run') {
+    if (!checkAuth(req)) { res.writeHead(401, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ error: 'Unauthorized' })); return; }
     let body;
     try { body = JSON.parse(await readBody(req)); } catch(e) {
       res.writeHead(400); res.end(JSON.stringify({ error: 'Invalid JSON body' })); return;
@@ -297,7 +317,7 @@ ${skillContent ? `--- SKILL ---\n${skillContent.slice(0, 8000)}\n--- END SKILL -
     console.log(`[${agent}] Running task: ${task}`);
     try {
       const result = await new Promise((resolve, reject) => {
-        const args = ['-p', '--dangerously-skip-permissions', prompt];
+        const args = ['-p', '--allowedTools', 'Read,Write', prompt];
         execFile('claude', args, { timeout: 120000, maxBuffer: 1024 * 1024 * 8 }, (err, stdout, stderr) => {
           if (err) return reject(new Error(stderr || err.message));
           let text = stdout.trim().replace(/^```json\n?/, '').replace(/\n?```$/, '').trim();
@@ -368,8 +388,8 @@ ${skillContent ? `--- SKILL ---\n${skillContent.slice(0, 8000)}\n--- END SKILL -
 
   const added = results.filter(r => r.success).length;
   const failed = results.filter(r => !r.success && !r.duplicate).length;
-  if (added > 0) nexusAlert(`✅ Echo qualified *${added}* lead${added > 1 ? 's' : ''} → CRM${failed ? ` · ${failed} failed` : ''}`);
-  if (failed > 0 && added === 0) nexusAlert(`⚠️ Echo qualify failed — ${failed} error${failed > 1 ? 's' : ''}. Check server.`);
+  if (added > 0) nexusAlert(`✅ Hermes qualified *${added}* lead${added > 1 ? 's' : ''} → CRM${failed ? ` · ${failed} failed` : ''}`);
+  if (failed > 0 && added === 0) nexusAlert(`⚠️ Hermes qualify failed — ${failed} error${failed > 1 ? 's' : ''}. Check server.`);
 
   res.writeHead(200, { 'Content-Type': 'application/json' });
   res.end(JSON.stringify({ results }));

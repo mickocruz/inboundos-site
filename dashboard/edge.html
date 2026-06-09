@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Edge — InboundOS</title>
+<title>Clio — InboundOS</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap');
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -49,12 +49,12 @@
 </style>
 </head>
 <body>
-<h1>Edge<span>.</span></h1>
+<h1>Clio<span>.</span></h1>
 <p class="subtitle">Sales Call Intelligence</p>
 
 <div class="card">
   <h2>Analyze Call</h2>
-  <form id="edge-form">
+  <form id="clio-form">
     <div class="form-grid">
       <div class="form-group">
         <label>Prospect Name</label>
@@ -111,9 +111,9 @@
 <script>
 const SUPABASE_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8';
-const N8N_WEBHOOK = 'http://localhost:5678/webhook/edge-analyze';
+const N8N_WEBHOOK = 'http://localhost:5678/webhook/clio-analyze';
 
-document.getElementById('edge-form').addEventListener('submit', async (e) => {
+document.getElementById('clio-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   const btn = document.getElementById('submit-btn');
   const errEl = document.getElementById('error-msg');

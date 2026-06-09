@@ -21,7 +21,7 @@
   --text: #ffffff; --text-muted: rgba(255,255,255,0.42); --text-dim: rgba(255,255,255,0.22);
   --green: #4ade80; --yellow: #fbbf24; --red: #f87171; --purple: #a78bfa;
   --sidebar-w:180px; --font-head: 'NHGrotesk','Arial Black',Arial,sans-serif;
-  --font-data: 'DM Sans',sans-serif; --font-body: 'Outfit',sans-serif;
+  --font-data: 'DM Sans',sans-serif; --font-body: 'DM Sans',sans-serif;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:14px;overflow:hidden;}
@@ -44,7 +44,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .sidebar-bottom{margin-top:auto;padding:12px 16px 0;border-top:1px solid var(--border);}
 .mk-avatar-wrap{display:flex;align-items:center;gap:10px;}
 .mk-name{font-family:var(--font-data);font-size:12px;font-weight:600;color:#ffffff;line-height:1.2;}
-.mk-role{font-family:var(--font-data);font-size:10px;color:rgba(255,255,255,0.42);}
+.mk-role{font-family:var(--font-data);font-size:11px;color:rgba(255,255,255,0.42);}
 /* MAIN */
 .main{flex:1;overflow-y:auto;overflow-x:hidden;padding:22px 20px 22px 24px;display:flex;flex-direction:column;gap:18px;scrollbar-width:thin;scrollbar-color:rgba(79,195,247,0.12) transparent;}
 .main::-webkit-scrollbar{width:3px;}.main::-webkit-scrollbar-thumb{background:rgba(79,195,247,0.15);border-radius:3px;}
@@ -55,8 +55,8 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .header-left .date{font-family:var(--font-data);font-size:11px;color:var(--text-muted);margin-top:5px;}
 .header-right{display:flex;align-items:center;gap:10px;}
 .status-pill{display:flex;align-items:center;gap:6px;background:rgba(74,222,128,0.07);border:1px solid rgba(74,222,128,0.18);border-radius:20px;padding:5px 12px;font-family:var(--font-data);font-size:11px;color:var(--green);font-weight:500;}
-.status-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse-green 2s infinite;}
-@keyframes pulse-green{0%,100%{box-shadow:0 0 0 0 rgba(74,222,128,0.5);}50%{box-shadow:0 0 0 4px rgba(74,222,128,0);}}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:argus-green 2s infinite;}
+@keyframes argus-green{0%,100%{box-shadow:0 0 0 0 rgba(74,222,128,0.5);}50%{box-shadow:0 0 0 4px rgba(74,222,128,0);}}
 /* CARD */
 .card{background:rgba(255,255,255,0.028);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);border:1px solid rgba(255,255,255,0.08);border-radius:14px;position:relative;overflow:hidden;transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.25s,border-color 0.25s;box-shadow:inset 0 1px 0 rgba(255,255,255,0.08),0 4px 20px rgba(0,0,0,0.3);}
 .card:hover{border-color:rgba(79,195,247,0.18);box-shadow:inset 0 1px 0 rgba(255,255,255,0.1),0 12px 40px rgba(0,0,0,0.45),0 0 0 1px rgba(79,195,247,0.08);transform:translateY(-2px);}
@@ -84,12 +84,12 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .comp-latest-text{font-family:var(--font-data);font-size:10.5px;color:var(--text);line-height:1.4;}
 .comp-latest-link:hover .comp-latest-text{color:var(--accent);}
 /* SCOUT INTEL */
-.scout-competitor-block{margin-bottom:14px;padding:16px;}
-.scout-comp-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-.scout-comp-avatar-sm{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
-.scout-comp-handle{font-family:var(--font-head);font-size:13px;font-weight:900;letter-spacing:-0.3px;}
-.scout-group-label{font-family:var(--font-head);font-size:8.5px;font-weight:900;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;margin-top:14px;display:flex;align-items:center;gap:8px;}
-.scout-group-label::after{content:'';flex:1;height:1px;background:var(--border);}
+.argus-competitor-block{margin-bottom:14px;padding:16px;}
+.argus-comp-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.argus-comp-avatar-sm{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.argus-comp-handle{font-family:var(--font-head);font-size:13px;font-weight:900;letter-spacing:-0.3px;}
+.argus-group-label{font-family:var(--font-head);font-size:8.5px;font-weight:900;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;margin-top:14px;display:flex;align-items:center;gap:8px;}
+.argus-group-label::after{content:'';flex:1;height:1px;background:var(--border);}
 .reel-row{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;scrollbar-width:thin;scrollbar-color:rgba(79,195,247,0.12) transparent;}
 .reel-row::-webkit-scrollbar{height:3px;}.reel-row::-webkit-scrollbar-thumb{background:rgba(79,195,247,0.15);border-radius:3px;}
 .reel-card{flex-shrink:0;width:220px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;transition:border-color 0.2s,box-shadow 0.2s;}
@@ -100,7 +100,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .reel-thumb-wrap:hover .reel-play{opacity:1;}
 .reel-play-icon{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.92);display:flex;align-items:center;justify-content:center;font-size:12px;color:#000;padding-left:3px;}
 .reel-body{padding:10px 12px;display:flex;flex-direction:column;gap:6px;flex:1;}
-.reel-caption{font-family:var(--font-data);font-size:9.5px;color:var(--text-muted);line-height:1.5;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;}
+.reel-caption{font-family:var(--font-data);font-size:11px;color:var(--text-muted);line-height:1.5;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;}
 .reel-transcript-toggle{font-family:var(--font-data);font-size:8.5px;color:var(--accent);cursor:pointer;background:none;border:none;padding:0;text-align:left;letter-spacing:0.3px;}
 .reel-transcript-toggle:hover{opacity:0.8;}
 .reel-transcript-body{font-family:var(--font-data);font-size:8.5px;color:var(--text-dim);line-height:1.5;max-height:80px;overflow-y:auto;background:rgba(79,195,247,0.03);border:1px solid rgba(79,195,247,0.08);border-radius:5px;padding:6px 8px;display:none;}
@@ -111,8 +111,8 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .add-queue-btn{margin-top:auto;padding:5px 8px;background:transparent;border:1px solid var(--border);border-radius:6px;font-family:var(--font-data);font-size:11px;font-weight:600;color:var(--text-muted);cursor:pointer;transition:all 0.18s;width:100%;letter-spacing:0.3px;}
 .add-queue-btn:hover{background:var(--accent-dim);border-color:rgba(79,195,247,0.3);color:var(--accent);}
 .add-queue-btn.added{color:var(--green);border-color:rgba(74,222,128,0.3);background:rgba(74,222,128,0.05);cursor:default;}
-@keyframes skeleton-pulse{0%,100%{border-color:rgba(79,195,247,0.1);}50%{border-color:rgba(79,195,247,0.35);box-shadow:0 0 14px rgba(79,195,247,0.1);}}
-.comp-card.loading{animation:skeleton-pulse 1.4s ease-in-out infinite;pointer-events:none;}
+@keyframes skeleton-argus{0%,100%{border-color:rgba(79,195,247,0.1);}50%{border-color:rgba(79,195,247,0.35);box-shadow:0 0 14px rgba(79,195,247,0.1);}}
+.comp-card.loading{animation:skeleton-argus 1.4s ease-in-out infinite;pointer-events:none;}
 .comp-card.loading .comp-metric-val,.comp-card.loading .comp-niche,.comp-card.loading .comp-latest-text{color:rgba(79,195,247,0.25)!important;}
 /* SWIPE FILE */
 .swipe-filter{padding:3px 10px;border-radius:20px;font-family:var(--font-data);font-size:10px;font-weight:600;background:rgba(255,255,255,0.03);color:var(--text-muted);border:1px solid var(--border);cursor:pointer;transition:all 0.15s;letter-spacing:0.3px;}
@@ -196,7 +196,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 /* DM Sans body */
 :root{--font-body:'DM Sans',sans-serif;}
 html,body{font-family:'DM Sans',sans-serif!important;}
-</style><link rel="stylesheet" href="/dashboard/spring-animations.css"/><link rel="stylesheet" href="/dashboard/mobile.css?v=11"/><link rel="stylesheet" href="/dashboard/settings-panel.css"/><script src="/dashboard/config.js"></script><script src="/dashboard/settings-panel.js"></script>  <link rel="manifest" href="/manifest.json">
+</style><link rel="stylesheet" href="/dashboard/spring-animations.css"/><link rel="stylesheet" href="/dashboard/mobile.css?v=14"/><link rel="stylesheet" href="/dashboard/settings-panel.css"/><script src="/dashboard/config.js"></script><script src="/dashboard/settings-panel.js"></script>  <link rel="manifest" href="/manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="InboundOS">
@@ -244,20 +244,20 @@ html,body{font-family:'DM Sans',sans-serif!important;}
     <div class="header">
       <div class="header-left">
         <h1>Research</h1>
-        <div style="font-family:var(--font-data);font-size:12px;color:var(--text-muted);margin-top:2px;" id="research-subtitle">Scout feed · competitor angles.</div>
+        <div style="font-family:var(--font-data);font-size:12px;color:var(--text-muted);margin-top:2px;" id="research-subtitle">Argus feed · competitor angles.</div>
         <div class="date">Content Intelligence · May 5, 2026 · Updated 8 min ago</div>
       </div>
       <div class="header-right">
-        <div class="status-pill"><div class="status-dot"></div>Scout Active</div>
+        <div class="status-pill"><div class="status-dot"></div>Argus Active</div>
       </div>
     </div>
 
     <!-- SCOUT INTEL -->
-    <div class="section-label" id="scoutSectionLabel" style="display:none;">
-      Scout Intel
-      <span id="scoutSavedAt" style="font-size:11px;color:var(--text-dim);letter-spacing:0;text-transform:none;font-family:var(--font-data);font-weight:400;margin-left:4px;"></span>
+    <div class="section-label" id="argusSectionLabel" style="display:none;">
+      Argus Intel
+      <span id="argusSavedAt" style="font-size:11px;color:var(--text-dim);letter-spacing:0;text-transform:none;font-family:var(--font-data);font-weight:400;margin-left:4px;"></span>
     </div>
-    <div id="scoutIntelContainer" class=""></div>
+    <div id="argusIntelContainer" class=""></div>
     <!-- SWIPE FILE -->
     <div class="section-label" id="swipeSectionLabel">
       Swipe File
@@ -432,7 +432,7 @@ async function refreshCompetitors() {
     localStorage.setItem(COMP_CACHE, JSON.stringify({ profiles: data.profiles||[], latestViral: data.latestViral||{}, ts: Date.now() }));
     applyCompetitorData(data.profiles||[], data.latestViral||{});
     status.textContent = 'Updated just now';
-    loadScoutIntel();
+    loadArgusIntel();
   } catch(e) {
     status.textContent = 'Failed — ' + e.message;
   } finally { btn.disabled = false; document.querySelectorAll('.comp-card').forEach(c => c.classList.remove('loading')); }
@@ -519,7 +519,7 @@ async function saveCompetitors() {
     } catch(e2) {}
   }
   renderCompetitorCards(_compHandles);
-  loadScoutIntel();
+  loadArgusIntel();
   try {
     const raw = localStorage.getItem(COMP_CACHE);
     if (!raw) return;
@@ -533,18 +533,18 @@ async function saveCompetitors() {
 
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCompetitorEditor(); });
 
-async function loadScoutIntel() {
+async function loadArgusIntel() {
   try {
-    const data = await fetch(`${PROXY}/scout/results`).then(r => r.json());
+    const data = await fetch(`${PROXY}/argus/results`).then(r => r.json());
     if (data.error || !data.result) return;
-    renderScoutIntel(data.result, data.savedAt);
+    renderArgusIntel(data.result, data.savedAt);
   } catch(e) {}
 }
 
-function renderScoutIntel(result, savedAt) {
-  const container = document.getElementById('scoutIntelContainer');
-  const label = document.getElementById('scoutSectionLabel');
-  const savedEl = document.getElementById('scoutSavedAt');
+function renderArgusIntel(result, savedAt) {
+  const container = document.getElementById('argusIntelContainer');
+  const label = document.getElementById('argusSectionLabel');
+  const savedEl = document.getElementById('argusSavedAt');
   if (!container) return;
   const handles = Object.keys(result);
   if (!handles.length) return;
@@ -558,18 +558,18 @@ function renderScoutIntel(result, savedAt) {
     const d = result[handle];
     const profile = d.profile || {};
     const block = document.createElement('div');
-    block.className = 'card scout-competitor-block';
+    block.className = 'card argus-competitor-block';
     block.innerHTML = `
-      <div class="scout-comp-header">
-        <div class="scout-comp-avatar-sm" style="${AVATAR_STYLES[idx % AVATAR_STYLES.length]}">${AVATAR_EMOJIS[idx % AVATAR_EMOJIS.length]}</div>
-        <div class="scout-comp-handle">@${escapeHtml(handle)}</div>
+      <div class="argus-comp-header">
+        <div class="argus-comp-avatar-sm" style="${AVATAR_STYLES[idx % AVATAR_STYLES.length]}">${AVATAR_EMOJIS[idx % AVATAR_EMOJIS.length]}</div>
+        <div class="argus-comp-handle">@${escapeHtml(handle)}</div>
         ${profile.followers ? `<span style="font-family:var(--font-data);font-size:10px;color:var(--text-dim);">${fmtNum(profile.followers)} followers</span>` : ''}
       </div>
-      <div class="scout-group-label" style="color:var(--accent);">Top Views</div>
+      <div class="argus-group-label" style="color:var(--accent);">Top Views</div>
       <div class="reel-row" id="row-v-${idx}"></div>
-      <div class="scout-group-label" style="color:var(--yellow);">Top Likes</div>
+      <div class="argus-group-label" style="color:var(--yellow);">Top Likes</div>
       <div class="reel-row" id="row-l-${idx}"></div>
-      <div class="scout-group-label" style="color:var(--green);">Top Comments</div>
+      <div class="argus-group-label" style="color:var(--green);">Top Comments</div>
       <div class="reel-row" id="row-c-${idx}"></div>`;
     container.appendChild(block);
     (d.tofu || []).forEach(r => document.getElementById(`row-v-${idx}`).appendChild(buildReelCard(r)));
@@ -973,9 +973,9 @@ loadHooks();
 <script>
 (function sidebarAgentStatus() {
   var AGENTS = [
-    {name:'Scout',color:'#4FC3F7'},{name:'Quill',color:'#fbbf24'},{name:'Pulse',color:'#4ade80'},
-    {name:'Hunter',color:'#f472b6'},{name:'Echo',color:'#4ade80'},{name:'Pilot',color:'#38bdf8'},
-    {name:'Forge',color:'#e879f9'},{name:'Edge',color:'#f97316'}
+    {name:'Argus',color:'#4FC3F7'},{name:'Apollo',color:'#fbbf24'},{name:'Argus',color:'#4ade80'},
+    {name:'Hermes',color:'#f472b6'},{name:'Clio',color:'#38bdf8'},
+    {name:'Clio',color:'#e879f9'}
   ];
   function getStatuses() {
     var s = {};

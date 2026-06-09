@@ -1,0 +1,153 @@
+{
+  "name": "Clio — Apply Form → Lead Profile",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "clio-apply",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "fa-webhook",
+      "name": "Webhook — Apply Form Submitted",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 300],
+      "notes": "Fires from apply.html after successful Supabase insert. Body contains full application data + application_id."
+    },
+    {
+      "parameters": {
+        "jsCode": "const d = $input.first().json.body || $input.first().json;\n\nconst prompt = `You are Clio, InboundOS's lead qualification agent.\n\nA new application just came in. Analyze it and return a JSON object with this exact shape:\n{\n  \"qualification\": \"hot\" | \"warm\" | \"cold\",\n  \"score\": 0-100,\n  \"summary\": \"2-3 sentence plain English summary of who this person is and why they applied\",\n  \"fit_analysis\": \"Why they are or aren't a fit for InboundOS consulting ($3K-$9K/mo)\",\n  \"recommended_action\": \"book_call\" | \"nurture\" | \"disqualify\",\n  \"action_reason\": \"One sentence on why\",\n  \"personalized_reply\": \"A casual, warm 3-4 sentence reply MK can send to this person's Instagram DM or email. No pitch. Just human. Acknowledge their situation specifically.\"\n}\n\nApplication Data:\n- Name: ${d.name}\n- Instagram: ${d.instagram}\n- Business: ${d.business}\n- Current Revenue: ${d.revenue}\n- Main Blocker: ${d.blocker}${d.other_blocker ? ' — ' + d.other_blocker : ''}\n- How long this has been a problem: ${d.duration}\n- Investment readiness: ${d.investment}\n- Why applying now: ${d.why_now}\n- Source: ${d.source}\n\nQualification criteria for InboundOS:\n- HOT: $3K+/mo revenue, ready to invest, specific blocker (no-leads or no-time), problem >6 months\n- WARM: $1K-$3K/mo, or \"need to check finances\", or problem <6 months\n- COLD: Pre-revenue OR \"not financially ready\" — these were auto-disqualified on form but may leak through\n\nReturn ONLY the JSON object. No markdown fences. No explanation.`;\n\nreturn [{ json: { prompt, application_id: d.application_id, email: d.email, name: d.name, instagram: d.instagram } }];"
+      },
+      "id": "fa-build-prompt",
+      "name": "Build Clio Prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [440, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:7821",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "body", "value": "={{ JSON.stringify({ prompt: $json.prompt }) }}" }
+          ]
+        },
+        "options": { "timeout": 60000 }
+      },
+      "id": "fa-claude",
+      "name": "Run Claude CLI",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json.output || $input.first().json.result || $input.first().json.text || '';\nlet cleaned = raw.replace(/```json\\n?/gi,'').replace(/```\\n?/gi,'').trim();\nlet parsed;\ntry { parsed = JSON.parse(cleaned); } catch(e) { parsed = { qualification: 'warm', score: 50, summary: raw.slice(0,200), recommended_action: 'nurture', personalized_reply: '' }; }\n\nconst ctx = $('fa-build-prompt').item.json;\nreturn [{ json: { ...parsed, application_id: ctx.application_id, email: ctx.email, name: ctx.name, instagram: ctx.instagram } }];"
+      },
+      "id": "fa-parse",
+      "name": "Parse Claude Output",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [920, 300]
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://cscfbuhwlfhblxprkwnh.supabase.co/rest/v1/applications?id=eq.{{ $json.application_id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8" },
+            { "name": "Authorization", "value": "Bearer sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8" },
+            { "name": "Content-Type", "value": "application/json" },
+            { "name": "Prefer", "value": "return=minimal" }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "body",
+              "value": "={{ JSON.stringify({ status: $json.recommended_action === 'book_call' ? 'qualified' : $json.recommended_action === 'disqualify' ? 'disqualified' : 'reviewed', clio_triggered_at: new Date().toISOString() }) }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "fa-supabase-update",
+      "name": "Update Application Status",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1160, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.telegram.org/bot{{ $env.TELEGRAM_BOT_TOKEN }}/sendMessage",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "chat_id", "value": "={{ $env.TELEGRAM_CHAT_ID }}" },
+            {
+              "name": "text",
+              "value": "=🔔 *New Application — {{ $json.name }}*\n\n📊 Qualification: *{{ $json.qualification.toUpperCase() }}* ({{ $json.score }}/100)\n📱 IG: @{{ $json.instagram }}\n📧 {{ $json.email }}\n\n📝 *Summary:*\n{{ $json.summary }}\n\n🎯 *Action:* {{ $json.recommended_action }}\n{{ $json.action_reason }}\n\n💬 *Suggested Reply:*\n{{ $json.personalized_reply }}\n\n👉 Review: https://inboundos.vercel.app/micko-cruz/crm"
+            },
+            { "name": "parse_mode", "value": "Markdown" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "fa-telegram",
+      "name": "Telegram — New Application Alert",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1400, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{ \"success\": true }"
+      },
+      "id": "fa-respond",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1640, 300]
+    }
+  ],
+  "connections": {
+    "Webhook — Apply Form Submitted": {
+      "main": [[{ "node": "Build Clio Prompt", "type": "main", "index": 0 }]]
+    },
+    "Build Clio Prompt": {
+      "main": [[{ "node": "Run Claude CLI", "type": "main", "index": 0 }]]
+    },
+    "Run Claude CLI": {
+      "main": [[{ "node": "Parse Claude Output", "type": "main", "index": 0 }]]
+    },
+    "Parse Claude Output": {
+      "main": [[{ "node": "Update Application Status", "type": "main", "index": 0 }]]
+    },
+    "Update Application Status": {
+      "main": [[{ "node": "Telegram — New Application Alert", "type": "main", "index": 0 }]]
+    },
+    "Telegram — New Application Alert": {
+      "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "description": "Clio — Apply Form. Fires when someone submits apply.html. Claude qualifies the lead (hot/warm/cold), writes a personalized reply, updates applications table in Supabase, sends Telegram alert to MK with full breakdown + suggested reply."
+  }
+}

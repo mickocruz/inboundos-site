@@ -34,7 +34,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .sidebar-bottom{margin-top:auto;padding:12px 16px 0;border-top:1px solid var(--border);}
 .mk-avatar-wrap{display:flex;align-items:center;gap:10px;cursor:pointer;}
 .mk-name{font-family:var(--font-data);font-size:12px;font-weight:600;color:#ffffff;line-height:1.2;}
-.mk-role{font-family:var(--font-data);font-size:10px;color:rgba(255,255,255,0.42);}
+.mk-role{font-family:var(--font-data);font-size:11px;color:rgba(255,255,255,0.42);}
 
 /* MAIN */
 .main{flex:1;overflow:hidden;display:flex;flex-direction:column;}
@@ -88,7 +88,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .crm-tab{display:flex;align-items:center;gap:6px;padding:10px 16px;font-family:var(--font-data);font-size:12px;font-weight:600;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;margin-bottom:-1px;}
 .crm-tab:hover{color:var(--text);}
 .crm-tab.on{color:var(--accent);border-bottom-color:var(--accent);}
-.crm-tab-badge{font-size:9.5px;font-weight:700;padding:1px 6px;border-radius:10px;background:rgba(255,255,255,0.06);color:var(--text-dim);}
+.crm-tab-badge{font-size:11px;font-weight:700;padding:1px 6px;border-radius:10px;background:rgba(255,255,255,0.06);color:var(--text-dim);}
 .crm-tab.on .crm-tab-badge{background:rgba(79,195,247,0.1);color:var(--accent);}
 
 /* INBOUND SECTION */
@@ -111,7 +111,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .chip:hover{border-color:rgba(79,195,247,0.2);color:var(--text);}
 .chip.on{border-color:rgba(79,195,247,0.35);background:rgba(79,195,247,0.07);color:var(--accent);}
 .chip-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
-.chip-cnt{font-size:9.5px;opacity:0.55;margin-left:1px;}
+.chip-cnt{font-size:11px;opacity:0.55;margin-left:1px;}
 
 /* BODY */
 .crm-body{flex:1;overflow:hidden;display:flex;border-top:1px solid var(--border);}
@@ -129,13 +129,13 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .l-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
 .l-info{flex:1;min-width:0;}
 .l-handle{font-family:var(--font-data);font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.l-sub{font-family:var(--font-data);font-size:10px;color:var(--text-muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.l-sub{font-family:var(--font-data);font-size:12px;color:var(--text-muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .l-right{text-align:right;flex-shrink:0;}
 .urg{font-family:var(--font-data);font-size:11px;font-weight:600;letter-spacing:0.3px;text-transform:uppercase;}
 .urg-overdue{color:var(--red);}
 .urg-today{color:var(--yellow);}
 .urg-date{color:var(--text-dim);font-size:11px;font-family:var(--font-data);}
-.quill-tag{font-family:var(--font-data);font-size:11px;color:rgba(79,195,247,0.45);margin-top:2px;}
+.apollo-tag{font-family:var(--font-data);font-size:11px;color:rgba(79,195,247,0.45);margin-top:2px;}
 .empty{display:flex;align-items:center;justify-content:center;height:100%;font-family:var(--font-data);font-size:12px;color:var(--text-dim);}
 
 /* DETAIL */
@@ -163,12 +163,12 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .save-btn:disabled{opacity:0.4;cursor:default;}
 .ig-btn{display:block;width:100%;padding:7px 0;text-align:center;border:1px solid var(--border);border-radius:8px;font-family:var(--font-data);font-size:10.5px;color:var(--text-muted);text-decoration:none;transition:all 0.15s;}
 .ig-btn:hover{border-color:rgba(79,195,247,0.25);color:var(--accent);}
-@keyframes pulse{0%,100%{opacity:0.3;}50%{opacity:0.7;}}
-.loading{animation:pulse 1.2s ease-in-out infinite;}
+@keyframes argus{0%,100%{opacity:0.3;}50%{opacity:0.7;}}
+.loading{animation:argus 1.2s ease-in-out infinite;}
 </style>
 <style>:root{--font-body:'DM Sans',sans-serif;}html,body{font-family:'DM Sans',sans-serif!important;}</style>
 <link rel="stylesheet" href="/dashboard/spring-animations.css"/>
-<link rel="stylesheet" href="/dashboard/mobile.css?v=11"/>
+<link rel="stylesheet" href="/dashboard/mobile.css?v=14"/>
 <link rel="stylesheet" href="/dashboard/settings-panel.css"/>
 <script src="/dashboard/config.js"></script><script src="/dashboard/settings-panel.js"></script>
   <link rel="manifest" href="/manifest.json">
@@ -275,21 +275,23 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 </div>
 
 <script>
+function escHtml(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
 const SLUG_FN = `(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','database','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()`;
 
 const STAGES=[
   {stage:-1,label:'All',dot:'#ffffff40'},
   {stage:0,label:'Fresh Lead',dot:'#4FC3F7'},
   {stage:1,label:'Opener Sent',dot:'#ffffff60'},
-  {stage:2,label:'Quill Offer',dot:'#fbbf24'},
+  {stage:2,label:'Apollo Offer',dot:'#fbbf24'},
   {stage:3,label:'Setup Qs',dot:'#60a5fa'},
-  {stage:4,label:'Quill Delivered',dot:'#a78bfa'},
+  {stage:4,label:'Apollo Delivered',dot:'#a78bfa'},
   {stage:5,label:'Transition Sent',dot:'#fb923c'},
   {stage:6,label:'Call Booked',dot:'#4ade80'},
   {stage:7,label:'Unqualified',dot:'#f87171'},
   {stage:9,label:'Closed',dot:'#4FC3F7'},
 ];
-const STAGE_LABEL={0:'Fresh Lead',1:'Opener Sent',2:'Quill Offer Sent',3:'Setup Questions Asked',4:'Quill Delivered',5:'Transition Sent',6:'Call Booked',7:'Unqualified',9:'Closed'};
+const STAGE_LABEL={0:'Fresh Lead',1:'Opener Sent',2:'Apollo Offer Sent',3:'Setup Questions Asked',4:'Apollo Delivered',5:'Transition Sent',6:'Call Booked',7:'Unqualified',9:'Closed'};
 
 let leads=[],filter=-1,selId=null,activeTab='outbound';
 
@@ -354,7 +356,7 @@ function renderList(){
   el.innerHTML=rows.map(l=>{
     const u=urgency(l);
     const ub=u==='overdue'?`<div class="urg urg-overdue">Overdue</div>`:u==='today'?`<div class="urg urg-today">Today</div>`:l.next_followup_at&&u==='upcoming'?`<div class="urg-date">${l.next_followup_at}</div>`:'';
-    const qt=l.quill_built?'<div class="quill-tag">Quill built</div>':'';
+    const qt=l.apollo_built?'<div class="apollo-tag">Apollo built</div>':'';
     return`<div class="lead-row ${l.id===selId?'sel':''}" onclick="selectLead('${l.id}')">
       <span class="l-dot" style="background:${dot(l.stage)}"></span>
       <div class="l-info">
@@ -423,10 +425,12 @@ async function save(id){
   const patch={stage:parseInt(document.getElementById(`ssel-${id}`).value),notes:document.getElementById(`notes-${id}`).value};
   try{
     const _sess=JSON.parse(localStorage.getItem('sb_session')||'{}');
-    const _tok=_sess.access_token||'sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8';
-    const r=await fetch(`https://cscfbuhwlfhblxprkwnh.supabase.co/rest/v1/outreach_leads?id=eq.${id}`,{
+    const _anon=_sess.client_supabase_anon||'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
+    const _tok=(_sess.access_token&&_sess.access_token!=='local')?_sess.access_token:_anon;
+    const _url=_sess.client_supabase_url||'https://cscfbuhwlfhblxprkwnh.supabase.co';
+    const r=await fetch(`${_url}/rest/v1/outreach_leads?id=eq.${id}`,{
       method:'PATCH',
-      headers:{'Content-Type':'application/json','apikey':'sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8','Authorization':'Bearer '+_tok,'Prefer':'return=minimal'},
+      headers:{'Content-Type':'application/json','apikey':_anon,'Authorization':'Bearer '+_tok,'Prefer':'return=minimal'},
       body:JSON.stringify(patch)
     });
     if(!r.ok)throw new Error(await r.text());
@@ -439,8 +443,12 @@ async function save(id){
 async function loadLeads(){
   document.getElementById('lead-list').innerHTML='<div class="empty loading">Loading…</div>';
   try{
-    const r=await fetch('https://cscfbuhwlfhblxprkwnh.supabase.co/rest/v1/outreach_leads?select=*&order=updated_at.desc',{
-      headers:{'apikey':'sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8','Authorization':'Bearer sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8'}
+    const _crmSess=JSON.parse(localStorage.getItem('sb_session')||'{}');
+    const _crmAnon=_crmSess.client_supabase_anon||'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
+    const _crmTok=(_crmSess.access_token&&_crmSess.access_token!=='local')?_crmSess.access_token:_crmAnon;
+    const _crmUrl=_crmSess.client_supabase_url||'https://cscfbuhwlfhblxprkwnh.supabase.co';
+    const r=await fetch(`${_crmUrl}/rest/v1/outreach_leads?select=*&order=updated_at.desc`,{
+      headers:{'apikey':_crmAnon,'Authorization':'Bearer '+_crmTok}
     });
     if(!r.ok)throw new Error(await r.text());
     leads=await r.json();
@@ -488,7 +496,7 @@ function copyOpenerById(leadId) {
 
 loadLeads();
 
-// Auto-open Add Lead modal if redirected from Echo
+// Auto-open Add Lead modal if redirected from Hermes
 if (new URLSearchParams(window.location.search).get('addlead') === '1') {
   window.addEventListener('load', () => setTimeout(openUpload, 400));
 }
@@ -510,7 +518,7 @@ if (new URLSearchParams(window.location.search).get('addlead') === '1') {
 <div class="upload-overlay" id="uploadOverlay" onclick="if(event.target===this)closeUpload()">
   <div class="upload-box">
     <div class="upload-title">Add Lead via <span>Screenshot</span></div>
-    <div style="font-family:var(--font-data);font-size:11px;color:var(--text-dim);">Echo reads the profile → qualifies → writes opener → saves to CRM. Run <code style="background:rgba(79,195,247,0.08);padding:1px 6px;border-radius:4px;color:var(--accent);font-size:10px;">node qualify-server/server.js</code> first.</div>
+    <div style="font-family:var(--font-data);font-size:11px;color:var(--text-dim);">Hermes reads the profile → qualifies → writes opener → saves to CRM. Run <code style="background:rgba(79,195,247,0.08);padding:1px 6px;border-radius:4px;color:var(--accent);font-size:10px;">node qualify-server/server.js</code> first.</div>
     <div class="upload-drop" id="uploadDrop" onclick="document.getElementById('uploadFileInput').click()"
       ondragover="event.preventDefault();this.classList.add('drag')"
       ondragleave="this.classList.remove('drag')"
@@ -604,7 +612,7 @@ async function submitScreenshots() {
   try {
     for (let b = 0; b < totalBatches; b++) {
       const batch = images.slice(b * BATCH, (b + 1) * BATCH);
-      status.textContent = `Echo is qualifying… ${Math.min((b+1)*BATCH, images.length)} / ${images.length} profiles`;
+      status.textContent = `Hermes is qualifying… ${Math.min((b+1)*BATCH, images.length)} / ${images.length} profiles`;
 
       const resp = await fetch(`${SERVER_BASE}/qualify`, {
         method: 'POST',
@@ -648,7 +656,7 @@ async function submitScreenshots() {
     // Toast notification
     const toast = document.createElement('div');
     toast.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:9999;background:#0f1923;border:1px solid rgba(79,195,247,0.3);border-radius:10px;padding:12px 18px;font-family:var(--font-data);font-size:13px;color:#fff;box-shadow:0 8px 32px rgba(0,0,0,0.4);max-width:320px;';
-    toast.innerHTML = `<div style="color:#4FC3F7;font-weight:700;margin-bottom:3px;">Echo done</div><div style="color:rgba(255,255,255,0.7);font-size:12px;">${done} added${disq ? ` · ${disq} unqualified` : ''}${dupList.length ? ` · ${dupList.length} duplicate${dupList.length>1?'s':''} skipped` : ''}${failList.length ? ` · ${failList.length} failed` : ''}</div>`;
+    toast.innerHTML = `<div style="color:#4FC3F7;font-weight:700;margin-bottom:3px;">Hermes done</div><div style="color:rgba(255,255,255,0.7);font-size:12px;">${done} added${disq ? ` · ${disq} unqualified` : ''}${dupList.length ? ` · ${dupList.length} duplicate${dupList.length>1?'s':''} skipped` : ''}${failList.length ? ` · ${failList.length} failed` : ''}</div>`;
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 6000);
 
@@ -667,9 +675,9 @@ async function submitScreenshots() {
 <script>
 (function sidebarAgentStatus() {
   var AGENTS = [
-    {name:'Scout',color:'#4FC3F7'},{name:'Quill',color:'#fbbf24'},{name:'Pulse',color:'#4ade80'},
-    {name:'Hunter',color:'#f472b6'},{name:'Echo',color:'#4ade80'},{name:'Pilot',color:'#38bdf8'},
-    {name:'Forge',color:'#e879f9'},{name:'Edge',color:'#f97316'}
+    {name:'Argus',color:'#4FC3F7'},{name:'Apollo',color:'#fbbf24'},{name:'Argus',color:'#4ade80'},
+    {name:'Hermes',color:'#f472b6'},{name:'Clio',color:'#38bdf8'},
+    {name:'Clio',color:'#e879f9'}
   ];
   function getStatuses() {
     var s = {};
@@ -716,7 +724,7 @@ async function submitScreenshots() {
       if(page==="crm"){var r=await fetch(SUPA+"/rest/v1/outreach_leads?select=id,status",{headers:hdrs});if(r.ok){var d=await r.json();var el=document.getElementById("crm-subtitle");if(el)el.textContent=d.length+" leads · "+d.filter(function(x){return x.status==="new";}).length+" new.";}else{var el=document.getElementById("crm-subtitle");if(el)el.textContent="Track and manage outreach leads.";}}
       if(page==="sales-calls"){var r=await fetch(SUPA+"/rest/v1/outreach_leads?select=id,status&status=eq.booked",{headers:hdrs});if(r.ok){var d=await r.json();var el=document.getElementById("calls-subtitle");if(el)el.textContent=d.length+" call"+(d.length!==1?"s":"")+" booked.";}else{var el=document.getElementById("calls-subtitle");if(el)el.textContent="Review and log discovery calls.";}}
       if(page==="pipeline"){try{var board=JSON.parse(localStorage.getItem("ctrl_pipeline_board")||"{}");var s=Array.isArray(board.scripting)?board.scripting.length:0;var el=document.getElementById("pipeline-subtitle");if(el)el.textContent=s+" script"+(s!==1?"s":"")+" ready to film.";}catch(ee){}}
-      if(page==="agents"){try{var tasks=JSON.parse(localStorage.getItem("ctrl_agent_tasks_v1")||"{}");var run=Object.values(tasks).filter(function(t){return t.status==="running";}).length;var el=document.getElementById("agents-subtitle");if(el)el.textContent=run>0?run+" agent"+(run!==1?"s":"")+" running now.":"8 agents ready.";}catch(ee){}}
+      if(page==="agents"){try{var tasks=JSON.parse(localStorage.getItem("ctrl_agent_tasks_v1")||"{}");var run=Object.values(tasks).filter(function(t){return t.status==="running";}).length;var el=document.getElementById("agents-subtitle");if(el)el.textContent=run>0?run+" agent"+(run!==1?"s":"")+" running now.":"6 agents ready.";}catch(ee){}}
       if(page==="sops"){var r=await fetch(SUPA+"/rest/v1/sops?select=id",{headers:hdrs});if(r.ok){var d=await r.json();var el=document.getElementById("sops-subtitle");if(el)el.textContent=d.length+" procedure"+(d.length!==1?"s":"")+" documented.";}else{var el=document.getElementById("sops-subtitle");if(el)el.textContent="Standard operating procedures.";}}
     }catch(e){}
   }

@@ -1,0 +1,201 @@
+{
+  "name": "Clio — New Client Dashboard",
+  "active": false,
+  "settings": { "executionOrder": "v1" },
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "clio-new-client",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "a1000000-0000-0000-0000-000000000001",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [400, 0],
+      "webhookId": "clio-new-client-hook"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Clio fires this after Clio completes. Body must include the client's email.\nconst body = $input.first().json.body || $input.first().json;\nconst email = (body.email || '').trim();\nif (!email) throw new Error('No email provided to Clio New Client Dashboard');\nreturn [{ json: { email } }];"
+      },
+      "id": "a1000000-0000-0000-0000-000000000002",
+      "name": "Get Email",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [620, 0]
+    },
+    {
+      "parameters": {
+        "url": "=https://cscfbuhwlfhblxprkwnh.supabase.co/rest/v1/onboarding?email=eq.{{ $json.email }}&status=eq.clio_complete&select=*",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8" },
+            { "name": "Authorization", "value": "Bearer sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a1000000-0000-0000-0000-000000000003",
+      "name": "Fetch Onboarding",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [840, 0]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "loose" },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.length }}",
+              "rightValue": 0,
+              "operator": { "type": "number", "operation": "gt" }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "a1000000-0000-0000-0000-000000000004",
+      "name": "Profile Ready?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1060, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Build the Claude prompt from the Clio onboarding row.\nconst row = $input.first().json;\nconst email = row.email;\nlet profile = row.client_profile;\nlet kickoff = row.kickoff_deck;\ntry { if (typeof profile === 'string') profile = JSON.parse(profile); } catch(e) {}\ntry { if (typeof kickoff === 'string') kickoff = JSON.parse(kickoff); } catch(e) {}\nprofile = profile || {};\nkickoff = kickoff || {};\n\nconst prompt = `You are Clio, the client fulfillment agent for InboundOS. A new client just finished onboarding (Clio). Build their dashboard record + week-1 task list.\n\nCLIENT PROFILE (from Clio):\n${JSON.stringify(profile, null, 2)}\n\nKICKOFF DECK (from Clio):\n${JSON.stringify(kickoff, null, 2)}\n\nReturn ONLY valid JSON, no markdown, no extra text, this exact shape:\n{\n  \\\"client\\\": {\n    \\\"slug\\\": \\\"<lowercase_underscored name e.g. john_smith>\\\",\n    \\\"name\\\": \\\"<full name>\\\",\n    \\\"company\\\": \\\"<business name>\\\",\n    \\\"niche\\\": \\\"<short niche label>\\\",\n    \\\"emoji\\\": \\\"<one emoji that fits their brand>\\\",\n    \\\"instagram_handle\\\": \\\"<handle without @ or empty>\\\",\n    \\\"next_action\\\": \\\"<the single most important first action for Micko this week>\\\"\n  },\n  \\\"tasks\\\": [\n    { \\\"section\\\": \\\"This Week\\\", \\\"title\\\": \\\"<task>\\\", \\\"due_date\\\": \\\"<Mon DD>\\\", \\\"category\\\": \\\"<Onboarding|Strategy|Delivery|Admin>\\\", \\\"substeps\\\": [\\\"<step>\\\", \\\"<step>\\\"], \\\"sort_order\\\": 1 }\n  ]\n}\nRules: build 4-6 week-1 tasks derived from the kickoff roadmap phase 1 + first_content_ideas. Keep titles short and actionable. Substeps 2-3 each.`;\n\nreturn [{ json: { prompt, email } }];"
+      },
+      "id": "a1000000-0000-0000-0000-000000000005",
+      "name": "Build Prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1280, -100]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:7821",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ prompt: $json.prompt }) }}",
+        "options": { "timeout": 120000 }
+      },
+      "id": "a1000000-0000-0000-0000-000000000006",
+      "name": "Run Claude CLI",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1500, -100]
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json.output || $input.first().json.stdout || '';\nconst email = $('Build Prompt').first().json.email;\nlet parsed;\ntry {\n  const clean = raw.replace(/```json?/gi, '').replace(/```/g, '').trim();\n  parsed = JSON.parse(clean);\n} catch(e) {\n  throw new Error('Claude did not return valid JSON: ' + raw.slice(0, 200));\n}\nconst client = parsed.client || {};\nconst tasks = parsed.tasks || [];\nreturn [{ json: { email, client, tasks } }];"
+      },
+      "id": "a1000000-0000-0000-0000-000000000007",
+      "name": "Parse Claude Output",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1720, -100]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://cscfbuhwlfhblxprkwnh.supabase.co/rest/v1/clients",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8" },
+            { "name": "Authorization", "value": "Bearer sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8" },
+            { "name": "Content-Type", "value": "application/json" },
+            { "name": "Prefer", "value": "return=representation,resolution=merge-duplicates" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ slug: $json.client.slug, name: $json.client.name, company: $json.client.company, niche: $json.client.niche, emoji: $json.client.emoji || '👤', instagram_handle: $json.client.instagram_handle || null, status: 'active', phase: 'Onboard', phase_step: 0, client_since: $now.format('yyyy-MM-dd'), next_action: $json.client.next_action, next_action_due: $now.plus(7, 'days').format('yyyy-MM-dd') }) }}",
+        "options": {}
+      },
+      "id": "a1000000-0000-0000-0000-000000000008",
+      "name": "Insert Client",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1940, -100]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Build client_tasks rows now that we have the new client id.\nconst inserted = $input.first().json;\nconst clientRow = Array.isArray(inserted) ? inserted[0] : inserted;\nconst clientId = clientRow.id;\nconst tasks = $('Parse Claude Output').first().json.tasks || [];\nconst rows = tasks.map((t, i) => ({\n  client_id: clientId,\n  section: t.section || 'This Week',\n  title: t.title,\n  due_date: t.due_date || '',\n  category: t.category || 'Delivery',\n  tags: t.tags || [],\n  substeps: t.substeps || [],\n  done: false,\n  sort_order: t.sort_order || (i + 1)\n}));\nreturn [{ json: { rows, clientId, email: $('Parse Claude Output').first().json.email } }];"
+      },
+      "id": "a1000000-0000-0000-0000-000000000009",
+      "name": "Build Task Rows",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2160, -100]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://cscfbuhwlfhblxprkwnh.supabase.co/rest/v1/client_tasks",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8" },
+            { "name": "Authorization", "value": "Bearer sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8" },
+            { "name": "Content-Type", "value": "application/json" },
+            { "name": "Prefer", "value": "return=minimal" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.rows) }}",
+        "options": {}
+      },
+      "id": "a1000000-0000-0000-0000-000000000010",
+      "name": "Insert Tasks",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [2380, -100]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ success: true, clientId: $('Build Task Rows').first().json.clientId, email: $('Build Task Rows').first().json.email, message: 'Clio: client dashboard created' }) }}",
+        "options": {}
+      },
+      "id": "a1000000-0000-0000-0000-000000000011",
+      "name": "Respond OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [2600, -100]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseCode": 404,
+        "responseBody": "={{ JSON.stringify({ success: false, message: 'No clio_complete onboarding row for that email' }) }}",
+        "options": {}
+      },
+      "id": "a1000000-0000-0000-0000-000000000012",
+      "name": "Respond Not Found",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1280, 160]
+    }
+  ],
+  "connections": {
+    "Webhook": { "main": [[{ "node": "Get Email", "type": "main", "index": 0 }]] },
+    "Get Email": { "main": [[{ "node": "Fetch Onboarding", "type": "main", "index": 0 }]] },
+    "Fetch Onboarding": { "main": [[{ "node": "Profile Ready?", "type": "main", "index": 0 }]] },
+    "Profile Ready?": { "main": [[{ "node": "Build Prompt", "type": "main", "index": 0 }], [{ "node": "Respond Not Found", "type": "main", "index": 0 }]] },
+    "Build Prompt": { "main": [[{ "node": "Run Claude CLI", "type": "main", "index": 0 }]] },
+    "Run Claude CLI": { "main": [[{ "node": "Parse Claude Output", "type": "main", "index": 0 }]] },
+    "Parse Claude Output": { "main": [[{ "node": "Insert Client", "type": "main", "index": 0 }]] },
+    "Insert Client": { "main": [[{ "node": "Build Task Rows", "type": "main", "index": 0 }]] },
+    "Build Task Rows": { "main": [[{ "node": "Insert Tasks", "type": "main", "index": 0 }]] },
+    "Insert Tasks": { "main": [[{ "node": "Respond OK", "type": "main", "index": 0 }]] }
+  },
+  "pinData": {}
+}

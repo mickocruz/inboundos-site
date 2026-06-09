@@ -886,7 +886,7 @@
   </footer>
 </div>
 
-<!-- 
+<!--
      SCREEN: SUCCESS
  -->
 <div class="screen" id="screen-success">
@@ -894,8 +894,11 @@
     <div class="end-label blue">Application received</div>
     <h2 class="end-title">You're in<br>the queue.</h2>
     <p class="end-body">
-      I'll review it personally. If we're a fit, you'll hear from us within <strong>48 hours</strong> to book a call.
+      Got it. Micko reviews every application personally. You'll hear back within <strong>24 hours</strong>.
     </p>
+    <a id="calendly-link" class="end-link" href="https://calendly.com/inboundos/discovery-call" target="_blank" rel="noopener" style="display:none;">
+      Book a call now →
+    </a>
   </div>
   <footer>
     <span class="footer-logo"><span>Inbound</span>OS</span>
@@ -1026,9 +1029,9 @@
       console.error('Submit error:', e);
     }
 
-    // Trigger Forge webhook — fire and forget, non-blocking
+    // Trigger Clio webhook — fire and cliot, non-blocking
     if (applicationId) {
-      fetch('http://localhost:5678/webhook/forge-apply', {
+      fetch('http://localhost:5678/webhook/clio-apply', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -1045,8 +1048,44 @@
           why_now: payload.why_now,
           source: payload.source
         })
-      }).catch(() => {}); // silent fail — user experience not affected
+      }).catch(() => {});
     }
+
+    // Inbound Lead Capture — POST to n8n qualify + Supabase inbound_leads
+    const revenueMap = {
+      'pre-revenue': '$0-2K',
+      '1k-3k': '$0-2K',
+      '3k-7k': '$2-5K',
+      '7k-15k': '$5-10K',
+      '15k+': '$10K+'
+    };
+    const agencyMap = {
+      'pre-revenue': 'solo',
+      '1k-3k': 'solo',
+      '3k-7k': '2-5',
+      '7k-15k': '6-10',
+      '15k+': '10+'
+    };
+    const biggestProblem = payload.blocker === 'other'
+      ? (payload.other_blocker || payload.blocker)
+      : payload.blocker;
+
+    fetch('http://localhost:5678/webhook/inbound-lead', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: payload.name,
+        email: payload.email,
+        instagram_handle: payload.instagram,
+        agency_size: agencyMap[payload.revenue] || 'solo',
+        monthly_revenue: revenueMap[payload.revenue] || '$0-2K',
+        biggest_problem: biggestProblem
+      })
+    }).then(r => r.json()).then(data => {
+      if (data.qualify_score === 'hot') {
+        document.getElementById('calendly-link').style.display = 'inline-flex';
+      }
+    }).catch(() => {});
 
     show('screen-success');
   }

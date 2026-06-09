@@ -44,7 +44,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .sidebar-bottom{margin-top:auto;padding:12px 16px 0;border-top:1px solid var(--border);}
 .mk-avatar-wrap{display:flex;align-items:center;gap:10px;}
 .mk-name{font-family:var(--font-data);font-size:12px;font-weight:600;color:#ffffff;line-height:1.2;}
-.mk-role{font-family:var(--font-data);font-size:10px;color:rgba(255,255,255,0.42);}
+.mk-role{font-family:var(--font-data);font-size:11px;color:rgba(255,255,255,0.42);}
 .main{flex:1;overflow-y:auto;overflow-x:hidden;padding:22px 20px 22px 24px;display:flex;flex-direction:column;gap:18px;scrollbar-width:thin;scrollbar-color:rgba(79,195,247,0.12) transparent;}
 .main::-webkit-scrollbar{width:3px;}.main::-webkit-scrollbar-thumb{background:rgba(79,195,247,0.0);border-radius:3px;transition:background 0.3s;}.main:hover::-webkit-scrollbar-thumb{background:rgba(79,195,247,0.18);}
 .header{display:flex;align-items:center;justify-content:space-between;}
@@ -78,18 +78,18 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .agent-prog-fill{height:100%;border-radius:2px;transition:width 1.2s cubic-bezier(0.4,0,0.2,1);width:0%;}
 .agent-prog-pct{font-family:var(--font-head);font-size:11px;font-weight:900;letter-spacing:-0.2px;margin-bottom:3px;}
 .agent-current-task{font-family:var(--font-data);font-size:10px;color:var(--text-muted);line-height:1.4;margin-bottom:12px;}
-.agent-dispatch{width:100%;padding:7px;background:var(--accent-dim);border:1px solid rgba(79,195,247,0.2);border-radius:7px;font-family:var(--font-data);font-size:9.5px;font-weight:600;color:var(--accent);cursor:pointer;transition:all 0.18s;text-transform:uppercase;letter-spacing:0.7px;margin-top:auto;}
+.agent-dispatch{width:100%;padding:7px;background:var(--accent-dim);border:1px solid rgba(79,195,247,0.2);border-radius:7px;font-family:var(--font-data);font-size:11px;font-weight:600;color:var(--accent);cursor:pointer;transition:all 0.18s;text-transform:uppercase;letter-spacing:0.7px;margin-top:auto;}
 .agent-dispatch:hover{background:rgba(79,195,247,0.14);border-color:rgba(79,195,247,0.4);}
 .agent-dispatch.idle-btn{color:var(--text-muted);border-color:var(--border);background:transparent;}
 .agent-dispatch.idle-btn:hover{color:var(--accent);border-color:var(--border-glow);background:var(--accent-dim);}
-/* Pulse secondary button */
+/* Argus secondary button */
 .agent-dispatch-secondary{width:100%;padding:6px;background:transparent;border:1px solid var(--border);border-radius:7px;font-family:var(--font-data);font-size:11px;font-weight:600;color:var(--text-muted);cursor:pointer;transition:all 0.18s;text-transform:uppercase;letter-spacing:0.7px;margin-top:6px;}
 .agent-dispatch-secondary:hover{background:rgba(74,222,128,0.07);border-color:rgba(74,222,128,0.3);color:var(--green);}
-/* Pulse result panel */
-.pulse-result-panel{margin-top:10px;background:rgba(79,195,247,0.04);border:1px solid var(--border);border-radius:8px;padding:10px 12px;display:none;flex-direction:column;gap:6px;}
-.pulse-result-panel.active{display:flex;}
-.pulse-result-item{font-family:var(--font-data);font-size:10px;color:var(--text-muted);line-height:1.4;}
-.pulse-result-item strong{color:var(--accent);}
+/* Argus result panel */
+.argus-result-panel{margin-top:10px;background:rgba(79,195,247,0.04);border:1px solid var(--border);border-radius:8px;padding:10px 12px;display:none;flex-direction:column;gap:6px;}
+.argus-result-panel.active{display:flex;}
+.argus-result-item{font-family:var(--font-data);font-size:10px;color:var(--text-muted);line-height:1.4;}
+.argus-result-item strong{color:var(--accent);}
 
 /* KANBAN BOARD */
 .kanban-board{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
@@ -152,8 +152,8 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .qd-input:focus{border-color:var(--border-glow);}
 .qd-input::placeholder{color:var(--text-dim);}
 .qd-row{display:flex;gap:6px;margin-top:7px;}
-.qd-select{flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(79,195,247,0.15);border-radius:5px;padding:5px 7px;font-family:var(--font-data);font-size:9.5px;color:var(--text);outline:none;cursor:pointer;}
-.qd-send{background:var(--accent);border:none;border-radius:5px;padding:5px 10px;font-family:var(--font-data);font-size:9.5px;font-weight:700;color:var(--bg);cursor:pointer;transition:all 0.18s;letter-spacing:0.3px;}
+.qd-select{flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(79,195,247,0.15);border-radius:5px;padding:5px 7px;font-family:var(--font-data);font-size:11px;color:var(--text);outline:none;cursor:pointer;}
+.qd-send{background:var(--accent);border:none;border-radius:5px;padding:5px 10px;font-family:var(--font-data);font-size:11px;font-weight:700;color:var(--bg);cursor:pointer;transition:all 0.18s;letter-spacing:0.3px;}
 .qd-send:hover{box-shadow:0 0 12px rgba(79,195,247,0.3);}
 
 /* IDEAS QUEUE */
@@ -169,7 +169,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .idea-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
 .idea-tag{font-family:var(--font-data);font-size:11px;color:var(--text-dim);background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:4px;padding:2px 7px;}
 .idea-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-.script-this-btn{background:var(--accent-dim);border:1px solid rgba(79,195,247,0.22);border-radius:6px;padding:5px 12px;font-family:var(--font-data);font-size:9.5px;font-weight:600;color:var(--accent);cursor:pointer;transition:all 0.18s;letter-spacing:0.3px;}
+.script-this-btn{background:var(--accent-dim);border:1px solid rgba(79,195,247,0.22);border-radius:6px;padding:5px 12px;font-family:var(--font-data);font-size:11px;font-weight:600;color:var(--accent);cursor:pointer;transition:all 0.18s;letter-spacing:0.3px;}
 .script-this-btn:hover{background:rgba(79,195,247,0.14);border-color:rgba(79,195,247,0.4);}
 .script-this-btn:disabled{opacity:0.45;cursor:default;}
 .idea-script-status{font-family:var(--font-data);font-size:10px;font-weight:600;}
@@ -179,16 +179,16 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .idea-script-text{background:rgba(79,195,247,0.04);border:1px solid rgba(79,195,247,0.12);border-radius:7px;padding:10px 12px;font-family:var(--font-data);font-size:10px;line-height:1.6;color:var(--text-muted);cursor:pointer;white-space:pre-wrap;max-height:56px;overflow:hidden;transition:max-height 0.3s ease;}
 .idea-script-text.expanded{max-height:600px;}
 .idea-script-text:hover{background:rgba(79,195,247,0.07);}
-/* Quill count */
-.quill-count-wrap{display:flex;align-items:center;gap:12px;padding:12px;background:rgba(251,191,36,0.05);border:1px solid rgba(251,191,36,0.15);border-radius:9px;}
-.quill-count-input{width:64px;background:rgba(255,255,255,0.04);border:1px solid rgba(251,191,36,0.3);border-radius:7px;padding:7px 10px;font-family:var(--font-head);font-size:18px;font-weight:900;color:var(--yellow);outline:none;text-align:center;}
-.quill-count-label{font-family:var(--font-data);font-size:11px;color:var(--text-muted);line-height:1.5;}
+/* Apollo count */
+.apollo-count-wrap{display:flex;align-items:center;gap:12px;padding:12px;background:rgba(251,191,36,0.05);border:1px solid rgba(251,191,36,0.15);border-radius:9px;}
+.apollo-count-input{width:64px;background:rgba(255,255,255,0.04);border:1px solid rgba(251,191,36,0.3);border-radius:7px;padding:7px 10px;font-family:var(--font-head);font-size:18px;font-weight:900;color:var(--yellow);outline:none;text-align:center;}
+.apollo-count-label{font-family:var(--font-data);font-size:11px;color:var(--text-muted);line-height:1.5;}
 /* Agent actions list */
 .agent-actions-list{display:flex;flex-direction:column;gap:3px;margin-bottom:10px;width:100%;}
 .agent-action-item{font-family:var(--font-data);font-size:11px;color:var(--text-muted);text-align:left;padding:3px 0;display:flex;align-items:flex-start;gap:5px;line-height:1.4;}
 .agent-action-item::before{content:'→';color:var(--accent);opacity:0.5;flex-shrink:0;font-size:10px;margin-top:1px;}
 /* Upload analytics button */
-.upload-analytics-btn{width:100%;padding:8px;background:rgba(251,191,36,0.07);border:1px dashed rgba(251,191,36,0.35);border-radius:7px;font-family:var(--font-data);font-size:9.5px;font-weight:600;color:var(--yellow);cursor:pointer;transition:all 0.18s;text-transform:uppercase;letter-spacing:0.7px;margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:7px;}
+.upload-analytics-btn{width:100%;padding:8px;background:rgba(251,191,36,0.07);border:1px dashed rgba(251,191,36,0.35);border-radius:7px;font-family:var(--font-data);font-size:11px;font-weight:600;color:var(--yellow);cursor:pointer;transition:all 0.18s;text-transform:uppercase;letter-spacing:0.7px;margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:7px;}
 .upload-analytics-btn:hover{background:rgba(251,191,36,0.14);border-color:rgba(251,191,36,0.6);}
 .upload-analytics-preview{font-family:var(--font-data);font-size:10px;color:var(--green);padding:6px 10px;background:rgba(74,222,128,0.07);border:1px solid rgba(74,222,128,0.2);border-radius:6px;margin-bottom:12px;display:none;}
 /* Action preset grid */
@@ -231,50 +231,50 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 @keyframes spin{to{transform:rotate(360deg);}}
 
 /* EDGE POPUP MODAL */
-.edge-modal-overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,0.78);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.2s;}
-.edge-modal-overlay.open{opacity:1;pointer-events:all;}
-.edge-modal-box{background:#0D1117;border:1px solid rgba(249,115,22,0.25);border-radius:16px;width:660px;max-width:calc(100vw - 40px);max-height:88vh;overflow-y:auto;padding:28px;box-shadow:0 0 60px rgba(249,115,22,0.08),0 32px 80px rgba(0,0,0,0.7);transform:scale(0.92) translateY(12px);transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1),opacity 0.22s ease;scrollbar-width:thin;scrollbar-color:rgba(249,115,22,0.15) transparent;}
-.edge-modal-overlay.open .edge-modal-box{transform:scale(1) translateY(0);}
-.edge-modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;}
-.edge-modal-title{font-family:var(--font-head);font-size:18px;font-weight:900;letter-spacing:-0.5px;}
-.edge-modal-title span{color:#f97316;}
-.edge-modal-close{background:none;border:none;color:var(--text-muted);font-size:20px;cursor:pointer;padding:2px 6px;border-radius:4px;line-height:1;transition:color 0.15s;}
-.edge-modal-close:hover{color:var(--text);}
-.edge-card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:20px 22px;margin-bottom:18px;}
-.edge-card h2{font-family:var(--font-data);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;}
-.edge-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-.edge-form-group{display:flex;flex-direction:column;gap:5px;}
-.edge-form-group.full{grid-column:1/-1;}
-.edge-form-group label{font-family:var(--font-data);font-size:10px;color:rgba(255,255,255,0.4);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;}
-.edge-form-group input,.edge-form-group select,.edge-form-group textarea{background:#0D1117;border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:9px 12px;color:#fff;font-family:var(--font-data);font-size:13px;outline:none;transition:border-color 0.2s;}
-.edge-form-group input:focus,.edge-form-group select:focus,.edge-form-group textarea:focus{border-color:#f97316;}
-.edge-form-group textarea{resize:vertical;min-height:130px;}
-.edge-form-group select option{background:#161b22;}
-.edge-submit-btn{background:#f97316;color:#0D1117;border:none;border-radius:8px;padding:10px 24px;font-family:var(--font-data);font-weight:700;font-size:13px;cursor:pointer;transition:opacity 0.2s;margin-top:4px;}
-.edge-submit-btn:hover{opacity:0.85;}
-.edge-submit-btn:disabled{opacity:0.4;cursor:not-allowed;}
-.edge-error{color:#f85149;font-size:12px;margin-top:6px;}
-.edge-result-panel{display:none;}
-.edge-result-panel.visible{display:block;}
-.edge-summary-text{color:#c9d1d9;line-height:1.6;font-family:var(--font-data);font-size:13px;}
-.edge-coaching{background:rgba(249,115,22,0.06);border-left:3px solid #f97316;padding:10px 14px;border-radius:0 8px 8px 0;color:#c9d1d9;margin-top:14px;font-family:var(--font-data);font-size:13px;}
-.edge-table{width:100%;border-collapse:collapse;margin-top:2px;}
-.edge-table th{text-align:left;font-size:10px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.06em;padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.07);}
-.edge-table td{padding:10px;border-bottom:1px solid rgba(255,255,255,0.05);font-size:13px;color:#c9d1d9;vertical-align:top;font-family:var(--font-data);}
-.edge-badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600;}
-.edge-badge-price{background:#1f3a4a;color:#4FC3F7;}
-.edge-badge-timing{background:#2d2a1f;color:#e3b341;}
-.edge-badge-trust{background:#2d1f2a;color:#f85149;}
-.edge-badge-competitor{background:#1f2d2a;color:#3fb950;}
-.edge-badge-other{background:#21262d;color:#8b949e;}
-.edge-patterns{display:flex;flex-wrap:wrap;gap:7px;}
-.edge-pattern-tag{background:#21262d;border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:3px 11px;font-size:12px;color:#8b949e;font-family:var(--font-data);}
-.edge-history-table td{max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.edge-outcome-booked{color:#3fb950;}
-.edge-outcome-lost{color:#f85149;}
-.edge-outcome-follow_up{color:#e3b341;}
-.edge-outcome-no_show{color:#8b949e;}
-.edge-loading{color:rgba(255,255,255,0.4);font-size:13px;font-family:var(--font-data);}
+.clio-modal-overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,0.78);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.2s;}
+.clio-modal-overlay.open{opacity:1;pointer-events:all;}
+.clio-modal-box{background:#0D1117;border:1px solid rgba(249,115,22,0.25);border-radius:16px;width:660px;max-width:calc(100vw - 40px);max-height:88vh;overflow-y:auto;padding:28px;box-shadow:0 0 60px rgba(249,115,22,0.08),0 32px 80px rgba(0,0,0,0.7);transform:scale(0.92) translateY(12px);transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1),opacity 0.22s ease;scrollbar-width:thin;scrollbar-color:rgba(249,115,22,0.15) transparent;}
+.clio-modal-overlay.open .clio-modal-box{transform:scale(1) translateY(0);}
+.clio-modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;}
+.clio-modal-title{font-family:var(--font-head);font-size:18px;font-weight:900;letter-spacing:-0.5px;}
+.clio-modal-title span{color:#f97316;}
+.clio-modal-close{background:none;border:none;color:var(--text-muted);font-size:20px;cursor:pointer;padding:2px 6px;border-radius:4px;line-height:1;transition:color 0.15s;}
+.clio-modal-close:hover{color:var(--text);}
+.clio-card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:20px 22px;margin-bottom:18px;}
+.clio-card h2{font-family:var(--font-data);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:16px;}
+.clio-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.clio-form-group{display:flex;flex-direction:column;gap:5px;}
+.clio-form-group.full{grid-column:1/-1;}
+.clio-form-group label{font-family:var(--font-data);font-size:10px;color:rgba(255,255,255,0.4);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;}
+.clio-form-group input,.clio-form-group select,.clio-form-group textarea{background:#0D1117;border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:9px 12px;color:#fff;font-family:var(--font-data);font-size:13px;outline:none;transition:border-color 0.2s;}
+.clio-form-group input:focus,.clio-form-group select:focus,.clio-form-group textarea:focus{border-color:#f97316;}
+.clio-form-group textarea{resize:vertical;min-height:130px;}
+.clio-form-group select option{background:#161b22;}
+.clio-submit-btn{background:#f97316;color:#0D1117;border:none;border-radius:8px;padding:10px 24px;font-family:var(--font-data);font-weight:700;font-size:13px;cursor:pointer;transition:opacity 0.2s;margin-top:4px;}
+.clio-submit-btn:hover{opacity:0.85;}
+.clio-submit-btn:disabled{opacity:0.4;cursor:not-allowed;}
+.clio-error{color:#f85149;font-size:12px;margin-top:6px;}
+.clio-result-panel{display:none;}
+.clio-result-panel.visible{display:block;}
+.clio-summary-text{color:#c9d1d9;line-height:1.6;font-family:var(--font-data);font-size:13px;}
+.clio-coaching{background:rgba(249,115,22,0.06);border-left:3px solid #f97316;padding:10px 14px;border-radius:0 8px 8px 0;color:#c9d1d9;margin-top:14px;font-family:var(--font-data);font-size:13px;}
+.clio-table{width:100%;border-collapse:collapse;margin-top:2px;}
+.clio-table th{text-align:left;font-size:10px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.06em;padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.07);}
+.clio-table td{padding:10px;border-bottom:1px solid rgba(255,255,255,0.05);font-size:13px;color:#c9d1d9;vertical-align:top;font-family:var(--font-data);}
+.clio-badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600;}
+.clio-badge-price{background:#1f3a4a;color:#4FC3F7;}
+.clio-badge-timing{background:#2d2a1f;color:#e3b341;}
+.clio-badge-trust{background:#2d1f2a;color:#f85149;}
+.clio-badge-competitor{background:#1f2d2a;color:#3fb950;}
+.clio-badge-other{background:#21262d;color:#8b949e;}
+.clio-patterns{display:flex;flex-wrap:wrap;gap:7px;}
+.clio-pattern-tag{background:#21262d;border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:3px 11px;font-size:12px;color:#8b949e;font-family:var(--font-data);}
+.clio-history-table td{max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.clio-outcome-booked{color:#3fb950;}
+.clio-outcome-lost{color:#f85149;}
+.clio-outcome-follow_up{color:#e3b341;}
+.clio-outcome-no_show{color:#8b949e;}
+.clio-loading{color:rgba(255,255,255,0.4);font-size:13px;font-family:var(--font-data);}
 </style>
 <style>
 /* mobile layout handled by mobile.css */
@@ -603,94 +603,94 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
     <div class="header">
       <div class="header-left">
         <h1>Agents</h1>
-        <div style="font-family:var(--font-data);font-size:12px;color:var(--text-muted);margin-top:2px;" id="agents-subtitle">8 agents ready.</div>
+        <div style="font-family:var(--font-data);font-size:12px;color:var(--text-muted);margin-top:2px;" id="agents-subtitle">Loading...</div>
         <div class="date" id="agentsHeaderDate">AI Team · Standby</div>
       </div>
       <div class="header-right">
-        <div class="pill pill-green"><div class="status-dot"></div><span id="agentsOnlineCount">8 / 8 Online</span></div>
+        <div class="pill pill-green"><div class="status-dot"></div><span id="agentsOnlineCount">6 / 6 Online</span></div>
       </div>
     </div>
 
     <!-- AGENT CARDS -->
     <div class="agents-row">
 
-      <!-- Scout -->
+      <!-- Argus -->
       <div class="card agent-exp" style="border-top:2px solid #4FC3F7;">
         <div class="agent-top">
-          <div class="agent-avatar-lg" style="background:rgba(79,195,247,0.1);color:#4FC3F7;"><!-- Scout: crosshair --><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg></div>
+          <div class="agent-avatar-lg" style="background:rgba(79,195,247,0.1);color:#4FC3F7;"><!-- Argus: crosshair --><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg></div>
           <span class="agent-status-badge st-idle">Idle</span>
         </div>
-        <div class="agent-name-lg">Scout</div>
+        <div class="agent-name-lg">Argus</div>
         <div class="agent-role-lg">AI News · n8n · Scheduled</div>
         <div class="agent-prog-bar"><div class="agent-prog-fill" data-target="0" style="background:var(--accent);"></div></div>
         <div class="agent-prog-pct" style="color:var(--accent);">0%</div>
-        <button class="agent-dispatch" style="background:rgba(79,195,247,0.1);border-color:rgba(79,195,247,0.3);color:#4FC3F7;margin-top:auto;" onclick="openAssignModal('Scout')">Run Scout</button>
+        <button class="agent-dispatch" style="background:rgba(79,195,247,0.1);border-color:rgba(79,195,247,0.3);color:#4FC3F7;margin-top:auto;" onclick="openAssignModal('Argus')">Run Argus</button>
       </div>
 
-      <!-- Quill -->
+      <!-- Apollo -->
       <div class="card agent-exp" style="border-top:2px solid #fbbf24;">
         <div class="agent-top">
-          <div class="agent-avatar-lg" style="background:rgba(251,191,36,0.1);color:#fbbf24;"><!-- Quill: pen nib --><svg viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></div>
+          <div class="agent-avatar-lg" style="background:rgba(251,191,36,0.1);color:#fbbf24;"><!-- Apollo: pen nib --><svg viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></div>
           <span class="agent-status-badge st-idle">Idle</span>
         </div>
-        <div class="agent-name-lg">Quill</div>
+        <div class="agent-name-lg">Apollo</div>
         <div class="agent-role-lg">Scripts + Captions · n8n · Opus 4.8</div>
         <div class="agent-prog-bar"><div class="agent-prog-fill" data-target="0" style="background:var(--yellow);"></div></div>
         <div class="agent-prog-pct" style="color:var(--yellow);">0%</div>
-        <button class="agent-dispatch" id="quill-run-btn" style="background:rgba(251,191,36,0.1);border-color:rgba(251,191,36,0.3);color:#fbbf24;margin-top:auto;" onclick="runQuill()">Run Quill</button>
+        <button class="agent-dispatch" id="apollo-run-btn" style="background:rgba(251,191,36,0.1);border-color:rgba(251,191,36,0.3);color:#fbbf24;margin-top:auto;" onclick="runApollo()">Run Apollo</button>
       </div>
 
-      <!-- Pulse -->
-      <div class="card agent-exp" id="pulseAgentCard" style="border-top:2px solid #4ade80;">
+      <!-- Argus -->
+      <div class="card agent-exp" id="argusAgentCard" style="border-top:2px solid #4ade80;">
         <div class="agent-top">
-          <div class="agent-avatar-lg" style="background:rgba(74,222,128,0.1);color:#4ade80;"><!-- Pulse: waveform --><svg viewBox="0 0 24 24"><polyline points="2,12 6,12 8,4 10,20 12,12 14,16 16,10 18,12 22,12"/></svg></div>
+          <div class="agent-avatar-lg" style="background:rgba(74,222,128,0.1);color:#4ade80;"><!-- Argus: waveform --><svg viewBox="0 0 24 24"><polyline points="2,12 6,12 8,4 10,20 12,12 14,16 16,10 18,12 22,12"/></svg></div>
           <span class="agent-status-badge st-idle">Idle</span>
         </div>
-        <div class="agent-name-lg">Pulse</div>
+        <div class="agent-name-lg">Argus</div>
         <div class="agent-role-lg">Competitor Intel · n8n · Weekly Mon 9AM</div>
         <div class="agent-prog-bar"><div class="agent-prog-fill" data-target="0" style="background:var(--green);"></div></div>
         <div class="agent-prog-pct" style="color:var(--green);">0%</div>
-        <div class="pulse-result-panel" id="pulseRollupPanel"></div>
-        <button class="agent-dispatch" style="background:rgba(74,222,128,0.1);border-color:rgba(74,222,128,0.3);color:#4ade80;margin-top:auto;" onclick="openAssignModal('Pulse')">Run Pulse</button>
+        <div class="argus-result-panel" id="argusRollupPanel"></div>
+        <button class="agent-dispatch" style="background:rgba(74,222,128,0.1);border-color:rgba(74,222,128,0.3);color:#4ade80;margin-top:auto;" onclick="openAssignModal('Argus')">Run Argus</button>
       </div>
 
-      <!-- Hunter -->
+      <!-- Hermes -->
       <div class="card agent-exp" style="border-top:2px solid #f472b6;">
         <div class="agent-top">
-          <div class="agent-avatar-lg" style="background:rgba(244,114,182,0.1);color:#f472b6;"><!-- Hunter: target --><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/></svg></div>
+          <div class="agent-avatar-lg" style="background:rgba(244,114,182,0.1);color:#f472b6;"><!-- Hermes: target --><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/></svg></div>
           <span class="agent-status-badge st-idle">Idle</span>
         </div>
-        <div class="agent-name-lg">Hunter</div>
+        <div class="agent-name-lg">Hermes</div>
         <div class="agent-role-lg">Lead Research · n8n · Daily 8AM PHT</div>
         <div class="agent-prog-bar"><div class="agent-prog-fill" data-target="0" style="background:#f472b6;"></div></div>
         <div class="agent-prog-pct" style="color:#f472b6;">0%</div>
-        <button class="agent-dispatch" style="background:rgba(244,114,182,0.1);border-color:rgba(244,114,182,0.3);color:#f472b6;margin-top:auto;" onclick="openAssignModal('Hunter')">Run Hunter</button>
+        <button class="agent-dispatch" style="background:rgba(244,114,182,0.1);border-color:rgba(244,114,182,0.3);color:#f472b6;margin-top:auto;" onclick="openAssignModal('Hermes')">Run Hermes</button>
       </div>
 
-      <!-- Pilot -->
+      <!-- Clio -->
       <div class="card agent-exp" style="border-top:2px solid #38bdf8;">
         <div class="agent-top">
-          <div class="agent-avatar-lg" style="background:rgba(56,189,248,0.1);color:#38bdf8;"><!-- Pilot: compass --><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24,7.76 14.12,14.12 7.76,16.24 9.88,9.88 16.24,7.76" fill="currentColor" stroke="none" opacity="0.7"/><circle cx="12" cy="12" r="1.5" fill="#ffffff" stroke="none"/></svg></div>
+          <div class="agent-avatar-lg" style="background:rgba(56,189,248,0.1);color:#38bdf8;"><!-- Clio: compass --><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24,7.76 14.12,14.12 7.76,16.24 9.88,9.88 16.24,7.76" fill="currentColor" stroke="none" opacity="0.7"/><circle cx="12" cy="12" r="1.5" fill="#ffffff" stroke="none"/></svg></div>
           <span class="agent-status-badge st-idle">Idle</span>
         </div>
-        <div class="agent-name-lg">Pilot</div>
+        <div class="agent-name-lg">Clio</div>
         <div class="agent-role-lg">IG Auto Scheduler · n8n · Every 5m</div>
         <div class="agent-prog-bar"><div class="agent-prog-fill" data-target="0" style="background:#38bdf8;"></div></div>
         <div class="agent-prog-pct" style="color:#38bdf8;">0%</div>
-        <button class="agent-dispatch" style="background:rgba(56,189,248,0.1);border-color:rgba(56,189,248,0.3);color:#38bdf8;margin-top:auto;" onclick="openAssignModal('Pilot')">Run Pilot</button>
+        <button class="agent-dispatch" style="background:rgba(56,189,248,0.1);border-color:rgba(56,189,248,0.3);color:#38bdf8;margin-top:auto;" onclick="openAssignModal('Clio')">Run Clio</button>
       </div>
 
-      <!-- Forge -->
+      <!-- Clio -->
       <div class="card agent-exp" style="border-top:2px solid #e879f9;">
         <div class="agent-top">
-          <div class="agent-avatar-lg" style="background:rgba(232,121,249,0.1);color:#e879f9;"><!-- Forge: wrench --><svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
-          <span class="agent-status-badge st-idle" id="forge-status-badge">Idle</span>
+          <div class="agent-avatar-lg" style="background:rgba(232,121,249,0.1);color:#e879f9;"><!-- Clio: wrench --><svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
+          <span class="agent-status-badge st-idle" id="clio-status-badge">Idle</span>
         </div>
-        <div class="agent-name-lg">Forge</div>
+        <div class="agent-name-lg">Clio</div>
         <div class="agent-role-lg">System Builder · n8n + Claude</div>
         <div class="agent-prog-bar"><div class="agent-prog-fill" data-target="0" style="background:#e879f9;"></div></div>
         <div class="agent-prog-pct" style="color:#e879f9;">0%</div>
-        <button class="agent-dispatch" style="background:rgba(232,121,249,0.1);border-color:rgba(232,121,249,0.3);color:#e879f9;margin-top:auto;" onclick="openForgeModal()">Run Forge</button>
+        <button class="agent-dispatch" style="background:rgba(232,121,249,0.1);border-color:rgba(232,121,249,0.3);color:#e879f9;margin-top:auto;" onclick="openClioModal()">Run Clio</button>
       </div>
 
     </div>
@@ -734,12 +734,12 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
         <div class="ds-stat"><div class="ds-stat-val" id="cp-actions">0</div><div class="ds-stat-lbl">Actions Today</div></div>
         <div class="ds-stat"><div class="ds-stat-val">99%</div><div class="ds-stat-lbl">Uptime</div></div>
-        <div class="ds-stat"><div class="ds-stat-val" id="cp-active">0/8</div><div class="ds-stat-lbl">Agents On</div></div>
+        <div class="ds-stat"><div class="ds-stat-val" id="cp-active">0/6</div><div class="ds-stat-lbl">Agents On</div></div>
         <div class="ds-stat"><div class="ds-stat-val" id="cp-queue">0</div><div class="ds-stat-lbl">In Queue</div></div>
       </div>
 
       <div class="ds-agent-info">
-          <div class="ds-agent-name">Forge</div>
+          <div class="ds-agent-name">Clio</div>
           <div class="ds-agent-status ds-agent-status-text">Idle</div>
           <div class="ds-agent-prog"><div class="ds-agent-fill ds-agent-fill-bar" style="width:0%;background:#e879f9;"></div></div>
         </div>
@@ -750,29 +750,29 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
 
 
 <!-- FORGE MODAL -->
-<div class="modal-overlay" id="forgeModal" onclick="if(event.target===this)closeForgeModal()">
+<div class="modal-overlay" id="clioModal" onclick="if(event.target===this)closeClioModal()">
   <div class="modal-box" style="width:520px;">
     <div class="modal-head">
-      <div class="modal-title">Run <span style="color:#e879f9;">Forge</span></div>
-      <button class="modal-close" onclick="closeForgeModal()"></button>
+      <div class="modal-title">Run <span style="color:#e879f9;">Clio</span></div>
+      <button class="modal-close" onclick="closeClioModal()"></button>
     </div>
 
     <div class="modal-label">Client</div>
-    <select id="forge-client-select" style="width:100%;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:10px 12px;font-family:var(--font-body);font-size:12px;color:var(--text);outline:none;margin-bottom:16px;cursor:pointer;transition:border-color 0.2s;" onfocus="this.style.borderColor='rgba(232,121,249,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.07)'">
+    <select id="clio-client-select" style="width:100%;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:10px 12px;font-family:var(--font-body);font-size:12px;color:var(--text);outline:none;margin-bottom:16px;cursor:pointer;transition:border-color 0.2s;" onfocus="this.style.borderColor='rgba(232,121,249,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.07)'">
       <option value="" disabled selected style="background:#ffffff;color:#111111;font-family:DM Sans,sans-serif;">Loading clients…</option>
     </select>
 
     <div class="modal-label">Call Transcript</div>
-    <textarea id="forge-transcript" class="modal-textarea" style="height:110px;margin-bottom:16px;border-radius:8px;" placeholder="Paste the full onboarding call transcript here…"></textarea>
+    <textarea id="clio-transcript" class="modal-textarea" style="height:110px;margin-bottom:16px;border-radius:8px;" placeholder="Paste the full onboarding call transcript here…"></textarea>
 
     <div class="modal-label">Brand Docs</div>
-    <textarea id="forge-brand-docs" class="modal-textarea" style="height:90px;margin-bottom:20px;border-radius:8px;" placeholder="Paste brand guidelines, colors, fonts, tone notes — anything they sent…"></textarea>
+    <textarea id="clio-brand-docs" class="modal-textarea" style="height:90px;margin-bottom:20px;border-radius:8px;" placeholder="Paste brand guidelines, colors, fonts, tone notes — anything they sent…"></textarea>
 
-    <div id="forge-status-msg" style="font-size:11px;color:rgba(232,121,249,0.8);margin-bottom:12px;display:none;"></div>
+    <div id="clio-status-msg" style="font-size:11px;color:rgba(232,121,249,0.8);margin-bottom:12px;display:none;"></div>
 
     <div class="modal-footer">
-      <button class="modal-cancel" onclick="closeForgeModal()">Cancel</button>
-      <button id="forge-run-btn" onclick="runForge()" style="background:rgba(232,121,249,0.9);border:none;border-radius:7px;padding:7px 20px;font-family:var(--font-data);font-size:10px;font-weight:700;color:#0D1117;cursor:pointer;transition:all 0.18s;letter-spacing:0.3px;">Run Forge →</button>
+      <button class="modal-cancel" onclick="closeClioModal()">Cancel</button>
+      <button id="clio-run-btn" onclick="runClio()" style="background:rgba(232,121,249,0.9);border:none;border-radius:7px;padding:7px 20px;font-family:var(--font-data);font-size:10px;font-weight:700;color:#0D1117;cursor:pointer;transition:all 0.18s;letter-spacing:0.3px;">Run Clio →</button>
     </div>
   </div>
 </div>
@@ -780,7 +780,7 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
 <div class="modal-overlay" id="taskDetailModal" onclick="if(event.target===this)closeTaskDetail()">
   <div class="modal-box">
     <div class="modal-head">
-      <div class="modal-title">Task — <span id="taskDetailAgent">Scout</span></div>
+      <div class="modal-title">Task — <span id="taskDetailAgent">Argus</span></div>
       <button class="modal-close" onclick="closeTaskDetail()"></button>
     </div>
     <div class="modal-label">Info</div>
@@ -806,24 +806,24 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 <script>
 const AGENT_PRESETS = {
-  Scout: [
+  Argus: [
     { icon:'', title:'Generate Angles', desc:'Write 5 TOFU/MOFU angles from existing transcripts → content-bucket.md' },
-    { icon:'', title:'Competitor Research', desc:'Read latest Pulse transcripts, extract content angles' },
+    { icon:'', title:'Competitor Research', desc:'Read latest Argus transcripts, extract content angles' },
   ],
-  Quill: [],
-  Pulse: [
+  Apollo: [],
+  Argus: [
     { icon:'', title:'Analyze Transcripts', desc:'Run intel extraction on saved competitor transcripts' },
     { icon:'', title:'Weekly Analytics Review', desc:'Enter top performers — maps to next week\'s script angles' },
   ],
-  Hunter: [
+  Hermes: [
     { icon:'', title:'Find New Leads', desc:'Scrape IG profiles by niche + keyword' },
     { icon:'', title:'Qualify Existing Leads', desc:'Score saved profiles by follower count + engagement' },
   ],
-  Pilot: [
+  Clio: [
     { icon:'', title:'Full Client Check-in', desc:'Pull all deliverables, flag overdue, update status' },
     { icon:'', title:'Update Client Report', desc:'Draft or update weekly report for active client' },
   ],
-  Forge: [
+  Clio: [
     { icon:'', title:'Build New Automation', desc:'Design + code a cron, script, or workflow' },
     { icon:'', title:'Optimize Existing System', desc:'Review and improve a current automation' },
     { icon:'', title:'Write SOP', desc:'Document a system or process to Company Database' },
@@ -834,9 +834,9 @@ const TASK_STORE = 'ctrl_agent_tasks_v1';
 const KANBAN_STORE = 'ctrl_kanban_state';
 const PIPELINE_STORE = 'ctrl_pipeline_board';
 const SCRIPT_NS = 'ctrl_script_';
-const REAL_AGENTS = ['Scout', 'Quill', 'Pulse', 'Hunter', 'Pilot', 'Forge'];
-const ICONS = {Scout:'', Quill:'', Pulse:'', Hunter:'', Pilot:'', Forge:''};
-const BG_MAP = {Scout:'rgba(79,195,247,0.1)', Quill:'rgba(251,191,36,0.1)', Pulse:'rgba(74,222,128,0.1)', Hunter:'rgba(244,114,182,0.1)', Pilot:'rgba(56,189,248,0.1)', Forge:'rgba(232,121,249,0.1)'};
+const REAL_AGENTS = ['Argus', 'Apollo', 'Argus', 'Hermes', 'Clio', 'Clio'];
+const ICONS = {Argus:'', Apollo:'', Argus:'', Hermes:'', Clio:'', Clio:''};
+const BG_MAP = {Argus:'rgba(79,195,247,0.1)', Apollo:'rgba(251,191,36,0.1)', Argus:'rgba(74,222,128,0.1)', Hermes:'rgba(244,114,182,0.1)', Clio:'rgba(56,189,248,0.1)', Clio:'rgba(232,121,249,0.1)'};
 let runningProgressTimers = {};
 let _currentAgent = '';
 let _currentFunnelStage = 'MOFU';
@@ -971,18 +971,18 @@ function updateAgentCardsFromTasks() {
 function openAssignModal(agentName) {
   _currentAgent = agentName;
   document.getElementById('modalAgentName').textContent = agentName;
-  const isQuill = agentName === 'Quill';
-  const isPulse = agentName === 'Pulse';
-  document.getElementById('presetSection').style.display = isQuill ? 'none' : 'block';
-  document.getElementById('quillScriptControls').style.display = isQuill ? 'block' : 'none';
-  document.getElementById('pulseAnalyticsSection').style.display = 'none';
-  if (isPulse) {
+  const isApollo = agentName === 'Apollo';
+  const isArgus = agentName === 'Argus';
+  document.getElementById('presetSection').style.display = isApollo ? 'none' : 'block';
+  document.getElementById('apolloScriptControls').style.display = isApollo ? 'block' : 'none';
+  document.getElementById('argusAnalyticsSection').style.display = 'none';
+  if (isArgus) {
     document.getElementById('analyticsViews').value = '';
     document.getElementById('analyticsLikes').value = '';
     document.getElementById('analyticsComments').value = '';
   }
-  if (isQuill) {
-    document.getElementById('quillScriptCount').value = '5';
+  if (isApollo) {
+    document.getElementById('apolloScriptCount').value = '5';
   } else {
     const grid = document.getElementById('presetChips');
     grid.innerHTML = '';
@@ -996,7 +996,7 @@ function openAssignModal(agentName) {
         btn.classList.add('selected');
         btn.dataset.task = p.title;
         const isAnalytics = p.title === 'Weekly Analytics Review';
-        document.getElementById('pulseAnalyticsSection').style.display = isAnalytics ? 'block' : 'none';
+        document.getElementById('argusAnalyticsSection').style.display = isAnalytics ? 'block' : 'none';
         if (isAnalytics) setTimeout(() => document.getElementById('analyticsViews').focus(), 80);
       };
       grid.appendChild(btn);
@@ -1046,7 +1046,7 @@ async function handleAnalyticsUpload(input) {
       ${data.mostViewed ? `<div style="margin-bottom:4px;"><span style="color:var(--text-muted);"> Most Viewed:</span> ${data.mostViewed}</div>` : ''}
       ${data.mostLiked ? `<div style="margin-bottom:4px;"><span style="color:var(--text-muted);"> Most Liked:</span> ${data.mostLiked}</div>` : ''}
       ${data.mostCommented ? `<div style="margin-bottom:4px;"><span style="color:var(--text-muted);"> Most Commented:</span> ${data.mostCommented}</div>` : ''}
-      ${data.notes ? `<div style="margin-top:6px;color:var(--text-muted);font-size:9.5px;">${data.notes}</div>` : ''}
+      ${data.notes ? `<div style="margin-top:6px;color:var(--text-muted);font-size:11px;">${data.notes}</div>` : ''}
     `;
     resultsEl.style.display = 'block';
   } catch (err) {
@@ -1062,9 +1062,9 @@ function closeAssignModal() { document.getElementById('assignModal').classList.r
 
 function assignTask() {
   const agent = _currentAgent;
-  if (agent === 'Quill') {
+  if (agent === 'Apollo') {
     closeAssignModal();
-    runQuillScripts();
+    runApolloScripts();
     return;
   }
   const selectedBtn = document.querySelector('#presetChips .action-preset-btn.selected');
@@ -1151,15 +1151,15 @@ function formatTaskResult(record) {
     if (!REAL_AGENTS.includes(record.agent)) return `${record.agent} is UI-only. No backend action.`;
     return 'Queued. Click Run to start.';
   }
-  if (record.result.kind === 'scout_research') {
+  if (record.result.kind === 'argus_research') {
     const ideas = (record.result.ideas || []).map(i => `• ${escapeText(i.title)}${i.angle ? ' — ' + escapeText(i.angle) : ''}`).join('<br>');
     const tips = (record.result.tips || []).map(t => ` ${escapeText(t.tip || '')}`).join('<br>');
-    return `${escapeText(record.result.summary || 'Scout complete.')}<br><br><strong>Ideas:</strong><br>${ideas || '—'}<br><br><strong>AI Tips:</strong><br>${tips || '—'}`;
+    return `${escapeText(record.result.summary || 'Argus complete.')}<br><br><strong>Ideas:</strong><br>${ideas || '—'}<br><br><strong>AI Tips:</strong><br>${tips || '—'}`;
   }
-  if (record.result.kind === 'quill_script') {
+  if (record.result.kind === 'apollo_script') {
     return `<strong>${escapeText(record.result.title)}</strong><br><br>${escapeText(record.result.script || '').replace(/\n/g,'<br>')}`;
   }
-  if (record.result.kind === 'pulse_analysis') {
+  if (record.result.kind === 'argus_analysis') {
     const insights = (record.result.insights || []).map(i => `• ${escapeText(i)}`).join('<br>');
     const drops = (record.result.dropSignals || []).map(d => `• ${escapeText(d)}`).join('<br>');
     return `<strong>Insights:</strong><br>${insights}<br><br><strong>Drop Signals:</strong><br>${drops}<br><br><strong>Next Angle:</strong> ${escapeText(record.result.nextAngle || 'N/A')}`;
@@ -1176,7 +1176,7 @@ function loadPipelineBoard() {
 }
 function savePipelineBoard(board) { localStorage.setItem(PIPELINE_STORE, JSON.stringify(board)); }
 
-function addScoutIdeasToPipeline(ideas) {
+function addArgusIdeasToPipeline(ideas) {
   const board = loadPipelineBoard();
   const deleted = loadDeletedPipelineCards();
   ideas.forEach(idea => {
@@ -1189,7 +1189,7 @@ function addScoutIdeasToPipeline(ideas) {
 function loadDeletedPipelineCards() {
   try { return JSON.parse(localStorage.getItem('ctrl_pipeline_deleted_cards') || '[]'); } catch(e) { return []; }
 }
-function resolveQuillIdea(task) {
+function resolveApolloIdea(task) {
   const board = loadPipelineBoard();
   const lower = task.toLowerCase();
   const exact = board.ideas.find(item => item.title && lower.includes(item.title.toLowerCase()));
@@ -1198,7 +1198,7 @@ function resolveQuillIdea(task) {
   if (generic.includes(lower) && board.ideas.length) return board.ideas[0];
   return { id: 'manual-' + Date.now(), title: task };
 }
-function saveQuillScriptToPipeline(result, sourceIdea) {
+function saveApolloScriptToPipeline(result, sourceIdea) {
   const board = loadPipelineBoard();
   board.ideas = board.ideas.filter(item => item.id !== sourceIdea.id && item.title !== sourceIdea.title);
   const card = { id: sourceIdea.id || result.card.id, title: result.title, scripted: true, tagText: ' Scripted', tagStyle: 'background:rgba(74,222,128,0.09);color:var(--green);' };
@@ -1229,7 +1229,7 @@ async function runTask(record) {
     return;
   }
 
-  const sourceIdea = record.agent === 'Quill' ? resolveQuillIdea(record.task) : null;
+  const sourceIdea = record.agent === 'Apollo' ? resolveApolloIdea(record.task) : null;
   const funnelStage = record.funnelStage || 'MOFU';
 
   const allTasks = loadTasks();
@@ -1250,9 +1250,10 @@ async function runTask(record) {
   }, 2500);
 
   try {
+    const _agentSess = (() => { try { return JSON.parse(localStorage.getItem('sb_session') || '{}'); } catch { return {}; } })();
     const res = await fetch(`${PROXY}/agent/run`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + (_agentSess.access_token || '') },
       body: JSON.stringify({ id: record.id, agent: record.agent, task: record.task, ideaTitle: sourceIdea?.title, funnelStage }),
     });
     const data = await res.json().catch(() => ({}));
@@ -1262,8 +1263,8 @@ async function runTask(record) {
     const t3 = loadTasks();
     t3[record.id] = { ...record, ...updated, status: 'done', progress: 100, updatedAt: Date.now() };
     saveTasks(t3);
-    if (updated.result?.kind === 'scout_research') addScoutIdeasToPipeline(updated.result.ideas || []);
-    if (updated.result?.kind === 'quill_script') saveQuillScriptToPipeline(updated.result, sourceIdea);
+    if (updated.result?.kind === 'argus_research') addArgusIdeasToPipeline(updated.result.ideas || []);
+    if (updated.result?.kind === 'apollo_script') saveApolloScriptToPipeline(updated.result, sourceIdea);
     renderKanban();
     updateAgentCardsFromTasks();
   } catch (err) {
@@ -1285,7 +1286,7 @@ async function runKanbanTask(btn) {
 
 async function runMonthlyRollup(btn) {
   btn.disabled = true; btn.textContent = '↺ Running…';
-  const panel = document.getElementById('pulseRollupPanel');
+  const panel = document.getElementById('argusRollupPanel');
   panel.innerHTML = ''; panel.classList.remove('active');
   try {
     const res = await fetch(`${PROXY}/content-bucket`, { method: 'POST', headers: {'Content-Type':'application/json'} });
@@ -1294,15 +1295,15 @@ async function runMonthlyRollup(btn) {
     panel.classList.add('active');
     const outliers = data.outliers || [];
     if (!outliers.length) {
-      panel.innerHTML = `<div class="pulse-result-item" style="color:var(--text-dim);">No outliers found — need more reel data</div>`;
+      panel.innerHTML = `<div class="argus-result-item" style="color:var(--text-dim);">No outliers found — need more reel data</div>`;
     } else {
-      panel.innerHTML = `<div class="pulse-result-item"><strong>${outliers.length} outlier${outliers.length > 1 ? 's' : ''}</strong> (>${data.avgViews ? Math.round(data.avgViews * 1.5).toLocaleString() : '1.5x avg'} views)</div>` +
-        outliers.slice(0, 5).map(r => `<div class="pulse-result-item">• ${escapeText((r.caption || '').slice(0, 60))} — <strong>${(r.views || 0).toLocaleString()} views</strong></div>`).join('');
+      panel.innerHTML = `<div class="argus-result-item"><strong>${outliers.length} outlier${outliers.length > 1 ? 's' : ''}</strong> (>${data.avgViews ? Math.round(data.avgViews * 1.5).toLocaleString() : '1.5x avg'} views)</div>` +
+        outliers.slice(0, 5).map(r => `<div class="argus-result-item">• ${escapeText((r.caption || '').slice(0, 60))} — <strong>${(r.views || 0).toLocaleString()} views</strong></div>`).join('');
     }
     btn.textContent = '↺ Run Monthly Rollup';
   } catch(err) {
     panel.classList.add('active');
-    panel.innerHTML = `<div class="pulse-result-item" style="color:var(--red);">Error: ${escapeText(err.message)}</div>`;
+    panel.innerHTML = `<div class="argus-result-item" style="color:var(--red);">Error: ${escapeText(err.message)}</div>`;
     btn.textContent = '↺ Run Monthly Rollup';
   } finally { btn.disabled = false; }
 }
@@ -1315,7 +1316,7 @@ function dispatch(btn) {
   const select = wrap.querySelector('.qd-select');
   const task = input.value.trim();
   if (!task) return;
-  const agent = select.value === 'Auto-assign' ? 'Scout' : select.value;
+  const agent = select.value === 'Auto-assign' ? 'Argus' : select.value;
   const record = upsertTask(makeTaskRecord(agent, task));
   logActivity(agent, task);
   addQueueRow(record);
@@ -1331,18 +1332,18 @@ function relativeTime(ts) {
   return 'Yesterday';
 }
 
-async function runQuillScripts() {
-  const count = parseInt(document.getElementById('quillScriptCount').value) || 5;
-  const quillCard = [...document.querySelectorAll('.agent-exp')].find(c => c.querySelector('.agent-name-lg')?.textContent.trim() === 'Quill');
-  const badge = quillCard?.querySelector('.agent-status-badge');
-  const taskEl = quillCard?.querySelector('.agent-current-task');
-  const fill = quillCard?.querySelector('.agent-prog-fill');
-  const pct = quillCard?.querySelector('.agent-prog-pct');
+async function runApolloScripts() {
+  const count = parseInt(document.getElementById('apolloScriptCount').value) || 5;
+  const apolloCard = [...document.querySelectorAll('.agent-exp')].find(c => c.querySelector('.agent-name-lg')?.textContent.trim() === 'Apollo');
+  const badge = apolloCard?.querySelector('.agent-status-badge');
+  const taskEl = apolloCard?.querySelector('.agent-current-task');
+  const fill = apolloCard?.querySelector('.agent-prog-fill');
+  const pct = apolloCard?.querySelector('.agent-prog-pct');
   if (badge) { badge.textContent = 'Active'; badge.className = 'agent-status-badge st-active'; }
   if (taskEl) taskEl.textContent = `Generating ${count} scripts…`;
   if (fill) fill.style.width = '15%';
   if (pct) pct.textContent = '15%';
-  logActivity('Quill', `Generate ${count} scripts from ideas queue`);
+  logActivity('Apollo', `Generate ${count} scripts from ideas queue`);
   const timer = setInterval(() => {
     const cur = parseInt(fill?.style.width) || 15;
     if (fill && cur < 88) { fill.style.width = (cur + 7) + '%'; if (pct) pct.textContent = (cur + 7) + '%'; }
@@ -1563,13 +1564,13 @@ window.addEventListener('load', () => {
   }, 30000);
 });
 
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeAssignModal(); closeTaskDetail(); closeForgeModal(); } });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeAssignModal(); closeTaskDetail(); closeClioModal(); } });
 
 //  FORGE MODAL 
 const SUPABASE_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co';
 const SUPABASE_ANON = 'sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8';
 const N8N_BASE = localStorage.getItem('n8n_base_url') || 'http://localhost:5678';
-const FORGE_WEBHOOK = `${N8N_BASE}/webhook/forge`;
+const FORGE_WEBHOOK = `${N8N_BASE}/webhook/clio`;
 const QUALIFY_SERVER = SERVER_BASE;
 
 function getSlug() {
@@ -1580,67 +1581,67 @@ function getSlug() {
   return pages.indexOf(seg) === -1 ? seg : '';
 }
 
-async function runQuill() {
+async function runApollo() {
   // Add task card to queue immediately
-  const record = makeTaskRecord('Quill', 'Generate 7 daily scripts (2 TOFU + 3 MOFU + 2 BOFU)');
+  const record = makeTaskRecord('Apollo', 'Generate 7 daily scripts (2 TOFU + 3 MOFU + 2 BOFU)');
   upsertTask(record);
   renderKanban();
 
-  // Update all Run Quill buttons across pages
-  document.querySelectorAll('#quill-run-btn, #quill-run-btn-pipeline').forEach(b => {
+  // Update all Run Apollo buttons across pages
+  document.querySelectorAll('#apollo-run-btn, #apollo-run-btn-pipeline').forEach(b => {
     if (b) { b.disabled = true; b.textContent = 'Queued…'; }
   });
 
   // Move to running
   record.status = 'running'; record.updatedAt = Date.now();
   upsertTask(record); renderKanban();
-  document.querySelectorAll('#quill-run-btn, #quill-run-btn-pipeline').forEach(b => {
+  document.querySelectorAll('#apollo-run-btn, #apollo-run-btn-pipeline').forEach(b => {
     if (b) b.textContent = 'Running…';
   });
 
   // Push to ops board (dashboard picks this up)
   try {
     const kb = JSON.parse(localStorage.getItem('ctrl_kanban_state') || '{"backlog":[],"progress":[],"done":[]}');
-    (kb.progress = kb.progress || []).unshift({ title: 'Quill — Daily Scripts', agent: 'Quill', id: record.id });
+    (kb.progress = kb.progress || []).unshift({ title: 'Apollo — Daily Scripts', agent: 'Apollo', id: record.id });
     localStorage.setItem('ctrl_kanban_state', JSON.stringify(kb));
   } catch(e) {}
 
   try {
-    const r = await fetch(`${N8N_BASE}/webhook/quill-trigger`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ source: 'dashboard' }) });
+    const r = await fetch(`${N8N_BASE}/webhook/apollo-trigger`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ source: 'dashboard' }) });
     const data = await r.json();
     if (!r.ok) throw new Error(data.error || 'n8n returned ' + r.status);
 
     // Workflow triggered — running in background
     record.status = 'running'; record.result = 'Workflow triggered'; record.updatedAt = Date.now();
     upsertTask(record); renderKanban();
-    logActivity('Quill', 'Scripts generating in n8n…');
+    logActivity('Apollo', 'Scripts generating in n8n…');
 
-    document.querySelectorAll('#quill-run-btn, #quill-run-btn-pipeline').forEach(b => {
+    document.querySelectorAll('#apollo-run-btn, #apollo-run-btn-pipeline').forEach(b => {
       if (b) { b.textContent = ' Triggered'; b.disabled = false; }
     });
     setTimeout(() => {
-      document.querySelectorAll('#quill-run-btn, #quill-run-btn-pipeline').forEach(b => {
-        if (b) b.textContent = 'Run Quill';
+      document.querySelectorAll('#apollo-run-btn, #apollo-run-btn-pipeline').forEach(b => {
+        if (b) b.textContent = 'Run Apollo';
       });
     }, 4000);
   } catch(e) {
     record.status = 'failed'; record.result = e.message; record.updatedAt = Date.now();
     upsertTask(record); renderKanban();
-    logActivity('Quill', 'Error — is qualify-server running?');
-    document.querySelectorAll('#quill-run-btn, #quill-run-btn-pipeline').forEach(b => {
+    logActivity('Apollo', 'Error — is qualify-server running?');
+    document.querySelectorAll('#apollo-run-btn, #apollo-run-btn-pipeline').forEach(b => {
       if (b) { b.textContent = 'Error — qualify-server running?'; b.disabled = false; }
     });
     setTimeout(() => {
-      document.querySelectorAll('#quill-run-btn, #quill-run-btn-pipeline').forEach(b => {
-        if (b) b.textContent = 'Run Quill';
+      document.querySelectorAll('#apollo-run-btn, #apollo-run-btn-pipeline').forEach(b => {
+        if (b) b.textContent = 'Run Apollo';
       });
     }, 3000);
   }
 }
 
-async function openForgeModal() {
-  document.getElementById('forgeModal').classList.add('open');
-  const select = document.getElementById('forge-client-select');
+async function openClioModal() {
+  document.getElementById('clioModal').classList.add('open');
+  const select = document.getElementById('clio-client-select');
   select.innerHTML = '<option value="" disabled selected style="background:#ffffff;color:#111111;font-family:DM Sans,sans-serif;">Loading clients…</option>';
   try {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/onboarding?select=email,offer&order=created_at.desc`, {
@@ -1664,20 +1665,20 @@ async function openForgeModal() {
   }
 }
 
-function closeForgeModal() {
-  document.getElementById('forgeModal').classList.remove('open');
-  document.getElementById('forge-status-msg').style.display = 'none';
-  document.getElementById('forge-status-msg').textContent = '';
-  document.getElementById('forge-run-btn').disabled = false;
-  document.getElementById('forge-run-btn').textContent = 'Run Forge →';
+function closeClioModal() {
+  document.getElementById('clioModal').classList.remove('open');
+  document.getElementById('clio-status-msg').style.display = 'none';
+  document.getElementById('clio-status-msg').textContent = '';
+  document.getElementById('clio-run-btn').disabled = false;
+  document.getElementById('clio-run-btn').textContent = 'Run Clio →';
 }
 
-async function runForge() {
-  const email = document.getElementById('forge-client-select').value;
-  const transcript = document.getElementById('forge-transcript').value.trim();
-  const brandDocs = document.getElementById('forge-brand-docs').value.trim();
-  const statusMsg = document.getElementById('forge-status-msg');
-  const btn = document.getElementById('forge-run-btn');
+async function runClio() {
+  const email = document.getElementById('clio-client-select').value;
+  const transcript = document.getElementById('clio-transcript').value.trim();
+  const brandDocs = document.getElementById('clio-brand-docs').value.trim();
+  const statusMsg = document.getElementById('clio-status-msg');
+  const btn = document.getElementById('clio-run-btn');
 
   if (!email) { statusMsg.textContent = 'Select a client first.'; statusMsg.style.display = 'block'; return; }
   if (!transcript) { statusMsg.textContent = 'Paste the call transcript.'; statusMsg.style.display = 'block'; return; }
@@ -1693,9 +1694,9 @@ async function runForge() {
       headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` }
     });
     const rows = await res.json();
-    if (!rows.length) { statusMsg.textContent = 'No onboarding data found for this client.'; btn.disabled = false; btn.textContent = 'Run Forge →'; return; }
+    if (!rows.length) { statusMsg.textContent = 'No onboarding data found for this client.'; btn.disabled = false; btn.textContent = 'Run Clio →'; return; }
 
-    statusMsg.textContent = 'Firing Forge…';
+    statusMsg.textContent = 'Firing Clio…';
 
     await fetch(FORGE_WEBHOOK, {
       method: 'POST',
@@ -1703,14 +1704,14 @@ async function runForge() {
       body: JSON.stringify({ onboarding: rows[0], transcript, brand_docs: brandDocs })
     });
 
-    statusMsg.textContent = ' Forge is running. Check output in n8n.';
-    document.getElementById('forge-status-badge').textContent = 'Running';
-    document.getElementById('forge-status-badge').className = 'agent-status-badge st-active';
+    statusMsg.textContent = ' Clio is running. Check output in n8n.';
+    document.getElementById('clio-status-badge').textContent = 'Running';
+    document.getElementById('clio-status-badge').className = 'agent-status-badge st-active';
     btn.textContent = 'Sent ';
   } catch(e) {
     statusMsg.textContent = 'Error: could not reach webhook. Check n8n is running.';
     btn.disabled = false;
-    btn.textContent = 'Run Forge →';
+    btn.textContent = 'Run Clio →';
   }
 }
 </script>
@@ -1723,8 +1724,8 @@ async function runForge() {
 
   // Map Supabase agent names → InboundOS Dashboard card display names
   const AGENT_NAME_MAP = {
-    quill: 'Quill', scout: 'Scout', flywheel: 'Flywheel',
-    bolt: 'Bolt', forge: 'Forge', pilot: 'Pilot', pulse: 'Pulse'
+    apollo: 'Apollo', argus: 'Argus', flywheel: 'Flywheel',
+    bolt: 'Bolt', clio: 'Clio', clio: 'Clio', argus: 'Argus'
   };
 
   function timeAgo(iso) {
@@ -1790,7 +1791,7 @@ async function runForge() {
           metaEl.style.cssText = 'font-family:var(--font-data);font-size:11px;color:rgba(255,255,255,0.25);margin-top:5px;margin-bottom:8px;line-height:1.7;text-align:center;width:100%;min-height:52px;height:auto;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;';
           roleEl.insertAdjacentElement('afterend', metaEl);
         }
-        const ON_DEMAND_AGENTS = ['quill','forge','hunter','pilot'];
+        const ON_DEMAND_AGENTS = ['apollo','clio','hermes','clio'];
         const isOnDemand = ON_DEMAND_AGENTS.includes(run.agent?.toLowerCase()) || run.schedule === 'Not connected' || run.schedule === 'On Demand' || !run.schedule;
         const dim = 'color:rgba(255,255,255,0.45);';
         // Always render 3 rows so every card lines up; use — for empty
@@ -1808,9 +1809,9 @@ async function runForge() {
 // Inject model label + run count into each agent card
 (function injectModelRunCount() {
   const MODEL_MAP = {
-    Scout: 'n8n · Web Scraper', Quill: 'Claude Opus 4.8', Pulse: 'n8n · Scraper + Analyzer',
-    Hunter: 'n8n · Lead Research', Pilot: 'n8n · IG Auto Scheduler',
-    Forge: 'n8n + Claude CLI'
+    Argus: 'n8n · Web Scraper', Apollo: 'Claude Opus 4.8', Argus: 'n8n · Scraper + Analyzer',
+    Hermes: 'n8n · Lead Research', Clio: 'n8n · IG Auto Scheduler',
+    Clio: 'n8n + Claude CLI'
   };
   function getRunCounts() {
     try {
@@ -1848,7 +1849,7 @@ async function runForge() {
   <script>
 // System-wide task log from all agents
 (function renderSysTaskLog() {
-  const AGENT_COLORS = {Scout:'#4FC3F7',Quill:'#fbbf24',Pulse:'#4ade80',Hunter:'#f472b6',Pilot:'#38bdf8',Forge:'#e879f9'};
+  const AGENT_COLORS = {Argus:'#4FC3F7',Apollo:'#fbbf24',Argus:'#4ade80',Hermes:'#f472b6',Clio:'#38bdf8',Clio:'#e879f9'};
   function fmt(ts) {
     if (!ts) return '—';
     const d = new Date(ts), now = new Date(), diff = now - d;
@@ -1900,8 +1901,8 @@ async function runForge() {
 <script>
 (function sidebarAgentStatus() {
   var AGENTS = [
-    {name:'Scout',color:'#4FC3F7'},{name:'Quill',color:'#fbbf24'},{name:'Pulse',color:'#4ade80'},
-    {name:'Hunter',color:'#f472b6'},{name:'Pilot',color:'#38bdf8'},{name:'Forge',color:'#e879f9'}
+    {name:'Argus',color:'#4FC3F7'},{name:'Apollo',color:'#fbbf24'},{name:'Argus',color:'#4ade80'},
+    {name:'Hermes',color:'#f472b6'},{name:'Clio',color:'#38bdf8'},{name:'Clio',color:'#e879f9'}
   ];
   function getStatuses() {
     var s = {};
@@ -1948,7 +1949,7 @@ async function runForge() {
       if(page==="crm"){var r=await fetch(SUPA+"/rest/v1/outreach_leads?select=id,status",{headers:hdrs});if(r.ok){var d=await r.json();var el=document.getElementById("crm-subtitle");if(el)el.textContent=d.length+" leads · "+d.filter(function(x){return x.status==="new";}).length+" new.";}else{var el=document.getElementById("crm-subtitle");if(el)el.textContent="Track and manage outreach leads.";}}
       if(page==="sales-calls"){var r=await fetch(SUPA+"/rest/v1/outreach_leads?select=id,status&status=eq.booked",{headers:hdrs});if(r.ok){var d=await r.json();var el=document.getElementById("calls-subtitle");if(el)el.textContent=d.length+" call"+(d.length!==1?"s":"")+" booked.";}else{var el=document.getElementById("calls-subtitle");if(el)el.textContent="Review and log discovery calls.";}}
       if(page==="pipeline"){try{var board=JSON.parse(localStorage.getItem("ctrl_pipeline_board")||"{}");var s=Array.isArray(board.scripting)?board.scripting.length:0;var el=document.getElementById("pipeline-subtitle");if(el)el.textContent=s+" script"+(s!==1?"s":"")+" ready to film.";}catch(ee){}}
-      if(page==="agents"){try{var tasks=JSON.parse(localStorage.getItem("ctrl_agent_tasks_v1")||"{}");var run=Object.values(tasks).filter(function(t){return t.status==="running";}).length;var el=document.getElementById("agents-subtitle");if(el)el.textContent=run>0?run+" agent"+(run!==1?"s":"")+" running now.":"8 agents ready.";}catch(ee){}}
+      if(page==="agents"){try{var tasks=JSON.parse(localStorage.getItem("ctrl_agent_tasks_v1")||"{}");var run=Object.values(tasks).filter(function(t){return t.status==="running";}).length;var totalAgents=typeof REAL_AGENTS!=='undefined'?REAL_AGENTS.length:0;var el=document.getElementById("agents-subtitle");if(el)el.textContent=run>0?run+" agent"+(run!==1?"s":"")+" running now.":(totalAgents>0?totalAgents+" agents ready.":"Agents ready.");}catch(ee){}}
       if(page==="sops"){var r=await fetch(SUPA+"/rest/v1/sops?select=id",{headers:hdrs});if(r.ok){var d=await r.json();var el=document.getElementById("sops-subtitle");if(el)el.textContent=d.length+" procedure"+(d.length!==1?"s":"")+" documented.";}else{var el=document.getElementById("sops-subtitle");if(el)el.textContent="Standard operating procedures.";}}
     }catch(e){}
   }

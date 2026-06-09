@@ -2,9 +2,21 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': 'https://inboundos.vercel.app',
-  'Access-Control-Allow-Headers': 'content-type',
+  'Access-Control-Allow-Headers': 'content-type, x-master-token',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
+
+async function encryptApiKey(plaintext: string): Promise<string> {
+  const encKeyHex = Deno.env.get('ENCRYPTION_KEY') || '';
+  if (!encKeyHex || !plaintext) return plaintext; // no key configured = store as-is (warn in logs)
+  const keyBytes = new Uint8Array(encKeyHex.match(/.{2}/g)!.map(b => parseInt(b, 16)));
+  const cryptoKey = await crypto.subtle.importKey('raw', keyBytes, { name: 'AES-GCM' }, false, ['encrypt']);
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const enc = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, cryptoKey, new TextEncoder().encode(plaintext));
+  // Store as: iv(hex) + ':' + ciphertext(hex)
+  const toHex = (buf: Uint8Array) => Array.from(buf).map(b => b.toString(16).padStart(2, '0')).join('');
+  return `${toHex(iv)}:${toHex(new Uint8Array(enc))}`;
+}
 
 const json = (data: unknown, status = 200) =>
   new Response(JSON.stringify(data), {
@@ -15,6 +27,12 @@ const json = (data: unknown, status = 200) =>
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });
   if (req.method !== 'POST') return json({ error: 'Method not allowed' }, 405);
+
+  // Require MASTER_TOKEN — only Micko's admin page can call this
+  const masterToken = Deno.env.get('MASTER_TOKEN');
+  if (!masterToken) return json({ error: 'Server misconfigured' }, 500);
+  const authHeader = req.headers.get('x-master-token') || '';
+  if (authHeader !== masterToken) return json({ error: 'Unauthorized' }, 401);
 
   let body: Record<string, string>;
   try {
@@ -59,7 +77,10 @@ Deno.serve(async (req) => {
   });
   if (userErr) return json({ error: userErr.message }, 500);
 
-  // Encrypt API key (store as-is; in prod swap for Vault)
+  const anthropicKeyEnc = body.anthropic_key
+    ? await encryptApiKey(body.anthropic_key)
+    : null;
+
   const { error: configErr } = await supabase.from('client_config').insert({
     client_id: body.client_id,
     first_name: body.first_name.trim(),
@@ -74,7 +95,7 @@ Deno.serve(async (req) => {
     voice_words: body.voice_words || null,
     voice_avoid: body.voice_avoid || null,
     voice_pillars: body.voice_pillars || null,
-    anthropic_key_enc: body.anthropic_key || null,
+    anthropic_key_enc: anthropicKeyEnc,
     n8n_webhook: body.n8n_webhook || null,
     post_frequency: body.post_frequency || null,
     platform: body.platform || null,

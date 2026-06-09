@@ -1,0 +1,1440 @@
+{
+  "updatedAt": "2026-05-27T18:43:29.837Z",
+  "createdAt": "2026-05-21T00:25:32.448Z",
+  "id": "0QoReLvsYWUaIrIO",
+  "name": "Apollo — Daily Script Generator",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "id": "node-schedule",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -96,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const now = new Date();\nconst day = now.getDay();\nconst weekNum = Math.ceil((now - new Date(now.getFullYear(), 0, 1)) / 604800000);\nconst emotions = ['Relief', 'Frustration', 'Aspiration', 'Humor'];\nconst emotion = emotions[day % 4];\nreturn [{ json: { day, weekNum, emotion, timestamp: now.toISOString() } }];"
+      },
+      "id": "node-calc-day",
+      "name": "Calculate Day & Week",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        272,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://cscfbuhwlfhblxprkwnh.supabase.co/rest/v1/content_bucket",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "select",
+              "value": "*"
+            },
+            {
+              "name": "limit",
+              "value": "3"
+            },
+            {
+              "name": "order",
+              "value": "last_used_at.asc.nullsfirst"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "REPLACE_WITH_SECRET_KEY_VIA_ENV"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer REPLACE_WITH_SECRET_KEY_VIA_ENV"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Prefer",
+              "value": "return=representation"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "node-content-bucket",
+      "name": "Get Content Bucket",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        512,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://cscfbuhwlfhblxprkwnh.supabase.co/rest/v1/content_pillars",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "active",
+              "value": "eq.true"
+            },
+            {
+              "name": "select",
+              "value": "*"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "REPLACE_WITH_SECRET_KEY_VIA_ENV"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer REPLACE_WITH_SECRET_KEY_VIA_ENV"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Prefer",
+              "value": "return=representation"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "node-pillars",
+      "name": "Get Content Pillars",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        768,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const dayData = $('Calculate Day & Week').first().json;\nconst allBucket = $('Get Content Bucket').all().map(i => i.json);\nconst pillars = $('Get Content Pillars').all().map(i => i.json);\n\nconst { emotion, day, weekNum } = dayData;\n\nconst sortByLastUsed = (arr) => [...arr].sort((a, b) => {\n  const aDate = a.property_last_used_date?.start || null;\n  const bDate = b.property_last_used_date?.start || null;\n  if (!aDate && !bDate) return 0;\n  if (!aDate) return -1;\n  if (!bDate) return 1;\n  return new Date(aDate) - new Date(bDate);\n});\n\nconst bucket = sortByLastUsed(allBucket);\n\nconst tofuPillars = pillars.filter(p => p.property_funnel_stage === 'TOFU');\nconst mofuPillars = pillars.filter(p => p.property_funnel_stage === 'MOFU');\nconst bofuPillars = pillars.filter(p => p.property_funnel_stage === 'BOFU');\n\n// Rotate through all 4 TOFU pillars — pick 2 consecutive\nconst tofuPillar1 = tofuPillars[day % tofuPillars.length] || tofuPillars[0] || {};\nconst tofuPillar2 = tofuPillars[(day + 1) % tofuPillars.length] || tofuPillars[0] || {};\n\n// Rotate through all 4 MOFU pillars — pick 2 consecutive\nconst mofuPillar1 = mofuPillars[day % mofuPillars.length] || mofuPillars[0] || {};\nconst mofuPillar2 = mofuPillars[(day + 1) % mofuPillars.length] || mofuPillars[0] || {};\n\n// BOFU — 3 scripts, rotate through pillars\nconst bofuPillar1 = bofuPillars[day % bofuPillars.length] || bofuPillars[0] || {};\nconst bofuPillar2 = bofuPillars[(day + 1) % bofuPillars.length] || bofuPillars[0] || {};\nconst bofuPillar3 = bofuPillars[(day + 2) % bofuPillars.length] || bofuPillars[0] || {};\n\nconst getName = (item) => item && (item.name || item.property_pillar_name || item.property_name || 'Untitled');\nconst getSourceUrl = (item) => item && (item.property_url || item.property_reel_url || item.url || '');\nconst getSummary = (item) => item && (item.property_summary || item.property_hook || item.name || '');\nconst getPillarName = (item) => item && (item.property_pillar_name || item.name || 'Content Pillar');\nconst getPillarCtx = (p) => 'Pillar: ' + getPillarName(p) + '\\nEmotion Theme: ' + (p.property_emotion_theme || '') + '\\nTalk About: ' + (p.property_talk_about || '').slice(0, 300) + '\\nFormat Hint: ' + (p.property_format_hint || '');\n\nconst INSPIRATION_RULE = '\\n\\nCONTENT RULES:\\n- Use TOPIC and ANGLE as inspiration only. Write original content in Micko\\'s voice. Do NOT copy hook, structure, or specific examples.\\n- Never lift sentences or specific examples from source.';\n\nconst PLAIN_LANGUAGE = '\\n\\nLANGUAGE RULES:\\n- Write at 5th grade level. No jargon, no tech terms without plain-English explanation.\\n- Normal people and beginners must understand every sentence.\\n- Follow CTA: follow @inboundos';\n\nconst JSON_SUFFIX = '\\n\\nOUTPUT: Respond with ONLY a raw JSON object, no markdown, no fences:\\n{\"script_title\":\"\",\"hook\":\"\",\"body_structure\":[],\"cta\":\"\",\"format\":\"\",\"tone\":\"\",\"emotional_trigger\":\"\",\"topics\":[],\"caption\":\"\"}';\n\nconst scripts = [\n  {\n    script_number: 1,\n    funnel_stage: 'TOFU',\n    source_type: 'Content Pillar',\n    source_title: getPillarName(tofuPillar1),\n    source_id: (tofuPillar1 && tofuPillar1.id) || '',\n    source_url: '',\n    emotion, weekNum,\n    cta_type: 'Engagement',\n    pillar: getPillarName(tofuPillar1),\n    prompt: 'Write a TOFU social media tips reel for Micko Cruz.\\n\\nFORMAT:\\n- hook: Specific, surprising, or uncomfortable. Max 8 words. No generic openers.\\n- body_structure: 3-4 short teaching points. One sentence per line. Max 6-8 words per line. Teleprompter format. Blank line every 2-3 lines.\\n- tone: Direct, founder-to-founder. No fluff.\\n- cta: save this / follow for more\\n\\n' + getPillarCtx(tofuPillar1) + '\\nEmotion: ' + emotion + PLAIN_LANGUAGE + JSON_SUFFIX\n  },\n  {\n    script_number: 2,\n    funnel_stage: 'TOFU',\n    source_type: 'Content Pillar',\n    source_title: getPillarName(tofuPillar2),\n    source_id: (tofuPillar2 && tofuPillar2.id) || '',\n    source_url: '',\n    emotion, weekNum,\n    cta_type: 'Engagement',\n    pillar: getPillarName(tofuPillar2),\n    prompt: 'Write a TOFU Read Caption reel for Micko Cruz.\\n\\nFORMAT:\\n- hook: Short belief-reframe max 10 words ending with \"..\" then \"(Read caption)\"\\n- body_structure: 5-7 short punchy paragraphs as the caption. Structure: wrong belief → root cause → contrast → real insight → identity shift. Max 6-8 words per line.\\n- caption: body_structure joined as one string\\n- format: Read Caption (7-second video)\\n- tone: Direct, contrarian, founder-to-founder\\n- cta: follow @inboundos if you want inbound leads without cold outreach\\n\\n' + getPillarCtx(tofuPillar2) + '\\nEmotion: ' + emotion + PLAIN_LANGUAGE + JSON_SUFFIX\n  },\n  {\n    script_number: 3,\n    funnel_stage: 'MOFU',\n    source_type: 'Content Bucket + Pillar',\n    source_title: getName(bucket[0]),\n    source_id: (bucket[0] && bucket[0].id) || '',\n    source_url: getSourceUrl(bucket[0]),\n    emotion, weekNum,\n    cta_type: 'Lead',\n    pillar: getPillarName(mofuPillar1),\n    prompt: 'MOFU system breakdown reel for Micko Cruz. Use source as inspiration only — write in Micko\\'s original voice.' + INSPIRATION_RULE + '\\n\\nSource: ' + getName(bucket[0]) + '\\nHook: ' + getSummary(bucket[0]).slice(0, 300) + '\\n\\n' + getPillarCtx(mofuPillar1) + '\\nEmotion: ' + emotion + '\\nGoal: Shift belief from skill gap to system gap.\\n\\nFORMAT:\\n- hook: Hook their frustration. Specific and uncomfortable.\\n- body_structure: Hook → Problem → Why the usual fix fails → The system → CTA. Short lines, max 6-8 words, teleprompter format.\\n- cta: DM or book a call' + PLAIN_LANGUAGE + JSON_SUFFIX\n  },\n  {\n    script_number: 4,\n    funnel_stage: 'MOFU',\n    source_type: 'Content Bucket + Pillar',\n    source_title: getName(bucket[1] || bucket[0]),\n    source_id: ((bucket[1] || bucket[0]) && (bucket[1] || bucket[0]).id) || '',\n    source_url: getSourceUrl(bucket[1] || bucket[0]),\n    emotion, weekNum,\n    cta_type: 'Lead',\n    pillar: getPillarName(mofuPillar2),\n    prompt: 'MOFU system breakdown reel for Micko Cruz. Use source as inspiration only — write in Micko\\'s original voice.' + INSPIRATION_RULE + '\\n\\nSource: ' + getName(bucket[1] || bucket[0]) + '\\nHook: ' + getSummary(bucket[1] || bucket[0]).slice(0, 300) + '\\n\\n' + getPillarCtx(mofuPillar2) + '\\nEmotion: ' + emotion + '\\nGoal: Shift belief from skill gap to system gap.\\n\\nFORMAT:\\n- hook: Hook their frustration. Specific and uncomfortable.\\n- body_structure: Hook → Problem → Why the usual fix fails → The system → CTA. Short lines, max 6-8 words, teleprompter format.\\n- cta: DM or book a call' + PLAIN_LANGUAGE + JSON_SUFFIX\n  },\n  {\n    script_number: 5,\n    funnel_stage: 'BOFU',\n    source_type: 'Content Pillar',\n    source_title: getPillarName(bofuPillar1),\n    source_id: (bofuPillar1 && bofuPillar1.id) || '',\n    source_url: '',\n    emotion, weekNum,\n    cta_type: 'Close',\n    pillar: getPillarName(bofuPillar1),\n    prompt: 'BOFU conversion reel for Micko Cruz. Direct and proof-driven. No hype.\\n\\nFORMAT:\\n- hook: A specific result or outcome from InboundOS install. Max 8 words.\\n- body_structure: What the install includes → what client gets → timeline → one real result. Short lines, max 6-8 words, teleprompter format.\\n- tone: Direct, specific, no hype, no superlatives\\n- cta: Link in bio to apply / DM \"install\"\\n\\n' + getPillarCtx(bofuPillar1) + '\\nEmotion: ' + emotion + PLAIN_LANGUAGE + JSON_SUFFIX\n  },\n  {\n    script_number: 6,\n    funnel_stage: 'BOFU',\n    source_type: 'Content Pillar',\n    source_title: getPillarName(bofuPillar2),\n    source_id: (bofuPillar2 && bofuPillar2.id) || '',\n    source_url: '',\n    emotion, weekNum,\n    cta_type: 'Close',\n    pillar: getPillarName(bofuPillar2),\n    prompt: 'BOFU system walkthrough reel for Micko Cruz. Show exactly what InboundOS looks like inside — the tools, the automations, the dashboard. Make it feel real and specific.\\n\\nFORMAT:\\n- hook: Start with a bold statement about what the system does in 1 line. Max 8 words.\\n- body_structure: Walk through what they see when the system is installed. Step by step. Max 6-8 words per line. Teleprompter format.\\n- tone: Calm, confident, no hype — like a founder showing their own system\\n- cta: DM \\'system\\' or link in bio\\n\\n' + getPillarCtx(bofuPillar2) + '\\nEmotion: ' + emotion + PLAIN_LANGUAGE + JSON_SUFFIX\n  },\n  {\n    script_number: 7,\n    funnel_stage: 'BOFU',\n    source_type: 'Content Pillar',\n    source_title: getPillarName(bofuPillar3),\n    source_id: (bofuPillar3 && bofuPillar3.id) || '',\n    source_url: '',\n    emotion, weekNum,\n    cta_type: 'Close',\n    pillar: getPillarName(bofuPillar3),\n    prompt: 'BOFU client proof reel for Micko Cruz. Show a real client result after InboundOS install. No hype — specific numbers, timeline, outcome.\\n\\nFORMAT:\\n- hook: Lead with the result, not the story. Max 8 words. No \\'my client\\' opener.\\n- body_structure: Before \\u2192 after \\u2192 what changed \\u2192 what the system did. Short lines, max 6-8 words, teleprompter format.\\n- tone: Proof-first, calm, no superlatives\\n- cta: Apply at link in bio\\n\\n' + getPillarCtx(bofuPillar3) + '\\nEmotion: ' + emotion + PLAIN_LANGUAGE + JSON_SUFFIX\n  }\n];\n\nreturn scripts.map(s => ({ json: s }));"
+      },
+      "id": "node-build-prompts",
+      "name": "Build 7 Prompt Payloads",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1792,
+        -32
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "node-split",
+      "name": "Split In Batches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        2016,
+        -32
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:3456/generate",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "system",
+              "value": "={{ $json.system }}"
+            },
+            {
+              "name": "prompt",
+              "value": "={{ $json.prompt }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 90000
+        }
+      },
+      "id": "node-claude",
+      "name": "Claude — Generate Script",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2240,
+        32
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json.text || $input.first().json.content || '';\n\nfunction tryParse(str) {\n  try { return JSON.parse(str); } catch(e) { return null; }\n}\n\nfunction repairJson(str) {\n  // Try progressively shorter strings ending at last }\n  let s = str;\n  for (let i = s.length - 1; i > 0; i--) {\n    if (s[i] === '}') {\n      const attempt = tryParse(s.slice(0, i + 1));\n      if (attempt) return attempt;\n    }\n  }\n  return null;\n}\n\nlet parsed = {};\nlet parse_error = null;\n\ntry {\n  const fenced = raw.match(/```(?:json)?\\s*([\\s\\S]*?)```/);\n  const jsonStr = fenced ? fenced[1].trim() : raw.match(/\\{[\\s\\S]*\\}/)?.[0];\n  if (!jsonStr) {\n    parsed = { parse_error: 'no JSON found', raw_preview: raw.slice(0, 500) };\n  } else {\n    const direct = tryParse(jsonStr);\n    if (direct) {\n      parsed = direct;\n    } else {\n      // truncated JSON — repair by finding last valid closing brace\n      const repaired = repairJson(jsonStr);\n      if (repaired) {\n        parsed = repaired;\n        parsed._repaired = true;\n      } else {\n        parsed = { parse_error: 'JSON unrecoverable', raw_preview: raw.slice(0, 500) };\n      }\n    }\n  }\n} catch(e) {\n  parsed = { parse_error: e.message, raw_preview: raw.slice(0, 500) };\n}\n\nconst meta = $('Split In Batches').first().json;\n\nconst body = Array.isArray(parsed.body_structure)\n  ? parsed.body_structure.map(item => typeof item === 'string' ? item : (item.text || item.content || JSON.stringify(item))).join('\\n')\n  : (parsed.body_structure || '');\nconst script = body + (parsed.cta ? '\\n\\nCTA: ' + parsed.cta : '');\nconst caption = parsed.caption || ((parsed.hook || '') + (parsed.cta ? '\\n\\n' + parsed.cta : ''));\n\nconst finalScript = meta.script_override !== undefined ? meta.script_override : script;\nreturn [{ json: { ...meta, ...parsed, script: finalScript, caption } }];\n"
+      },
+      "id": "node-parse",
+      "name": "Parse Script JSON",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2448,
+        48
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "node-loop-back",
+      "name": "Loop Back",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        3120,
+        48
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "956012734",
+        "text": "✅ *Daily Scripts Done*\n\n7 scripts saved to Notion Script Output.",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "node-telegram",
+      "name": "Telegram Summary",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2240,
+        -160
+      ],
+      "webhookId": "7f9ed6e0-ba4b-417a-bf30-ca0ef5eb4045",
+      "executeOnce": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "CY3u6gaCITg8Oo2S",
+          "name": "Telegram Bot (Nexus)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "id": "node-merge",
+      "name": "Merge Notion Data",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1296,
+        -32
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://cscfbuhwlfhblxprkwnh.supabase.co/rest/v1/agent_items",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "REPLACE_WITH_SECRET_KEY_VIA_ENV"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer REPLACE_WITH_SECRET_KEY_VIA_ENV"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Prefer",
+              "value": "return=representation"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  client_id: 'micko_cruz',\n  agent: 'apollo',\n  type: 'script',\n  content: $('Parse Script JSON').first().json.script || $json.content || '',\n  status: 'pending',\n  metadata: {\n    hook: $json.hook || $('Parse Script JSON').first().json.hook || '',\n    caption: $('Parse Script JSON').first().json.caption || '',\n    funnel_stage: $json.funnel_stage || '',\n    script_number: $json.script_number || 0,\n    text_hook: $('Parse Script JSON').first().json.text_hook || $('Parse Script JSON').first().json.hook || ''\n  }\n}) }}",
+        "options": {}
+      },
+      "id": "node-save",
+      "name": "Save Script to Supabase",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2656,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "https://cscfbuhwlfhblxprkwnh.supabase.co/rest/v1/agent_items",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "id",
+              "value": "=eq.{{ $json.id }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "REPLACE_WITH_SECRET_KEY_VIA_ENV"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer REPLACE_WITH_SECRET_KEY_VIA_ENV"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Prefer",
+              "value": "return=representation"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  metadata: {\n    hook: $('Parse Script JSON').first().json.hook || '',\n    caption: $('Parse Script JSON').first().json.caption || '',\n    script: $('Parse Script JSON').first().json.script || ''\n  }\n}) }}",
+        "options": {}
+      },
+      "id": "node-append-script",
+      "name": "Patch Caption & Script",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2944,
+        -160
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{ 'https://api.notion.com/v1/pages/' + $('Save to Content For Micko DB').first().json.id }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ properties: { Caption: { rich_text: [{ text: { content: ($('Parse Script JSON').first().json.caption || '').slice(0,2000) } }] }, Script: { rich_text: [{ text: { content: ($('Parse Script JSON').first().json.script || '').slice(0,2000) } }] }, 'Review Link': { url: ($('Parse Script JSON').first().json.source_url || null) } } }) }}",
+        "options": {}
+      },
+      "id": "node-patch-text",
+      "name": "Patch Caption & Script",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2880,
+        32
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "qo3OsW46dmx45csc",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "https://cscfbuhwlfhblxprkwnh.supabase.co/rest/v1/content_bucket",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "id",
+              "value": "=eq.{{ $json.id }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "REPLACE_WITH_SECRET_KEY_VIA_ENV"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer REPLACE_WITH_SECRET_KEY_VIA_ENV"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Prefer",
+              "value": "return=representation"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ last_used_at: DateTime.now().toUTC().toISO() }) }}",
+        "options": {}
+      },
+      "id": "node-stamp-bucket",
+      "name": "Stamp Content Bucket",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1056,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://127.0.0.1:3456/skill/apollo",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "id": "node-fetch-apollo-skill",
+      "name": "Fetch Apollo Skill",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1536,
+        -32
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nitems.sort((a, b) => {\n  const aDate = a.json?.last_used_at;\n  const bDate = b.json?.last_used_at;\n  if (!aDate && !bDate) return 0;\n  if (!aDate) return -1;\n  if (!bDate) return 1;\n  return new Date(aDate) - new Date(bDate);\n});\nreturn items;"
+      },
+      "id": "node-sort-content-bucket",
+      "name": "Sort Content Bucket (oldest first)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);\nconst items = $input.all();\nconst fresh = items.filter(item => {\n  const lastUsed = item.json?.last_used_at;\n  if (!lastUsed) return true;\n  return new Date(lastUsed) < sevenDaysAgo;\n});\nreturn fresh.length > 0 ? fresh : items;"
+      },
+      "id": "node-filter-content-bucket",
+      "name": "Filter Content Bucket (7-day cooldown)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        864,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "apollo-trigger",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "apollo-webhook-trigger",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        200,
+        500
+      ],
+      "webhookId": "apollo-trigger"
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Calculate Day & Week",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate Day & Week": {
+      "main": [
+        [
+          {
+            "node": "Get Content Bucket",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Content Pillars",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Content Bucket": {
+      "main": [
+        [
+          {
+            "node": "Sort Content Bucket (oldest first)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Content Pillars": {
+      "main": [
+        [
+          {
+            "node": "Merge Notion Data",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Split In Batches": {
+      "main": [
+        [
+          {
+            "node": "Telegram Summary",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Claude — Generate Script",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claude — Generate Script": {
+      "main": [
+        [
+          {
+            "node": "Parse Script JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Script JSON": {
+      "main": [
+        [
+          {
+            "node": "Save Script to Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Back": {
+      "main": [
+        [
+          {
+            "node": "Split In Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Notion Data": {
+      "main": [
+        [
+          {
+            "node": "Fetch Apollo Skill",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save to Content For Micko DB": {
+      "main": [
+        [
+          {
+            "node": "Patch Caption & Script",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append Script to Page": {
+      "main": [
+        [
+          {
+            "node": "Loop Back",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Patch Caption & Script": {
+      "main": [
+        [
+          {
+            "node": "Loop Back",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Stamp Content Bucket": {
+      "main": [
+        [
+          {
+            "node": "Merge Notion Data",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Fetch Apollo Skill": {
+      "main": [
+        [
+          {
+            "node": "Build 7 Prompt Payloads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sort Content Bucket (oldest first)": {
+      "main": [
+        [
+          {
+            "node": "Filter Content Bucket (7-day cooldown)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Content Bucket (7-day cooldown)": {
+      "main": [
+        [
+          {
+            "node": "Stamp Content Bucket",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Calculate Day & Week",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build 7 Prompt Payloads": {
+      "main": [
+        [
+          {
+            "node": "Split In Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": null,
+  "pinData": {},
+  "versionId": "16872f37-3518-464c-9212-e4edc6146bea",
+  "activeVersionId": "16872f37-3518-464c-9212-e4edc6146bea",
+  "versionCounter": 336,
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-05-21T00:25:32.456Z",
+      "createdAt": "2026-05-21T00:25:32.456Z",
+      "role": "workflow:owner",
+      "workflowId": "0QoReLvsYWUaIrIO",
+      "projectId": "IZgFAE28VHkL4DJK",
+      "project": {
+        "updatedAt": "2026-05-16T00:22:59.398Z",
+        "createdAt": "2026-05-16T00:22:36.732Z",
+        "id": "IZgFAE28VHkL4DJK",
+        "name": "Micko Cruz <mickocruz333@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "6e2df52d-83ce-499a-be38-a69f9acd1df9"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-05-27T18:43:29.850Z",
+    "createdAt": "2026-05-27T18:43:29.850Z",
+    "versionId": "16872f37-3518-464c-9212-e4edc6146bea",
+    "workflowId": "0QoReLvsYWUaIrIO",
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "triggerAtHour": 9
+              }
+            ]
+          }
+        },
+        "id": "node-schedule",
+        "name": "Schedule Trigger",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          -96,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const now = new Date();\nconst day = now.getDay();\nconst weekNum = Math.ceil((now - new Date(now.getFullYear(), 0, 1)) / 604800000);\nconst emotions = ['Relief', 'Frustration', 'Aspiration', 'Humor'];\nconst emotion = emotions[day % 4];\nreturn [{ json: { day, weekNum, emotion, timestamp: now.toISOString() } }];"
+        },
+        "id": "node-calc-day",
+        "name": "Calculate Day & Week",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          272,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "url": "https://cscfbuhwlfhblxprkwnh.supabase.co/rest/v1/content_bucket",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "select",
+                "value": "*"
+              },
+              {
+                "name": "limit",
+                "value": "3"
+              },
+              {
+                "name": "order",
+                "value": "last_used_at.asc.nullsfirst"
+              }
+            ]
+          },
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "apikey",
+                "value": "REPLACE_WITH_SECRET_KEY_VIA_ENV"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer REPLACE_WITH_SECRET_KEY_VIA_ENV"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "Prefer",
+                "value": "return=representation"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "node-content-bucket",
+        "name": "Get Content Bucket",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          512,
+          192
+        ]
+      },
+      {
+        "parameters": {
+          "url": "https://cscfbuhwlfhblxprkwnh.supabase.co/rest/v1/content_pillars",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "active",
+                "value": "eq.true"
+              },
+              {
+                "name": "select",
+                "value": "*"
+              }
+            ]
+          },
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "apikey",
+                "value": "REPLACE_WITH_SECRET_KEY_VIA_ENV"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer REPLACE_WITH_SECRET_KEY_VIA_ENV"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "Prefer",
+                "value": "return=representation"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "node-pillars",
+        "name": "Get Content Pillars",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          768,
+          16
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const dayData = $('Calculate Day & Week').first().json;\nconst allBucket = $('Get Content Bucket').all().map(i => i.json);\nconst pillars = $('Get Content Pillars').all().map(i => i.json);\n\nconst { emotion, day, weekNum } = dayData;\n\nconst sortByLastUsed = (arr) => [...arr].sort((a, b) => {\n  const aDate = a.property_last_used_date?.start || null;\n  const bDate = b.property_last_used_date?.start || null;\n  if (!aDate && !bDate) return 0;\n  if (!aDate) return -1;\n  if (!bDate) return 1;\n  return new Date(aDate) - new Date(bDate);\n});\n\nconst bucket = sortByLastUsed(allBucket);\n\nconst tofuPillars = pillars.filter(p => p.property_funnel_stage === 'TOFU');\nconst mofuPillars = pillars.filter(p => p.property_funnel_stage === 'MOFU');\nconst bofuPillars = pillars.filter(p => p.property_funnel_stage === 'BOFU');\n\n// Rotate through all 4 TOFU pillars — pick 2 consecutive\nconst tofuPillar1 = tofuPillars[day % tofuPillars.length] || tofuPillars[0] || {};\nconst tofuPillar2 = tofuPillars[(day + 1) % tofuPillars.length] || tofuPillars[0] || {};\n\n// Rotate through all 4 MOFU pillars — pick 2 consecutive\nconst mofuPillar1 = mofuPillars[day % mofuPillars.length] || mofuPillars[0] || {};\nconst mofuPillar2 = mofuPillars[(day + 1) % mofuPillars.length] || mofuPillars[0] || {};\n\n// BOFU — 3 scripts, rotate through pillars\nconst bofuPillar1 = bofuPillars[day % bofuPillars.length] || bofuPillars[0] || {};\nconst bofuPillar2 = bofuPillars[(day + 1) % bofuPillars.length] || bofuPillars[0] || {};\nconst bofuPillar3 = bofuPillars[(day + 2) % bofuPillars.length] || bofuPillars[0] || {};\n\nconst getName = (item) => item && (item.name || item.property_pillar_name || item.property_name || 'Untitled');\nconst getSourceUrl = (item) => item && (item.property_url || item.property_reel_url || item.url || '');\nconst getSummary = (item) => item && (item.property_summary || item.property_hook || item.name || '');\nconst getPillarName = (item) => item && (item.property_pillar_name || item.name || 'Content Pillar');\nconst getPillarCtx = (p) => 'Pillar: ' + getPillarName(p) + '\\nEmotion Theme: ' + (p.property_emotion_theme || '') + '\\nTalk About: ' + (p.property_talk_about || '').slice(0, 300) + '\\nFormat Hint: ' + (p.property_format_hint || '');\n\nconst INSPIRATION_RULE = '\\n\\nCONTENT RULES:\\n- Use TOPIC and ANGLE as inspiration only. Write original content in Micko\\'s voice. Do NOT copy hook, structure, or specific examples.\\n- Never lift sentences or specific examples from source.';\n\nconst PLAIN_LANGUAGE = '\\n\\nLANGUAGE RULES:\\n- Write at 5th grade level. No jargon, no tech terms without plain-English explanation.\\n- Normal people and beginners must understand every sentence.\\n- Follow CTA: follow @inboundos';\n\nconst JSON_SUFFIX = '\\n\\nOUTPUT: Respond with ONLY a raw JSON object, no markdown, no fences:\\n{\"script_title\":\"\",\"hook\":\"\",\"body_structure\":[],\"cta\":\"\",\"format\":\"\",\"tone\":\"\",\"emotional_trigger\":\"\",\"topics\":[],\"caption\":\"\"}';\n\nconst scripts = [\n  {\n    script_number: 1,\n    funnel_stage: 'TOFU',\n    source_type: 'Content Pillar',\n    source_title: getPillarName(tofuPillar1),\n    source_id: (tofuPillar1 && tofuPillar1.id) || '',\n    source_url: '',\n    emotion, weekNum,\n    cta_type: 'Engagement',\n    pillar: getPillarName(tofuPillar1),\n    prompt: 'Write a TOFU social media tips reel for Micko Cruz.\\n\\nFORMAT:\\n- hook: Specific, surprising, or uncomfortable. Max 8 words. No generic openers.\\n- body_structure: 3-4 short teaching points. One sentence per line. Max 6-8 words per line. Teleprompter format. Blank line every 2-3 lines.\\n- tone: Direct, founder-to-founder. No fluff.\\n- cta: save this / follow for more\\n\\n' + getPillarCtx(tofuPillar1) + '\\nEmotion: ' + emotion + PLAIN_LANGUAGE + JSON_SUFFIX\n  },\n  {\n    script_number: 2,\n    funnel_stage: 'TOFU',\n    source_type: 'Content Pillar',\n    source_title: getPillarName(tofuPillar2),\n    source_id: (tofuPillar2 && tofuPillar2.id) || '',\n    source_url: '',\n    emotion, weekNum,\n    cta_type: 'Engagement',\n    pillar: getPillarName(tofuPillar2),\n    prompt: 'Write a TOFU Read Caption reel for Micko Cruz.\\n\\nFORMAT:\\n- hook: Short belief-reframe max 10 words ending with \"..\" then \"(Read caption)\"\\n- body_structure: 5-7 short punchy paragraphs as the caption. Structure: wrong belief → root cause → contrast → real insight → identity shift. Max 6-8 words per line.\\n- caption: body_structure joined as one string\\n- format: Read Caption (7-second video)\\n- tone: Direct, contrarian, founder-to-founder\\n- cta: follow @inboundos if you want inbound leads without cold outreach\\n\\n' + getPillarCtx(tofuPillar2) + '\\nEmotion: ' + emotion + PLAIN_LANGUAGE + JSON_SUFFIX\n  },\n  {\n    script_number: 3,\n    funnel_stage: 'MOFU',\n    source_type: 'Content Bucket + Pillar',\n    source_title: getName(bucket[0]),\n    source_id: (bucket[0] && bucket[0].id) || '',\n    source_url: getSourceUrl(bucket[0]),\n    emotion, weekNum,\n    cta_type: 'Lead',\n    pillar: getPillarName(mofuPillar1),\n    prompt: 'MOFU system breakdown reel for Micko Cruz. Use source as inspiration only — write in Micko\\'s original voice.' + INSPIRATION_RULE + '\\n\\nSource: ' + getName(bucket[0]) + '\\nHook: ' + getSummary(bucket[0]).slice(0, 300) + '\\n\\n' + getPillarCtx(mofuPillar1) + '\\nEmotion: ' + emotion + '\\nGoal: Shift belief from skill gap to system gap.\\n\\nFORMAT:\\n- hook: Hook their frustration. Specific and uncomfortable.\\n- body_structure: Hook → Problem → Why the usual fix fails → The system → CTA. Short lines, max 6-8 words, teleprompter format.\\n- cta: DM or book a call' + PLAIN_LANGUAGE + JSON_SUFFIX\n  },\n  {\n    script_number: 4,\n    funnel_stage: 'MOFU',\n    source_type: 'Content Bucket + Pillar',\n    source_title: getName(bucket[1] || bucket[0]),\n    source_id: ((bucket[1] || bucket[0]) && (bucket[1] || bucket[0]).id) || '',\n    source_url: getSourceUrl(bucket[1] || bucket[0]),\n    emotion, weekNum,\n    cta_type: 'Lead',\n    pillar: getPillarName(mofuPillar2),\n    prompt: 'MOFU system breakdown reel for Micko Cruz. Use source as inspiration only — write in Micko\\'s original voice.' + INSPIRATION_RULE + '\\n\\nSource: ' + getName(bucket[1] || bucket[0]) + '\\nHook: ' + getSummary(bucket[1] || bucket[0]).slice(0, 300) + '\\n\\n' + getPillarCtx(mofuPillar2) + '\\nEmotion: ' + emotion + '\\nGoal: Shift belief from skill gap to system gap.\\n\\nFORMAT:\\n- hook: Hook their frustration. Specific and uncomfortable.\\n- body_structure: Hook → Problem → Why the usual fix fails → The system → CTA. Short lines, max 6-8 words, teleprompter format.\\n- cta: DM or book a call' + PLAIN_LANGUAGE + JSON_SUFFIX\n  },\n  {\n    script_number: 5,\n    funnel_stage: 'BOFU',\n    source_type: 'Content Pillar',\n    source_title: getPillarName(bofuPillar1),\n    source_id: (bofuPillar1 && bofuPillar1.id) || '',\n    source_url: '',\n    emotion, weekNum,\n    cta_type: 'Close',\n    pillar: getPillarName(bofuPillar1),\n    prompt: 'BOFU conversion reel for Micko Cruz. Direct and proof-driven. No hype.\\n\\nFORMAT:\\n- hook: A specific result or outcome from InboundOS install. Max 8 words.\\n- body_structure: What the install includes → what client gets → timeline → one real result. Short lines, max 6-8 words, teleprompter format.\\n- tone: Direct, specific, no hype, no superlatives\\n- cta: Link in bio to apply / DM \"install\"\\n\\n' + getPillarCtx(bofuPillar1) + '\\nEmotion: ' + emotion + PLAIN_LANGUAGE + JSON_SUFFIX\n  },\n  {\n    script_number: 6,\n    funnel_stage: 'BOFU',\n    source_type: 'Content Pillar',\n    source_title: getPillarName(bofuPillar2),\n    source_id: (bofuPillar2 && bofuPillar2.id) || '',\n    source_url: '',\n    emotion, weekNum,\n    cta_type: 'Close',\n    pillar: getPillarName(bofuPillar2),\n    prompt: 'BOFU system walkthrough reel for Micko Cruz. Show exactly what InboundOS looks like inside — the tools, the automations, the dashboard. Make it feel real and specific.\\n\\nFORMAT:\\n- hook: Start with a bold statement about what the system does in 1 line. Max 8 words.\\n- body_structure: Walk through what they see when the system is installed. Step by step. Max 6-8 words per line. Teleprompter format.\\n- tone: Calm, confident, no hype — like a founder showing their own system\\n- cta: DM \\'system\\' or link in bio\\n\\n' + getPillarCtx(bofuPillar2) + '\\nEmotion: ' + emotion + PLAIN_LANGUAGE + JSON_SUFFIX\n  },\n  {\n    script_number: 7,\n    funnel_stage: 'BOFU',\n    source_type: 'Content Pillar',\n    source_title: getPillarName(bofuPillar3),\n    source_id: (bofuPillar3 && bofuPillar3.id) || '',\n    source_url: '',\n    emotion, weekNum,\n    cta_type: 'Close',\n    pillar: getPillarName(bofuPillar3),\n    prompt: 'BOFU client proof reel for Micko Cruz. Show a real client result after InboundOS install. No hype — specific numbers, timeline, outcome.\\n\\nFORMAT:\\n- hook: Lead with the result, not the story. Max 8 words. No \\'my client\\' opener.\\n- body_structure: Before \\u2192 after \\u2192 what changed \\u2192 what the system did. Short lines, max 6-8 words, teleprompter format.\\n- tone: Proof-first, calm, no superlatives\\n- cta: Apply at link in bio\\n\\n' + getPillarCtx(bofuPillar3) + '\\nEmotion: ' + emotion + PLAIN_LANGUAGE + JSON_SUFFIX\n  }\n];\n\nreturn scripts.map(s => ({ json: s }));"
+        },
+        "id": "node-build-prompts",
+        "name": "Build 7 Prompt Payloads",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1792,
+          -32
+        ]
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "id": "node-split",
+        "name": "Split In Batches",
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          2016,
+          -32
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "http://127.0.0.1:3456/generate",
+          "sendBody": true,
+          "contentType": "form-urlencoded",
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "system",
+                "value": "={{ $json.system }}"
+              },
+              {
+                "name": "prompt",
+                "value": "={{ $json.prompt }}"
+              }
+            ]
+          },
+          "options": {
+            "timeout": 90000
+          }
+        },
+        "id": "node-claude",
+        "name": "Claude — Generate Script",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          2240,
+          32
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const raw = $input.first().json.text || $input.first().json.content || '';\n\nfunction tryParse(str) {\n  try { return JSON.parse(str); } catch(e) { return null; }\n}\n\nfunction repairJson(str) {\n  // Try progressively shorter strings ending at last }\n  let s = str;\n  for (let i = s.length - 1; i > 0; i--) {\n    if (s[i] === '}') {\n      const attempt = tryParse(s.slice(0, i + 1));\n      if (attempt) return attempt;\n    }\n  }\n  return null;\n}\n\nlet parsed = {};\nlet parse_error = null;\n\ntry {\n  const fenced = raw.match(/```(?:json)?\\s*([\\s\\S]*?)```/);\n  const jsonStr = fenced ? fenced[1].trim() : raw.match(/\\{[\\s\\S]*\\}/)?.[0];\n  if (!jsonStr) {\n    parsed = { parse_error: 'no JSON found', raw_preview: raw.slice(0, 500) };\n  } else {\n    const direct = tryParse(jsonStr);\n    if (direct) {\n      parsed = direct;\n    } else {\n      // truncated JSON — repair by finding last valid closing brace\n      const repaired = repairJson(jsonStr);\n      if (repaired) {\n        parsed = repaired;\n        parsed._repaired = true;\n      } else {\n        parsed = { parse_error: 'JSON unrecoverable', raw_preview: raw.slice(0, 500) };\n      }\n    }\n  }\n} catch(e) {\n  parsed = { parse_error: e.message, raw_preview: raw.slice(0, 500) };\n}\n\nconst meta = $('Split In Batches').first().json;\n\nconst body = Array.isArray(parsed.body_structure)\n  ? parsed.body_structure.map(item => typeof item === 'string' ? item : (item.text || item.content || JSON.stringify(item))).join('\\n')\n  : (parsed.body_structure || '');\nconst script = body + (parsed.cta ? '\\n\\nCTA: ' + parsed.cta : '');\nconst caption = parsed.caption || ((parsed.hook || '') + (parsed.cta ? '\\n\\n' + parsed.cta : ''));\n\nconst finalScript = meta.script_override !== undefined ? meta.script_override : script;\nreturn [{ json: { ...meta, ...parsed, script: finalScript, caption } }];\n"
+        },
+        "id": "node-parse",
+        "name": "Parse Script JSON",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2448,
+          48
+        ]
+      },
+      {
+        "parameters": {},
+        "id": "node-loop-back",
+        "name": "Loop Back",
+        "type": "n8n-nodes-base.noOp",
+        "typeVersion": 1,
+        "position": [
+          3120,
+          48
+        ]
+      },
+      {
+        "parameters": {
+          "chatId": "956012734",
+          "text": "✅ *Daily Scripts Done*\n\n7 scripts saved to Notion Script Output.",
+          "additionalFields": {
+            "parse_mode": "Markdown"
+          }
+        },
+        "id": "node-telegram",
+        "name": "Telegram Summary",
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          2240,
+          -160
+        ],
+        "webhookId": "7f9ed6e0-ba4b-417a-bf30-ca0ef5eb4045",
+        "executeOnce": true,
+        "credentials": {
+          "telegramApi": {
+            "id": "CY3u6gaCITg8Oo2S",
+            "name": "Telegram Bot (Nexus)"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "numberInputs": 3
+        },
+        "id": "node-merge",
+        "name": "Merge Notion Data",
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3,
+        "position": [
+          1296,
+          -32
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://cscfbuhwlfhblxprkwnh.supabase.co/rest/v1/agent_items",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "apikey",
+                "value": "REPLACE_WITH_SECRET_KEY_VIA_ENV"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer REPLACE_WITH_SECRET_KEY_VIA_ENV"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "Prefer",
+                "value": "return=representation"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ JSON.stringify({\n  client_id: 'micko_cruz',\n  agent: 'apollo',\n  type: 'script',\n  content: $('Parse Script JSON').first().json.script || $json.content || '',\n  status: 'pending',\n  metadata: {\n    hook: $json.hook || $('Parse Script JSON').first().json.hook || '',\n    caption: $('Parse Script JSON').first().json.caption || '',\n    funnel_stage: $json.funnel_stage || '',\n    script_number: $json.script_number || 0\n  }\n}) }}",
+          "options": {}
+        },
+        "id": "node-save",
+        "name": "Save Script to Supabase",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          2656,
+          16
+        ]
+      },
+      {
+        "parameters": {
+          "method": "PATCH",
+          "url": "https://cscfbuhwlfhblxprkwnh.supabase.co/rest/v1/agent_items",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "id",
+                "value": "=eq.{{ $json.id }}"
+              }
+            ]
+          },
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "apikey",
+                "value": "REPLACE_WITH_SECRET_KEY_VIA_ENV"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer REPLACE_WITH_SECRET_KEY_VIA_ENV"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "Prefer",
+                "value": "return=representation"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ JSON.stringify({\n  metadata: {\n    hook: $('Parse Script JSON').first().json.hook || '',\n    caption: $('Parse Script JSON').first().json.caption || '',\n    script: $('Parse Script JSON').first().json.script || ''\n  }\n}) }}",
+          "options": {}
+        },
+        "id": "node-append-script",
+        "name": "Patch Caption & Script",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          2944,
+          -160
+        ]
+      },
+      {
+        "parameters": {
+          "method": "PATCH",
+          "url": "={{ 'https://api.notion.com/v1/pages/' + $('Save to Content For Micko DB').first().json.id }}",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "notionApi",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Notion-Version",
+                "value": "2022-06-28"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ JSON.stringify({ properties: { Caption: { rich_text: [{ text: { content: ($('Parse Script JSON').first().json.caption || '').slice(0,2000) } }] }, Script: { rich_text: [{ text: { content: ($('Parse Script JSON').first().json.script || '').slice(0,2000) } }] }, 'Review Link': { url: ($('Parse Script JSON').first().json.source_url || null) } } }) }}",
+          "options": {}
+        },
+        "id": "node-patch-text",
+        "name": "Patch Caption & Script",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          2880,
+          32
+        ],
+        "credentials": {
+          "notionApi": {
+            "id": "qo3OsW46dmx45csc",
+            "name": "Notion account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "PATCH",
+          "url": "https://cscfbuhwlfhblxprkwnh.supabase.co/rest/v1/content_bucket",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "id",
+                "value": "=eq.{{ $json.id }}"
+              }
+            ]
+          },
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "apikey",
+                "value": "REPLACE_WITH_SECRET_KEY_VIA_ENV"
+              },
+              {
+                "name": "Authorization",
+                "value": "Bearer REPLACE_WITH_SECRET_KEY_VIA_ENV"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "Prefer",
+                "value": "return=representation"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ JSON.stringify({ last_used_at: DateTime.now().toUTC().toISO() }) }}",
+          "options": {}
+        },
+        "id": "node-stamp-bucket",
+        "name": "Stamp Content Bucket",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1056,
+          160
+        ]
+      },
+      {
+        "parameters": {
+          "url": "http://127.0.0.1:3456/skill/apollo",
+          "options": {
+            "response": {
+              "response": {
+                "responseFormat": "text"
+              }
+            }
+          }
+        },
+        "id": "node-fetch-apollo-skill",
+        "name": "Fetch Apollo Skill",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4,
+        "position": [
+          1536,
+          -32
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const items = $input.all();\nitems.sort((a, b) => {\n  const aDate = a.json?.last_used_at;\n  const bDate = b.json?.last_used_at;\n  if (!aDate && !bDate) return 0;\n  if (!aDate) return -1;\n  if (!bDate) return 1;\n  return new Date(aDate) - new Date(bDate);\n});\nreturn items;"
+        },
+        "id": "node-sort-content-bucket",
+        "name": "Sort Content Bucket (oldest first)",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          672,
+          192
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);\nconst items = $input.all();\nconst fresh = items.filter(item => {\n  const lastUsed = item.json?.last_used_at;\n  if (!lastUsed) return true;\n  return new Date(lastUsed) < sevenDaysAgo;\n});\nreturn fresh.length > 0 ? fresh : items;"
+        },
+        "id": "node-filter-content-bucket",
+        "name": "Filter Content Bucket (7-day cooldown)",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          864,
+          192
+        ]
+      }
+    ],
+    "connections": {
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "Calculate Day & Week",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Calculate Day & Week": {
+        "main": [
+          [
+            {
+              "node": "Get Content Bucket",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Get Content Pillars",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get Content Bucket": {
+        "main": [
+          [
+            {
+              "node": "Sort Content Bucket (oldest first)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get Content Pillars": {
+        "main": [
+          [
+            {
+              "node": "Merge Notion Data",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Split In Batches": {
+        "main": [
+          [
+            {
+              "node": "Telegram Summary",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Claude — Generate Script",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Claude — Generate Script": {
+        "main": [
+          [
+            {
+              "node": "Parse Script JSON",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Parse Script JSON": {
+        "main": [
+          [
+            {
+              "node": "Save Script to Supabase",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Back": {
+        "main": [
+          [
+            {
+              "node": "Split In Batches",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Merge Notion Data": {
+        "main": [
+          [
+            {
+              "node": "Fetch Apollo Skill",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Save to Content For Micko DB": {
+        "main": [
+          [
+            {
+              "node": "Patch Caption & Script",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Append Script to Page": {
+        "main": [
+          [
+            {
+              "node": "Loop Back",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Patch Caption & Script": {
+        "main": [
+          [
+            {
+              "node": "Loop Back",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Stamp Content Bucket": {
+        "main": [
+          [
+            {
+              "node": "Merge Notion Data",
+              "type": "main",
+              "index": 2
+            }
+          ]
+        ]
+      },
+      "Fetch Apollo Skill": {
+        "main": [
+          [
+            {
+              "node": "Build 4 Prompt Payloads",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Sort Content Bucket (oldest first)": {
+        "main": [
+          [
+            {
+              "node": "Filter Content Bucket (7-day cooldown)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filter Content Bucket (7-day cooldown)": {
+        "main": [
+          [
+            {
+              "node": "Stamp Content Bucket",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build 5 Prompt Payloads": {
+        "main": [
+          [
+            {
+              "node": "Split In Batches",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Micko Cruz",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-05-27T18:43:29.935Z",
+        "id": 272,
+        "workflowId": "0QoReLvsYWUaIrIO",
+        "versionId": "16872f37-3518-464c-9212-e4edc6146bea",
+        "event": "activated",
+        "userId": "6e2df52d-83ce-499a-be38-a69f9acd1df9"
+      },
+      {
+        "createdAt": "2026-05-27T18:43:29.914Z",
+        "id": 271,
+        "workflowId": "0QoReLvsYWUaIrIO",
+        "versionId": "16872f37-3518-464c-9212-e4edc6146bea",
+        "event": "deactivated",
+        "userId": "6e2df52d-83ce-499a-be38-a69f9acd1df9"
+      }
+    ]
+  }
+}

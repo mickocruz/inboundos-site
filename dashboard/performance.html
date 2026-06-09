@@ -37,7 +37,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .sidebar-bottom{margin-top:auto;padding:12px 16px 0;border-top:1px solid var(--border);}
 .mk-avatar-wrap{display:flex;align-items:center;gap:10px;}
 .mk-name{font-family:var(--font-data);font-size:12px;font-weight:600;color:#ffffff;line-height:1.2;}
-.mk-role{font-family:var(--font-data);font-size:10px;color:rgba(255,255,255,0.42);}
+.mk-role{font-family:var(--font-data);font-size:11px;color:rgba(255,255,255,0.42);}
 .main{flex:1;overflow-y:auto;overflow-x:hidden;padding:22px 20px 22px 24px;display:flex;flex-direction:column;gap:18px;scrollbar-width:thin;scrollbar-color:rgba(79,195,247,0.12) transparent;}
 .main::-webkit-scrollbar{width:3px;}.main::-webkit-scrollbar-thumb{background:rgba(79,195,247,0.15);border-radius:3px;}
 .header{display:flex;align-items:center;justify-content:space-between;}
@@ -54,7 +54,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(79,195,247,0.025) 0%,transparent 55%);pointer-events:none;}
 .section-label{font-family:var(--font-head);font-size:10px;font-weight:900;letter-spacing:2.5px;text-transform:uppercase;color:var(--text-muted);display:flex;align-items:center;gap:10px;}
 .section-label::after{content:'';flex:1;height:1px;background:var(--border);}
-@keyframes livePulse{0%,100%{opacity:1;}50%{opacity:0.45;}}
+@keyframes liveArgus{0%,100%{opacity:1;}50%{opacity:0.45;}}
 
 
 /* OVERVIEW STATS */
@@ -142,7 +142,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 /* DM Sans body */
 :root{--font-body:'DM Sans',sans-serif;}
 html,body{font-family:'DM Sans',sans-serif!important;}
-</style><link rel="stylesheet" href="/dashboard/spring-animations.css"/><link rel="stylesheet" href="/dashboard/mobile.css?v=11"/><link rel="stylesheet" href="/dashboard/settings-panel.css"/><script src="/dashboard/config.js"></script><script src="/dashboard/settings-panel.js"></script>  <link rel="manifest" href="/manifest.json">
+</style><link rel="stylesheet" href="/dashboard/spring-animations.css"/><link rel="stylesheet" href="/dashboard/mobile.css?v=14"/><link rel="stylesheet" href="/dashboard/settings-panel.css"/><script src="/dashboard/config.js"></script><script src="/dashboard/settings-panel.js"></script>  <link rel="manifest" href="/manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="InboundOS">
@@ -234,7 +234,7 @@ html,body{font-family:'DM Sans',sans-serif!important;}
     <!-- INSTAGRAM REELS -->
     <div class="section-label" style="display:flex;align-items:center;gap:10px;">
       Instagram Reels
-      <span id="perf-live-badge" style="font-size:10px;font-family:var(--font-data);font-weight:600;letter-spacing:0.5px;padding:2px 8px;border-radius:20px;background:rgba(79,195,247,0.1);color:var(--accent);border:1px solid rgba(79,195,247,0.28);animation:livePulse 2s ease-in-out infinite;"> LIVE</span>
+      <span id="perf-live-badge" style="font-size:10px;font-family:var(--font-data);font-weight:600;letter-spacing:0.5px;padding:2px 8px;border-radius:20px;background:rgba(79,195,247,0.1);color:var(--accent);border:1px solid rgba(79,195,247,0.28);animation:liveArgus 2s ease-in-out infinite;"> LIVE</span>
     </div>
     <div class="platform-section" id="perf-ig-section">
       <div class="plat-head">
@@ -463,16 +463,18 @@ async function refreshIGData(page) {
 //  GOAL PROGRESS (sync with client tab) 
 (function updateGoalProgress() {
   try {
+    const CLIENT_TARGET = 5;
+    const CLIENT_RETAINER = 1000; // $ per client per month
+    const MRR_TARGET = CLIENT_TARGET * CLIENT_RETAINER;
     const count = parseInt(localStorage.getItem('ctrl_client_count') || '1', 10);
-    const target = 5;
-    const need = Math.max(0, target - count);
-    const mrr = count * 1000;
+    const need = Math.max(0, CLIENT_TARGET - count);
+    const mrr = count * CLIENT_RETAINER;
     const el = document.getElementById('goal-progress-val');
     const sub = document.getElementById('goal-progress-sub');
-    if (el) el.textContent = `${count} / ${target} clients`;
+    if (el) el.textContent = `${count} / ${CLIENT_TARGET} clients`;
     if (sub) sub.textContent = need > 0
-      ? `Need ${need} more for $5K/mo target. Current: $${mrr.toLocaleString()} (${count} client${count !== 1 ? 's' : ''})`
-      : `$5K/mo target reached! ${count} clients active.`;
+      ? `Need ${need} more for $${(MRR_TARGET/1000).toFixed(0)}K/mo target. Current: $${mrr.toLocaleString()} (${count} client${count !== 1 ? 's' : ''})`
+      : `$${(MRR_TARGET/1000).toFixed(0)}K/mo target reached! ${count} clients active.`;
   } catch(e) {}
 })();
 
@@ -507,9 +509,9 @@ document.head.appendChild(style);
 <script>
 (function sidebarAgentStatus() {
   var AGENTS = [
-    {name:'Scout',color:'#4FC3F7'},{name:'Quill',color:'#fbbf24'},{name:'Pulse',color:'#4ade80'},
-    {name:'Hunter',color:'#f472b6'},{name:'Echo',color:'#4ade80'},{name:'Pilot',color:'#38bdf8'},
-    {name:'Forge',color:'#e879f9'},{name:'Edge',color:'#f97316'}
+    {name:'Argus',color:'#4FC3F7'},{name:'Apollo',color:'#fbbf24'},{name:'Argus',color:'#4ade80'},
+    {name:'Hermes',color:'#f472b6'},{name:'Clio',color:'#38bdf8'},
+    {name:'Clio',color:'#e879f9'}
   ];
   function getStatuses() {
     var s = {};

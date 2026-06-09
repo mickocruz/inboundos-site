@@ -128,6 +128,18 @@ function togglePw(id, btn) {
     : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
 }
 
+// ── AUTO SLUG ─────────────────────────────────────────────────
+function autoSlug(el) {
+  el.value = el.value.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-');
+}
+
+// All client creation routes through the provision-client Clio Function server-side.
+// No service role key ever touches the browser.
+const PROVISION_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co/functions/v1/provision-client';
+
+// Admin password is stored in sessionStorage after gate check — used as x-master-token
+let _adminPw = '';
+
 async function checkGate() {
   const pw = document.getElementById('gate-pw').value;
   const errEl = document.getElementById('gate-err');
@@ -139,6 +151,7 @@ async function checkGate() {
       body: JSON.stringify({ password: pw }),
     });
     if (res.ok) {
+      _adminPw = pw; // keep in memory only — never persisted
       document.getElementById('gate').style.display = 'none';
       document.getElementById('main').style.display = 'block';
     } else {
@@ -148,17 +161,10 @@ async function checkGate() {
     errEl.style.display = 'block';
   }
 }
-document.getElementById('gate-pw').addEventListener('keydown', e => { if (e.key === 'Enter') checkGate(); });
-
-// ── AUTO SLUG ─────────────────────────────────────────────────
-function autoSlug(el) {
-  el.value = el.value.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-');
-}
-
-// ── MASTER SUPABASE (Micko's) ─────────────────────────────────
-const MASTER_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co';
-const MASTER_SVC = 'REPLACE_WITH_SECRET_KEY_VIA_ENV';
-const HDR = { 'apikey': MASTER_SVC, 'Authorization': `Bearer ${MASTER_SVC}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' };
+document.addEventListener('DOMContentLoaded', () => {
+  const gatePw = document.getElementById('gate-pw');
+  if (gatePw) gatePw.addEventListener('keydown', e => { if (e.key === 'Enter') checkGate(); });
+});
 
 async function addClient() {
   const btn = document.getElementById('submit-btn');
@@ -188,43 +194,30 @@ async function addClient() {
   btn.disabled = true;
 
   try {
-    // 1. Hash password via Supabase function
-    const hashRes = await fetch(`${MASTER_URL}/rest/v1/rpc/hash_password`, {
+    const res = await fetch(PROVISION_URL, {
       method: 'POST',
-      headers: HDR,
-      body: JSON.stringify({ input_password: password }),
-    });
-    if (!hashRes.ok) throw new Error('Password hash failed: ' + await hashRes.text());
-    const password_hash = await hashRes.json();
-
-    // 2. Insert into clients table
-    const clientRes = await fetch(`${MASTER_URL}/rest/v1/clients`, {
-      method: 'POST',
-      headers: HDR,
+      headers: {
+        'Content-Type': 'application/json',
+        'x-master-token': _adminPw,
+      },
       body: JSON.stringify({
+        first_name: first,
+        last_name: last,
+        agency_name: agency,
         username,
-        password_hash,
+        password,
         client_id,
         client_slug,
-        client_supabase_url:     sb_url,
-        client_supabase_anon:    sb_anon,
+        client_supabase_url:  sb_url,
+        client_supabase_anon: sb_anon,
         client_supabase_service: sb_svc,
       }),
     });
-    if (!clientRes.ok) throw new Error('clients insert failed: ' + await clientRes.text());
-
-    // 3. Insert into client_config on THEIR Supabase
-    const theirHDR = { 'apikey': sb_svc, 'Authorization': `Bearer ${sb_svc}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' };
-    const configRes = await fetch(`${sb_url}/rest/v1/client_config`, {
-      method: 'POST',
-      headers: theirHDR,
-      body: JSON.stringify({ client_id, first_name: first, last_name: last, agency_name: agency }),
-    });
-    if (!configRes.ok) throw new Error('client_config insert failed: ' + await configRes.text());
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
 
     ok.textContent = `✓ ${first} ${last} added. Login: ${username} / ${password}`;
     ok.style.display = 'block';
-    // Clear form
     ['first_name','last_name','agency_name','username','password','sb_url','sb_anon','sb_service'].forEach(id => document.getElementById(id).value = '');
 
   } catch (e) {

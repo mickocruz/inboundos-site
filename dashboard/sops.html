@@ -40,7 +40,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .sidebar-bottom{margin-top:auto;padding:12px 16px 0;border-top:1px solid var(--border);}
 .mk-avatar-wrap{display:flex;align-items:center;gap:10px;}
 .mk-name{font-family:var(--font-data);font-size:12px;font-weight:600;color:#ffffff;line-height:1.2;}
-.mk-role{font-family:var(--font-data);font-size:10px;color:rgba(255,255,255,0.42);}
+.mk-role{font-family:var(--font-data);font-size:11px;color:rgba(255,255,255,0.42);}
 .main{flex:1;overflow-y:auto;overflow-x:hidden;padding:24px 28px 40px;display:flex;flex-direction:column;gap:20px;scrollbar-width:thin;scrollbar-color:rgba(79,195,247,0.12) transparent;}
 .main::-webkit-scrollbar{width:3px;}.main::-webkit-scrollbar-thumb{background:rgba(79,195,247,0.15);border-radius:3px;}
 .header{display:flex;align-items:flex-start;justify-content:space-between;}
@@ -58,6 +58,40 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .sop-meta{font-family:var(--font-data);font-size:11px;color:var(--text-muted);margin-top:2px;}
 .sop-chevron{color:var(--text-dim);transition:transform 0.2s;flex-shrink:0;}
 .sop-chevron.open{transform:rotate(180deg);}
+.sop-actions{display:flex;gap:6px;flex-shrink:0;}
+.sop-btn{background:transparent;border:1px solid var(--border);color:var(--text-dim);border-radius:5px;padding:3px 9px;font-family:var(--font-data);font-size:11px;cursor:pointer;transition:all 0.15s;}
+.sop-btn:hover{border-color:var(--border-glow);color:var(--accent);}
+.sop-btn.del:hover{border-color:rgba(248,113,113,0.4);color:#f87171;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-family:var(--font-head);font-size:10px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all 0.15s;border:none;}
+.btn-accent{background:rgba(79,195,247,0.12);border:1px solid rgba(79,195,247,0.3);color:#4FC3F7;}
+.btn-accent:hover{background:rgba(79,195,247,0.2);}
+/* SOP MODAL */
+.sm-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.65);backdrop-filter:blur(10px);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.2s;}
+.sm-overlay.open{opacity:1;pointer-events:all;}
+.sm-box{background:#0d1820;border:1px solid rgba(79,195,247,0.2);border-radius:18px;padding:28px;width:500px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 32px 80px rgba(0,0,0,0.7);transform:scale(0.92) translateY(12px);opacity:0;transition:transform 0.32s cubic-bezier(0.34,1.56,0.64,1),opacity 0.2s;}
+.sm-overlay.open .sm-box{transform:scale(1) translateY(0);opacity:1;}
+.sm-title{font-family:var(--font-head);font-size:18px;font-weight:900;letter-spacing:-0.5px;margin-bottom:20px;}
+.sm-title span{color:var(--accent);}
+.sm-field{margin-bottom:14px;}
+.sm-label{font-family:var(--font-head);font-size:10px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);display:block;margin-bottom:6px;}
+.sm-input{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:9px 12px;font-family:var(--font-data);font-size:13px;color:var(--text);outline:none;transition:border-color 0.2s;}
+.sm-input:focus{border-color:rgba(79,195,247,0.4);}
+.sm-row{display:grid;grid-template-columns:80px 1fr;gap:12px;}
+.sm-steps-list{display:flex;flex-direction:column;gap:6px;margin-bottom:8px;}
+.sm-step-row{display:flex;gap:6px;align-items:center;}
+.sm-step-num{font-family:var(--font-head);font-size:11px;color:var(--accent);min-width:18px;}
+.sm-step-input{flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:7px 10px;font-family:var(--font-data);font-size:12px;color:var(--text);outline:none;}
+.sm-step-input:focus{border-color:rgba(79,195,247,0.3);}
+.sm-step-del{background:transparent;border:none;color:rgba(248,113,113,0.5);font-size:14px;cursor:pointer;padding:0 4px;transition:color 0.15s;}
+.sm-step-del:hover{color:#f87171;}
+.sm-add-step{background:transparent;border:1px dashed rgba(79,195,247,0.2);color:var(--text-dim);border-radius:7px;padding:6px 12px;font-family:var(--font-data);font-size:11px;cursor:pointer;width:100%;transition:all 0.15s;}
+.sm-add-step:hover{border-color:rgba(79,195,247,0.4);color:var(--accent);}
+.sm-actions{display:flex;gap:10px;margin-top:20px;}
+.sm-btn{flex:1;padding:11px;border-radius:9px;font-family:var(--font-data);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.18s;border:1px solid transparent;}
+.sm-btn-cancel{background:transparent;border-color:rgba(255,255,255,0.08);color:var(--text-muted);}
+.sm-btn-cancel:hover{border-color:rgba(255,255,255,0.2);color:var(--text);}
+.sm-btn-save{background:rgba(79,195,247,0.1);border-color:rgba(79,195,247,0.3);color:var(--accent);}
+.sm-btn-save:hover{background:rgba(79,195,247,0.18);}
 .sop-body{border-top:1px solid var(--border);padding:16px 20px 18px;display:none;}
 .sop-body.open{display:block;}
 .sop-steps{list-style:none;display:flex;flex-direction:column;gap:8px;}
@@ -88,7 +122,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 /* DM Sans body */
 :root{--font-body:'DM Sans',sans-serif;}
 html,body{font-family:'DM Sans',sans-serif!important;}
-</style><link rel="stylesheet" href="/dashboard/spring-animations.css"/><link rel="stylesheet" href="/dashboard/mobile.css?v=11"/><link rel="stylesheet" href="/dashboard/settings-panel.css"/><script src="/dashboard/config.js"></script><script src="/dashboard/settings-panel.js"></script>  <link rel="manifest" href="/manifest.json">
+</style><link rel="stylesheet" href="/dashboard/spring-animations.css"/><link rel="stylesheet" href="/dashboard/mobile.css?v=14"/><link rel="stylesheet" href="/dashboard/settings-panel.css"/><script src="/dashboard/config.js"></script><script src="/dashboard/settings-panel.js"></script>  <link rel="manifest" href="/manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="InboundOS">
@@ -142,6 +176,7 @@ html,body{font-family:'DM Sans',sans-serif!important;}
         <div style="font-family:var(--font-data);font-size:12px;color:var(--text-muted);margin-top:2px;" id="sops-subtitle">Loading...</div>
         <div class="header-sub">Standard operating procedures for every core InboundOS process</div>
       </div>
+      <button class="btn btn-accent" onclick="openSopModal()">+ Add SOP</button>
     </div>
 
     <div class="section-label">Operating Procedures</div>
@@ -150,11 +185,47 @@ html,body{font-family:'DM Sans',sans-serif!important;}
     </div>
   </main>
 </div>
+
+<!-- ADD / EDIT SOP MODAL -->
+<div class="sm-overlay" id="sm-overlay" onclick="if(event.target===this)closeSopModal()">
+  <div class="sm-box">
+    <div class="sm-title" id="sm-modal-title">Add <span>SOP</span></div>
+    <div class="sm-row">
+      <div class="sm-field">
+        <label class="sm-label">Number</label>
+        <input class="sm-input" id="sm-number" placeholder="01">
+      </div>
+      <div class="sm-field">
+        <label class="sm-label">Title</label>
+        <input class="sm-input" id="sm-title" placeholder="e.g. Content Script Review">
+      </div>
+    </div>
+    <div class="sm-field">
+      <label class="sm-label">Description</label>
+      <input class="sm-input" id="sm-meta" placeholder="Short description of this procedure">
+    </div>
+    <div class="sm-field">
+      <label class="sm-label">Steps</label>
+      <div class="sm-steps-list" id="sm-steps-list"></div>
+      <button class="sm-add-step" onclick="addSopStep()">+ Add Step</button>
+    </div>
+    <div class="sm-field">
+      <label class="sm-label">Agents (comma-separated)</label>
+      <input class="sm-input" id="sm-agents" placeholder="e.g. Apollo, Argus">
+    </div>
+    <div class="sm-actions">
+      <button class="sm-btn sm-btn-cancel" onclick="closeSopModal()">Cancel</button>
+      <button class="sm-btn sm-btn-save" id="sm-save-btn" onclick="saveSop()">Save SOP</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const _sbSession = JSON.parse(localStorage.getItem('sb_session') || '{}');
 const SB_URL = _sbSession.client_supabase_url || 'https://cscfbuhwlfhblxprkwnh.supabase.co';
 const SB_ANON = _sbSession.client_supabase_anon || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
 const SB_HEADERS = { 'apikey': SB_ANON, 'Authorization': `Bearer ${SB_ANON}` };
+const SB_WRITE = { ...SB_HEADERS, 'Content-Type': 'application/json', 'Prefer': 'return=representation' };
 const CLIENT_ID = _sbSession.client_id || 'micko_cruz';
 
 function escHtml(s) {
@@ -169,6 +240,98 @@ function toggleSOP(header) {
   chevron.classList.toggle('open', !isOpen);
 }
 
+let _editSopId = null;
+
+function openSopModal(sop) {
+  _editSopId = sop ? sop.id : null;
+  document.getElementById('sm-modal-title').innerHTML = sop ? 'Edit <span>SOP</span>' : 'Add <span>SOP</span>';
+  document.getElementById('sm-number').value = sop ? (sop.number||'') : '';
+  document.getElementById('sm-title').value  = sop ? (sop.title||'') : '';
+  document.getElementById('sm-meta').value   = sop ? (sop.meta||'') : '';
+  document.getElementById('sm-agents').value = sop ? (sop.agents||[]).join(', ') : '';
+  const stepsList = document.getElementById('sm-steps-list');
+  stepsList.innerHTML = '';
+  const steps = sop ? (sop.steps||[]) : [''];
+  steps.forEach(s => addSopStep(s));
+  document.getElementById('sm-overlay').classList.add('open');
+}
+
+function closeSopModal() {
+  document.getElementById('sm-overlay').classList.remove('open');
+  _editSopId = null;
+}
+
+function addSopStep(val) {
+  const list = document.getElementById('sm-steps-list');
+  const idx = list.children.length + 1;
+  const row = document.createElement('div');
+  row.className = 'sm-step-row';
+  row.innerHTML = `<span class="sm-step-num">${String(idx).padStart(2,'0')}</span><input class="sm-step-input" value="${escHtml(val||'')}" placeholder="Step ${idx}…"><button class="sm-step-del" onclick="this.closest('.sm-step-row').remove();renumberSteps()" title="Remove">×</button>`;
+  list.appendChild(row);
+}
+
+function renumberSteps() {
+  document.querySelectorAll('#sm-steps-list .sm-step-num').forEach((el,i) => {
+    el.textContent = String(i+1).padStart(2,'0');
+  });
+}
+
+async function saveSop() {
+  const btn = document.getElementById('sm-save-btn');
+  const title = document.getElementById('sm-title').value.trim();
+  if (!title) { document.getElementById('sm-title').focus(); return; }
+
+  const steps = [...document.querySelectorAll('#sm-steps-list .sm-step-input')]
+    .map(i => i.value.trim()).filter(Boolean);
+  const agentsRaw = document.getElementById('sm-agents').value.trim();
+  const agents = agentsRaw ? agentsRaw.split(',').map(a => a.trim()).filter(Boolean) : [];
+
+  btn.disabled = true; btn.textContent = 'Saving…';
+
+  const payload = {
+    number: document.getElementById('sm-number').value.trim(),
+    title,
+    meta: document.getElementById('sm-meta').value.trim(),
+    steps,
+    agents,
+    active: true,
+    client_id: CLIENT_ID,
+  };
+
+  try {
+    let res;
+    if (_editSopId) {
+      res = await fetch(`${SB_URL}/rest/v1/sops?id=eq.${_editSopId}`, {
+        method: 'PATCH', headers: SB_WRITE, body: JSON.stringify(payload),
+      });
+    } else {
+      res = await fetch(`${SB_URL}/rest/v1/sops`, {
+        method: 'POST', headers: SB_WRITE, body: JSON.stringify(payload),
+      });
+    }
+    if (!res.ok) throw new Error(await res.text());
+    closeSopModal();
+    loadSOPs();
+  } catch(e) {
+    alert('Save failed: ' + e.message);
+  } finally {
+    btn.disabled = false; btn.textContent = 'Save SOP';
+  }
+}
+
+async function deleteSop(id) {
+  if (!confirm('Delete this SOP? Cannot be undone.')) return;
+  try {
+    const res = await fetch(`${SB_URL}/rest/v1/sops?id=eq.${id}`, {
+      method: 'DELETE', headers: SB_HEADERS,
+    });
+    if (!res.ok) throw new Error(await res.text());
+    loadSOPs();
+  } catch(e) {
+    alert('Delete failed: ' + e.message);
+  }
+}
+
 async function loadSOPs() {
   const list = document.getElementById('sopsList');
   try {
@@ -178,11 +341,12 @@ async function loadSOPs() {
     );
     if (!res.ok) throw new Error(res.status);
     const sops = await res.json();
-    if (!sops.length) { list.innerHTML = '<div style="font-family:var(--font-data);font-size:12px;color:var(--text-muted);padding:32px;text-align:center;">No SOPs found — run the schema SQL first</div>'; return; }
+    if (!sops.length) { list.innerHTML = '<div style="font-family:var(--font-data);font-size:12px;color:var(--text-muted);padding:32px;text-align:center;">No SOPs yet — click "+ Add SOP" to create one</div>'; return; }
     list.innerHTML = sops.map(s => {
       const colors = s.agent_colors || {};
       const agents = (s.agents || []);
-      const steps = (s.steps || []);
+      const steps  = (s.steps || []);
+      const sopJson = escHtml(JSON.stringify(s));
       return `
       <div class="sop-card">
         <div class="sop-header" onclick="toggleSOP(this)">
@@ -193,7 +357,11 @@ async function loadSOPs() {
               ${s.meta ? `<div class="sop-meta">${escHtml(s.meta)}</div>` : ''}
             </div>
           </div>
-          <svg class="sop-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          <div style="display:flex;align-items:center;gap:8px;" onclick="event.stopPropagation()">
+            <button class="sop-btn" onclick="openSopModal(JSON.parse(this.dataset.sop))" data-sop="${sopJson}">Edit</button>
+            <button class="sop-btn del" onclick="deleteSop('${s.id}')">Delete</button>
+            <svg class="sop-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
         </div>
         <div class="sop-body">
           <ul class="sop-steps">
@@ -213,7 +381,7 @@ async function loadSOPs() {
       </div>`;
     }).join('');
   } catch(e) {
-    list.innerHTML = `<div style="font-family:var(--font-data);font-size:12px;color:var(--red);padding:32px;text-align:center;">Failed to load SOPs — run the schema SQL first</div>`;
+    list.innerHTML = `<div style="font-family:var(--font-data);font-size:12px;color:var(--red);padding:32px;text-align:center;">Failed to load SOPs — check console</div>`;
   }
 }
 
@@ -245,9 +413,9 @@ loadSOPs();
 <script>
 (function sidebarAgentStatus() {
   var AGENTS = [
-    {name:'Scout',color:'#4FC3F7'},{name:'Quill',color:'#fbbf24'},{name:'Pulse',color:'#4ade80'},
-    {name:'Hunter',color:'#f472b6'},{name:'Echo',color:'#4ade80'},{name:'Pilot',color:'#38bdf8'},
-    {name:'Forge',color:'#e879f9'},{name:'Edge',color:'#f97316'}
+    {name:'Argus',color:'#4FC3F7'},{name:'Apollo',color:'#fbbf24'},{name:'Argus',color:'#4ade80'},
+    {name:'Hermes',color:'#f472b6'},{name:'Clio',color:'#38bdf8'},
+    {name:'Clio',color:'#e879f9'}
   ];
   function getStatuses() {
     var s = {};
@@ -294,7 +462,7 @@ loadSOPs();
       if(page==="crm"){var r=await fetch(SUPA+"/rest/v1/outreach_leads?select=id,status",{headers:hdrs});if(r.ok){var d=await r.json();var el=document.getElementById("crm-subtitle");if(el)el.textContent=d.length+" leads · "+d.filter(function(x){return x.status==="new";}).length+" new.";}else{var el=document.getElementById("crm-subtitle");if(el)el.textContent="Track and manage outreach leads.";}}
       if(page==="sales-calls"){var r=await fetch(SUPA+"/rest/v1/outreach_leads?select=id,status&status=eq.booked",{headers:hdrs});if(r.ok){var d=await r.json();var el=document.getElementById("calls-subtitle");if(el)el.textContent=d.length+" call"+(d.length!==1?"s":"")+" booked.";}else{var el=document.getElementById("calls-subtitle");if(el)el.textContent="Review and log discovery calls.";}}
       if(page==="pipeline"){try{var board=JSON.parse(localStorage.getItem("ctrl_pipeline_board")||"{}");var s=Array.isArray(board.scripting)?board.scripting.length:0;var el=document.getElementById("pipeline-subtitle");if(el)el.textContent=s+" script"+(s!==1?"s":"")+" ready to film.";}catch(ee){}}
-      if(page==="agents"){try{var tasks=JSON.parse(localStorage.getItem("ctrl_agent_tasks_v1")||"{}");var run=Object.values(tasks).filter(function(t){return t.status==="running";}).length;var el=document.getElementById("agents-subtitle");if(el)el.textContent=run>0?run+" agent"+(run!==1?"s":"")+" running now.":"8 agents ready.";}catch(ee){}}
+      if(page==="agents"){try{var tasks=JSON.parse(localStorage.getItem("ctrl_agent_tasks_v1")||"{}");var run=Object.values(tasks).filter(function(t){return t.status==="running";}).length;var el=document.getElementById("agents-subtitle");if(el)el.textContent=run>0?run+" agent"+(run!==1?"s":"")+" running now.":"6 agents ready.";}catch(ee){}}
       if(page==="sops"){var r=await fetch(SUPA+"/rest/v1/sops?select=id",{headers:hdrs});if(r.ok){var d=await r.json();var el=document.getElementById("sops-subtitle");if(el)el.textContent=d.length+" procedure"+(d.length!==1?"s":"")+" documented.";}else{var el=document.getElementById("sops-subtitle");if(el)el.textContent="Standard operating procedures.";}}
     }catch(e){}
   }

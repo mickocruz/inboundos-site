@@ -1,4 +1,7 @@
 // settings-panel.js
+// Auto-detect server base — works on localhost and LAN (phone on same WiFi)
+window.SERVER_BASE = `http://${window.location.hostname}:3001`;
+
 (function () {
   const _sp = JSON.parse(localStorage.getItem('sb_session') || '{}');
   const SB_URL = _sp.client_supabase_url || 'https://cscfbuhwlfhblxprkwnh.supabase.co';

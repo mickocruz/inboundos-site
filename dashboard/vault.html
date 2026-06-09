@@ -36,7 +36,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .sidebar-bottom{margin-top:auto;padding:12px 16px 0;border-top:1px solid var(--border);}
 .mk-avatar-wrap{display:flex;align-items:center;gap:10px;cursor:pointer;}
 .mk-name{font-family:var(--font-data);font-size:12px;font-weight:600;color:#fff;line-height:1.2;}
-.mk-role{font-family:var(--font-data);font-size:10px;color:rgba(255,255,255,0.42);}
+.mk-role{font-family:var(--font-data);font-size:11px;color:rgba(255,255,255,0.42);}
 /* SIDEBAR AGENTS */
 .sidebar-agents{padding:10px 0 4px;}
 .sidebar-agents-label{font-family:var(--font-data);font-size:11px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--text-dim);padding:0 16px;margin-bottom:6px;}
@@ -126,7 +126,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .sr-name{font-family:var(--font-data);font-size:13px;font-weight:600;color:var(--text);flex:1;}
 .sr-folder{font-family:var(--font-data);font-size:10px;color:var(--text-dim);}
 </style>
-<link rel="stylesheet" href="/dashboard/mobile.css?v=11">
+<link rel="stylesheet" href="/dashboard/mobile.css?v=14">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#0D1117">
 </head>
@@ -200,12 +200,9 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
     </div>
 
     <!-- TABLE SELECTOR -->
-    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-      <button class="table-tab active" onclick="switchTable('outreach_leads')" id="tab-outreach_leads">Outreach Leads</button>
-      <button class="table-tab" onclick="switchTable('clients')" id="tab-clients">Clients</button>
-      <button class="table-tab" onclick="switchTable('sops')" id="tab-sops">SOPs</button>
-      <button class="table-tab" onclick="switchTable('sales_calls')" id="tab-sales_calls">Sales Calls</button>
-      <div style="flex:1;"></div>
+    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;row-gap:6px;" id="table-tabs-wrap">
+      <span style="font-family:var(--font-data);font-size:11px;color:var(--text-dim);">Loading tables…</span>
+      <div style="flex:1;min-width:12px;"></div>
       <input id="db-search" placeholder="Filter rows…" oninput="filterRows(this.value)" style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-family:var(--font-data);font-size:12px;color:var(--text);outline:none;width:180px;" />
     </div>
 
@@ -240,7 +237,7 @@ function getSlug() {
   var v = document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');
   var s = v ? v[2] : '';
   if (!s) {
-    var pages = ['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','chat','login'];
+    var pages = ['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','database','chat','login'];
     var p = window.location.pathname.split('/').filter(Boolean);
     var seg = p[0] || '';
     s = pages.indexOf(seg) === -1 ? seg : '';
@@ -250,81 +247,124 @@ function getSlug() {
 }
 function navTo(page) { location.href = '/' + getSlug() + '/' + page; }
 
-const SUPA_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co';
-const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
-
-const TABLES = {
-  outreach_leads: { label: 'Outreach Leads', cols: ['ig_handle','full_name','niche','stage_label','follower_count','location','created_at'], order: 'created_at.desc' },
-  clients:        { label: 'Clients',         cols: ['name','company','status','mrr','phase','next_action','client_since'], order: 'name.asc' },
-  sops:           { label: 'SOPs',            cols: ['id','title','category','updated_at'], order: 'updated_at.desc' },
-  sales_calls:    { label: 'Sales Calls',     cols: ['id','name','status','booked_at','outcome'], order: 'booked_at.desc' }
-};
+const _VAULT_SESS = (() => { try { return JSON.parse(localStorage.getItem('sb_session') || 'null'); } catch(e) { return null; } })();
+const SUPA_URL = (_VAULT_SESS && _VAULT_SESS.client_supabase_url) || 'https://cscfbuhwlfhblxprkwnh.supabase.co';
+const ANON_KEY = (_VAULT_SESS && _VAULT_SESS.client_supabase_anon) || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
 
 let currentTable = 'outreach_leads';
+let currentCols = [];
 let allRows = [];
+let allTables = [];
+
+function getKey() {
+  var sess = null;
+  try { sess = JSON.parse(localStorage.getItem('sb_session') || 'null'); } catch(e){}
+  return (sess && sess.access_token) || (sess && sess.client_supabase_anon) || ANON_KEY;
+}
 
 async function sbFetch(table, select, limit, order) {
   limit = limit || 500;
   order = order || 'id.desc';
-  var sess = null;
-  try { sess = JSON.parse(localStorage.getItem('sb_session') || 'null'); } catch(e){}
-  var key = (sess && sess.client_supabase_anon) || ANON_KEY;
-  var url = SUPA_URL + '/rest/v1/' + table + '?select=' + select + '&limit=' + limit + '&order=' + order;
+  var url = SUPA_URL + '/rest/v1/' + encodeURIComponent(table) + '?select=' + select + '&limit=' + limit + '&order=' + order;
+  var key = getKey();
   var r = await fetch(url, { headers: { 'apikey': key, 'Authorization': 'Bearer ' + key, 'Prefer': 'count=exact' } });
   if (!r.ok) { return { data: [], count: 0 }; }
   var count = 0;
   var cr = r.headers.get('content-range');
-  if (cr) count = parseInt(cr.split('/')[1]) || 0;
+  if (cr) { var parts = cr.split('/'); count = parseInt(parts[1]) || 0; }
   var data = await r.json();
   return { data: Array.isArray(data) ? data : [], count };
 }
 
-async function loadCounts() {
-  var tables = ['outreach_leads','clients','sops','sales_calls'];
-  var orders = ['created_at.desc','name.asc','updated_at.desc','booked_at.desc'];
-  var ids = ['count-leads','count-clients','count-sops','count-calls'];
-  for (var i = 0; i < tables.length; i++) {
-    try {
-      var r = await sbFetch(tables[i], 'id', 1, orders[i]);
-      document.getElementById(ids[i]).textContent = r.count;
-    } catch(e) { document.getElementById(ids[i]).textContent = '0'; }
+async function loadAllTables() {
+  var key = getKey();
+  var names = [];
+  try {
+    var r = await fetch(SUPA_URL + '/rest/v1/', { headers: { 'apikey': key, 'Authorization': 'Bearer ' + key, 'Accept': 'application/openapi+json' } });
+    if (r.ok) {
+      var spec = await r.json();
+      if (spec && spec.definitions) {
+        names = Object.keys(spec.definitions).filter(function(n){ return !n.startsWith('Row') && !n.startsWith('Insert') && !n.startsWith('Update'); });
+      } else if (spec && spec.paths) {
+        names = Object.keys(spec.paths).map(function(p){ return p.replace('/',''); }).filter(function(n){ return n && !n.includes('{'); });
+      }
+    }
+  } catch(e){}
+  if (!names.length) {
+    names = ["agent_activity","agent_items","agent_roster","agent_runs","applications","billing_events","client_billing","client_config","client_tasks","clients","competitors","config","content_bucket","content_pillars","ctrl_bolt_leads","ctrl_competitor_cache","ctrl_clio_clients","ctrl_ideas_queue","ctrl_ig_reels_cache","ctrl_monthly_outliers","ctrl_performance_log","ctrl_clio_clients","ctrl_pipeline_scripted","ctrl_sales_intel","ctrl_argus_feed","ctrl_system_config","ctrl_users","dm_outreach","documents","error_log","hooks","icp_profile","inbound_leads","knowledge_base","micko_profile","niche_news","onboarding","org_chart","outreach_leads","revenue_sales","sales_calls","sops","systems","token_usage","weekly_reports"];
   }
-  // subtitle
-  var leadsCount = document.getElementById('count-leads').textContent;
-  document.getElementById('db-subtitle').textContent = leadsCount + ' leads · ' + document.getElementById('count-clients').textContent + ' clients · Live Supabase data';
+  allTables = names.sort();
+  renderTabs();
+}
+
+function renderTabs() {
+  var wrap = document.getElementById('table-tabs-wrap');
+  var searchInput = document.getElementById('db-search');
+  var html = '';
+  allTables.forEach(function(name) {
+    var label = name.replace(/_/g,' ');
+    var active = name === currentTable ? ' active' : '';
+    html += '<button class="table-tab' + active + '" id="tab-' + name + '" onclick="switchTable(\'' + name + '\')">' + label + '</button>';
+  });
+  wrap.innerHTML = html + '<div style="flex:1;min-width:12px;"></div>';
+  wrap.appendChild(searchInput);
+}
+
+async function loadCounts() {
+  var statTables = [
+    { id: 'count-leads',   table: 'outreach_leads', order: 'created_at.desc' },
+    { id: 'count-clients', table: 'clients',         order: 'name.asc' },
+    { id: 'count-sops',    table: 'sops',            order: 'id.desc' },
+    { id: 'count-calls',   table: 'sales_calls',     order: 'id.desc' }
+  ];
+  for (var i = 0; i < statTables.length; i++) {
+    try {
+      var r = await sbFetch(statTables[i].table, 'id', 1, statTables[i].order);
+      document.getElementById(statTables[i].id).textContent = r.count;
+    } catch(e) { document.getElementById(statTables[i].id).textContent = '0'; }
+  }
+  document.getElementById('db-subtitle').textContent =
+    document.getElementById('count-leads').textContent + ' leads · ' +
+    document.getElementById('count-clients').textContent + ' clients · ' +
+    allTables.length + ' tables · Live Supabase';
 }
 
 async function loadTable(tableName) {
   var wrap = document.getElementById('db-table-wrap');
   wrap.innerHTML = '<div style="padding:40px;text-align:center;font-family:var(--font-data);font-size:12px;color:var(--text-dim);">Loading…</div>';
-  document.getElementById('db-table-name').textContent = TABLES[tableName].label;
+  document.getElementById('db-table-name').textContent = tableName.replace(/_/g,' ').toUpperCase();
   try {
-    var cols = TABLES[tableName].cols;
-    var order = TABLES[tableName].order || 'id.desc';
-    var r = await sbFetch(tableName, cols.join(','), 200, order);
+    var probe = await sbFetch(tableName, '*', 1, 'id.desc');
+    var cols = probe.data.length ? Object.keys(probe.data[0]) : [];
+    var order = cols.includes('created_at') ? 'created_at.desc' : cols.includes('id') ? 'id.desc' : (cols[0] || 'id') + '.desc';
+    var r = await sbFetch(tableName, '*', 300, order);
     allRows = r.data;
-    renderTable(allRows, cols);
-    document.getElementById('db-row-count').textContent = allRows.length + ' rows';
+    currentCols = cols.length ? cols : (allRows.length ? Object.keys(allRows[0]) : []);
+    renderTable(allRows, currentCols);
+    document.getElementById('db-row-count').textContent = r.count + ' total · showing ' + allRows.length;
   } catch(e) {
-    wrap.innerHTML = '<div style="padding:40px;text-align:center;font-family:var(--font-data);font-size:12px;color:var(--text-dim);">No data or table empty.</div>';
+    wrap.innerHTML = '<div style="padding:40px;text-align:center;font-family:var(--font-data);font-size:12px;color:var(--text-dim);">Empty or no access.</div>';
   }
 }
 
 function renderTable(rows, cols) {
   var wrap = document.getElementById('db-table-wrap');
-  if (!rows.length) {
-    wrap.innerHTML = '<div style="padding:40px;text-align:center;font-family:var(--font-data);font-size:12px;color:var(--text-dim);">No records found.</div>';
+  if (!cols.length || !rows.length) {
+    wrap.innerHTML = '<div style="padding:40px;text-align:center;font-family:var(--font-data);font-size:12px;color:var(--text-dim);">No records.</div>';
     return;
   }
-  var html = '<table class="db-table"><thead><tr>' + cols.map(function(c){ return '<th>' + c.replace(/_/g,' ') + '</th>'; }).join('') + '</tr></thead><tbody>';
+  var html = '<table class="db-table"><thead><tr>' +
+    cols.map(function(c){ return '<th>' + c.replace(/_/g,' ') + '</th>'; }).join('') +
+    '</tr></thead><tbody>';
   rows.forEach(function(row) {
     html += '<tr>' + cols.map(function(c) {
       var v = row[c];
       if (v === null || v === undefined) v = '';
-      if (typeof v === 'string' && v.length > 60) v = v.slice(0,60) + '…';
-      if (typeof v === 'string' && (c.includes('_at') || c === 'client_since')) {
-        try { v = new Date(v).toLocaleDateString('en', {month:'short', day:'numeric', year:'numeric'}); } catch(e){}
+      if (typeof v === 'object') v = JSON.stringify(v);
+      if (typeof v === 'string' && (c.endsWith('_at') || c === 'client_since' || c === 'booked_at' || c === 'scheduled_date')) {
+        try { var d = new Date(v); if (!isNaN(d)) v = d.toLocaleDateString('en', {month:'short',day:'numeric',year:'numeric'}); } catch(e){}
       }
+      if (typeof v === 'string' && v.length > 80) v = v.slice(0,80) + '…';
       var safe = String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
       return '<td title="' + safe + '">' + (v === '' ? '<span style="color:var(--text-dim);">—</span>' : safe) + '</td>';
     }).join('') + '</tr>';
@@ -343,17 +383,22 @@ function switchTable(tableName) {
 }
 
 function filterRows(q) {
-  if (!q) { renderTable(allRows, TABLES[currentTable].cols); document.getElementById('db-row-count').textContent = allRows.length + ' rows'; return; }
+  if (!q) {
+    renderTable(allRows, currentCols);
+    document.getElementById('db-row-count').textContent = allRows.length + ' rows';
+    return;
+  }
+  var ql = q.toLowerCase();
   var filtered = allRows.filter(function(row) {
-    return Object.values(row).some(function(v){ return String(v).toLowerCase().includes(q.toLowerCase()); });
+    return Object.values(row).some(function(v){ return String(v).toLowerCase().includes(ql); });
   });
-  renderTable(filtered, TABLES[currentTable].cols);
+  renderTable(filtered, currentCols);
   document.getElementById('db-row-count').textContent = filtered.length + ' of ' + allRows.length + ' rows';
 }
 
 // Sidebar agent status
 (function(){
-  var AGENTS = [{name:'Scout'},{name:'Quill'},{name:'Pulse'},{name:'Hunter'},{name:'Echo'},{name:'Pilot'},{name:'Forge'},{name:'Edge'}];
+  var AGENTS = [{name:'Argus'},{name:'Apollo'},{name:'Argus'},{name:'Hermes'},{name:'Clio'},{name:'Clio'}];
   function render() {
     var el = document.getElementById('sidebar-agent-status-list'); if(!el) return;
     var s = {}; AGENTS.forEach(function(a){s[a.name]='idle';});
@@ -373,7 +418,8 @@ function filterRows(q) {
   setInterval(render, 5000);
 })();
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
+  await loadAllTables();
   loadCounts();
   loadTable('outreach_leads');
 });

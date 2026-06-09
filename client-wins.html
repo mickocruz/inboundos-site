@@ -22,7 +22,6 @@
       --bg: #0D1117;
       --white: #ffffff;
       --ice: #4FC3F7;
-      --gold: #fbbf24;
       --muted: rgba(255,255,255,0.45);
       --subtle: rgba(255,255,255,0.08);
       --font-head: 'NHGDisplay', 'DM Sans', system-ui, sans-serif;
@@ -130,7 +129,6 @@
       margin-bottom: 6px;
     }
     .stat-num.ice { color: var(--ice); }
-    .stat-num.gold { color: var(--gold); }
     .stat-lbl {
       font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
       text-transform: uppercase;
@@ -146,12 +144,13 @@
       display: inline-flex; align-items: center;
       font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
       text-transform: uppercase;
+      color: var(--ice);
+      border: 1px solid rgba(79,195,247,0.3);
+      background: rgba(79,195,247,0.06);
       border-radius: 20px;
       padding: 5px 14px;
       margin-bottom: 20px;
     }
-    .client-tag.teal { color: var(--ice); border: 1px solid rgba(79,195,247,0.3); background: rgba(79,195,247,0.06); }
-    .client-tag.amber { color: var(--gold); border: 1px solid rgba(251,191,36,0.3); background: rgba(251,191,36,0.06); }
 
     h2 {
       font-family: var(--font-head);
@@ -169,39 +168,57 @@
       line-height: 1.65;
     }
 
-    .proof-grid {
+    /* ── GRID LAYOUTS ── */
+    .grid-3 {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 14px;
       margin-bottom: 14px;
     }
-    .proof-grid.two { grid-template-columns: 1fr 1fr; }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
 
+    /* ── CARD ── */
     .card {
       background: rgba(255,255,255,0.03);
       border: 1px solid var(--subtle);
       border-radius: 16px;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
     .card img {
       width: 100%;
       display: block;
-      object-fit: cover;
+      /* No cropping — show full image at natural ratio */
     }
-    .card.phone img { max-height: 380px; object-position: top; }
-    .card.notif img { max-height: 130px; object-position: center; }
-    .card.chat img { max-height: 300px; object-position: top; }
-    .card.grid-shot img { max-height: 320px; object-position: top; }
-    .card.deal img { max-height: 260px; object-position: top; }
-
     .cap {
       padding: 10px 14px;
       font-size: 12px;
       color: var(--muted);
       line-height: 1.5;
       border-top: 1px solid var(--subtle);
+      margin-top: auto;
     }
     .cap strong { color: var(--white); }
+
+    /* TikTok embed wrapper */
+    .tiktok-wrap {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--subtle);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .tiktok-wrap blockquote.tiktok-embed {
+      margin: 0 !important;
+      border: none !important;
+      max-width: 100% !important;
+      min-width: 100% !important;
+    }
 
     .quote-card {
       background: rgba(255,255,255,0.03);
@@ -245,8 +262,7 @@
       .container { padding: 0 20px; }
       .stat-band { margin: 0 20px 60px; flex-wrap: wrap; }
       .stat-item { min-width: 140px; }
-      .proof-grid { grid-template-columns: 1fr; }
-      .proof-grid.two { grid-template-columns: 1fr; }
+      .grid-3, .grid-2 { grid-template-columns: 1fr; }
       .cta-block { padding: 60px 20px; }
     }
   </style>
@@ -260,22 +276,22 @@
 
 <div class="hero">
   <div class="label-chip">Client Results</div>
-  <h1>Real growth.<br>Real receipts.</h1>
-  <p class="hero-sub">Every result below came from content-led SMM — building inbound attention, organic followers, and community. No ads. No closing. Just content that pulls.</p>
-  <p class="hero-note">MK managed both clients directly before InboundOS was built. Now the system runs it.</p>
+  <h1>Real growth.<br>Real proof.</h1>
+  <p class="hero-sub">Every result below is organic SMM — building inbound attention, followers, and community. No ads. No closing. Content that pulls.</p>
+  <p class="hero-note">MK ran both clients before InboundOS existed. Now the system does it.</p>
 </div>
 
 <div class="stat-band">
   <div class="stat-item">
-    <div class="stat-num ice">7M+</div>
-    <div class="stat-lbl">Total views generated</div>
+    <div class="stat-num ice">10M+</div>
+    <div class="stat-lbl">Total views · 2 clients</div>
   </div>
   <div class="stat-item">
     <div class="stat-num">597</div>
     <div class="stat-lbl">Community members</div>
   </div>
   <div class="stat-item">
-    <div class="stat-num gold">$20M+</div>
+    <div class="stat-num ice">$20M+</div>
     <div class="stat-lbl">Deal volume (Christian)</div>
   </div>
   <div class="stat-item">
@@ -288,83 +304,84 @@
 
   <!-- ── MEENAL ── -->
   <section class="client-section">
-    <div class="client-tag teal">Dr. Meenal Kheterpal · @skinnovate_derm · TikTok SMM</div>
+    <div class="client-tag">Dr. Meenal Kheterpal · @skinnovate_derm · TikTok SMM</div>
     <h2>Telehealth derm.<br>Zero to 4,500 followers.</h2>
-    <p class="section-sub">Started at 7 followers. MK built her TikTok from scratch — organic content only. 3.3M views on a single video, 7M+ total. Hundreds of inbound DMs. Dr. Abby (Yale MD, 485K followers) followed organically.</p>
+    <p class="section-sub">Started at 7 followers. Built her TikTok from scratch — organic only. 3.3M views on a single video, 7M+ total. Hundreds of inbound DMs. Dr. Abby (Yale MD, 485K followers) followed organically.</p>
 
-    <!-- Row 1: profile + payments + dr abby -->
-    <div class="proof-grid">
-      <div class="card phone">
-        <img src="/testimonials/meenal-tiktok-profile-crop.jpg" alt="@skinnovate_derm TikTok — 4,565 followers, 296.6K likes">
+    <!-- Row 1: profile · 2 TikTok videos -->
+    <div class="grid-3">
+      <div class="card">
+        <img src="/testimonials/meenal-tiktok-profile-crop.jpg" alt="@skinnovate_derm — 4,565 followers, 296.6K likes">
         <div class="cap"><strong>4,565 followers · 296.6K likes</strong> — started at 7</div>
       </div>
-      <div class="card notif">
-        <img src="/testimonials/meenal-paypal-notif.jpg" alt="PayPal $1,400 from Meenal Kheterpal">
-        <div class="cap"><strong>$1,400</strong> — PayPal from Meenal</div>
+      <div class="tiktok-wrap">
+        <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@skinnovate_derm/video/7529648314229263646" data-video-id="7529648314229263646" style="max-width:100%;min-width:100%;border:none;margin:0;" data-embed-from="oembed">
+          <section><a target="_blank" href="https://www.tiktok.com/@skinnovate_derm/video/7529648314229263646">@skinnovate_derm</a></section>
+        </blockquote>
       </div>
-      <div class="card chat">
-        <img src="/testimonials/meenal-1m-dm.jpg" alt="WhatsApp: Just hit 1 million views">
-        <div class="cap"><strong>"Just hit 1 million views"</strong> — 1:37 AM text</div>
+      <div class="tiktok-wrap">
+        <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@skinnovate_derm/video/7524465247801969950" data-video-id="7524465247801969950" style="max-width:100%;min-width:100%;border:none;margin:0;" data-embed-from="oembed">
+          <section><a target="_blank" href="https://www.tiktok.com/@skinnovate_derm/video/7524465247801969950">@skinnovate_derm</a></section>
+        </blockquote>
       </div>
     </div>
 
-    <!-- Row 2: dr abby + 2000 dm + grid -->
-    <div class="proof-grid">
-      <div class="card notif">
-        <img src="/testimonials/meenal-dr-abby-follow.jpg" alt="Dr. Abby / Dermatologist started following you">
-        <div class="cap"><strong>Dr. Abby</strong> — Yale MD, 485K followers — followed organically</div>
+    <!-- Row 2: DMs + Dr Abby + grid -->
+    <div class="grid-3">
+      <div class="card">
+        <img src="/testimonials/meenal-1m-dm.jpg" alt="WhatsApp: Just hit 1 million views">
+        <div class="cap"><strong>"Just hit 1 million views"</strong> — 1:37 AM text from Meenal</div>
       </div>
-      <div class="card chat">
+      <div class="card">
         <img src="/testimonials/meenal-2000-dm.jpg" alt="WhatsApp: almost at 2000 followers, thought we just did 1000 last week">
         <div class="cap"><strong>"Almost at 2000! I thought we just did 1000 last week."</strong></div>
       </div>
-      <div class="card grid-shot">
-        <img src="/testimonials/meenal-tiktok-grid.jpg" alt="TikTok grid — consistent 3K-8K views per video">
-        <div class="cap"><strong>Consistent 3K–8K views</strong> per video across the feed</div>
+      <div class="card">
+        <img src="/testimonials/meenal-dr-abby-follow.jpg" alt="Dr. Abby / Dermatologist started following you">
+        <div class="cap"><strong>Dr. Abby</strong> — Yale MD, 485K followers — followed organically</div>
       </div>
     </div>
 
-    <div class="quote-card">
-      <p class="quote-text">"Yes it's growing very fast and it's so organic. I'm surprised because this type of growth almost took 6 months for my past clients. The content we've been putting out has been high quality so I guess that's a factor."</p>
-      <div class="quote-who">— MK to Meenal, WhatsApp</div>
+    <!-- Row 3: TikTok grid screenshot full width -->
+    <div class="grid-2">
+      <div class="card">
+        <img src="/testimonials/meenal-tiktok-grid.jpg" alt="TikTok grid — 3K–8K views per video">
+        <div class="cap"><strong>Consistent 3K–8K views</strong> per video</div>
+      </div>
+      <div class="quote-card" style="margin-top:0;display:flex;flex-direction:column;justify-content:center;">
+        <p class="quote-text">"Yes it's growing very fast and it's so organic. I'm surprised because this type of growth almost took 6 months for my past clients. The content we've been putting out has been high quality so I guess that's a factor."</p>
+        <div class="quote-who">— MK to Meenal, WhatsApp</div>
+      </div>
     </div>
   </section>
 
   <!-- ── CHRISTIAN ── -->
   <section class="client-section">
-    <div class="client-tag amber">Christian Pombo · @creativerealestatedeals · TikTok SMM</div>
+    <div class="client-tag">Christian Pombo · @creativerealestatedeals · TikTok SMM</div>
     <h2>Off-market real estate.<br>Content-led community of 597.</h2>
-    <p class="section-sub">Built TikTok + WhatsApp funnel for an off-market Florida real estate dealer. Content pulled buyers in. Christian closed them. He moved $20M+ in deals — MK just brought the eyeballs.</p>
+    <p class="section-sub">Built TikTok + WhatsApp funnel for an off-market Florida real estate dealer. Content pulled buyers in. Christian closed them. He moved $20M+ — MK just brought the eyeballs.</p>
 
-    <!-- Row 1: profile + payment + group -->
-    <div class="proof-grid">
-      <div class="card phone">
-        <img src="/testimonials/christian-tiktok-profile-crop.jpg" alt="@creativerealestatedeals TikTok — 620 followers, 181 posts">
+    <!-- Row 1: profile · tiktok · group -->
+    <div class="grid-3">
+      <div class="card">
+        <img src="/testimonials/christian-tiktok-profile-crop.jpg" alt="@creativerealestatedeals — 620 followers, 181 posts">
         <div class="cap"><strong>620 followers · 181 posts</strong> — consistent off-market content</div>
       </div>
-      <div class="card notif">
-        <img src="/testimonials/christian-wise-notif.jpg" alt="Wise: Christian Pombo sent you 1,000 USD">
-        <div class="cap"><strong>$1,000</strong> — Wise from Christian</div>
-      </div>
-      <div class="card chat">
-        <img src="/testimonials/christian-597-group.jpg" alt="Creative Deals WhatsApp group — 597 members">
+      <div class="card">
+        <img src="/testimonials/christian-597-group.jpg" alt="Creative Deals WhatsApp — 597 members">
         <div class="cap"><strong>Creative Deals · 597 members</strong> — WhatsApp buyer community</div>
+      </div>
+      <div class="card">
+        <img src="/testimonials/christian-1m-deal.jpg" alt="WhatsApp: $1M flip with the bros — wire in, no longer available">
+        <div class="cap"><strong>$1M flip</strong> — "Wire in 🚀 no longer available. Thanks for the assist."</div>
       </div>
     </div>
 
-    <!-- Row 2: deal screenshot -->
-    <div class="proof-grid two">
-      <div class="card deal">
-        <img src="/testimonials/christian-1m-deal.jpg" alt="WhatsApp: $1M flip with the bros — wire in, no longer available">
-        <div class="cap"><strong>$1M flip closed</strong> — "Wire in 🚀 no longer available. Thanks for the assist." Content brought the buyers. Christian closed them.</div>
-      </div>
-      <div class="quote-card" style="margin-top:0;display:flex;flex-direction:column;justify-content:center;">
-        <p class="quote-text">"$1M flip with the bros — Wire in 🚀 no longer available. Thanks for the assist. Stay Sharp! 🇺🇸"</p>
-        <div class="quote-who">— Christian Pombo, Creative Deals WhatsApp group</div>
-        <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.06);">
-          <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.25);font-weight:600;margin-bottom:8px;">What MK did</div>
-          <div style="font-size:13px;color:rgba(255,255,255,0.55);line-height:1.6;">TikTok content → inbound DMs → WhatsApp community → buyers found Christian. The closing was his. The attention was the system.</div>
-        </div>
+    <div class="quote-card">
+      <p class="quote-text">"$1M flip with the bros — Wire in 🚀 no longer available. Thanks for the assist. Stay Sharp! 🇺🇸"</p>
+      <div class="quote-who">— Christian Pombo, Creative Deals WhatsApp group</div>
+      <div style="margin-top:18px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.06);font-size:13px;color:rgba(255,255,255,0.45);line-height:1.6;">
+        TikTok content → inbound DMs → WhatsApp community → buyers found Christian. The closing was his. The attention was the system.
       </div>
     </div>
   </section>
@@ -385,5 +402,6 @@
     nav.classList.toggle('scrolled', window.scrollY > 40);
   }, { passive: true });
 </script>
+<script async src="https://www.tiktok.com/embed.js"></script>
 </body>
 </html>

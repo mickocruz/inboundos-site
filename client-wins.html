@@ -106,35 +106,6 @@
       font-style: italic;
     }
 
-    .stat-band {
-      display: flex; justify-content: center;
-      border-top: 1px solid var(--subtle);
-      border-bottom: 1px solid var(--subtle);
-      margin: 0 40px 80px;
-    }
-    .stat-item {
-      flex: 1; max-width: 240px;
-      text-align: center;
-      padding: 32px 20px;
-      border-right: 1px solid var(--subtle);
-    }
-    .stat-item:last-child { border-right: none; }
-    .stat-num {
-      font-family: var(--font-head);
-      font-weight: 900;
-      font-size: 38px;
-      letter-spacing: -0.03em;
-      color: var(--white);
-      line-height: 1;
-      margin-bottom: 6px;
-    }
-    .stat-num.ice { color: var(--ice); }
-    .stat-lbl {
-      font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-
     .container { max-width: 1080px; margin: 0 auto; padding: 0 40px; }
 
     .client-section { padding: 72px 0; }
@@ -260,8 +231,6 @@
       nav { padding: 16px 20px; }
       .hero { padding: 120px 20px 60px; }
       .container { padding: 0 20px; }
-      .stat-band { margin: 0 20px 60px; flex-wrap: wrap; }
-      .stat-item { min-width: 140px; }
       .grid-3, .grid-2 { grid-template-columns: 1fr; }
       .cta-block { padding: 60px 20px; }
     }
@@ -271,42 +240,27 @@
 
 <nav id="main-nav">
   <a href="/landing.html" class="logo">Inbound<span>OS</span></a>
-  <a href="https://calendly.com/inboundos/discovery-call" target="_blank" rel="noopener" class="nav-cta">Book a Call</a>
+  <div style="display:flex;align-items:center;gap:14px;">
+    <a href="/landing.html" style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.55);text-decoration:none;transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.55)'">← Back</a>
+    <a href="https://calendly.com/inboundos/discovery-call" target="_blank" rel="noopener" class="nav-cta">Book a Call</a>
+  </div>
 </nav>
 
 <div class="hero">
   <div class="label-chip">Client Results</div>
-  <h1>Real growth.<br>Real proof.</h1>
-  <p class="hero-sub">Every result below is organic SMM — building inbound attention, followers, and community. No ads. No closing. Content that pulls.</p>
-  <p class="hero-note">MK ran both clients before InboundOS existed. Now the system does it.</p>
+  <h1>10M+ views.<br>2 clients. Zero ads.</h1>
+  <p class="hero-sub">Organic content, hundreds of inbound DMs, a 597-member buyer community, and $20M+ in closed deals. Micko ran both before InboundOS existed.</p>
+  <p class="hero-note">Now the system does what he did — every day, automatically.</p>
 </div>
 
-<div class="stat-band">
-  <div class="stat-item">
-    <div class="stat-num ice">10M+</div>
-    <div class="stat-lbl">Total views · 2 clients</div>
-  </div>
-  <div class="stat-item">
-    <div class="stat-num">597</div>
-    <div class="stat-lbl">Community members</div>
-  </div>
-  <div class="stat-item">
-    <div class="stat-num ice">$20M+</div>
-    <div class="stat-lbl">Deal volume (Christian)</div>
-  </div>
-  <div class="stat-item">
-    <div class="stat-num">100s</div>
-    <div class="stat-lbl">Inbound DMs (Meenal)</div>
-  </div>
-</div>
 
 <div class="container">
 
   <!-- ── MEENAL ── -->
   <section class="client-section">
     <div class="client-tag">Dr. Meenal Kheterpal · @skinnovate_derm · TikTok SMM</div>
-    <h2>Telehealth derm.<br>Zero to 4,500 followers.</h2>
-    <p class="section-sub">Started at 7 followers. Built her TikTok from scratch — organic only. 3.3M views on a single video, 7M+ total. Hundreds of inbound DMs. Dr. Abby (Yale MD, 485K followers) followed organically.</p>
+    <h2>Started at 7 followers.<br>Hit 4,500 in months.</h2>
+    <p class="section-sub">Telehealth dermatologist. Zero TikTok presence when we started. 3.3M views on one video, 7M+ total across the account. Hundreds of inbound DMs. Dr. Abby, a Yale MD with 485K followers, followed her organically — nobody asked her to.</p>
 
     <!-- Row 1: profile · 2 TikTok videos -->
     <div class="grid-3">
@@ -349,8 +303,8 @@
         <div class="cap"><strong>Consistent 3K–8K views</strong> per video</div>
       </div>
       <div class="quote-card" style="margin-top:0;display:flex;flex-direction:column;justify-content:center;">
-        <p class="quote-text">"Yes it's growing very fast and it's so organic. I'm surprised because this type of growth almost took 6 months for my past clients. The content we've been putting out has been high quality so I guess that's a factor."</p>
-        <div class="quote-who">— MK to Meenal, WhatsApp</div>
+        <p class="quote-text">"It's growing very fast and it's so organic. I'm surprised — this type of growth usually takes 6 months for my past clients. The content's been high quality so I guess that's a factor."</p>
+        <div class="quote-who">— Micko to Meenal, WhatsApp</div>
       </div>
     </div>
   </section>
@@ -358,8 +312,8 @@
   <!-- ── CHRISTIAN ── -->
   <section class="client-section">
     <div class="client-tag">Christian Pombo · @creativerealestatedeals · TikTok SMM</div>
-    <h2>Off-market real estate.<br>Content-led community of 597.</h2>
-    <p class="section-sub">Built TikTok + WhatsApp funnel for an off-market Florida real estate dealer. Content pulled buyers in. Christian closed them. He moved $20M+ — MK just brought the eyeballs.</p>
+    <h2>Off-market Florida deals.<br>597 buyers in a WhatsApp group.</h2>
+    <p class="section-sub">TikTok content pulled buyers in. Christian closed them. He moved $20M+ in deals — Micko brought the attention that made it possible.</p>
 
     <!-- Row 1: profile · tiktok · group -->
     <div class="grid-3">
@@ -381,7 +335,7 @@
       <p class="quote-text">"$1M flip with the bros — Wire in 🚀 no longer available. Thanks for the assist. Stay Sharp! 🇺🇸"</p>
       <div class="quote-who">— Christian Pombo, Creative Deals WhatsApp group</div>
       <div style="margin-top:18px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.06);font-size:13px;color:rgba(255,255,255,0.45);line-height:1.6;">
-        TikTok content → inbound DMs → WhatsApp community → buyers found Christian. The closing was his. The attention was the system.
+        TikTok → inbound DMs → 597-member buyer group → Christian closes. His deals. Micko's content system got buyers in the room.
       </div>
     </div>
   </section>
@@ -392,7 +346,7 @@
 <div class="cta-block">
   <div class="label-chip" style="margin-bottom:20px;">Want results like this?</div>
   <h2>InboundOS installs the<br>system that runs it.</h2>
-  <p>Not SMM. The AI operating system that does what MK did — 10x faster, every day, without you touching it.</p>
+  <p>An AI content operating system that runs your inbound — the way Micko ran it for these clients, running automatically, every day.</p>
   <a href="https://calendly.com/inboundos/discovery-call" target="_blank" rel="noopener" class="btn-primary">Book a Discovery Call</a>
 </div>
 

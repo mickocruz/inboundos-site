@@ -210,7 +210,7 @@ const MIME = { '.html':'text/html', '.css':'text/css', '.js':'application/javasc
 
 // Slug-based routes: /{slug}/{page} → /dashboard/{page}.html
 const SLUG_PAGES = ['agents','pipeline','performance','research','clients','sales-calls',
-  'sops','org-chart','crm','command','vault','chat','clio','metrics','roi','database'];
+  'sops','org-chart','crm','command','vault','chat','clio','metrics','roi','database','edge'];
 
 function resolveSlugRoute(urlPath) {
   const parts = urlPath.split('/').filter(Boolean);
@@ -243,6 +243,105 @@ function serveStatic(req, res) {
   });
 }
 
+// ── Agent chat / skill / config endpoints (used by dashboard pages) ──
+const CONFIG_PATH = path.join(__dirname, 'config.json');
+const ARGUS_RESULTS_PATH = path.join(__dirname, 'argus-results.json');
+const CHAT_MODEL = process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-6';
+
+function findSkillFile(skillName) {
+  const candidates = [
+    path.join(os.homedir(), `.claude/plugins/cache/inboundos-ctrl/inboundos-ctrl-skills/1.0.0/skills/${skillName}/SKILL.md`),
+    path.join(os.homedir(), `.claude/skills/${skillName}/SKILL.md`),
+    path.join(os.homedir(), `.claude/skills/${skillName}.md`),
+  ];
+  for (const sp of candidates) {
+    if (fs.existsSync(sp)) return sp;
+  }
+  return null;
+}
+
+function sendJSON(res, code, obj) {
+  res.writeHead(code, { 'Content-Type': 'application/json' });
+  res.end(JSON.stringify(obj));
+}
+
+async function handleAgentChat(req, res) {
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return sendJSON(res, 402, { error: 'NO_API_KEY' });
+  }
+  let body;
+  try { body = JSON.parse(await readBody(req)); } catch (e) {
+    return sendJSON(res, 400, { error: 'Invalid JSON body' });
+  }
+  const { agent, messages } = body;
+  if (agent === '_check') return sendJSON(res, 200, { ok: true });
+  if (!agent || !Array.isArray(messages) || !messages.length) {
+    return sendJSON(res, 400, { error: 'Missing agent or messages' });
+  }
+  if (!checkAuth(req)) return sendJSON(res, 401, { error: 'Unauthorized' });
+
+  const skillName = String(agent).toLowerCase().replace(/[^a-z0-9-]/g, '');
+  let skillContent = '';
+  const sp = findSkillFile(skillName);
+  if (sp) { try { skillContent = fs.readFileSync(sp, 'utf8').slice(0, 12000); } catch (e) {} }
+  const system = `You are ${agent}, an InboundOS AI agent chatting with Micko in the dashboard. Be direct and concise. Answer in plain text or light markdown.${skillContent ? `\n\n--- YOUR SKILL ---\n${skillContent}\n--- END SKILL ---` : ''}`;
+
+  const cleanMessages = messages
+    .filter(m => m && (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string' && m.content.trim())
+    .map(m => ({ role: m.role, content: m.content }));
+  if (!cleanMessages.length) return sendJSON(res, 400, { error: 'No valid messages' });
+
+  res.writeHead(200, {
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache',
+    'Connection': 'keep-alive',
+  });
+  try {
+    const Anthropic = require('@anthropic-ai/sdk');
+    const client = new Anthropic();
+    const stream = client.messages.stream({
+      model: CHAT_MODEL,
+      max_tokens: 2048,
+      system,
+      messages: cleanMessages,
+    });
+    stream.on('text', (t) => res.write(`data: ${JSON.stringify({ token: t })}\n\n`));
+    await stream.finalMessage();
+    res.write('data: {"done":true}\n\n');
+  } catch (e) {
+    console.error('[chat] Error:', e.message);
+    res.write(`data: ${JSON.stringify({ error: e.message })}\n\n`);
+  }
+  res.end();
+}
+
+function handleSkillGet(req, res, skillName) {
+  const sp = findSkillFile(skillName);
+  if (!sp) return sendJSON(res, 404, { error: 'Skill not found' });
+  res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
+  res.end(fs.readFileSync(sp, 'utf8'));
+}
+
+async function handleSkillSave(req, res, skillName) {
+  if (!checkAuth(req)) return sendJSON(res, 401, { error: 'Unauthorized' });
+  const content = (await readBody(req)).toString('utf8');
+  if (!content.trim()) return sendJSON(res, 400, { error: 'Empty skill content' });
+  let sp = findSkillFile(skillName);
+  if (!sp) {
+    const dir = path.join(os.homedir(), '.claude/skills');
+    fs.mkdirSync(dir, { recursive: true });
+    sp = path.join(dir, `${skillName}.md`);
+  }
+  fs.writeFileSync(sp, content);
+  sendJSON(res, 200, { ok: true, path: sp });
+}
+
+function readConfig() {
+  try { return JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8')); } catch (e) { return { competitors: [] }; }
+}
+
+const SKILL_ROUTE = /^\/(?:api\/)?agent\/skill\/([a-z0-9-]+)$/;
+
 const server = http.createServer(async (req, res) => {
   const origin = req.headers.origin || '';
   // Allow any local network origin (192.168.x.x, 10.x.x.x, 172.16-31.x.x) plus known origins
@@ -253,6 +352,42 @@ const server = http.createServer(async (req, res) => {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') { res.writeHead(204); res.end(); return; }
+
+  const urlPath = req.url.split('?')[0];
+
+  // Agent chat (SSE) — both paths used by dashboard pages
+  if (req.method === 'POST' && (urlPath === '/agent/chat' || urlPath === '/api/agent/chat')) {
+    await handleAgentChat(req, res); return;
+  }
+
+  // Skill editor
+  const skillMatch = urlPath.match(SKILL_ROUTE);
+  if (skillMatch) {
+    if (req.method === 'GET') { handleSkillGet(req, res, skillMatch[1]); return; }
+    if (req.method === 'POST') { await handleSkillSave(req, res, skillMatch[1]); return; }
+  }
+
+  // Competitor config (research page)
+  if (urlPath === '/config') {
+    if (req.method === 'GET') { sendJSON(res, 200, readConfig()); return; }
+    if (req.method === 'POST') {
+      let body;
+      try { body = JSON.parse(await readBody(req)); } catch (e) { sendJSON(res, 400, { error: 'Invalid JSON' }); return; }
+      const cfg = readConfig();
+      if (Array.isArray(body.competitors)) cfg.competitors = body.competitors.map(String).slice(0, 20);
+      fs.writeFileSync(CONFIG_PATH, JSON.stringify(cfg, null, 2));
+      sendJSON(res, 200, cfg); return;
+    }
+  }
+
+  // Argus intel results (research page)
+  if (req.method === 'GET' && urlPath === '/argus/results') {
+    try {
+      const data = JSON.parse(fs.readFileSync(ARGUS_RESULTS_PATH, 'utf8'));
+      sendJSON(res, 200, data);
+    } catch (e) { sendJSON(res, 200, { error: 'no_results' }); }
+    return;
+  }
 
   // Serve static files for GET requests
   if (req.method === 'GET') { serveStatic(req, res); return; }

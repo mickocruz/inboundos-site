@@ -1,8 +1,8 @@
-/* ── InboundOS Liquid Glass override layer ──
+/* ── InboundOS Liquid Glass override layer (v2) ──
    Loaded after each page's inline styles. Retrofits the iOS 26 liquid
    glass look from the public site onto all dashboard pages.
    Matches landing/about/client-wins: ambient orb field, translucent
-   glass surfaces, specular inset highlights, 0.5px borders. */
+   glass surfaces, specular inset highlights, 0.5px borders, spring motion. */
 
 /* Re-tint shared tokens — every card/border using var() picks this up */
 body {
@@ -11,6 +11,7 @@ body {
   --border: rgba(255, 255, 255, 0.12);
   --border-glow: rgba(79, 195, 247, 0.35);
   --accent-dim: rgba(79, 195, 247, 0.10);
+  --glass-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /* Ambient field behind everything — gives translucent surfaces color to pick up */
@@ -49,6 +50,18 @@ body::before {
   border-radius: 14px;
 }
 
+/* Hover lift on interactive cards */
+.stat-card, .agent-chat-card, .panel-card {
+  transition: border-color .2s ease, transform .2s var(--glass-spring), box-shadow .2s ease;
+}
+.stat-card:hover, .agent-chat-card:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.07);
+}
+
 /* Sidebar: thin glass rail */
 .sidebar {
   background: rgba(13, 17, 23, 0.55) !important;
@@ -57,7 +70,23 @@ body::before {
   border-right: 0.5px solid rgba(255, 255, 255, 0.10) !important;
   box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.04);
 }
-.nav-item { border-radius: 10px; transition: background .15s ease, color .15s ease; }
+
+/* Nav items: iOS pill states */
+.nav-item {
+  border-radius: 10px;
+  margin: 0 6px;
+  transition: background .15s ease, color .15s ease, transform .12s var(--glass-spring);
+}
+.nav-item:hover { background: rgba(255, 255, 255, 0.05); }
+.nav-item:active { transform: scale(0.97); }
+.nav-item.active {
+  background: rgba(79, 195, 247, 0.10);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* Buttons: spring press feedback everywhere */
+button { transition: transform .12s var(--glass-spring), opacity .15s ease, background .15s ease, border-color .15s ease, color .15s ease; }
+button:active { transform: scale(0.96); }
 
 /* Modals: thick glass */
 .modal-box,
@@ -78,6 +107,31 @@ body::before {
   -webkit-backdrop-filter: blur(4px);
 }
 
+/* Scrollbars: thin, quiet */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 100px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.22); background-clip: content-box; }
+
+/* Focus + selection */
+:focus-visible { outline: 2px solid rgba(79, 195, 247, 0.6); outline-offset: 1px; border-radius: 6px; }
+::selection { background: rgba(79, 195, 247, 0.28); }
+
+/* Inputs: glass wells */
+input[type="text"], input[type="search"], input[type="email"], input[type="number"], textarea, select {
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+input[type="text"]:focus, input[type="search"]:focus, input[type="email"]:focus, input[type="number"]:focus, textarea:focus {
+  border-color: rgba(79, 195, 247, 0.45) !important;
+  box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.12);
+  outline: none;
+}
+
 /* Reduced transparency fallback */
 @media (prefers-reduced-transparency: reduce) {
   .sidebar, .modal-box, .modal, .modal-content {
@@ -86,4 +140,10 @@ body::before {
     background: rgba(22, 27, 34, 0.98) !important;
   }
   body::before { display: none; }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .stat-card, .agent-chat-card, .panel-card, .nav-item, button { transition: none; }
+  .stat-card:hover, .agent-chat-card:hover { transform: none; }
 }

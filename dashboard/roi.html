@@ -497,7 +497,7 @@ async function loadAll() {
     sbGet('agent_items',         `${cid}select=id,type,status,created_at&status=neq.trashed&order=created_at.asc`),
     sbGet('outreach_leads',      `select=id,opener_sent_at,stage,stage_label,disqualify_reason,followup_count,created_at`),
     sbGet('leads_needing_followup', `select=ig_handle`),
-    sbGet('sales_calls',         `select=id,qualified,closed,deal_value,created_at,showed_up&order=created_at.asc`)
+    sbGet('sales_calls',         `select=id,qualified,closed,deal_value,created_at&order=created_at.asc`)
   ]);
 
   // Apply date range filter
@@ -577,7 +577,7 @@ async function loadAll() {
 
   // --- RATES ---
   const pct = (n, d) => d > 0 ? Math.round(n/d*100)+'%' : '—%';
-  const showedUp = calls.filter(c => c.showed_up).length;
+  const showedUp = calls.filter(c => c.showed_up || c.qualified || c.closed).length;
   set('r-reply',   pct(replied, contacted));
   set('r-booking', pct(callsTotal, contacted));
   set('r-showup',  pct(showedUp || callsTotal, callsTotal));

@@ -16,7 +16,9 @@ async function loadInboundLeads() {
       Authorization: 'Bearer ' + SUPABASE_ANON
     }
   });
+  if (!res.ok) return; // logged out or RLS denied — leave section empty
   const leads = await res.json();
+  if (!Array.isArray(leads)) return;
   renderInboundLeads(leads);
 }
 

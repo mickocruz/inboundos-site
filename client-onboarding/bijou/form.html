@@ -211,67 +211,75 @@ footer{margin-top:80px;font-size:12.5px;color:rgba(0,0,0,0.45);display:flex;just
 </footer>
 </div>
 
-<script type="module">
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+<script>
+var SUPABASE_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co';
+var SUPABASE_KEY = 'sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8';
+var CLIENT_SLUG = 'bijou-coverings';
 
-const SUPABASE_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8';
-const CLIENT_SLUG = 'bijou-coverings';
-
-const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
-
-// file picker label
-const fileInput = document.getElementById('brand-file');
-const box = document.getElementById('upload-box');
-fileInput.addEventListener('change', () => {
+var fileInput = document.getElementById('brand-file');
+var box = document.getElementById('upload-box');
+fileInput.addEventListener('change', function () {
   if (fileInput.files[0]) {
-    document.getElementById('upload-label').textContent = '✓ ' + fileInput.files[0].name;
+    document.getElementById('upload-label').textContent = '\u2713 ' + fileInput.files[0].name;
     box.classList.add('has-file');
   }
 });
 
-document.getElementById('ob-form').addEventListener('submit', async (e) => {
+document.getElementById('ob-form').addEventListener('submit', function (e) {
   e.preventDefault();
-  const btn = document.getElementById('submit-btn');
-  const status = document.getElementById('status');
+  var form = e.target;
+  var btn = document.getElementById('submit-btn');
+  var status = document.getElementById('status');
   btn.disabled = true; btn.textContent = 'Saving...';
   status.className = 'status';
 
-  try {
-    // 1. upload brand guide if present
-    let brandUrl = null;
-    const f = fileInput.files[0];
-    if (f) {
-      const path = `${CLIENT_SLUG}/${Date.now()}-${f.name.replace(/[^a-zA-Z0-9.\-_]/g, '_')}`;
-      const { error: upErr } = await sb.storage.from('brand-assets').upload(path, f);
-      if (upErr) throw upErr;
-      brandUrl = path;
-    }
+  var headers = {
+    'apikey': SUPABASE_KEY,
+    'Authorization': 'Bearer ' + SUPABASE_KEY
+  };
 
-    // 2. collect answers
-    const fd = new FormData(e.target);
-    const answers = {};
-    for (const [k, v] of fd.entries()) if (v && !['contact_name','email'].includes(k)) answers[k] = v;
-
-    // 3. insert row
-    const { error } = await sb.from('install_onboarding').insert({
-      client_slug: CLIENT_SLUG,
-      company: 'Bijou Coverings',
-      contact_name: fd.get('contact_name'),
-      email: fd.get('email'),
-      answers,
-      brand_guide_url: brandUrl
+  var uploadPromise = Promise.resolve(null);
+  var f = fileInput.files[0];
+  if (f) {
+    var path = CLIENT_SLUG + '/' + Date.now() + '-' + f.name.replace(/[^a-zA-Z0-9.\-_]/g, '_');
+    uploadPromise = fetch(SUPABASE_URL + '/storage/v1/object/brand-assets/' + path, {
+      method: 'POST',
+      headers: Object.assign({ 'Content-Type': f.type || 'application/octet-stream' }, headers),
+      body: f
+    }).then(function (r) {
+      if (!r.ok) return r.text().then(function (t) { throw new Error('upload failed: ' + t); });
+      return path;
     });
-    if (error) throw error;
+  }
 
-    e.target.style.display = 'none';
+  uploadPromise.then(function (brandUrl) {
+    var fd = new FormData(form);
+    var answers = {};
+    fd.forEach(function (v, k) {
+      if (v && k !== 'contact_name' && k !== 'email') answers[k] = v;
+    });
+    return fetch(SUPABASE_URL + '/rest/v1/install_onboarding', {
+      method: 'POST',
+      headers: Object.assign({ 'Content-Type': 'application/json', 'Prefer': 'return=minimal' }, headers),
+      body: JSON.stringify({
+        client_slug: CLIENT_SLUG,
+        company: 'Bijou Coverings',
+        contact_name: fd.get('contact_name'),
+        email: fd.get('email'),
+        answers: answers,
+        brand_guide_url: brandUrl
+      })
+    });
+  }).then(function (r) {
+    if (!r.ok) return r.text().then(function (t) { throw new Error(t); });
+    form.style.display = 'none';
     document.getElementById('done').style.display = 'block';
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  } catch (err) {
-    status.textContent = 'Something broke: ' + (err.message || err) + ' — screenshot this and send it to Micko.';
+  }).catch(function (err) {
+    status.textContent = 'Something broke: ' + (err.message || err) + ' \u2014 screenshot this and send it to Micko.';
     status.className = 'status err';
     btn.disabled = false; btn.textContent = 'Submit onboarding';
-  }
+  });
 });
 </script>
 </body>

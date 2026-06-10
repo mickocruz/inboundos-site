@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>(function(){var _h=location.hostname;var _isLocal=_h==='localhost'||_h==='127.0.0.1'||/^192\.168\./.test(_h)||/^10\./.test(_h);if(_isLocal){if(!localStorage.getItem('sb_session')){localStorage.setItem('sb_session',JSON.stringify({access_token:'local',client_slug:'micko-cruz',expires_at:9999999999}));}return;}var s=null;try{s=JSON.parse(localStorage.getItem("sb_session")||"null");}catch(e){}if(!s||!s.access_token){window.location.href="/login?from="+encodeURIComponent(window.location.pathname);return;}var exp=s.expires_at?s.expires_at*1000:0;if(exp&&exp<Date.now()){localStorage.removeItem("sb_session");window.location.href="/login?from="+encodeURIComponent(window.location.pathname);}})();</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0D1117">
+<title>InboundOS — Focus</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/planner/planner.css">
+</head>
+<body>
+<div class="layout">
+  <div id="sidebar-slot"></div>
+  <main class="main">
+    <div class="header">
+      <div class="header-left">
+        <h1>Focus <span>Mode</span></h1>
+        <div class="date">One task. Hard stops. ADHD-proof.</div>
+      </div>
+      <div class="header-right">
+        <div class="view-toggle">
+          <button class="view-btn active" data-mins="25">25/5</button>
+          <button class="view-btn" data-mins="50">50/10</button>
+          <button class="view-btn" data-mins="90">Hyperfocus 90</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="focus-wrap">
+      <div class="focus-block-tag" id="f-block">—</div>
+      <div class="focus-task" id="f-task">Loading…</div>
+      <div class="pomo-mode" id="pomo-mode">WORK</div>
+      <div class="pomo-time" id="pomo-time">25:00</div>
+      <div class="pomo-dots" id="pomo-dots"></div>
+      <div class="pomo-controls">
+        <button class="btn" id="pomo-start" onclick="pomoToggle()">Start</button>
+        <button class="btn-ghost" onclick="pomoReset()">Reset</button>
+        <button class="btn-ghost" onclick="taskDone()">Done ✓</button>
+        <button class="btn-ghost" onclick="taskSkip()">Skip →</button>
+      </div>
+      <div style="font-family:var(--font-data);font-size:12px;color:var(--text-dim);" id="f-queue"></div>
+    </div>
+  </main>
+</div>
+
+<div class="hardstop-overlay" id="hardstop">
+  <h2>HARD STOP — 3AM</h2>
+  <p style="font-family:var(--font-data);color:rgba(255,255,255,0.7);max-width:420px;">Work ends. No screens. Dark room. Ashwagandha at 4:30. Sleep at 5. The clock reset matters more than this task.</p>
+  <button class="btn" onclick="document.getElementById('hardstop').classList.remove('show')">Acknowledged</button>
+</div>
+
+<script src="/planner/shared.js"></script>
+<script>
+document.getElementById('sidebar-slot').outerHTML = plSidebar('focus');
+
+let QUEUE = [];
+let CUR = null;
+
+// Pomodoro state
+let WORK_MIN = 25, BREAK_MIN = 5;
+let mode = 'work';            // work | break
+let remaining = WORK_MIN * 60;
+let running = false;
+let timer = null;
+let sessions = 0;
+
+document.querySelector('.view-toggle').addEventListener('click', e => {
+  const b = e.target.closest('[data-mins]'); if (!b) return;
+  document.querySelectorAll('.view-toggle .view-btn').forEach(x => x.classList.toggle('active', x === b));
+  WORK_MIN = +b.dataset.mins;
+  BREAK_MIN = WORK_MIN === 25 ? 5 : WORK_MIN === 50 ? 10 : 20; // hyperfocus 90 → forced 20min break
+  pomoReset();
+});
+
+function fmt(s) { return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`; }
+
+function pomoRender() {
+  const el = document.getElementById('pomo-time');
+  el.textContent = fmt(remaining);
+  el.classList.toggle('break', mode === 'break');
+  document.getElementById('pomo-mode').textContent = mode === 'work' ? 'WORK' : 'BREAK — stand up, water, no phone';
+  document.getElementById('pomo-start').textContent = running ? 'Pause' : 'Start';
+  document.getElementById('pomo-dots').innerHTML = Array.from({ length: 4 }, (_, i) =>
+    `<div class="pomo-dot${i < (sessions % 4 === 0 && sessions > 0 ? 4 : sessions % 4) ? ' done' : ''}"></div>`).join('');
+  document.title = `${fmt(remaining)} ${mode === 'work' ? '▸' : '☕'} InboundOS Focus`;
+}
+
+function pomoToggle() {
+  running = !running;
+  if (running && !timer) {
+    timer = setInterval(() => {
+      if (!running) return;
+      remaining--;
+      if (remaining <= 0) {
+        // switch mode
+        if (mode === 'work') { sessions++; mode = 'break'; remaining = BREAK_MIN * 60; chime(); notify('Break time. Stand up. Water. No phone.'); }
+        else { mode = 'work'; remaining = WORK_MIN * 60; chime(); notify('Back to work. One task.'); }
+      }
+      pomoRender();
+    }, 1000);
+  }
+  pomoRender();
+}
+function pomoReset() { mode = 'work'; remaining = WORK_MIN * 60; running = false; pomoRender(); }
+
+function chime() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.frequency.value = 880; g.gain.value = 0.08;
+    o.start(); o.stop(ctx.currentTime + 0.6);
+  } catch (e) {}
+}
+function notify(msg) {
+  if ('Notification' in window && Notification.permission === 'granted') new Notification('InboundOS Focus', { body: msg });
+}
+
+// Hard stop hook called by shared.js anchor at 3AM
+function plHardStop() {
+  running = false;
+  document.getElementById('hardstop').classList.add('show');
+  chime();
+}
+
+// Task queue: current block first, quick wins first (P asc → short titles first → carried first)
+async function load() {
+  const tasks = await plGet('planner_tasks', `cycle_date=eq.${plToday()}&status=neq.done&order=priority.asc,created_at.asc`);
+  const block = plCurrentBlock();
+  QUEUE = tasks
+    .sort((a, b) => {
+      const ab = (a.block === block ? 0 : 1) - (b.block === block ? 0 : 1);
+      if (ab) return ab;
+      if (a.priority !== b.priority) return a.priority - b.priority;
+      return a.title.length - b.title.length; // quick wins first — small task = fast dopamine
+    });
+  next(false);
+}
+
+function next(advance) {
+  if (advance) QUEUE = QUEUE.filter(t => t.id !== CUR?.id);
+  CUR = QUEUE[0] || null;
+  document.getElementById('f-task').textContent = CUR ? CUR.title : 'Queue empty. Add tasks on the Board.';
+  document.getElementById('f-block').textContent = CUR ? `${CUR.block.toUpperCase()} · P${CUR.priority}${CUR.carried ? ' · CARRIED' : ''}` : '';
+  document.getElementById('f-queue').textContent = QUEUE.length > 1 ? `Up next: ${QUEUE.slice(1, 4).map(t => t.title).join(' · ')}` : '';
+}
+
+async function taskDone() {
+  if (!CUR) return;
+  await plPatch('planner_tasks', `id=eq.${CUR.id}`, { status: 'done', updated_at: new Date().toISOString() });
+  chime();
+  next(true);
+}
+function taskSkip() { if (CUR) { QUEUE.push(QUEUE.shift()); next(false); } }
+
+if ('Notification' in window && Notification.permission === 'default') Notification.requestPermission();
+plStartAnchors();
+pomoRender();
+load();
+</script>
+</body>
+</html>

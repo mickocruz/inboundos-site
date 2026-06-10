@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>(function(){var _h=location.hostname;var _isLocal=_h==='localhost'||_h==='127.0.0.1'||/^192\.168\./.test(_h)||/^10\./.test(_h);if(_isLocal){if(!localStorage.getItem('sb_session')){localStorage.setItem('sb_session',JSON.stringify({access_token:'local',client_slug:'micko-cruz',expires_at:9999999999}));}return;}var s=null;try{s=JSON.parse(localStorage.getItem("sb_session")||"null");}catch(e){}if(!s||!s.access_token){window.location.href="/login?from="+encodeURIComponent(window.location.pathname);return;}var exp=s.expires_at?s.expires_at*1000:0;if(exp&&exp<Date.now()){localStorage.removeItem("sb_session");window.location.href="/login?from="+encodeURIComponent(window.location.pathname);}})();</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0D1117">
+<title>InboundOS — Planner</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/planner/planner.css">
+</head>
+<body>
+<div class="layout">
+  <div id="sidebar-slot"></div>
+  <main class="main">
+    <div class="header">
+      <div class="header-left">
+        <h1>Life <span>Planner</span></h1>
+        <div class="date" id="hdr-date"></div>
+      </div>
+      <div class="header-right">
+        <div class="view-toggle" id="lane-toggle">
+          <button class="view-btn active" data-lane="all">All</button>
+          <button class="view-btn" data-lane="inboundos">InboundOS</button>
+          <button class="view-btn" data-lane="music">Music</button>
+          <button class="view-btn" data-lane="personal">Personal</button>
+        </div>
+        <div class="view-toggle" id="view-toggle">
+          <button class="view-btn active" data-view="board">Board</button>
+          <button class="view-btn" data-view="table">Table</button>
+          <button class="view-btn" data-view="calendar">Calendar</button>
+        </div>
+        <button class="btn" onclick="dailyBrief()">Daily Brief</button>
+        <div class="status-pill"><div class="status-dot"></div><span id="block-now">—</span></div>
+      </div>
+    </div>
+
+    <div class="quick-add">
+      <input type="text" id="qa-input" placeholder="Add task — AI sorts it into the right block… (e.g. 'write 2 reel scripts', 'studio session mix verse')" autocomplete="off">
+      <button class="btn" id="qa-btn" onclick="quickAdd()">Add</button>
+    </div>
+
+    <div class="stat-row" id="stat-row"></div>
+
+    <div class="board" id="view-board"></div>
+    <div class="tbl-wrap" id="view-table" style="display:none;"></div>
+    <div class="cal-wrap" id="view-calendar" style="display:none;"></div>
+  </main>
+</div>
+
+<div class="modal-overlay" id="brief-modal" onclick="if(event.target===this)this.classList.remove('show')">
+  <div class="modal-box"><h3>Daily Brief</h3><div id="brief-body"><p>Loading…</p></div></div>
+</div>
+
+<script src="/planner/shared.js"></script>
+<script>
+document.getElementById('sidebar-slot').outerHTML = plSidebar('board');
+document.getElementById('hdr-date').textContent = plDateLabel() + ' · cycle ' + plToday();
+
+let TASKS = [];
+let LANE = 'all';
+let VIEW = 'board';
+
+const blockNow = plCurrentBlock();
+document.getElementById('block-now').textContent = blockNow ? blockNow.toUpperCase() + ' BLOCK' : 'OFF BLOCK';
+
+document.getElementById('lane-toggle').addEventListener('click', e => {
+  const b = e.target.closest('[data-lane]'); if (!b) return;
+  LANE = b.dataset.lane;
+  document.querySelectorAll('#lane-toggle .view-btn').forEach(x => x.classList.toggle('active', x === b));
+  render();
+});
+document.getElementById('view-toggle').addEventListener('click', e => {
+  const b = e.target.closest('[data-view]'); if (!b) return;
+  VIEW = b.dataset.view;
+  document.querySelectorAll('#view-toggle .view-btn').forEach(x => x.classList.toggle('active', x === b));
+  ['board','table','calendar'].forEach(v => {
+    document.getElementById('view-' + v).style.display = v === VIEW ? (v==='board'?'grid':v==='table'?'block':'grid') : 'none';
+  });
+  render();
+});
+document.getElementById('qa-input').addEventListener('keydown', e => { if (e.key === 'Enter') quickAdd(); });
+
+async function load() {
+  TASKS = await plGet('planner_tasks', `cycle_date=eq.${plToday()}&order=position.asc,created_at.asc`);
+  render();
+}
+
+function filtered() { return LANE === 'all' ? TASKS : TASKS.filter(t => t.lane === LANE); }
+
+function render() {
+  const ts = filtered();
+  // stats
+  const done = ts.filter(t => t.status === 'done').length;
+  const carried = ts.filter(t => t.carried).length;
+  document.getElementById('stat-row').innerHTML = `
+    <div class="stat-card"><div class="stat-val">${ts.length}</div><div class="stat-lbl">Tasks Today</div></div>
+    <div class="stat-card"><div class="stat-val" style="color:var(--green);">${done}</div><div class="stat-lbl">Done</div></div>
+    <div class="stat-card"><div class="stat-val" style="color:var(--orange);">${carried}</div><div class="stat-lbl">Carried Over</div></div>
+    <div class="stat-card"><div class="stat-val" style="color:var(--accent);">${ts.length ? Math.round(done / ts.length * 100) : 0}%</div><div class="stat-lbl">Completion</div></div>`;
+  if (VIEW === 'board') renderBoard(ts);
+  if (VIEW === 'table') renderTable(ts);
+  if (VIEW === 'calendar') renderCal(ts);
+}
+
+function cardHTML(t) {
+  const lane = t.lane !== 'inboundos' ? `<span class="ktag lane-${t.lane}">${t.lane}</span>` : '';
+  const carried = t.carried ? '<span class="ktag carried">carried</span>' : '';
+  const src = t.source !== 'manual' ? `<span class="ktag src">${plEsc(t.source)}</span>` : '';
+  return `<div class="kcard${t.status==='done'?' done':''}" draggable="true" data-id="${t.id}"
+    ondragstart="onDragStart(event,'${t.id}')" ondragend="this.classList.remove('dragging')">
+    <div class="kcard-title">${plEsc(t.title)}</div>
+    <div class="kcard-meta">
+      <span class="ktag p${t.priority}">P${t.priority}</span>${lane}${carried}${src}
+      <span class="kcard-actions">
+        <button class="icon-btn done-btn" onclick="toggleDone('${t.id}')" title="toggle done">✓</button>
+        <button class="icon-btn del-btn" onclick="delTask('${t.id}')" title="delete">×</button>
+      </span>
+    </div></div>`;
+}
+
+function renderBoard(ts) {
+  document.getElementById('view-board').innerHTML = PL_BLOCKS.map(b => {
+    const cards = ts.filter(t => t.block === b.id);
+    return `<div class="col${blockNow === b.id ? ' now' : ''}">
+      <div class="col-header"><span class="col-title">${b.label}<span class="col-hours">${b.hours}</span></span><span class="col-count">${cards.length}</span></div>
+      <div class="col-body" data-col="${b.id}" ondragover="onDragOver(event)" ondragleave="this.classList.remove('drag-over')" ondrop="onDrop(event,'${b.id}')">
+        ${cards.map(cardHTML).join('')}
+      </div></div>`;
+  }).join('');
+}
+
+let SORT = { key: 'block', dir: 1 };
+function renderTable(ts) {
+  const rows = [...ts].sort((a, b) => (a[SORT.key] > b[SORT.key] ? 1 : -1) * SORT.dir);
+  document.getElementById('view-table').innerHTML = `<table class="ptable"><thead><tr>
+    ${['title','block','lane','priority','status','source'].map(k => `<th onclick="setSort('${k}')">${k}</th>`).join('')}
+    </tr></thead><tbody>
+    ${rows.map(t => `<tr><td>${plEsc(t.title)}</td><td>${t.block}</td><td>${t.lane}</td><td>P${t.priority}</td>
+      <td style="color:${t.status==='done'?'var(--green)':'var(--text-muted)'}">${t.status}</td><td>${plEsc(t.source)}</td></tr>`).join('')}
+    </tbody></table>`;
+}
+function setSort(k) { SORT.dir = SORT.key === k ? -SORT.dir : 1; SORT.key = k; render(); }
+
+function renderCal(ts) {
+  const days = [];
+  const start = new Date();
+  start.setDate(start.getDate() - start.getDay() + 1); // Monday
+  for (let i = 0; i < 7; i++) { const d = new Date(start); d.setDate(d.getDate() + i); days.push(d); }
+  const slots = [{ id:'promote', t:'1–5PM' }, { id:'fulfill', t:'6–10PM' }, { id:'build', t:'11PM–3AM' }];
+  let html = '<div class="cal-head"></div>' + days.map(d => `<div class="cal-head">${d.toLocaleDateString('en-US',{weekday:'short', day:'numeric'})}</div>`).join('');
+  for (const s of slots) {
+    html += `<div class="cal-cell cal-time">${s.t}</div>`;
+    for (const d of days) {
+      const iso = plLocalISO(d);
+      const items = (iso === plToday()) ? ts.filter(t => t.block === s.id) : [];
+      html += `<div class="cal-cell">${items.map(t => `<div class="cal-block ${s.id}">${plEsc(t.title)}</div>`).join('')}</div>`;
+    }
+  }
+  document.getElementById('view-calendar').innerHTML = html;
+}
+
+// drag & drop
+let DRAG_ID = null;
+function onDragStart(e, id) { DRAG_ID = id; e.target.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; }
+function onDragOver(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
+async function onDrop(e, block) {
+  e.preventDefault(); e.currentTarget.classList.remove('drag-over');
+  if (!DRAG_ID) return;
+  const t = TASKS.find(x => x.id === DRAG_ID);
+  if (t && t.block !== block) { t.block = block; render(); await plPatch('planner_tasks', `id=eq.${DRAG_ID}`, { block, updated_at: new Date().toISOString() }); }
+  DRAG_ID = null;
+}
+
+async function toggleDone(id) {
+  const t = TASKS.find(x => x.id === id); if (!t) return;
+  t.status = t.status === 'done' ? 'todo' : 'done';
+  render();
+  await plPatch('planner_tasks', `id=eq.${id}`, { status: t.status, updated_at: new Date().toISOString() });
+}
+async function delTask(id) {
+  TASKS = TASKS.filter(x => x.id !== id); render();
+  await plDelete('planner_tasks', `id=eq.${id}`);
+}
+
+async function quickAdd() {
+  const inp = document.getElementById('qa-input');
+  const text = inp.value.trim(); if (!text) return;
+  const btn = document.getElementById('qa-btn');
+  btn.textContent = '…'; btn.disabled = true;
+  let parsed = null;
+  try {
+    const res = await fetch('/api/planner/quick-add', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text }) });
+    if (res.ok) parsed = await res.json();
+  } catch (e) {}
+  // fallback: current block or build, P2, inboundos
+  const row = {
+    title: parsed?.title || text,
+    block: parsed?.block || blockNow || 'build',
+    lane: parsed?.lane || 'inboundos',
+    priority: parsed?.priority || 2,
+    cycle_date: plToday(),
+  };
+  const [ins] = await plInsert('planner_tasks', [row]);
+  TASKS.push(ins);
+  inp.value = ''; btn.textContent = 'Add'; btn.disabled = false;
+  render();
+}
+
+async function dailyBrief() {
+  document.getElementById('brief-modal').classList.add('show');
+  document.getElementById('brief-body').innerHTML = '<p>Thinking…</p>';
+  try {
+    const res = await fetch('/api/planner/brief?cycle=' + plToday());
+    const j = await res.json();
+    document.getElementById('brief-body').innerHTML = '<p>' + plEsc(j.brief || 'No brief.').replace(/\n/g, '</p><p>') + '</p>';
+  } catch (e) {
+    document.getElementById('brief-body').innerHTML = '<p>Brief failed. Try again.</p>';
+  }
+}
+
+plStartAnchors();
+load();
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
+</script>
+</body>
+</html>

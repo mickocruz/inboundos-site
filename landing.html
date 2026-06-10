@@ -314,6 +314,35 @@ h2{font-size:clamp(30px,4.4vw,52px);margin-bottom:14px;}
 .manual-card p{font-size:14px;color:var(--label-2);line-height:1.6;}
 .flow-line{width:0.5px;height:44px;background:linear-gradient(to bottom,transparent,rgba(79,195,247,0.5),transparent);}
 
+/* ── Social Proof / Results ── */
+.proof-intro{display:grid;grid-template-columns:1.1fr 0.9fr;gap:48px;align-items:center;margin-bottom:48px;}
+.proof-client{display:flex;align-items:center;gap:16px;margin-bottom:20px;}
+.proof-avatar{width:52px;height:52px;border-radius:50%;object-fit:cover;border:0.5px solid var(--glass-border);flex:none;}
+.proof-client-info .name{font-size:15px;font-weight:700;margin-bottom:2px;}
+.proof-client-info .handle{font-size:12px;color:var(--label-3);}
+.proof-stat-row{display:flex;gap:14px;flex-wrap:wrap;margin-top:20px;}
+.proof-stat{padding:16px 20px;border-radius:var(--radius-md);text-align:center;flex:1;min-width:100px;}
+.proof-stat .v{font-family:var(--font-head);font-size:24px;letter-spacing:-0.02em;line-height:1;}
+.proof-stat .l{font-size:11px;color:var(--label-3);margin-top:5px;line-height:1.4;}
+
+.tiktok-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:0;}
+.tiktok-embed-wrap{
+  border-radius:var(--radius-lg);overflow:hidden;
+  border:0.5px solid var(--glass-border);
+  background:var(--glass-bg);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  display:flex;flex-direction:column;align-items:center;
+}
+.tiktok-embed-wrap blockquote{margin:0 !important;width:100% !important;}
+
+.proof-duo{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px;}
+.proof-photo{border-radius:var(--radius-lg);overflow:hidden;border:0.5px solid var(--glass-border);}
+.proof-photo img{width:100%;height:100%;object-fit:cover;display:block;}
+.proof-quote{padding:28px 32px;border-radius:var(--radius-lg);display:flex;flex-direction:column;justify-content:center;gap:14px;}
+.proof-quote blockquote{font-size:16px;font-weight:500;line-height:1.65;letter-spacing:-0.01em;}
+.proof-quote .attrib{font-size:12.5px;color:var(--label-3);}
+
 /* ── Process ── */
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
 .step-card{padding:28px;border-radius:var(--radius-lg);}
@@ -397,6 +426,8 @@ footer .foot-links a:hover{color:var(--white);}
   .steps{grid-template-columns:1fr;}
   .included-row{grid-template-columns:1fr 1fr;}
   .offer-list{grid-template-columns:1fr;}
+  .tiktok-grid{grid-template-columns:1fr;}
+  .proof-duo{grid-template-columns:1fr;}
 }
 @media (max-width:640px){
   .glass-nav{gap:14px;padding:9px 10px 9px 16px;top:10px;width:calc(100% - 20px);justify-content:space-between;}
@@ -729,6 +760,62 @@ footer .foot-links a:hover{color:var(--white);}
   </div>
 </section>
 
+<!-- ── RESULTS ── -->
+<section class="section" id="results" aria-labelledby="results-heading">
+  <div class="section-label">Client Results</div>
+  <h2 id="results-heading">What happens when<br>the flywheel is installed.</h2>
+  <p class="section-sub">Dr. Meenal Kheterpal — Dermatologist & Obesity Specialist — went from 7 followers to 1M+ views. Organic, no ads, no hacks.</p>
+
+  <!-- TikTok embeds -->
+  <div class="tiktok-grid reveal">
+    <div class="tiktok-embed-wrap glass">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@skinnovate_derm/video/7524465247801969950" data-video-id="7524465247801969950" style="max-width:100%;min-width:100%;">
+        <section></section>
+      </blockquote>
+    </div>
+    <div class="tiktok-embed-wrap glass">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@skinnovate_derm/video/7529648314229263646" data-video-id="7529648314229263646" style="max-width:100%;min-width:100%;">
+        <section></section>
+      </blockquote>
+    </div>
+    <div class="tiktok-embed-wrap glass">
+      <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@skinnovate_derm/video/7543342998931787022" data-video-id="7543342998931787022" style="max-width:100%;min-width:100%;">
+        <section></section>
+      </blockquote>
+    </div>
+  </div>
+
+  <!-- Stats + quote row -->
+  <div class="proof-duo reveal" style="margin-top:14px;">
+    <div class="proof-quote glass">
+      <blockquote>"Just hit 1 million views."</blockquote>
+      <div class="attrib">— Dr. Meenal Kheterpal, @skinnovate_derm<br><span style="font-size:11px;color:var(--label-4);">Dermatologist &amp; Acne Expert · TikTok</span></div>
+      <div class="proof-stat-row">
+        <div class="proof-stat glass">
+          <div class="v">1M+</div>
+          <div class="l">Total Views</div>
+        </div>
+        <div class="proof-stat glass">
+          <div class="v">296K</div>
+          <div class="l">Likes</div>
+        </div>
+        <div class="proof-stat glass">
+          <div class="v">4.5K</div>
+          <div class="l">Followers</div>
+        </div>
+      </div>
+    </div>
+    <div class="proof-quote glass">
+      <blockquote>"We're almost at 2000 followers! I thought we just did 1000 last week — it's growing very fast and it's so organic."</blockquote>
+      <div class="attrib">— Dr. Meenal, WhatsApp DM</div>
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-top:36px;">
+    <a href="/client-wins" class="btn-ghost">See All Client Results →</a>
+  </div>
+</section>
+
 <!-- ── PROCESS ── -->
 <section class="section" id="process" aria-labelledby="process-heading">
   <div class="section-label">How We Work</div>
@@ -902,5 +989,6 @@ footer .foot-links a:hover{color:var(--white);}
   }, { threshold: 0.1, rootMargin: '0px 0px -48px 0px' });
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 </script>
+<script async src="https://www.tiktok.com/embed.js"></script>
 </body>
 </html>

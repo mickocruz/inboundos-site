@@ -234,18 +234,18 @@ footer .foot-links a:hover{color:var(--white);}
     <p class="section-sub">Telehealth dermatologist with zero TikTok presence when we started. 3.3M views on one video, 7M+ total across the account, hundreds of inbound DMs. Dr. Abby, a Yale MD with 485K followers, followed her organically. Nobody asked her to.</p>
 
     <div class="grid-3">
-      <div class="tiktok-wrap reveal">
-        <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@skinnovate_derm/video/7524465247801969950" data-video-id="7524465247801969950" style="max-width:100%;min-width:100%;border:none;margin:0;" data-embed-from="oembed">
+      <div class="tiktok-wrap">
+        <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@skinnovate_derm/video/7524465247801969950" data-video-id="7524465247801969950" style="max-width:100%;min-width:100%;border:none;margin:0;">
           <section><a target="_blank" href="https://www.tiktok.com/@skinnovate_derm/video/7524465247801969950">@skinnovate_derm</a></section>
         </blockquote>
       </div>
-      <div class="tiktok-wrap reveal">
-        <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@skinnovate_derm/video/7529648314229263646" data-video-id="7529648314229263646" style="max-width:100%;min-width:100%;border:none;margin:0;" data-embed-from="oembed">
+      <div class="tiktok-wrap">
+        <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@skinnovate_derm/video/7529648314229263646" data-video-id="7529648314229263646" style="max-width:100%;min-width:100%;border:none;margin:0;">
           <section><a target="_blank" href="https://www.tiktok.com/@skinnovate_derm/video/7529648314229263646">@skinnovate_derm</a></section>
         </blockquote>
       </div>
-      <div class="tiktok-wrap reveal">
-        <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@skinnovate_derm/video/7543342998931787022" data-video-id="7543342998931787022" style="max-width:100%;min-width:100%;border:none;margin:0;" data-embed-from="oembed">
+      <div class="tiktok-wrap">
+        <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@skinnovate_derm/video/7543342998931787022" data-video-id="7543342998931787022" style="max-width:100%;min-width:100%;border:none;margin:0;">
           <section><a target="_blank" href="https://www.tiktok.com/@skinnovate_derm/video/7543342998931787022">@skinnovate_derm</a></section>
         </blockquote>
       </div>
@@ -347,6 +347,16 @@ footer .foot-links a:hover{color:var(--white);}
   }, { threshold: 0.1, rootMargin: '0px 0px -48px 0px' });
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 </script>
-<script async src="https://www.tiktok.com/embed.js"></script>
+<script src="https://www.tiktok.com/embed.js"></script>
+<script>
+  // Re-trigger TikTok embed init after page fully loaded
+  window.addEventListener('load', () => {
+    if (window.__tiktokEmbedLoaded && typeof window.__tiktokEmbedLoaded === 'function') {
+      window.__tiktokEmbedLoaded();
+    } else if (window.tiktok && window.tiktok.embed) {
+      window.tiktok.embed.render();
+    }
+  });
+</script>
 </body>
 </html>

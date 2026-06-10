@@ -1,10 +1,4 @@
 {
-  "crons": [
-    {
-      "path": "/api/planner/rollover",
-      "schedule": "0 21 * * *"
-    }
-  ],
   "headers": [
     {
       "source": "/(.*)",
@@ -36,22 +30,6 @@
     }
   ],
   "rewrites": [
-    {
-      "source": "/planner",
-      "destination": "/planner/index.html"
-    },
-    {
-      "source": "/planner/focus",
-      "destination": "/planner/focus.html"
-    },
-    {
-      "source": "/planner/habits",
-      "destination": "/planner/habits.html"
-    },
-    {
-      "source": "/planner/fitness",
-      "destination": "/planner/fitness.html"
-    },
     {
       "source": "/client-onboarding/:client/form",
       "destination": "/client-onboarding/:client/form.html"

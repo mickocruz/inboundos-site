@@ -31,6 +31,10 @@
   ],
   "rewrites": [
     {
+      "source": "/client-onboarding/:client/form",
+      "destination": "/client-onboarding/:client/form.html"
+    },
+    {
       "source": "/client-onboarding/:client",
       "destination": "/client-onboarding/:client.html"
     },

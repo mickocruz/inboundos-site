@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bijou × InboundOS — Onboarding</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --ink:#000;--paper:#fff;--bone:#F2F0EB;--olive:#84712A;--amber:#FFBE00;
+  --line:rgba(0,0,0,0.16);
+  --mono:'Courier Prime','Courier New',monospace;
+  --ease:cubic-bezier(0.4,0,0.2,1);
+}
+body{background:var(--paper);color:var(--ink);font-family:var(--mono);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+::selection{background:var(--amber);}
+a{color:inherit;}
+
+.wrap{max-width:760px;margin:0 auto;padding:60px 24px 120px;}
+header{margin-bottom:54px;}
+.wordmark{font-weight:700;font-size:16px;}
+.wordmark .x{color:var(--olive);padding:0 5px;}
+h1{font-size:clamp(30px,5vw,46px);font-weight:700;letter-spacing:-0.02em;line-height:1.1;margin:26px 0 14px;}
+h1 .olive{color:var(--olive);}
+.intro{color:rgba(0,0,0,0.7);max-width:600px;}
+.intro b{color:var(--ink);}
+
+.section{margin-top:54px;}
+.sec-label{font-size:12px;font-weight:700;letter-spacing:0.28em;text-transform:uppercase;color:var(--olive);border-bottom:1px solid var(--ink);padding-bottom:10px;margin-bottom:26px;}
+
+.q{margin-bottom:26px;}
+label{display:block;font-weight:700;font-size:15px;margin-bottom:8px;}
+label small{display:block;font-weight:400;font-size:13px;color:rgba(0,0,0,0.55);margin-top:2px;}
+input[type=text],input[type=email],textarea,select{
+  width:100%;font-family:var(--mono);font-size:15px;color:var(--ink);
+  background:var(--bone);border:1px solid var(--line);padding:13px 14px;
+  transition:border-color .2s var(--ease),background .2s var(--ease);
+}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--ink);background:var(--paper);}
+textarea{min-height:96px;resize:vertical;}
+.radio-row{display:flex;gap:10px;flex-wrap:wrap;}
+.radio-row label{
+  font-weight:400;font-size:14px;margin:0;cursor:pointer;
+  border:1px solid var(--line);padding:10px 16px;background:var(--paper);
+  display:flex;align-items:center;gap:8px;
+  transition:all .15s var(--ease);
+}
+.radio-row input{accent-color:var(--olive);}
+.radio-row label:has(input:checked){border-color:var(--ink);background:var(--bone);font-weight:700;}
+
+.upload-box{
+  border:1px dashed var(--ink);background:var(--bone);
+  padding:26px;text-align:center;cursor:pointer;
+  transition:background .2s var(--ease);
+}
+.upload-box:hover{background:#EAE7DF;}
+.upload-box input{display:none;}
+.upload-box .big{font-weight:700;}
+.upload-box .small{font-size:13px;color:rgba(0,0,0,0.55);margin-top:4px;}
+.upload-box.has-file{border-style:solid;background:#EFEAD9;}
+
+.hint{font-size:13px;color:rgba(0,0,0,0.5);margin-top:6px;}
+.divider-or{display:flex;align-items:center;gap:14px;margin:22px 0;font-size:12px;font-weight:700;letter-spacing:0.2em;color:rgba(0,0,0,0.45);}
+.divider-or::before,.divider-or::after{content:'';flex:1;height:1px;background:var(--line);}
+
+.submit-bar{margin-top:60px;border-top:1px solid var(--ink);padding-top:30px;}
+button[type=submit]{
+  font-family:var(--mono);font-size:16px;font-weight:700;
+  background:var(--ink);color:var(--paper);border:1px solid var(--ink);
+  padding:18px 44px;cursor:pointer;width:100%;
+  transition:background .2s var(--ease);
+}
+button[type=submit]:hover{background:var(--olive);border-color:var(--olive);}
+button[type=submit]:disabled{opacity:.5;cursor:wait;}
+.status{margin-top:16px;font-size:14px;font-weight:700;display:none;}
+.status.ok{display:block;color:var(--olive);}
+.status.err{display:block;color:#B3261E;}
+.done{
+  display:none;border:1px solid var(--ink);background:var(--bone);
+  padding:40px;text-align:center;margin-top:40px;
+}
+.done h2{font-size:26px;margin-bottom:10px;}
+.done p{color:rgba(0,0,0,0.7);}
+footer{margin-top:80px;font-size:12.5px;color:rgba(0,0,0,0.45);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="wordmark">InboundOS<span class="x">×</span>bijou<span style="font-size:10px;vertical-align:super;">®</span></div>
+  <h1>Onboarding. <span class="olive">~15 minutes.</span></h1>
+  <p class="intro">Everything here feeds your agents directly: how they write, who they route to, what they never touch. <b>Rough answers beat perfect ones.</b> Skip anything you're unsure about and we'll cover it on the kickoff call.</p>
+</header>
+
+<form id="ob-form">
+
+  <!-- A: BASICS -->
+  <div class="section">
+    <div class="sec-label">01 / You</div>
+    <div class="q"><label>Your name</label><input type="text" name="contact_name" required></div>
+    <div class="q"><label>Your email</label><input type="email" name="email" required></div>
+    <div class="q"><label>Your role</label><input type="text" name="role" placeholder="e.g. Co-founder / CEO"></div>
+  </div>
+
+  <!-- B: TOOLS -->
+  <div class="section">
+    <div class="sec-label">02 / Your tools <span style="letter-spacing:0;text-transform:none;">(what you use today — "none" is a fine answer)</span></div>
+    <div class="q"><label>Email platform <small>Google Workspace, Outlook/Microsoft 365, other</small></label><input type="text" name="email_platform"></div>
+    <div class="q"><label>Where do leads live right now? <small>Spreadsheet, a CRM (which?), or just the inbox</small></label><input type="text" name="leads_location"></div>
+    <div class="q"><label>What's the project form on your website built with? <small>Typeform, WPForms, Gravity, "no idea" — all fine</small></label><input type="text" name="form_tool"></div>
+    <div class="q"><label>Project management tool, if any <small>ClickUp, Trello, Monday, whiteboard, nothing</small></label><input type="text" name="pm_tool"></div>
+    <div class="q"><label>Quoting + invoicing software <small>QuickBooks, Excel, etc.</small></label><input type="text" name="invoice_tool"></div>
+    <div class="q"><label>Where do project files live? <small>Google Drive, Dropbox, a server in the office</small></label><input type="text" name="file_storage"></div>
+    <div class="q"><label>Cold email: what tool and where do lists come from? <small>If it's manual from someone's head, say that</small></label><input type="text" name="cold_email_setup"></div>
+    <div class="q"><label>Phone system <small>Who answers the 516 line today? Any VoIP (RingCentral, Grasshopper)?</small></label><input type="text" name="phone_system"></div>
+    <div class="q"><label>Calendar / booking tool <small>Calendly, Google Calendar invites, back-and-forth emails</small></label><input type="text" name="calendar_tool"></div>
+  </div>
+
+  <!-- C: TEAM ROUTING -->
+  <div class="section">
+    <div class="sec-label">03 / Team routing <span style="letter-spacing:0;text-transform:none;">(so emails reach the right person, not you)</span></div>
+    <div class="q">
+      <label>Your team: name, role, email, what they handle <small>One per line. Example: "Sarah — PM — sarah@bijou.com — runs active projects"</small></label>
+      <textarea name="team_map" placeholder="Name — Role — Email — What they handle"></textarea>
+    </div>
+    <div class="q"><label>A NEW LEAD comes in. Who should it go to?</label><input type="text" name="route_new_lead"></div>
+    <div class="q"><label>An EXISTING CLIENT asks for a status update. Who handles it?</label><input type="text" name="route_status"></div>
+    <div class="q"><label>Who chases strike-off approvals today, and who signs off internally?</label><input type="text" name="route_strikeoff"></div>
+  </div>
+
+  <!-- D: BRAND VOICE -->
+  <div class="section">
+    <div class="sec-label">04 / Brand voice</div>
+    <div class="q">
+      <label>Got a brand guide / brand kit? Drop it here. <small>PDF or ZIP, up to 50MB. Logos, colors, fonts, voice — whatever exists.</small></label>
+      <label class="upload-box" id="upload-box">
+        <input type="file" id="brand-file" accept=".pdf,.zip,.ai,.indd,.pptx,.key">
+        <div class="big" id="upload-label">Click to upload brand guide</div>
+        <div class="small">or skip and answer the questions below</div>
+      </label>
+    </div>
+    <div class="divider-or">OR ANSWER THESE</div>
+    <div class="q"><label>5 words that describe how Bijou sounds <small>e.g. playful, confident, craftsman, direct</small></label><input type="text" name="voice_words"></div>
+    <div class="q"><label>Phrases you always use <small>e.g. "ridiculously good looking wallpaper" — the lines that are YOU</small></label><textarea name="signature_phrases"></textarea></div>
+    <div class="q"><label>Words or phrases to NEVER use <small>Competitor terms, cringe words, anything off-brand</small></label><textarea name="banned_phrases"></textarea></div>
+    <div class="q">
+      <label>How formal are you with designers?</label>
+      <div class="radio-row">
+        <label><input type="radio" name="formality" value="casual">Casual, first names, jokes OK</label>
+        <label><input type="radio" name="formality" value="professional-warm">Professional but warm</label>
+        <label><input type="radio" name="formality" value="formal">Buttoned-up formal</label>
+      </div>
+    </div>
+    <div class="q"><label>Paste 2-3 real emails you've sent clients that sound exactly like you <small>This is the single most useful thing in this form. Agents learn your voice from these.</small></label><textarea name="voice_samples" style="min-height:140px;"></textarea></div>
+  </div>
+
+  <!-- E: SALES INTEL -->
+  <div class="section">
+    <div class="sec-label">05 / Sales intel <span style="letter-spacing:0;text-transform:none;">(teaches Hermes + Ares what matters)</span></div>
+    <div class="q"><label>What makes a lead HOT for you? <small>Project size? Sector (hotel vs residential)? Timeline? A named design firm?</small></label><textarea name="hot_lead_def"></textarea></div>
+    <div class="q"><label>Average project value, and the smallest project you'd still take</label><input type="text" name="project_values"></div>
+    <div class="q"><label>Top 5 questions clients ALWAYS ask <small>Iris and the voice agent will answer these in your words</small></label><textarea name="faqs"></textarea></div>
+    <div class="q"><label>Most common objections, and your best answers to them</label><textarea name="objections"></textarea></div>
+    <div class="q"><label>Roughly, where do leads come from today? <small>e.g. 60% referral, 30% website, 10% cold</small></label><input type="text" name="lead_sources"></div>
+    <div class="q"><label>Dream clients: firms, hotel brands, or developers you WISH were clients <small>Ares hunts from this list first</small></label><textarea name="dream_list"></textarea></div>
+    <div class="q"><label>Target regions for outbound <small>NY metro only? National? Specific cities?</small></label><input type="text" name="target_regions"></div>
+    <div class="q"><label>Do you have a past-client list we can reactivate later? Where does it live?</label><input type="text" name="past_clients"></div>
+  </div>
+
+  <!-- F: BOUNDARIES -->
+  <div class="section">
+    <div class="sec-label">06 / Agent rules <span style="letter-spacing:0;text-transform:none;">(what they must never do)</span></div>
+    <div class="q"><label>Things agents must NEVER say or promise <small>e.g. never quote prices, never promise a turnaround date, never offer discounts</small></label><textarea name="never_say"></textarea></div>
+    <div class="q"><label>Emails or senders agents must never touch <small>Lawyers, specific VIP clients, family, vendors with sensitive pricing</small></label><textarea name="never_touch"></textarea></div>
+    <div class="q">
+      <label>Approval style to start</label>
+      <div class="radio-row">
+        <label><input type="radio" name="approval_mode" value="all-drafts" checked>Every reply is a draft I approve</label>
+        <label><input type="radio" name="approval_mode" value="auto-simple">Auto-send simple stuff, draft the rest</label>
+      </div>
+      <p class="hint">Most clients start with drafts-only, then loosen up after 2-3 weeks of seeing the quality.</p>
+    </div>
+  </div>
+
+  <!-- G: FINAL -->
+  <div class="section">
+    <div class="sec-label">07 / Last one</div>
+    <div class="q"><label>90 days from now, what result would make this a clear return on investment? <small>Hours back, faster lead replies, more projects closed — whatever YOUR number is</small></label><textarea name="ninety_day_win"></textarea></div>
+    <div class="q"><label>Anything else I should know?</label><textarea name="anything_else"></textarea></div>
+  </div>
+
+  <div class="submit-bar">
+    <button type="submit" id="submit-btn">Submit onboarding</button>
+    <p class="status" id="status"></p>
+  </div>
+</form>
+
+<div class="done" id="done">
+  <h2>Got it. <span style="color:var(--olive)">All in.</span></h2>
+  <p>Your answers are saved. Micko reviews them before the kickoff call — anything unclear gets covered there. Audit week starts now.</p>
+</div>
+
+<footer>
+  <span>InboundOS × bijou® · Confidential</span>
+  <span>Questions? Reply to Micko's email.</span>
+</footer>
+</div>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const SUPABASE_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8';
+const CLIENT_SLUG = 'bijou-coverings';
+
+const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// file picker label
+const fileInput = document.getElementById('brand-file');
+const box = document.getElementById('upload-box');
+fileInput.addEventListener('change', () => {
+  if (fileInput.files[0]) {
+    document.getElementById('upload-label').textContent = '✓ ' + fileInput.files[0].name;
+    box.classList.add('has-file');
+  }
+});
+
+document.getElementById('ob-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('submit-btn');
+  const status = document.getElementById('status');
+  btn.disabled = true; btn.textContent = 'Saving...';
+  status.className = 'status';
+
+  try {
+    // 1. upload brand guide if present
+    let brandUrl = null;
+    const f = fileInput.files[0];
+    if (f) {
+      const path = `${CLIENT_SLUG}/${Date.now()}-${f.name.replace(/[^a-zA-Z0-9.\-_]/g, '_')}`;
+      const { error: upErr } = await sb.storage.from('brand-assets').upload(path, f);
+      if (upErr) throw upErr;
+      brandUrl = path;
+    }
+
+    // 2. collect answers
+    const fd = new FormData(e.target);
+    const answers = {};
+    for (const [k, v] of fd.entries()) if (v && !['contact_name','email'].includes(k)) answers[k] = v;
+
+    // 3. insert row
+    const { error } = await sb.from('install_onboarding').insert({
+      client_slug: CLIENT_SLUG,
+      company: 'Bijou Coverings',
+      contact_name: fd.get('contact_name'),
+      email: fd.get('email'),
+      answers,
+      brand_guide_url: brandUrl
+    });
+    if (error) throw error;
+
+    e.target.style.display = 'none';
+    document.getElementById('done').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch (err) {
+    status.textContent = 'Something broke: ' + (err.message || err) + ' — screenshot this and send it to Micko.';
+    status.className = 'status err';
+    btn.disabled = false; btn.textContent = 'Submit onboarding';
+  }
+});
+</script>
+</body>
+</html>

@@ -3,276 +3,584 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bijou × InboundOS — Onboarding</title>
+<title>InboundOS × bijou® — AI Operating System Install</title>
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+
 :root{
-  --ink:#000;--paper:#fff;--bone:#F2F0EB;--olive:#84712A;--amber:#FFBE00;
-  --line:rgba(0,0,0,0.16);
+  --ink:#000000;
+  --paper:#FFFFFF;
+  --bone:#D6D2C9;
+  --bone-light:#F2F0EB;
+  --olive:#84712A;
+  --amber:#FFBE00;
+  --line:rgba(0,0,0,0.14);
   --mono:'Courier Prime','Courier New',monospace;
   --ease:cubic-bezier(0.4,0,0.2,1);
+  --spring:cubic-bezier(0.34,1.56,0.64,1);
 }
-body{background:var(--paper);color:var(--ink);font-family:var(--mono);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;}
-::selection{background:var(--amber);}
-a{color:inherit;}
 
-.wrap{max-width:760px;margin:0 auto;padding:60px 24px 120px;}
-header{margin-bottom:54px;}
-.wordmark{font-weight:700;font-size:16px;}
-.wordmark .x{color:var(--olive);padding:0 5px;}
-h1{font-size:clamp(30px,5vw,46px);font-weight:700;letter-spacing:-0.02em;line-height:1.1;margin:26px 0 14px;}
-h1 .olive{color:var(--olive);}
-.intro{color:rgba(0,0,0,0.7);max-width:600px;}
-.intro b{color:var(--ink);}
-
-.section{margin-top:54px;}
-.sec-label{font-size:12px;font-weight:700;letter-spacing:0.28em;text-transform:uppercase;color:var(--olive);border-bottom:1px solid var(--ink);padding-bottom:10px;margin-bottom:26px;}
-
-.q{margin-bottom:26px;}
-label{display:block;font-weight:700;font-size:15px;margin-bottom:8px;}
-label small{display:block;font-weight:400;font-size:13px;color:rgba(0,0,0,0.55);margin-top:2px;}
-input[type=text],input[type=email],textarea,select{
-  width:100%;font-family:var(--mono);font-size:15px;color:var(--ink);
-  background:var(--bone);border:1px solid var(--line);padding:13px 14px;
-  transition:border-color .2s var(--ease),background .2s var(--ease);
+html{scroll-behavior:smooth;}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--mono);
+  font-size:17px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
 }
-input:focus,textarea:focus,select:focus{outline:none;border-color:var(--ink);background:var(--paper);}
-textarea{min-height:96px;resize:vertical;}
-.radio-row{display:flex;gap:10px;flex-wrap:wrap;}
-.radio-row label{
-  font-weight:400;font-size:14px;margin:0;cursor:pointer;
-  border:1px solid var(--line);padding:10px 16px;background:var(--paper);
-  display:flex;align-items:center;gap:8px;
-  transition:all .15s var(--ease);
-}
-.radio-row input{accent-color:var(--olive);}
-.radio-row label:has(input:checked){border-color:var(--ink);background:var(--bone);font-weight:700;}
+a{color:inherit;text-decoration:none;}
+::selection{background:var(--amber);color:var(--ink);}
 
-.upload-box{
-  border:1px dashed var(--ink);background:var(--bone);
-  padding:26px;text-align:center;cursor:pointer;
+/* ── Progress bar ── */
+.progress{position:fixed;top:0;left:0;height:4px;width:0%;background:var(--olive);z-index:200;transition:width .1s linear;}
+
+/* ── Nav ── */
+nav{
+  position:fixed;top:4px;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 32px;
+  background:rgba(255,255,255,0.92);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.wordmark{font-weight:700;font-size:17px;letter-spacing:-0.01em;}
+.wordmark .x{color:var(--olive);padding:0 6px;}
+.wordmark .reg{font-size:10px;vertical-align:super;}
+.nav-cta{
+  background:var(--ink);color:var(--paper);
+  font-family:var(--mono);font-size:13px;font-weight:700;
+  padding:11px 22px;border:1px solid var(--ink);
+  transition:background .2s var(--ease),color .2s var(--ease);
+}
+.nav-cta:hover{background:var(--olive);border-color:var(--olive);}
+
+/* ── Slide framework ── */
+.slide{
+  min-height:100vh;
+  display:flex;flex-direction:column;justify-content:center;
+  max-width:1040px;margin:0 auto;
+  padding:130px 40px 90px;
+  position:relative;
+}
+.slide-num{
+  font-size:12px;font-weight:700;letter-spacing:0.3em;
+  color:var(--olive);margin-bottom:18px;text-transform:uppercase;
+}
+h1,h2{font-weight:700;letter-spacing:-0.02em;line-height:1.08;}
+h1{font-size:clamp(38px,6vw,68px);}
+h2{font-size:clamp(30px,4.4vw,50px);margin-bottom:18px;}
+h2 .olive{color:var(--olive);}
+.lede{font-size:18px;max-width:680px;color:rgba(0,0,0,0.72);margin-bottom:36px;}
+
+/* angled divider, like the bijou hero edge */
+.angle{position:relative;}
+.angle::after{
+  content:'';position:absolute;left:0;right:0;bottom:-1px;height:60px;
+  background:var(--paper);
+  clip-path:polygon(0 100%,100% 100%,100% 30%,0 85%);
+  pointer-events:none;
+}
+.tinted{background:var(--bone-light);}
+.tinted-olive{background:linear-gradient(rgba(132,113,42,0.92),rgba(132,113,42,0.92));color:var(--paper);}
+
+/* ── Hero ── */
+.hero{align-items:flex-start;text-align:left;}
+.chip{
+  display:inline-block;font-size:12px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;
+  border:1px solid var(--ink);padding:8px 16px;margin-bottom:28px;
+  background:var(--paper);
+}
+.chip .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--olive);margin-right:9px;animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.25;}}
+.hero h1 .type-target{border-right:3px solid var(--olive);padding-right:4px;animation:caret .8s step-end infinite;}
+@keyframes caret{0%,100%{border-color:var(--olive);}50%{border-color:transparent;}}
+.hero-sub{font-size:19px;max-width:640px;color:rgba(0,0,0,0.72);margin:26px 0 38px;}
+.hero-ctas{display:flex;gap:16px;flex-wrap:wrap;}
+.btn{
+  display:inline-block;font-family:var(--mono);font-size:15px;font-weight:700;
+  padding:16px 34px;border:1px solid var(--ink);cursor:pointer;
+  transition:transform .15s var(--spring),background .2s var(--ease),color .2s var(--ease);
+}
+.btn:active{transform:scale(0.97);}
+.btn-ink{background:var(--ink);color:var(--paper);}
+.btn-ink:hover{background:var(--olive);border-color:var(--olive);}
+.btn-line{background:transparent;color:var(--ink);}
+.btn-line:hover{background:var(--ink);color:var(--paper);}
+.hero-note{font-size:13px;color:rgba(0,0,0,0.5);margin-top:20px;}
+
+/* ── Problem slide ── */
+.statement{
+  font-size:clamp(22px,3vw,32px);font-weight:700;line-height:1.35;
+  border-left:6px solid var(--olive);padding-left:26px;margin:34px 0;
+}
+.problem-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--ink);margin-top:8px;}
+.problem-cell{padding:26px 24px;border-right:1px solid var(--ink);}
+.problem-cell:last-child{border-right:none;}
+.problem-cell .t{font-weight:700;font-size:15px;margin-bottom:8px;}
+.problem-cell .d{font-size:14px;color:rgba(0,0,0,0.65);line-height:1.55;}
+
+/* ── Agent cards ── */
+.agents{display:flex;flex-direction:column;gap:0;border:1px solid var(--ink);}
+.agent{
+  display:grid;grid-template-columns:220px 1fr;gap:30px;
+  padding:34px 32px;border-bottom:1px solid var(--ink);
+  background:var(--paper);
+  transition:background .25s var(--ease);
+}
+.agent:last-child{border-bottom:none;}
+.agent:hover{background:var(--bone-light);}
+.agent-id .num{font-size:13px;font-weight:700;letter-spacing:0.25em;color:var(--olive);}
+.agent-id .name{font-size:clamp(24px,2.6vw,34px);font-weight:700;letter-spacing:-0.01em;line-height:1.1;margin-top:6px;}
+.agent-id .role{font-size:13px;color:rgba(0,0,0,0.55);margin-top:6px;}
+.agent-body p{font-size:15px;line-height:1.65;margin-bottom:10px;}
+.agent-body p:last-child{margin-bottom:0;}
+.k{font-weight:700;color:var(--olive);}
+
+/* ── Phase 2 grid ── */
+.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--ink);}
+.menu-cell{padding:24px 26px;border-bottom:1px solid var(--ink);border-right:1px solid var(--ink);transition:background .2s var(--ease);}
+.menu-cell:nth-child(even){border-right:none;}
+.menu-cell:nth-last-child(-n+2){border-bottom:none;}
+.menu-cell:hover{background:var(--bone-light);}
+.menu-cell .n{font-weight:700;font-size:16px;letter-spacing:0.06em;}
+.menu-cell .n span{color:var(--olive);font-size:12px;letter-spacing:0.02em;font-weight:400;}
+.menu-cell .d{font-size:13.5px;color:rgba(0,0,0,0.68);margin-top:7px;line-height:1.55;}
+
+/* ── Dashboard pages ── */
+.pages{counter-reset:pg;display:flex;flex-direction:column;border:1px solid var(--ink);}
+.page-row{
+  counter-increment:pg;
+  display:grid;grid-template-columns:64px 230px 1fr;gap:22px;align-items:baseline;
+  padding:22px 26px;border-bottom:1px solid var(--ink);
   transition:background .2s var(--ease);
 }
-.upload-box:hover{background:#EAE7DF;}
-.upload-box input{display:none;}
-.upload-box .big{font-weight:700;}
-.upload-box .small{font-size:13px;color:rgba(0,0,0,0.55);margin-top:4px;}
-.upload-box.has-file{border-style:solid;background:#EFEAD9;}
+.page-row:last-child{border-bottom:none;}
+.page-row:hover{background:var(--bone-light);}
+.page-row::before{content:counter(pg,decimal-leading-zero);font-weight:700;color:var(--olive);font-size:15px;}
+.page-row .t{font-weight:700;font-size:16px;}
+.page-row .d{font-size:14px;color:rgba(0,0,0,0.68);line-height:1.55;}
 
-.hint{font-size:13px;color:rgba(0,0,0,0.5);margin-top:6px;}
-.divider-or{display:flex;align-items:center;gap:14px;margin:22px 0;font-size:12px;font-weight:700;letter-spacing:0.2em;color:rgba(0,0,0,0.45);}
-.divider-or::before,.divider-or::after{content:'';flex:1;height:1px;background:var(--line);}
+/* ── Timeline ── */
+.timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--ink);}
+.week{padding:28px 24px;border-right:1px solid var(--ink);position:relative;}
+.week:last-child{border-right:none;}
+.week .w{font-size:12px;font-weight:700;letter-spacing:0.25em;color:var(--olive);text-transform:uppercase;}
+.week .big{font-size:42px;font-weight:700;line-height:1;margin:10px 0 14px;}
+.week p{font-size:13.5px;color:rgba(0,0,0,0.7);line-height:1.55;}
+.needs{margin-top:38px;}
+.needs h3{font-size:18px;font-weight:700;margin-bottom:14px;}
+.needs ul{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:10px 28px;}
+.needs li{font-size:14px;line-height:1.5;padding-left:24px;position:relative;color:rgba(0,0,0,0.75);}
+.needs li::before{content:'>';position:absolute;left:0;font-weight:700;color:var(--olive);}
+.needs .total{margin-top:18px;font-size:14px;font-weight:700;}
 
-.submit-bar{margin-top:60px;border-top:1px solid var(--ink);padding-top:30px;}
-button[type=submit]{
-  font-family:var(--mono);font-size:16px;font-weight:700;
-  background:var(--ink);color:var(--paper);border:1px solid var(--ink);
-  padding:18px 44px;cursor:pointer;width:100%;
-  transition:background .2s var(--ease);
+/* ── ROI ── */
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:stretch;}
+.vs-card{border:1px solid var(--ink);padding:32px;display:flex;flex-direction:column;}
+.vs-card.win{background:var(--ink);color:var(--paper);}
+.vs-card .label{font-size:12px;font-weight:700;letter-spacing:0.25em;text-transform:uppercase;margin-bottom:18px;}
+.vs-card.win .label{color:var(--amber);}
+.vs-card .label{color:var(--olive);}
+.vs-row{display:flex;justify-content:space-between;gap:14px;padding:11px 0;border-bottom:1px dashed var(--line);font-size:14px;}
+.vs-card.win .vs-row{border-bottom-color:rgba(255,255,255,0.25);}
+.vs-row:last-of-type{border-bottom:none;}
+.vs-total{font-size:clamp(30px,3.6vw,44px);font-weight:700;letter-spacing:-0.02em;margin-top:auto;padding-top:22px;line-height:1.1;}
+.vs-total small{display:block;font-size:13px;font-weight:400;letter-spacing:0;margin-top:8px;color:rgba(0,0,0,0.55);}
+.vs-card.win .vs-total small{color:rgba(255,255,255,0.65);}
+.vs-card.win .vs-total{color:var(--amber);}
+.back-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--ink);margin-top:24px;}
+.back-col{padding:28px 30px;}
+.back-col+.back-col{border-left:1px solid var(--ink);}
+.back-col h3{font-size:15px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--olive);margin-bottom:14px;}
+.back-col ul{list-style:none;}
+.back-col li{font-size:14px;line-height:1.55;padding:8px 0 8px 24px;position:relative;color:rgba(0,0,0,0.78);border-bottom:1px dashed var(--line);}
+.back-col li:last-child{border-bottom:none;}
+.back-col li::before{content:'>';position:absolute;left:0;font-weight:700;color:var(--olive);}
+
+/* ── Investment ── */
+.invest-wrap{border:1px solid var(--ink);}
+.invest-top{padding:42px 40px;border-bottom:1px solid var(--ink);text-align:center;}
+.price-line{font-size:clamp(30px,4.6vw,54px);font-weight:700;letter-spacing:-0.02em;line-height:1.15;}
+.price-line .olive{color:var(--olive);}
+.founding{
+  margin:26px auto 0;max-width:640px;
+  background:var(--bone-light);border:1px dashed var(--ink);
+  padding:18px 24px;font-size:14px;line-height:1.6;text-align:left;
 }
-button[type=submit]:hover{background:var(--olive);border-color:var(--olive);}
-button[type=submit]:disabled{opacity:.5;cursor:wait;}
-.status{margin-top:16px;font-size:14px;font-weight:700;display:none;}
-.status.ok{display:block;color:var(--olive);}
-.status.err{display:block;color:#B3261E;}
-.done{
-  display:none;border:1px solid var(--ink);background:var(--bone);
-  padding:40px;text-align:center;margin-top:40px;
+.invest-cols{display:grid;grid-template-columns:1fr 1fr;}
+.invest-col{padding:28px 32px;}
+.invest-col+.invest-col{border-left:1px solid var(--ink);}
+.invest-col .t{font-size:12px;font-weight:700;letter-spacing:0.25em;text-transform:uppercase;color:var(--olive);margin-bottom:10px;}
+.invest-col p{font-size:14px;color:rgba(0,0,0,0.75);line-height:1.6;}
+.guarantees{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:24px;}
+.guarantee{border:1px solid var(--ink);padding:26px 28px;background:var(--paper);}
+.guarantee .g{font-size:12px;font-weight:700;letter-spacing:0.25em;text-transform:uppercase;color:var(--olive);margin-bottom:10px;}
+.guarantee p{font-size:14px;line-height:1.6;color:rgba(0,0,0,0.8);}
+
+/* ── Final CTA ── */
+.final{text-align:center;align-items:center;}
+.final h2{max-width:780px;margin-left:auto;margin-right:auto;}
+.final .lede{margin-left:auto;margin-right:auto;}
+.sig{margin-top:48px;font-size:14px;color:rgba(0,0,0,0.6);}
+.sig b{display:block;font-size:16px;color:var(--ink);}
+
+footer{
+  border-top:1px solid var(--ink);
+  padding:26px 32px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  font-size:12.5px;color:rgba(0,0,0,0.55);
 }
-.done h2{font-size:26px;margin-bottom:10px;}
-.done p{color:rgba(0,0,0,0.7);}
-footer{margin-top:80px;font-size:12.5px;color:rgba(0,0,0,0.45);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+
+/* ── Reveal animation ── */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .6s var(--ease),transform .6s var(--spring);}
+.reveal.visible{opacity:1;transform:translateY(0);}
+.reveal.d1{transition-delay:.08s;}
+.reveal.d2{transition-delay:.16s;}
+.reveal.d3{transition-delay:.24s;}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important;}
+  .reveal{opacity:1;transform:none;}
+}
+
+@media (max-width:880px){
+  .slide{padding:110px 22px 70px;}
+  .agent{grid-template-columns:1fr;gap:14px;padding:26px 22px;}
+  .problem-grid{grid-template-columns:1fr;}
+  .problem-cell{border-right:none;border-bottom:1px solid var(--ink);}
+  .problem-cell:last-child{border-bottom:none;}
+  .menu-grid{grid-template-columns:1fr;}
+  .menu-cell{border-right:none!important;}
+  .menu-cell:nth-last-child(2){border-bottom:1px solid var(--ink);}
+  .page-row{grid-template-columns:50px 1fr;}
+  .page-row .d{grid-column:1/-1;}
+  .timeline{grid-template-columns:1fr 1fr;}
+  .week{border-bottom:1px solid var(--ink);}
+  .vs,.guarantees,.invest-cols,.back-grid{grid-template-columns:1fr;}
+  .invest-col+.invest-col,.back-col+.back-col{border-left:none;border-top:1px solid var(--ink);}
+  .needs ul{grid-template-columns:1fr;}
+  nav{padding:13px 18px;}
+  .wordmark{font-size:14px;}
+}
 </style>
 </head>
 <body>
-<div class="wrap">
 
-<header>
-  <div class="wordmark">InboundOS<span class="x">×</span>bijou<span style="font-size:10px;vertical-align:super;">®</span></div>
-  <h1>Onboarding. <span class="olive">~15 minutes.</span></h1>
-  <p class="intro">Everything here feeds your agents directly: how they write, who they route to, what they never touch. <b>Rough answers beat perfect ones.</b> Skip anything you're unsure about and we'll cover it on the kickoff call.</p>
-</header>
+<div class="progress" id="progress"></div>
 
-<form id="ob-form">
+<nav>
+  <span class="wordmark">InboundOS<span class="x">×</span>bijou<span class="reg">®</span></span>
+  <a class="nav-cta" href="/client-onboarding/bijou/form">Start onboarding</a>
+</nav>
 
-  <!-- A: BASICS -->
-  <div class="section">
-    <div class="sec-label">01 / You</div>
-    <div class="q"><label>Your name</label><input type="text" name="contact_name" required></div>
-    <div class="q"><label>Your email</label><input type="email" name="email" required></div>
-    <div class="q"><label>Your role</label><input type="text" name="role" placeholder="e.g. Co-founder / CEO"></div>
+<!-- 01 HERO -->
+<section class="slide hero angle">
+  <span class="chip reveal"><span class="dot"></span>Proposal · Prepared for Jason Kahen · June 2026</span>
+  <h1 class="reveal d1">An operating system for <span class="type-target" id="typer"></span></h1>
+  <p class="hero-sub reveal d2">5 AI agents, built around how Bijou actually runs. They triage your inbox, start your projects, chase your approvals, check your files, and run your outbound. You own all of it.</p>
+  <div class="hero-ctas reveal d3">
+    <a class="btn btn-ink" href="/client-onboarding/bijou/form">Fill out the onboarding form</a>
+    <a class="btn btn-line" href="#problem">See the plan</a>
   </div>
+  <p class="hero-note reveal d3">Takes ~15 minutes · 4-week install · 2 written guarantees · founding-client rate</p>
+</section>
 
-  <!-- B: TOOLS -->
-  <div class="section">
-    <div class="sec-label">02 / Your tools <span style="letter-spacing:0;text-transform:none;">(what you use today — "none" is a fine answer)</span></div>
-    <div class="q"><label>Email platform <small>Google Workspace, Outlook/Microsoft 365, other</small></label><input type="text" name="email_platform"></div>
-    <div class="q"><label>Where do leads live right now? <small>Spreadsheet, a CRM (which?), or just the inbox</small></label><input type="text" name="leads_location"></div>
-    <div class="q"><label>What's the project form on your website built with? <small>Typeform, WPForms, Gravity, "no idea" — all fine</small></label><input type="text" name="form_tool"></div>
-    <div class="q"><label>Project management tool, if any <small>ClickUp, Trello, Monday, whiteboard, nothing</small></label><input type="text" name="pm_tool"></div>
-    <div class="q"><label>Quoting + invoicing software <small>QuickBooks, Excel, etc.</small></label><input type="text" name="invoice_tool"></div>
-    <div class="q"><label>Where do project files live? <small>Google Drive, Dropbox, a server in the office</small></label><input type="text" name="file_storage"></div>
-    <div class="q"><label>Cold email: what tool and where do lists come from? <small>If it's manual from someone's head, say that</small></label><input type="text" name="cold_email_setup"></div>
-    <div class="q"><label>Phone system <small>Who answers the 516 line today? Any VoIP (RingCentral, Grasshopper)?</small></label><input type="text" name="phone_system"></div>
-    <div class="q"><label>Calendar / booking tool <small>Calendly, Google Calendar invites, back-and-forth emails</small></label><input type="text" name="calendar_tool"></div>
-  </div>
-
-  <!-- C: TEAM ROUTING -->
-  <div class="section">
-    <div class="sec-label">03 / Team routing <span style="letter-spacing:0;text-transform:none;">(so emails reach the right person, not you)</span></div>
-    <div class="q">
-      <label>Your team: name, role, email, what they handle <small>One per line. Example: "Sarah — PM — sarah@bijou.com — runs active projects"</small></label>
-      <textarea name="team_map" placeholder="Name — Role — Email — What they handle"></textarea>
+<!-- 02 PROBLEM -->
+<section class="slide" id="problem">
+  <span class="slide-num reveal">01 / Where Bijou is right now</span>
+  <h2 class="reveal">Everything runs through <span class="olive">you and your brother.</span></h2>
+  <p class="lede reveal d1">A 4.9-star reputation with 100+ designers. An in-house design studio. A product people genuinely love. And every decision still bottlenecks at the top.</p>
+  <div class="problem-grid reveal d2">
+    <div class="problem-cell">
+      <div class="t">The form lands on ownership</div>
+      <div class="d">A client fills out the project form. Someone at the top has to read it, figure it out, route it.</div>
     </div>
-    <div class="q"><label>A NEW LEAD comes in. Who should it go to?</label><input type="text" name="route_new_lead"></div>
-    <div class="q"><label>An EXISTING CLIENT asks for a status update. Who handles it?</label><input type="text" name="route_status"></div>
-    <div class="q"><label>Who chases strike-off approvals today, and who signs off internally?</label><input type="text" name="route_strikeoff"></div>
-  </div>
-
-  <!-- D: BRAND VOICE -->
-  <div class="section">
-    <div class="sec-label">04 / Brand voice</div>
-    <div class="q">
-      <label>Got a brand guide / brand kit? Drop it here. <small>PDF or ZIP, up to 50MB. Logos, colors, fonts, voice — whatever exists.</small></label>
-      <label class="upload-box" id="upload-box">
-        <input type="file" id="brand-file" accept=".pdf,.zip,.ai,.indd,.pptx,.key">
-        <div class="big" id="upload-label">Click to upload brand guide</div>
-        <div class="small">or skip and answer the questions below</div>
-      </label>
+    <div class="problem-cell">
+      <div class="t">The inbox is you</div>
+      <div class="d">Leads, clients, vendors, junk. You and David sort it by hand, every day, including the cold follow-ups that slip.</div>
     </div>
-    <div class="divider-or">OR ANSWER THESE</div>
-    <div class="q"><label>5 words that describe how Bijou sounds <small>e.g. playful, confident, craftsman, direct</small></label><input type="text" name="voice_words"></div>
-    <div class="q"><label>Phrases you always use <small>e.g. "ridiculously good looking wallpaper" — the lines that are YOU</small></label><textarea name="signature_phrases"></textarea></div>
-    <div class="q"><label>Words or phrases to NEVER use <small>Competitor terms, cringe words, anything off-brand</small></label><textarea name="banned_phrases"></textarea></div>
-    <div class="q">
-      <label>How formal are you with designers?</label>
-      <div class="radio-row">
-        <label><input type="radio" name="formality" value="casual">Casual, first names, jokes OK</label>
-        <label><input type="radio" name="formality" value="professional-warm">Professional but warm</label>
-        <label><input type="radio" name="formality" value="formal">Buttoned-up formal</label>
+    <div class="problem-cell">
+      <div class="t">Status lives in your heads</div>
+      <div class="d">A designer wants an update, they ask you. Your team of 7-10 is capable, but the information isn't theirs to see.</div>
+    </div>
+  </div>
+  <p class="statement reveal d3">It's a systems problem. Right now, AI at Bijou is a chat window. This install gives you agents that do the actual work.</p>
+</section>
+
+<!-- 03 CORE AGENTS -->
+<section class="slide tinted angle">
+  <span class="slide-num reveal">02 / The install</span>
+  <h2 class="reveal">5 core agents, built around <span class="olive">your real workflow.</span></h2>
+  <p class="lede reveal d1">Inquiry, design, strike-off, production, delivery. Plus your outbound.</p>
+  <div class="agents">
+    <div class="agent reveal">
+      <div class="agent-id">
+        <span class="num">AGENT 01</span>
+        <div class="name">CLIO</div>
+        <div class="role">the intake agent</div>
+      </div>
+      <div class="agent-body">
+        <p><span class="k">Trigger:</span> a client submits your project form (or emails sales).</p>
+        <p><span class="k">What she does:</span> reads the submission and builds a complete project brief. Client, sector, specs, artwork status, timeline, budget signals. Routes it to your PM with everything organized, and logs the lead into your pipeline.</p>
+        <p><span class="k">What dies:</span> owner triage. Projects start themselves.</p>
       </div>
     </div>
-    <div class="q"><label>Paste 2-3 real emails you've sent clients that sound exactly like you <small>This is the single most useful thing in this form. Agents learn your voice from these.</small></label><textarea name="voice_samples" style="min-height:140px;"></textarea></div>
-  </div>
-
-  <!-- E: SALES INTEL -->
-  <div class="section">
-    <div class="sec-label">05 / Sales intel <span style="letter-spacing:0;text-transform:none;">(teaches Hermes + Ares what matters)</span></div>
-    <div class="q"><label>What makes a lead HOT for you? <small>Project size? Sector (hotel vs residential)? Timeline? A named design firm?</small></label><textarea name="hot_lead_def"></textarea></div>
-    <div class="q"><label>Average project value, and the smallest project you'd still take</label><input type="text" name="project_values"></div>
-    <div class="q"><label>Top 5 questions clients ALWAYS ask <small>Iris and the voice agent will answer these in your words</small></label><textarea name="faqs"></textarea></div>
-    <div class="q"><label>Most common objections, and your best answers to them</label><textarea name="objections"></textarea></div>
-    <div class="q"><label>Roughly, where do leads come from today? <small>e.g. 60% referral, 30% website, 10% cold</small></label><input type="text" name="lead_sources"></div>
-    <div class="q"><label>Dream clients: firms, hotel brands, or developers you WISH were clients <small>Ares hunts from this list first</small></label><textarea name="dream_list"></textarea></div>
-    <div class="q"><label>Target regions for outbound <small>NY metro only? National? Specific cities?</small></label><input type="text" name="target_regions"></div>
-    <div class="q"><label>Do you have a past-client list we can reactivate later? Where does it live?</label><input type="text" name="past_clients"></div>
-  </div>
-
-  <!-- F: BOUNDARIES -->
-  <div class="section">
-    <div class="sec-label">06 / Agent rules <span style="letter-spacing:0;text-transform:none;">(what they must never do)</span></div>
-    <div class="q"><label>Things agents must NEVER say or promise <small>e.g. never quote prices, never promise a turnaround date, never offer discounts</small></label><textarea name="never_say"></textarea></div>
-    <div class="q"><label>Emails or senders agents must never touch <small>Lawyers, specific VIP clients, family, vendors with sensitive pricing</small></label><textarea name="never_touch"></textarea></div>
-    <div class="q">
-      <label>Approval style to start</label>
-      <div class="radio-row">
-        <label><input type="radio" name="approval_mode" value="all-drafts" checked>Every reply is a draft I approve</label>
-        <label><input type="radio" name="approval_mode" value="auto-simple">Auto-send simple stuff, draft the rest</label>
+    <div class="agent reveal">
+      <div class="agent-id">
+        <span class="num">AGENT 02</span>
+        <div class="name">HERMES</div>
+        <div class="role">email triage + sales pipeline</div>
       </div>
-      <p class="hint">Most clients start with drafts-only, then loosen up after 2-3 weeks of seeing the quality.</p>
+      <div class="agent-body">
+        <p><span class="k">Trigger:</span> every email that hits your inbox, every new lead, every stalled conversation.</p>
+        <p><span class="k">What he does:</span> triages your entire inbox. Every email classified (lead, client, vendor, junk), prioritized, routed to the right person with a drafted reply waiting. Leads scored hot, warm, or cold. Follow-up sequences run automatically.</p>
+        <p><span class="k">What dies:</span> you and David as the human inbox routers. Dropped follow-ups.</p>
+      </div>
+    </div>
+    <div class="agent reveal">
+      <div class="agent-id">
+        <span class="num">AGENT 03</span>
+        <div class="name">IRIS</div>
+        <div class="role">the project status agent</div>
+      </div>
+      <div class="agent-body">
+        <p><span class="k">Trigger:</span> project stage changes, plus a weekly schedule.</p>
+        <p><span class="k">What she does:</span> sends designers automatic weekly status updates in your voice, and chases strike-off approvals when a sample sits unsigned. Tracks every open approval.</p>
+        <p><span class="k">What dies:</span> "any update?" emails. Stalled strike-offs delaying production.</p>
+      </div>
+    </div>
+    <div class="agent reveal">
+      <div class="agent-id">
+        <span class="num">AGENT 04</span>
+        <div class="name">ARGUS</div>
+        <div class="role">the spec-check agent</div>
+      </div>
+      <div class="agent-body">
+        <p><span class="k">Trigger:</span> a client uploads artwork.</p>
+        <p><span class="k">What he does:</span> checks every file against your printing requirements. File type, 100dpi at print size, 2&Prime; bleed, Pantone reference. Emails the client a clear fix-list before your design team ever opens the file.</p>
+        <p><span class="k">What dies:</span> back-and-forth on bad files. Design hours burned on pre-flight checks.</p>
+      </div>
+    </div>
+    <div class="agent reveal">
+      <div class="agent-id">
+        <span class="num">AGENT 05</span>
+        <div class="name">ARES</div>
+        <div class="role">the outbound agent</div>
+      </div>
+      <div class="agent-body">
+        <p><span class="k">Trigger:</span> your cold email campaigns, daily.</p>
+        <p><span class="k">What he does:</span> personalized cold emails to designers, architects, and procurement contacts, sent in sequences with reply detection. Replies hand off to Hermes. For cold calls, he preps researched call sheets so every dial starts with context.</p>
+        <p><span class="k">What dies:</span> manual list grinding. Cold leads going dark after one touch. Calling blind.</p>
+      </div>
     </div>
   </div>
+</section>
 
-  <!-- G: FINAL -->
-  <div class="section">
-    <div class="sec-label">07 / Last one</div>
-    <div class="q"><label>90 days from now, what result would make this a clear return on investment? <small>Hours back, faster lead replies, more projects closed — whatever YOUR number is</small></label><textarea name="ninety_day_win"></textarea></div>
-    <div class="q"><label>Anything else I should know?</label><textarea name="anything_else"></textarea></div>
+<!-- 04 PHASE 2 -->
+<section class="slide">
+  <span class="slide-num reveal">03 / Phase 2, built on retainer</span>
+  <h2 class="reveal">Once the core 5 prove ROI, <span class="olive">the menu opens.</span></h2>
+  <p class="lede reveal d1">You approve each one before I build it. Retainer covers the builds.</p>
+  <div class="menu-grid reveal d2">
+    <div class="menu-cell"><div class="n">ECHO <span>/ voice agent</span></div><div class="d">Answers your phone line. Qualifies callers, answers spec questions, books consultations to your calendar. Works nights and weekends.</div></div>
+    <div class="menu-cell"><div class="n">PLUTUS <span>/ quote agent</span></div><div class="d">Drafts quotes from intake data: yardage, substrate, timeline. Ready for your review.</div></div>
+    <div class="menu-cell"><div class="n">MNEMOSYNE <span>/ meeting memory</span></div><div class="d">Reads call transcripts, logs every decision and spec change to the client's record.</div></div>
+    <div class="menu-cell"><div class="n">ATHENA <span>/ team knowledge</span></div><div class="d">Your SOPs and specs become a bot your team can ask. New hires train themselves.</div></div>
+    <div class="menu-cell"><div class="n">NEMESIS <span>/ invoice agent</span></div><div class="d">Tracks every unpaid invoice and chases it with polite, escalating reminders until the money lands.</div></div>
+    <div class="menu-cell"><div class="n">PHEME <span>/ reputation agent</span></div><div class="d">Asks for the Google review and project photos at the exact moment clients are happiest.</div></div>
+    <div class="menu-cell"><div class="n">HELIOS <span>/ market scout</span></div><div class="d">Scans for hotel renovations, multifamily developments, and design RFPs. Feeds Ares.</div></div>
+    <div class="menu-cell"><div class="n">ATLAS <span>/ logistics agent</span></div><div class="d">Shipping and delivery notifications, install confirmations, delay flags before the client notices.</div></div>
+    <div class="menu-cell"><div class="n">APOLLO <span>/ content agent</span></div><div class="d">Daily LinkedIn and Instagram drafts aimed at designers and architects.</div></div>
+    <div class="menu-cell"><div class="n">PERSEPHONE <span>/ reactivation</span></div><div class="d">Resurfaces past clients with personalized check-ins. Hotels renovate. Multifamily repaints.</div></div>
   </div>
+</section>
 
-  <div class="submit-bar">
-    <button type="submit" id="submit-btn">Submit onboarding</button>
-    <p class="status" id="status"></p>
+<!-- 05 DASHBOARD -->
+<section class="slide tinted angle">
+  <span class="slide-num reveal">04 / Your custom dashboard</span>
+  <h2 class="reveal">The one you saw, <span class="olive">built for Bijou.</span></h2>
+  <p class="lede reveal d1">Visible from your phone. 7 pages.</p>
+  <div class="pages reveal d2">
+    <div class="page-row"><div class="t">Command center</div><div class="d">The morning screen. Live pipeline by stage, outreach numbers, approval tracker with stall flags, weekly numbers.</div></div>
+    <div class="page-row"><div class="t">Project board</div><div class="d">Your ClickUp, minus ClickUp. Drag-and-drop cards with client, assignee, due date, files, spec-check result. A board per pipeline.</div></div>
+    <div class="page-row"><div class="t">CRM</div><div class="d">Every lead Hermes touches. Hot/warm/cold board, follow-up queue, full conversation history per contact.</div></div>
+    <div class="page-row"><div class="t">Clients</div><div class="d">A profile for every designer, firm, and property. Past projects, substrates ordered, key contacts, total value.</div></div>
+    <div class="page-row"><div class="t">Agents</div><div class="d">What each agent did today, what's running right now, every action logged. Full visibility into your AI staff.</div></div>
+    <div class="page-row"><div class="t">ROI report</div><div class="d">Hours returned, leads answered, follow-ups sent, approvals chased. The page that proves the retainer pays for itself.</div></div>
+    <div class="page-row"><div class="t">Chat</div><div class="d">Ask your business anything. "Where's the Marriott project?" The system answers from your live data.</div></div>
   </div>
-</form>
+  <p class="statement reveal d3">You and your brother stop being the database. Anyone on the team sees status without asking ownership.</p>
+</section>
 
-<div class="done" id="done">
-  <h2>Got it. <span style="color:var(--olive)">All in.</span></h2>
-  <p>Your answers are saved. Micko reviews them before the kickoff call — anything unclear gets covered there. Audit week starts now.</p>
-</div>
+<!-- 06 DELIVERY -->
+<section class="slide">
+  <span class="slide-num reveal">05 / Delivery</span>
+  <h2 class="reveal">Live in <span class="olive">4 weeks.</span></h2>
+  <p class="lede reveal d1">The audit comes first for a reason. AI multiplies whatever you pour it on, so we clean the flow, then automate it.</p>
+  <div class="timeline reveal d2">
+    <div class="week"><span class="w">Week</span><div class="big">1</div><p>Discovery audit. I map how Bijou actually runs. You get a written ops map and agent blueprint to sign off on.</p></div>
+    <div class="week"><span class="w">Week</span><div class="big">2</div><p>Clio and Hermes live. Dashboard v1 up with your real pipeline in it.</p></div>
+    <div class="week"><span class="w">Week</span><div class="big">3</div><p>Iris, Argus, and Ares live. Project board and dashboard complete.</p></div>
+    <div class="week"><span class="w">Week</span><div class="big">4</div><p>Team training, handoff docs, tuning pass. System confirmed running.</p></div>
+  </div>
+  <div class="needs reveal d3">
+    <h3>What I need from you</h3>
+    <ul>
+      <li>Access: form backend, sales inbox, wherever leads live now</li>
+      <li>5-10 recent intake examples + client email threads</li>
+      <li>Your current cold email setup, if there is one</li>
+      <li>Your printing spec sheet (I have most of it already)</li>
+      <li>Bijou's brand doc / brand kit</li>
+      <li>One point of contact + 15-min weekly approvals</li>
+    </ul>
+    <p class="total">Your total time investment: about 3-4 hours across 4 weeks.</p>
+  </div>
+</section>
+
+<!-- 07 ROI -->
+<section class="slide tinted angle">
+  <span class="slide-num reveal">06 / The ROI</span>
+  <h2 class="reveal">What this <span class="olive">replaces.</span></h2>
+  <div class="vs reveal d1">
+    <div class="vs-card">
+      <div class="label">Option A — hire people</div>
+      <div class="vs-row"><span>Ops coordinator</span><b>$45-55K/yr</b></div>
+      <div class="vs-row"><span>Part-time sales admin</span><b>$20-30K/yr</b></div>
+      <div class="vs-row"><span>Outbound assistant</span><b>$15-25K/yr</b></div>
+      <div class="vs-total"><span class="count" data-to="80">$0</span>K-110K<small>per year. And they still take PTO, and eventually they leave.</small></div>
+    </div>
+    <div class="vs-card win">
+      <div class="label">Option B — the system</div>
+      <div class="vs-row"><span>Setup (one-time)</span><b>$4,000</b></div>
+      <div class="vs-row"><span>Retainer, starts month 4</span><b>$1,500/mo</b></div>
+      <div class="vs-row"><span>First 90 days</span><b>covered</b></div>
+      <div class="vs-total">$<span class="count" data-to="17">0</span>,500<small>year 1 total. Roughly 5x cheaper. And you own it.</small></div>
+    </div>
+  </div>
+  <div class="back-grid reveal d2">
+    <div class="back-col">
+      <h3>Time back</h3>
+      <ul>
+        <li>15-25 hours/week of owner and team time, returned</li>
+        <li>You and David work ON the business. Scaling stops depending on your personal hours.</li>
+      </ul>
+    </div>
+    <div class="back-col">
+      <h3>Revenue up</h3>
+      <ul>
+        <li>Speed-to-lead: answered in minutes. The first fast responder usually wins the project.</li>
+        <li>Zero dropped follow-ups. Deals dying quietly in your inbox get closed.</li>
+        <li>Outbound runs daily whether you're slammed or not.</li>
+        <li>Faster strike-off approvals, faster production starts, more throughput per month.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 08 INVESTMENT -->
+<section class="slide">
+  <span class="slide-num reveal">07 / Investment</span>
+  <div class="invest-wrap reveal d1">
+    <div class="invest-top">
+      <div class="price-line">$4,000 install <span class="olive">+ $1,500/mo retainer</span></div>
+      <div class="founding">Founding-client rate. The install price moves to $7,000+ for the next clients once Bijou's results are documented. You get this rate in exchange for letting me publish your numbers as a case study.</div>
+    </div>
+    <div class="invest-cols">
+      <div class="invest-col">
+        <div class="t">Setup</div>
+        <p>One-time fee of $4,000. That's it.</p>
+      </div>
+      <div class="invest-col">
+        <div class="t">Retainer</div>
+        <p>Starts month 4. The setup takes 30 days, then 60 days of refinement making sure everything runs smoothly. After that: maintenance, prompt tuning, CRM hygiene, additional agent builds, strategy calls. Month-to-month. Cancel anytime, the system stays yours.</p>
+      </div>
+    </div>
+  </div>
+  <div class="guarantees">
+    <div class="guarantee reveal d2">
+      <div class="g">Guarantee 01 — Delivery</div>
+      <p>All 5 core agents plus the dashboard and project board confirmed running by week 4, or the setup is free.</p>
+    </div>
+    <div class="guarantee reveal d3">
+      <div class="g">Guarantee 02 — ROI</div>
+      <p>If the system doesn't make you more money or save you more time, I rebuild it free until it does.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 09 CTA -->
+<section class="slide final tinted">
+  <span class="slide-num reveal">08 / Next step</span>
+  <h2 class="reveal">Fill out the onboarding form, <span class="olive">and the audit week starts.</span></h2>
+  <p class="lede reveal d1">About 15 minutes. Your answers teach the agents how Bijou works: your tools, your team, your voice, your rules. First agent live inside 14 days.</p>
+  <div class="hero-ctas reveal d2" style="justify-content:center;">
+    <a class="btn btn-ink" href="/client-onboarding/bijou/form">Start the onboarding form</a>
+  </div>
+  <div class="sig reveal d3">
+    <b>Micko Cruz</b>
+    Founder, InboundOS
+  </div>
+</section>
 
 <footer>
-  <span>InboundOS × bijou® · Confidential</span>
-  <span>Questions? Reply to Micko's email.</span>
+  <span>InboundOS × bijou® · Confidential proposal</span>
+  <span>© 2026 InboundOS</span>
 </footer>
-</div>
 
-<script type="module">
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-
-const SUPABASE_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8';
-const CLIENT_SLUG = 'bijou-coverings';
-
-const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
-
-// file picker label
-const fileInput = document.getElementById('brand-file');
-const box = document.getElementById('upload-box');
-fileInput.addEventListener('change', () => {
-  if (fileInput.files[0]) {
-    document.getElementById('upload-label').textContent = '✓ ' + fileInput.files[0].name;
-    box.classList.add('has-file');
+<script>
+  // typewriter hero
+  const words = ['Bijou.', 'your inbox.', 'your pipeline.', 'your outbound.', 'Bijou.'];
+  const typer = document.getElementById('typer');
+  let wi = 0, ci = 0, deleting = false;
+  function type(){
+    const w = words[wi];
+    typer.textContent = w.slice(0, ci);
+    if(!deleting && ci < w.length){ ci++; setTimeout(type, 90); }
+    else if(!deleting && wi < words.length - 1){ deleting = true; setTimeout(type, 1400); }
+    else if(deleting && ci > 0){ ci--; setTimeout(type, 40); }
+    else if(deleting){ deleting = false; wi++; setTimeout(type, 250); }
   }
-});
+  type();
 
-document.getElementById('ob-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const btn = document.getElementById('submit-btn');
-  const status = document.getElementById('status');
-  btn.disabled = true; btn.textContent = 'Saving...';
-  status.className = 'status';
+  // scroll progress
+  const bar = document.getElementById('progress');
+  addEventListener('scroll', () => {
+    const h = document.documentElement;
+    bar.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%';
+  }, { passive: true });
 
-  try {
-    // 1. upload brand guide if present
-    let brandUrl = null;
-    const f = fileInput.files[0];
-    if (f) {
-      const path = `${CLIENT_SLUG}/${Date.now()}-${f.name.replace(/[^a-zA-Z0-9.\-_]/g, '_')}`;
-      const { error: upErr } = await sb.storage.from('brand-assets').upload(path, f);
-      if (upErr) throw upErr;
-      brandUrl = path;
-    }
-
-    // 2. collect answers
-    const fd = new FormData(e.target);
-    const answers = {};
-    for (const [k, v] of fd.entries()) if (v && !['contact_name','email'].includes(k)) answers[k] = v;
-
-    // 3. insert row
-    const { error } = await sb.from('install_onboarding').insert({
-      client_slug: CLIENT_SLUG,
-      company: 'Bijou Coverings',
-      contact_name: fd.get('contact_name'),
-      email: fd.get('email'),
-      answers,
-      brand_guide_url: brandUrl
+  // reveal on scroll
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), (i % 5) * 70);
+        io.unobserve(e.target);
+      }
     });
-    if (error) throw error;
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-    e.target.style.display = 'none';
-    document.getElementById('done').style.display = 'block';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  } catch (err) {
-    status.textContent = 'Something broke: ' + (err.message || err) + ' — screenshot this and send it to Micko.';
-    status.className = 'status err';
-    btn.disabled = false; btn.textContent = 'Submit onboarding';
-  }
-});
+  // count-up numbers
+  const cio = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      cio.unobserve(e.target);
+      const el = e.target, to = +el.dataset.to, pre = el.textContent.startsWith('$') ? '$' : '';
+      const t0 = performance.now();
+      (function tick(t){
+        const p = Math.min((t - t0) / 1100, 1);
+        el.textContent = pre + Math.round(to * (1 - Math.pow(1 - p, 3)));
+        if (p < 1) requestAnimationFrame(tick);
+      })(t0);
+    });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('.count').forEach(el => cio.observe(el));
 </script>
 </body>
 </html>

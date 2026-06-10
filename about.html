@@ -4,170 +4,312 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>About — InboundOS</title>
+<meta name="description" content="Micko Cruz ran a 10-person content agency. Now AI agents do the work. He installs the same system for agency owners.">
 <link rel="preload" href="/NHGDisplay95Black.otf" as="font" type="font/otf" crossorigin>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
 <style>
-@font-face{font-family:'Neue Haas Grotesk Display';src:url('/NHGDisplay95Black.otf') format('opentype');font-weight:900;font-style:normal;font-display:swap;}
+@font-face{font-family:'NHGDisplay';src:url('/NHGDisplay95Black.otf') format('opentype');font-weight:900;font-style:normal;font-display:block;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-body{background:#0D1117;color:#ffffff;font-family:'DM Sans',sans-serif;font-size:16px;line-height:1.7;padding-top:65px;}
+
+:root{
+  --bg:#0D1117;
+  --white:#ffffff;
+  --ice:#4FC3F7;
+  --label-2:rgba(255,255,255,0.58);
+  --label-3:rgba(255,255,255,0.38);
+  --label-4:rgba(255,255,255,0.22);
+  --glass-bg:rgba(255,255,255,0.06);
+  --glass-border:rgba(255,255,255,0.14);
+  --separator:rgba(255,255,255,0.08);
+  --radius-md:14px;
+  --radius-lg:20px;
+  --radius-xl:28px;
+  --pill:100px;
+  --font-head:'NHGDisplay','DM Sans',system-ui,sans-serif;
+  --font-body:'DM Sans',system-ui,sans-serif;
+  --spring:cubic-bezier(0.34,1.56,0.64,1);
+  --ease:cubic-bezier(0.4,0,0.2,1);
+}
+
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);color:var(--white);
+  font-family:var(--font-body);font-size:16px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  overflow-x:hidden;
+}
 a{color:inherit;text-decoration:none;}
 
-nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 40px;display:flex;align-items:center;justify-content:space-between;background:rgba(13,17,23,0.85);backdrop-filter:blur(12px);border-bottom:1px solid transparent;transition:border-color .3s;}
-nav.scrolled{border-color:rgba(255,255,255,0.08);}
-.logo{font-family:'Neue Haas Grotesk Display','DM Sans',system-ui,sans-serif;font-weight:900;font-size:22px;letter-spacing:-0.02em;text-decoration:none;line-height:1;color:#fff;}
-.logo .os{color:#4FC3F7;}
-.nav-links{display:flex;align-items:center;gap:28px;}
-.nav-link{font-size:13px;font-weight:500;color:rgba(255,255,255,0.5);text-decoration:none;transition:color .2s;}
-.nav-link:hover,.nav-link.active{color:#fff;}
-.nav-cta{font-size:13px;font-weight:600;color:#0D1117;background:#fff;border:none;border-radius:8px;padding:9px 20px;text-decoration:none;transition:opacity .2s;}
-.nav-cta:hover{opacity:.88;}
+.ambient{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);will-change:transform;}
+.orb-1{width:560px;height:560px;top:-180px;left:-120px;background:radial-gradient(circle,rgba(79,195,247,0.14),transparent 65%);animation:drift-1 26s ease-in-out infinite alternate;}
+.orb-2{width:480px;height:480px;top:30%;right:-160px;background:radial-gradient(circle,rgba(88,86,214,0.12),transparent 65%);animation:drift-2 32s ease-in-out infinite alternate;}
+@keyframes drift-1{from{transform:translate(0,0);}to{transform:translate(90px,60px);}}
+@keyframes drift-2{from{transform:translate(0,0);}to{transform:translate(-70px,90px);}}
 
-.hero{max-width:900px;margin:0 auto;padding:80px 40px 60px;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;}
+.glass{
+  position:relative;isolation:isolate;
+  background:var(--glass-bg);
+  backdrop-filter:blur(20px) saturate(180%) brightness(108%);
+  -webkit-backdrop-filter:blur(20px) saturate(180%) brightness(108%);
+  border-radius:var(--radius-lg);
+  border:0.5px solid var(--glass-border);
+  box-shadow:0 4px 24px rgba(0,0,0,0.18),0 1px 4px rgba(0,0,0,0.12),inset 0 1px 0 rgba(255,255,255,0.16),inset 0 -1px 0 rgba(0,0,0,0.08);
+}
+.glass::before{
+  content:'';position:absolute;inset:0;border-radius:inherit;z-index:0;pointer-events:none;
+  background:linear-gradient(150deg,rgba(255,255,255,0.10) 0%,rgba(255,255,255,0.02) 42%,transparent 60%,rgba(255,255,255,0.04) 100%);
+}
+.glass>*{position:relative;z-index:1;}
+
+@media (prefers-reduced-transparency:reduce){
+  .glass,.glass-nav,.chip{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(28,32,38,0.97);}
+}
+
+.glass-nav{
+  position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:100;
+  display:flex;align-items:center;gap:26px;
+  padding:10px 12px 10px 22px;border-radius:var(--pill);
+  background:rgba(255,255,255,0.07);
+  backdrop-filter:blur(20px) saturate(180%);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);
+  border:0.5px solid rgba(255,255,255,0.16);
+  box-shadow:0 8px 32px rgba(0,0,0,0.28),inset 0 1px 0 rgba(255,255,255,0.18);
+  transition:background .3s var(--ease),box-shadow .3s var(--ease);
+  white-space:nowrap;
+}
+.glass-nav.scrolled{background:rgba(20,25,32,0.62);box-shadow:0 12px 40px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.18);}
+.logo{font-family:var(--font-head);font-weight:900;font-size:20px;letter-spacing:-0.02em;line-height:1;}
+.logo .os{color:var(--ice);}
+.nav-links{display:flex;align-items:center;gap:22px;}
+.nav-link{font-size:13px;font-weight:500;color:var(--label-2);transition:color .2s var(--ease);}
+.nav-link:hover,.nav-link.active{color:var(--white);}
+.nav-cta{
+  font-size:13px;font-weight:600;color:#06121C;background:var(--ice);
+  border-radius:var(--pill);padding:9px 18px;
+  transition:opacity .15s var(--ease),transform .1s var(--ease);
+}
+.nav-cta:hover{opacity:.9;}
+.nav-cta:active{transform:scale(0.96);}
+
+.btn-filled{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:15px 30px;border-radius:var(--pill);
+  font-family:var(--font-body);font-size:15px;font-weight:700;
+  color:#06121C;background:var(--ice);border:none;cursor:pointer;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.35);
+  transition:opacity .15s var(--ease),transform .1s var(--ease);
+}
+.btn-filled:hover{opacity:.9;}
+.btn-filled:active{transform:scale(0.96);}
+
+.chip{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:6px 14px;border-radius:var(--pill);
+  font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;
+  color:var(--ice);
+  background:rgba(79,195,247,0.10);
+  border:0.5px solid rgba(79,195,247,0.28);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+}
+.chip-dot{width:6px;height:6px;border-radius:50%;background:currentColor;animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.35;transform:scale(.7);}}
+.section-label{font-size:11px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:var(--label-3);margin-bottom:32px;display:flex;align-items:center;gap:14px;}
+.section-label::after{content:'';flex:1;height:0.5px;background:var(--separator);}
+
+/* ── Hero ── */
+.hero{max-width:960px;margin:0 auto;padding:140px 40px 60px;display:grid;grid-template-columns:0.85fr 1.15fr;gap:56px;align-items:center;}
 .hero-photo{position:relative;}
-.hero-photo img{width:100%;border-radius:20px;object-fit:cover;aspect-ratio:3/4;filter:grayscale(15%);}
-.photo-badge{position:absolute;bottom:-16px;right:-16px;background:#0D1117;border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;}
-.badge-label{font-size:9px;text-transform:uppercase;letter-spacing:0.15em;color:rgba(255,255,255,0.4);}
-.badge-val{font-size:18px;font-weight:700;color:#4FC3F7;line-height:1.2;}
+.hero-photo img{width:100%;border-radius:var(--radius-xl);object-fit:cover;aspect-ratio:3/4;filter:grayscale(15%);display:block;border:0.5px solid var(--glass-border);}
+.photo-badge{
+  position:absolute;bottom:-18px;right:-18px;
+  padding:14px 18px;border-radius:var(--radius-md);
+  background:rgba(20,25,32,0.6);
+  backdrop-filter:blur(20px) saturate(180%);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);
+  border:0.5px solid var(--glass-border);
+  box-shadow:0 8px 32px rgba(0,0,0,0.35),inset 0 1px 0 rgba(255,255,255,0.16);
+}
+.badge-label{font-size:9px;text-transform:uppercase;letter-spacing:0.15em;color:var(--label-3);}
+.badge-val{font-family:var(--font-head);font-size:19px;color:var(--ice);line-height:1.3;letter-spacing:-0.01em;}
+.hero-text h1{font-family:var(--font-head);font-weight:900;font-size:clamp(36px,5vw,56px);letter-spacing:-0.03em;line-height:1.02;margin:18px 0 22px;}
+.hero-text p{font-size:15px;color:var(--label-2);margin-bottom:13px;line-height:1.7;}
+.hero-text p.punch{color:var(--white);font-weight:600;}
 
-.hero-text .eyebrow{font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#4FC3F7;margin-bottom:16px;}
-.hero-text h1{font-size:42px;font-weight:900;letter-spacing:-0.03em;line-height:1.1;margin-bottom:20px;}
-.hero-text p{font-size:15px;color:rgba(255,255,255,0.6);margin-bottom:12px;}
+/* ── Sections ── */
+.section{max-width:960px;margin:0 auto;padding:64px 40px;}
 
-.section{max-width:900px;margin:0 auto;padding:60px 40px;}
-.section-label{font-size:10px;font-weight:700;letter-spacing:0.25em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:32px;display:flex;align-items:center;gap:12px;}
-.section-label::after{content:'';flex:1;height:1px;background:rgba(255,255,255,0.07);}
+/* Timeline as glass rail */
+.timeline{position:relative;display:flex;flex-direction:column;gap:14px;}
+.tl-item{display:grid;grid-template-columns:120px 1fr;gap:24px;padding:26px 28px;border-radius:var(--radius-lg);}
+.tl-year{font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ice);padding-top:4px;}
+.tl-content h3{font-size:17px;font-weight:700;margin-bottom:8px;letter-spacing:-0.01em;}
+.tl-content p{font-size:14px;color:var(--label-2);line-height:1.65;}
 
-.timeline{display:flex;flex-direction:column;gap:0;}
-.tl-item{display:grid;grid-template-columns:120px 1fr;gap:24px;padding:28px 0;border-bottom:1px solid rgba(255,255,255,0.05);}
-.tl-item:last-child{border-bottom:none;}
-.tl-year{font-size:12px;font-weight:700;color:#4FC3F7;padding-top:3px;}
-.tl-content h3{font-size:16px;font-weight:700;margin-bottom:6px;}
-.tl-content p{font-size:14px;color:rgba(255,255,255,0.55);line-height:1.6;}
+.quote-block{
+  margin:48px 0 0;padding:36px 40px;border-radius:var(--radius-xl);
+  background:rgba(79,195,247,0.07);
+  border:0.5px solid rgba(79,195,247,0.22);
+  backdrop-filter:blur(20px) saturate(180%);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);
+  box-shadow:inset 0 1px 0 rgba(79,195,247,0.18),0 4px 24px rgba(79,195,247,0.06);
+}
+.quote-text{font-size:21px;font-weight:600;letter-spacing:-0.01em;line-height:1.5;}
+.quote-text em{color:var(--ice);font-style:normal;}
+.quote-attr{font-size:12.5px;color:var(--label-3);margin-top:16px;}
 
-.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:48px;}
-.stat-box{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:24px;}
-.stat-val{font-size:32px;font-weight:900;color:#4FC3F7;letter-spacing:-0.02em;line-height:1;}
-.stat-label{font-size:11px;color:rgba(255,255,255,0.4);margin-top:6px;text-transform:uppercase;letter-spacing:0.1em;}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:48px;}
+.stat-box{padding:26px 28px;border-radius:var(--radius-lg);}
+.stat-val{font-family:var(--font-head);font-size:30px;color:var(--ice);letter-spacing:-0.02em;line-height:1;}
+.stat-label{font-size:11.5px;color:var(--label-3);margin-top:8px;text-transform:uppercase;letter-spacing:0.08em;}
 
-.quote-block{background:rgba(79,195,247,0.04);border:1px solid rgba(79,195,247,0.12);border-radius:16px;padding:32px 36px;margin:48px 0;}
-.quote-text{font-size:20px;font-weight:600;letter-spacing:-0.01em;line-height:1.5;color:#fff;}
-.quote-text em{color:#4FC3F7;font-style:normal;}
-.quote-attr{font-size:12px;color:rgba(255,255,255,0.4);margin-top:16px;}
+.cta-section{text-align:center;padding:90px 40px 100px;border-top:0.5px solid var(--separator);margin-top:40px;}
+.cta-section h2{font-family:var(--font-head);font-weight:900;font-size:clamp(28px,4vw,40px);letter-spacing:-0.025em;margin:20px 0 12px;}
+.cta-section p{font-size:15px;color:var(--label-2);margin-bottom:30px;}
 
-.cta-section{text-align:center;padding:80px 40px;border-top:1px solid rgba(255,255,255,0.06);}
-.cta-section h2{font-size:32px;font-weight:900;letter-spacing:-0.02em;margin-bottom:12px;}
-.cta-section p{font-size:15px;color:rgba(255,255,255,0.5);margin-bottom:28px;}
-.cta-btn{display:inline-block;background:#4FC3F7;color:#0D1117;font-size:13px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:14px 32px;border-radius:10px;}
-.cta-btn:hover{filter:brightness(1.1);}
+.reveal{opacity:0;transform:translateY(22px) scale(.985);transition:opacity .5s var(--spring),transform .5s var(--spring);}
+.reveal.visible{opacity:1;transform:translateY(0) scale(1);}
 
-@media(max-width:700px){
-  nav{padding:16px 20px;}
-  .nav-links{gap:16px;}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important;}
+  .reveal{opacity:1;transform:none;}
+}
+
+@media (max-width:760px){
+  .glass-nav{gap:14px;padding:9px 10px 9px 16px;top:10px;width:calc(100% - 20px);justify-content:space-between;}
+  .nav-links{gap:13px;}
   .nav-link{font-size:12px;}
-  .hero{grid-template-columns:1fr;gap:32px;padding:40px 20px;}
-  .hero-photo{max-width:280px;margin:0 auto;}
-  .hero-text h1{font-size:28px;}
-  .section{padding:40px 20px;}
-  .tl-item{grid-template-columns:80px 1fr;gap:12px;}
-  .stats-row{grid-template-columns:1fr 1fr;}
-  .quote-text{font-size:16px;}
-  .quote-block{padding:24px 20px;}
-  .cta-section{padding:48px 20px;}
-  .cta-section h2{font-size:24px;}
+  .nav-link.home{display:none;}
+  .nav-cta{padding:8px 13px;font-size:12px;}
+  .logo{font-size:17px;}
+  .hero{grid-template-columns:1fr;gap:40px;padding:120px 20px 40px;}
+  .hero-photo{max-width:300px;margin:0 auto;}
+  .section{padding:44px 20px;}
+  .tl-item{grid-template-columns:1fr;gap:8px;padding:22px;}
+  .stats-row{grid-template-columns:1fr;}
+  .quote-text{font-size:17px;}
+  .quote-block{padding:26px 24px;}
+  .cta-section{padding:60px 20px;}
 }
 </style>
 </head>
 <body>
 
-<nav id="main-nav">
+<div class="ambient" aria-hidden="true">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+</div>
+
+<nav class="glass-nav" id="main-nav" aria-label="Main">
   <a href="/" class="logo">Inbound<span class="os">OS</span></a>
   <div class="nav-links">
-    <a href="/" class="nav-link">Home</a>
+    <a href="/" class="nav-link home">Home</a>
     <a href="/client-wins" class="nav-link">Client Wins</a>
     <a href="/about" class="nav-link active">About</a>
-    <a href="https://calendly.com/inboundos/discovery-call" target="_blank" rel="noopener" class="nav-cta">Book a Call</a>
   </div>
+  <a href="https://calendly.com/inboundos/discovery-call" target="_blank" rel="noopener" class="nav-cta">Book a Call</a>
 </nav>
 
-<div class="hero">
-  <div class="hero-photo">
-    <img src="/micko.jpg" alt="Micko Cruz — Founder of InboundOS">
+<header class="hero">
+  <div class="hero-photo reveal">
+    <img src="/micko.jpg" alt="Micko Cruz, founder of InboundOS">
     <div class="photo-badge">
       <div class="badge-label">Content output</div>
       <div class="badge-val">2 hrs/wk</div>
     </div>
   </div>
   <div class="hero-text">
-    <div class="eyebrow">Founder & Builder</div>
+    <span class="chip"><span class="chip-dot"></span>Founder &amp; Builder</span>
     <h1>Hey, I'm Micko.</h1>
-    <p>Solo founder and the person who built InboundOS — not as a product idea, but out of pure necessity.</p>
-    <p>I spent years running a done-for-you social media agency — a team of 10. VAs, video editors, graphic designers, ops managers, the whole operation. We delivered, but margins were tight, management was constant, and growth just meant more people to manage.</p>
-    <p>Now I'm a team of one. Solo operator. But I have more output than I ever did with 10 people — because my team is made of AI agents that work 24/7, never miss a deadline, respond instantly, and cost a fraction of a salary.</p>
-    <p>I didn't downsize. I upgraded.</p>
-    <p>I studied entrepreneurship for four years — so when I map your business, I'm not just looking at your tech stack. I'm looking at your offer, your positioning, your ICP, and your sales process. The system goes deeper than most AI installs because the thinking behind it does too.</p>
+    <p>Solo founder. I built InboundOS out of pure necessity.</p>
+    <p>I spent years running a done-for-you social media agency with a team of 10. VAs, video editors, graphic designers, ops managers, the whole operation. We delivered, but margins were tight, management was constant, and growth just meant more people to manage.</p>
+    <p>Now I'm a team of one. More output than I ever had with 10 people, because my team is made of AI agents that work 24/7, never miss a deadline, respond instantly, and cost a fraction of a salary.</p>
+    <p class="punch">I call it an upgrade.</p>
+    <p>I studied entrepreneurship for four years, so when I map your business I look at your offer, your positioning, your ICP, and your sales process along with the tech stack. The system goes deeper than most AI installs because the thinking behind it does too.</p>
   </div>
-</div>
+</header>
 
-<div class="section">
+<section class="section">
   <div class="section-label">The Story</div>
 
   <div class="timeline">
-    <div class="tl-item">
+    <div class="tl-item glass reveal">
       <div class="tl-year">Before</div>
       <div class="tl-content">
         <h3>Done-For-You Agency</h3>
-        <p>Started as a DFY social media agency with a team of 10 — VAs, video editors, graphic designers, an ops manager, and a full delivery pipeline. Spent 15+ hours a week just on content. Margins were thin. Growth meant more hiring. More hiring meant more problems.</p>
+        <p>Started as a DFY social media agency with a team of 10. VAs, video editors, graphic designers, an ops manager, and a full delivery pipeline. Spent 15+ hours a week just on content. Margins were thin. Growth meant more hiring. More hiring meant more problems.</p>
       </div>
     </div>
-    <div class="tl-item">
+    <div class="tl-item glass reveal">
       <div class="tl-year">The shift</div>
       <div class="tl-content">
         <h3>The AI Moment</h3>
-        <p>"I thought AI was a hype train — but missing AI right now is like missing Bitcoin in 2011." That realization changed everything. I started replacing team members with AI agents, one by one. Argus for research. Apollo for scripts. Argus for scheduling. The output got better. The cost dropped. The stress disappeared.</p>
+        <p>"I thought AI was a hype train. Missing AI right now is like missing Bitcoin in 2011." That realization changed everything. I started replacing team members with AI agents, one by one. Argus for research. Apollo for scripts. Hermes for the pipeline. The output got better. The cost dropped. The deadlines stopped slipping. The stress disappeared.</p>
       </div>
     </div>
-    <div class="tl-item">
+    <div class="tl-item glass reveal">
       <div class="tl-year">Now</div>
       <div class="tl-content">
         <h3>The InboundOS Install</h3>
-        <p>I install the same system for agency owners still doing it manually. Done-with-you. I map your business, build your AI agents, install the content flywheel. You film, approve, show up to calls. The system handles everything else — 24/7.</p>
+        <p>I install the same system for agency owners still doing it manually. Done-with-you. I map your business, build your AI agents, install the content flywheel. You film, approve, and show up to calls. The system handles everything else, 24/7.</p>
       </div>
     </div>
   </div>
 
-  <div class="quote-block">
-    <div class="quote-text">"Before the system, I was spending <em>15+ hours a week</em> on content. After? <em>2 hours.</em> Same output. Better quality. No team."</div>
-    <div class="quote-attr">— Micko Cruz, Founder of InboundOS</div>
+  <div class="quote-block reveal">
+    <div class="quote-text">"Before the system, I was spending <em>15+ hours a week</em> on content. After? <em>2 hours.</em> Same output, better quality, no team to manage."</div>
+    <div class="quote-attr">Micko Cruz, Founder of InboundOS</div>
   </div>
 
   <div class="stats-row">
-    <div class="stat-box">
+    <div class="stat-box glass reveal">
       <div class="stat-val">15h → 2h</div>
       <div class="stat-label">Weekly content time</div>
     </div>
-    <div class="stat-box">
+    <div class="stat-box glass reveal">
       <div class="stat-val">4 wks</div>
       <div class="stat-label">Content batched in one session</div>
     </div>
-    <div class="stat-box">
-      <div class="stat-val">8</div>
+    <div class="stat-box glass reveal">
+      <div class="stat-val">4</div>
       <div class="stat-label">AI agents running the system</div>
     </div>
   </div>
-</div>
+</section>
 
-<div class="cta-section">
+<section class="cta-section">
+  <span class="chip"><span class="chip-dot"></span>Limited spots</span>
   <h2>Ready to install your system?</h2>
-  <p>Done-with-you installation. Limited spots. Application required.</p>
-  <a href="/" class="cta-btn">Get My Content Flywheel Plan →</a>
-</div>
+  <p>Done-with-you installation. Application required.</p>
+  <a href="/apply" class="btn-filled">Get My Content Flywheel Plan</a>
+</section>
+
+<footer style="border-top:0.5px solid var(--separator);padding:34px 40px;max-width:960px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;">
+  <a href="/" class="logo">Inbound<span class="os">OS</span></a>
+  <div style="display:flex;gap:20px;">
+    <a href="/client-wins" style="font-size:12.5px;color:var(--label-3);">Client Wins</a>
+    <a href="/apply" style="font-size:12.5px;color:var(--label-3);">Apply</a>
+  </div>
+  <div style="font-size:12.5px;color:var(--label-4);">© 2026 InboundOS. All rights reserved.</div>
+</footer>
 
 <script>
   const nav = document.getElementById('main-nav');
-  window.addEventListener('scroll', () => {
-    nav.classList.toggle('scrolled', window.scrollY > 40);
+  addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', scrollY > 24);
   }, { passive: true });
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), (i % 6) * 60);
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -48px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 </script>
 </body>
 </html>

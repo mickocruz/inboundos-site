@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>InboundOS — The Content Flywheel Installation</title>
-<meta name="description" content="We map your company database, then build custom AI agents and automated workflows that run your content. Inbound leads keep arriving while you focus on delivery.">
+<title>InboundOS — The AI Operating System for Solo Agency Owners</title>
+<meta name="description" content="You're the bottleneck. We install custom AI agents and automated workflows so your agency keeps running whether you're selling, delivering, or offline.">
 <link rel="preload" href="/NHGDisplay95Black.otf" as="font" type="font/otf" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -50,10 +50,10 @@ a{color:inherit;text-decoration:none;}
 
 /* ── Ambient field — gives glass something to refract ── */
 .ambient{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;}
-.orb{position:absolute;border-radius:50%;filter:blur(90px);will-change:transform;}
-.orb-1{width:560px;height:560px;top:-180px;left:-120px;background:radial-gradient(circle,rgba(79,195,247,0.14),transparent 65%);animation:drift-1 26s ease-in-out infinite alternate;}
-.orb-2{width:480px;height:480px;top:18%;right:-160px;background:radial-gradient(circle,rgba(88,86,214,0.12),transparent 65%);animation:drift-2 32s ease-in-out infinite alternate;}
-.orb-3{width:620px;height:620px;bottom:-240px;left:30%;background:radial-gradient(circle,rgba(79,195,247,0.08),transparent 65%);animation:drift-3 38s ease-in-out infinite alternate;}
+.orb{position:absolute;border-radius:50%;will-change:transform;transform:translateZ(0);}
+.orb-1{width:800px;height:800px;top:-280px;left:-200px;background:radial-gradient(circle at 50% 50%,rgba(79,195,247,0.18) 0%,rgba(79,195,247,0.08) 35%,rgba(79,195,247,0.02) 60%,transparent 75%);animation:drift-1 26s ease-in-out infinite alternate;}
+.orb-2{width:700px;height:700px;top:18%;right:-240px;background:radial-gradient(circle at 50% 50%,rgba(88,86,214,0.16) 0%,rgba(88,86,214,0.07) 35%,rgba(88,86,214,0.02) 60%,transparent 75%);animation:drift-2 32s ease-in-out infinite alternate;}
+.orb-3{width:900px;height:900px;bottom:-360px;left:30%;background:radial-gradient(circle at 50% 50%,rgba(79,195,247,0.10) 0%,rgba(79,195,247,0.04) 40%,rgba(79,195,247,0.01) 60%,transparent 75%);animation:drift-3 38s ease-in-out infinite alternate;}
 @keyframes drift-1{from{transform:translate(0,0);}to{transform:translate(90px,60px);}}
 @keyframes drift-2{from{transform:translate(0,0);}to{transform:translate(-70px,90px);}}
 @keyframes drift-3{from{transform:translate(0,0);}to{transform:translate(60px,-80px);}}
@@ -89,15 +89,15 @@ a{color:inherit;text-decoration:none;}
   display:flex;align-items:center;gap:26px;
   padding:10px 12px 10px 22px;
   border-radius:var(--pill);
-  background:rgba(255,255,255,0.07);
-  backdrop-filter:blur(20px) saturate(180%);
-  -webkit-backdrop-filter:blur(20px) saturate(180%);
-  border:0.5px solid rgba(255,255,255,0.16);
-  box-shadow:0 8px 32px rgba(0,0,0,0.28),inset 0 1px 0 rgba(255,255,255,0.18);
+  background:rgba(255,255,255,0.10);
+  backdrop-filter:blur(22px) saturate(1.2);
+  -webkit-backdrop-filter:blur(22px) saturate(1.2);
+  border:1px solid rgba(255,255,255,0.30);
+  box-shadow:0 24px 60px rgba(0,0,0,0.18),inset 0 1px 0 rgba(255,255,255,0.35);
   transition:background .3s var(--ease),box-shadow .3s var(--ease);
   white-space:nowrap;
 }
-.glass-nav.scrolled{background:rgba(20,25,32,0.62);box-shadow:0 12px 40px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.18);}
+.glass-nav.scrolled{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.22);box-shadow:0 24px 60px rgba(0,0,0,0.28),inset 0 1px 0 rgba(255,255,255,0.30);}
 .logo{font-family:var(--font-head);font-weight:900;font-size:20px;letter-spacing:-0.02em;line-height:1;}
 .logo .os{color:var(--ice) !important;}
 .nav-links{display:flex;align-items:center;gap:22px;}
@@ -470,13 +470,13 @@ footer .foot-links a:hover{color:var(--white);}
 <header class="hero" id="hero">
   <div class="hero-text">
     <span class="chip"><span class="chip-dot"></span>90-Day Done-With-You Installation</span>
-    <h1>Stop grinding cold DMs. <span class="ice">Build the system that replaces them.</span></h1>
-    <p class="hero-sub">You're doing cold outreach every day because the moment you stop, the pipeline dies. We install custom AI agents and automated workflows that generate inbound leads — so your business keeps running whether you're in the DMs or not.</p>
+    <h1>You're the only one who can't take a day off.<br><span class="ice">We fix that.</span></h1>
+    <p class="hero-sub">You're running a DFY agency solo. Closing deals, delivering results, making content, chasing leads. Hiring a VA didn't hold. We install custom AI agents and automated workflows so your business runs even when you step away.</p>
     <div class="hero-ctas">
       <a href="/apply" class="btn-filled">See If You're a Fit</a>
       <a href="/client-wins" class="btn-ghost">See Receipts</a>
     </div>
-    <p class="hero-note">Application required. Limited spots. No Calendly — we review every application personally.</p>
+    <p class="hero-note">Application required. Limited spots. No Calendly. We review every application personally.</p>
   </div>
   <div class="console glass" aria-hidden="true">
     <div class="console-bar">
@@ -498,34 +498,34 @@ footer .foot-links a:hover{color:var(--white);}
 <!-- ── PROBLEM ── -->
 <section class="section" id="problem" aria-labelledby="problem-heading">
   <div class="section-label">The Problem</div>
-  <h2 id="problem-heading">Cold outreach is working.<br>Until the day you stop.</h2>
-  <p class="section-sub">If you run a DFY agency and cold outreach is your only lead source, you already know this feeling.</p>
+  <h2 id="problem-heading">You built an agency.<br>You became the bottleneck.</h2>
+  <p class="section-sub">At $5K–$12K/month solo, everything runs through you. The offer's proven. The bottleneck is the operating system.</p>
 
   <div class="list-group reveal">
-    <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg></span>The moment you stop DMing, the pipeline dries up. Every day you don't send is a day you don't eat.</div>
-    <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>10 to 15 hours a week grinding manually with nothing compounding in the background.</div>
-    <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><polyline points="21 3 21 9 15 9"/></svg></span>Delivery gets busy. Outreach stops. Pipeline drops. You're back to zero — again.</div>
-    <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><polyline points="3 7 12 13 21 7"/></svg></span>You hired a VA or SDR to handle outreach. They left, didn't convert, or couldn't keep up.</div>
-    <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><path d="M12 17h.01"/></svg></span>You've tried templates, tools, and courses. The outreach ceiling is still there every single month.</div>
-    <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="8" x2="20" y2="8"/><circle cx="9" cy="8" r="2.5"/><line x1="4" y1="16" x2="20" y2="16"/><circle cx="15" cy="16" r="2.5"/></svg></span>You know content could compound leads. You can't build the system while running the business.</div>
+    <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg></span>You're doing delivery, outreach, and content simultaneously. Something gets dropped every week.</div>
+    <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>You hired a VA. They left, needed too much training, or didn't convert. You're still doing it yourself.</div>
+    <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><polyline points="21 3 21 9 15 9"/></svg></span>When client work gets heavy, growth stops. Focus on growth, delivery slips. Same loop, every month.</div>
+    <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><polyline points="3 7 12 13 21 7"/></svg></span>You can't take a day off without the business slowing down. You've built a job, not a system.</div>
+    <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><path d="M12 17h.01"/></svg></span>Content would compound leads over time. But you can't build that system while you're running the business on manual.</div>
+    <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="8" x2="20" y2="8"/><circle cx="9" cy="8" r="2.5"/><line x1="4" y1="16" x2="20" y2="16"/><circle cx="15" cy="16" r="2.5"/></svg></span>A full team would fix it. But the margin won't support it. So you keep absorbing roles that should belong to a system.</div>
   </div>
 
   <div class="gap-callout glass reveal">
-    <p>It's an <span class="ice">operating system gap</span>. Cold outreach is a treadmill — it only runs when you're on it. No capture layer, no content compounding, no AI agents building demand in the background. Just you, back on the phone every Monday.</p>
+    <p>It's an <span class="ice">operating system gap</span>. You're running entirely on human hours. Every output needs your attention before it ships. Every week resets. The ceiling on your revenue is the ceiling on your time.</p>
   </div>
 
   <div class="mini-stats">
     <div class="mini-stat glass reveal">
-      <div class="v">10–15h</div>
-      <div class="l">lost each week to manual scripting, posting, and restarting.</div>
+      <div class="v">100%</div>
+      <div class="l">of outputs depend on you. Nothing ships without your direct involvement.</div>
     </div>
     <div class="mini-stat glass reveal">
-      <div class="v">0x</div>
-      <div class="l">compounding when every content push begins from scratch.</div>
+      <div class="v">4</div>
+      <div class="l">roles you're running simultaneously: operator, closer, creator, delivery lead.</div>
     </div>
     <div class="mini-stat glass reveal">
-      <div class="v">2%</div>
-      <div class="l">typical cold DM reply rate when there's no inbound demand behind it.</div>
+      <div class="v">$0</div>
+      <div class="l">in compounding assets. Every week starts from scratch, with no system working in the background.</div>
     </div>
   </div>
 </section>
@@ -541,62 +541,62 @@ footer .foot-links a:hover{color:var(--white);}
     <div class="with">With InboundOS</div>
   </div>
   <div class="diff-pair reveal">
-    <div class="diff-cell old">Filming whenever you feel like it</div>
-    <div class="diff-cell new glass">Custom AI workflows handle your batching rhythm. Film once, a month of content follows.</div>
+    <div class="diff-cell old">Every output requires your attention before it ships</div>
+    <div class="diff-cell new glass">AI agents handle research and scripting. You review what matters, close the call.</div>
   </div>
   <div class="diff-pair reveal">
-    <div class="diff-cell old">Writing captions and scripts from scratch every time</div>
-    <div class="diff-cell new glass">AI agents trained on your voice, your company data, your frameworks. Type a prompt, get a script.</div>
+    <div class="diff-cell old">Growth stops every time client delivery gets heavy</div>
+    <div class="diff-cell new glass">Content publishes, leads flow in, follow-ups go out. Even when you're heads-down on a client.</div>
   </div>
   <div class="diff-pair reveal">
-    <div class="diff-cell old">Starting from zero every single week</div>
-    <div class="diff-cell new glass">Automated workflows pull from your company database and keep the system fed without you.</div>
+    <div class="diff-cell old">Writing scripts and captions from scratch every week</div>
+    <div class="diff-cell new glass">Apollo writes 5 scripts in your voice every morning. Pick one. Film it.</div>
   </div>
   <div class="diff-pair reveal">
-    <div class="diff-cell old">Zero compounding, a full reset every week</div>
-    <div class="diff-cell new glass">Agents run. Workflows run. Audience builds. Leads arrive while you deliver.</div>
+    <div class="diff-cell old">VA or SDR who needed training, didn't convert, or quit</div>
+    <div class="diff-cell new glass">AI agents stay. They compound over time. Every run makes them more accurate.</div>
   </div>
   <div class="diff-pair reveal">
-    <div class="diff-cell old">Cold DM grind with 2% reply rates</div>
-    <div class="diff-cell new glass">Inbound DMs from people who already watched your content and want to work with you.</div>
+    <div class="diff-cell old">Revenue ceiling tied directly to your available hours</div>
+    <div class="diff-cell new glass">Agents run. Workflows run. Leads arrive. Your capacity grows without adding headcount.</div>
   </div>
 </section>
 
 <!-- ── ECONOMICS ── -->
 <section class="section" id="shift" aria-labelledby="shift-heading">
   <div class="section-label">The Economics</div>
-  <h2 id="shift-heading">To build this in-house, you'd need a full content department.</h2>
-  <p class="section-sub">Research, scripting, editing, posting, DM follow-up. That's usually 6 full-time roles. We build the AI agents and workflows that handle it without adding 6 people to your payroll.</p>
+  <h2 id="shift-heading">Hiring your way out of this would cost $43K/month.</h2>
+  <p class="section-sub">Research, scripting, editing, posting, DM follow-up, ops. That's 6 full-time roles. We build the AI agents and workflows that replace those functions. Without adding anyone to your payroll.</p>
 
   <div class="role-grid">
     <div class="role-card glass reveal">
       <div class="role-top"><span class="role-name">Researcher</span><span class="role-cost">$7.3K/mo</span></div>
-      <p class="role-desc">Finds market angles, customer pain, competitor hooks, objections, and proof points before anything gets written.</p>
+      <p class="role-desc">Finds market angles and competitor hooks before anything gets written.</p>
       <span class="role-dept">Research</span>
     </div>
     <div class="role-card glass reveal">
       <div class="role-top"><span class="role-name">Scriptwriter</span><span class="role-cost">$7.3K/mo</span></div>
-      <p class="role-desc">Turns research into hooks, short-form scripts, captions, story prompts, and offer-led content sequences.</p>
+      <p class="role-desc">Turns research into hooks, scripts, captions, and offer-led content sequences.</p>
       <span class="role-dept">Writing</span>
     </div>
     <div class="role-card glass reveal">
       <div class="role-top"><span class="role-name">Video Editor</span><span class="role-cost">$7.4K/mo</span></div>
-      <p class="role-desc">Cuts raw footage into watchable clips, tightens pacing, adds captions, and prepares creative for each platform.</p>
+      <p class="role-desc">Cuts raw footage into watchable clips, adds captions, prepares creative for each platform.</p>
       <span class="role-dept">Production</span>
     </div>
     <div class="role-card glass reveal">
       <div class="role-top"><span class="role-name">Social Media Manager</span><span class="role-cost">$6.7K/mo</span></div>
-      <p class="role-desc">Schedules posts, manages the calendar, watches performance, rotates CTAs, and keeps distribution consistent.</p>
+      <p class="role-desc">Manages the content calendar, watches performance, keeps distribution consistent.</p>
       <span class="role-dept">Distribution</span>
     </div>
     <div class="role-card glass reveal">
       <div class="role-top"><span class="role-name">DM Setter</span><span class="role-cost">$3.8K/mo</span></div>
-      <p class="role-desc">Turns replies, story engagement, and inbound DMs into qualified conversations and booked calls.</p>
+      <p class="role-desc">Turns inbound DMs and story replies into qualified conversations and booked calls.</p>
       <span class="role-dept">Conversion</span>
     </div>
     <div class="role-card glass reveal">
       <div class="role-top"><span class="role-name">Operations Manager</span><span class="role-cost">$11.1K/mo</span></div>
-      <p class="role-desc">Owns the workflow, handoffs, quality control, deadlines, reporting, and the team rhythm that keeps it running.</p>
+      <p class="role-desc">Owns the workflow, handoffs, quality control, and the rhythm that keeps it running.</p>
       <span class="role-dept">Ops</span>
     </div>
   </div>
@@ -615,8 +615,8 @@ footer .foot-links a:hover{color:var(--white);}
   </div>
 
   <div class="econ-close reveal">
-    <h3>We build the system inside your business.</h3>
-    <p>Custom AI agents, automated workflows, batching rhythm, review loop, CTA strategy, DM conversion flow. All of it mapped to your company database and handed over to you. You don't touch n8n, Claude, or code — outputs arrive ready to use.</p>
+    <h3>We build the operating system inside your business.</h3>
+    <p>Custom AI agents, automated workflows, batching rhythm, review loop, CTA strategy, DM qualification flow. All of it mapped to your company database and handed over to you. You stop being the bottleneck. Outputs arrive ready to use. You don't touch n8n, Claude, or code.</p>
   </div>
 
   <p class="bls-note">Benchmarks use rounded U.S. monthly salary equivalents from BLS OEWS occupational wage categories, mapped to comparable content team roles.</p>
@@ -625,8 +625,8 @@ footer .foot-links a:hover{color:var(--white);}
 <!-- ── WHAT WE BUILD ── -->
 <section class="section" id="system" aria-labelledby="system-heading">
   <div class="section-label">What We Build</div>
-  <h2 id="system-heading">The Content Flywheel,<br>installed inside your business.</h2>
-  <p class="section-sub">Four automated workflows. Two manual steps. The full loop, installed in your business.</p>
+  <h2 id="system-heading">Your AI operating system,<br>installed inside your business.</h2>
+  <p class="section-sub">Four automated workflows. Two manual steps. Everything else runs without you.</p>
 
   <!-- 01 Argus -->
   <div class="agent-block">
@@ -671,11 +671,11 @@ footer .foot-links a:hover{color:var(--white);}
       <div class="agent-kind">Automated · Content Agent</div>
       <p class="agent-myth">Apollo was the Greek god of the sun and poetry, the one who gave voice to what others only felt.</p>
       <h3>Apollo Agent</h3>
-      <p>Apollo takes the intel Argus gathered and mixes it with your content pillars to write 5 ready-to-film scripts every morning, trained on your voice, your offer, your audience. You wake up to scripts already written.</p>
+      <p>Apollo takes the intel Argus gathered and mixes it with your content pillars to write 5 ready-to-film scripts every morning. Trained on your voice, your offer, your audience. You wake up to scripts already written.</p>
       <ul class="agent-points">
         <li>Mixes Argus intel with your content pillars every morning</li>
-        <li>Writes hooks and scripts trained on your voice, offer, and audience</li>
-        <li>Generates 5 scripts a day, saved to Supabase</li>
+        <li>Writes hooks and scripts in your voice, for your specific offer</li>
+        <li>5 scripts a day, saved to Supabase</li>
       </ul>
     </div>
   </div>
@@ -714,9 +714,9 @@ footer .foot-links a:hover{color:var(--white);}
       <h3>Hermes Agent</h3>
       <p>When someone DMs after seeing your content, Hermes flags the reply and sends soft qualification questions automatically. It handles the follow-up sequence, sends the booking form to warm leads, and follows up at 48 hours if there's no reply. Qualified prospects land on your calendar with zero back-and-forth from you.</p>
       <ul class="agent-points">
-        <li>Hermes detects DM replies and triggers the soft qual sequence</li>
-        <li>Follows up automatically and drops the booking form to warm leads</li>
-        <li>Qualified leads booked on your calendar without you touching a DM</li>
+        <li>Detects DM replies and triggers the soft qual sequence</li>
+        <li>Drops the booking form to warm leads, follows up at 48 hours</li>
+        <li>Qualified leads land on your calendar without you touching a DM</li>
       </ul>
     </div>
   </div>
@@ -752,9 +752,9 @@ footer .foot-links a:hover{color:var(--white);}
       <h3>Clio Agent</h3>
       <p>Client pays and the onboarding form goes out automatically. They fill it in. Clio reads the kickoff transcript and brand docs, then builds a full client profile, content pillars, and a 90-day kickoff deck. Everything is saved to Supabase before you open your laptop.</p>
       <ul class="agent-points">
-        <li>Payment triggers the onboarding form, sent automatically</li>
-        <li>Clio reads transcript and docs, then builds the full client profile</li>
-        <li>Kickoff deck and 90-day roadmap generated and saved, zero manual setup</li>
+        <li>Payment triggers the onboarding form automatically</li>
+        <li>Clio reads the transcript and builds the full client profile</li>
+        <li>Kickoff deck and 90-day roadmap generated before you open your laptop</li>
       </ul>
     </div>
   </div>
@@ -765,7 +765,7 @@ footer .foot-links a:hover{color:var(--white);}
 <section class="section" id="process" aria-labelledby="process-heading">
   <div class="section-label">How We Work</div>
   <h2 id="process-heading">Here's exactly how we build it.</h2>
-  <p class="section-sub">We map your business first. Then we build the agents and workflows around it. You own everything when we're done.</p>
+  <p class="section-sub">We map your business first. Then we build the agents and workflows around it. You own everything when we're done. And you're no longer the only one keeping it running.</p>
 
   <div class="steps">
     <div class="step-card glass reveal">
@@ -800,26 +800,26 @@ footer .foot-links a:hover{color:var(--white);}
 <section class="section" id="icp" aria-labelledby="icp-heading">
   <div class="section-label">Who This Is For</div>
   <h2 id="icp-heading">Built for one type of person.</h2>
-  <p class="section-sub">Built for solo DFY agency owners who are cold outreach dependent, hitting a volume ceiling, and can't hire their way out of it.</p>
+  <p class="section-sub">The solo DFY agency owner who's proven the offer works. And is now stuck being the only one who can run it.</p>
 
   <div class="icp-grid">
     <div>
       <div class="icp-col-label fit">This is you</div>
       <div class="list-group reveal">
-        <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 13 9 17 19 7"/></svg></span>Solo or 2-person DFY agency — SMMA, content, lead gen, or marketing consultant</div>
-        <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 13 9 17 19 7"/></svg></span>Doing $5K–$12K/month, cold outreach is your only lead source</div>
-        <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 13 9 17 19 7"/></svg></span>Pipeline dies when you stop DMing — you feel the ceiling daily</div>
-        <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 13 9 17 19 7"/></svg></span>Tried a VA or SDR — it didn't stick, didn't convert, or didn't last</div>
-        <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 13 9 17 19 7"/></svg></span>Ready to invest in a system you own — not a tool you rent</div>
-        <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 13 9 17 19 7"/></svg></span>Willing to film. You film, we build and run everything else</div>
+        <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 13 9 17 19 7"/></svg></span>Solo or 2-person DFY agency. SMMA, content, lead gen, marketing consultant.</div>
+        <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 13 9 17 19 7"/></svg></span>$5K–$12K/month. The offer works. Growth is stuck because everything still runs through you.</div>
+        <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 13 9 17 19 7"/></svg></span>You've tried hiring a VA or SDR. It didn't stick, didn't produce, or didn't last.</div>
+        <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 13 9 17 19 7"/></svg></span>More clients means more of you. The revenue ceiling and the time ceiling are the same ceiling.</div>
+        <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 13 9 17 19 7"/></svg></span>Ready to invest in a system you own. One that runs after you stop paying for it.</div>
+        <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 13 9 17 19 7"/></svg></span>Willing to film. You film, we build and run everything else.</div>
       </div>
     </div>
     <div>
       <div class="icp-col-label nofit">This isn't</div>
       <div class="list-group reveal">
-        <div class="list-row"><span class="row-icon row-x"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></span>Beginners without an offer or clients yet</div>
-        <div class="list-row"><span class="row-icon row-x"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></span>Agencies with a team already in place — you've solved the operations problem</div>
-        <div class="list-row"><span class="row-icon row-x"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></span>Anyone after a quick hack or a fully hands-off service. You still film, and the build takes 90 days</div>
+        <div class="list-row"><span class="row-icon row-x"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></span>Beginners without a proven offer or paying clients yet</div>
+        <div class="list-row"><span class="row-icon row-x"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></span>Agencies with an ops team already in place. You've got the bottleneck handled.</div>
+        <div class="list-row"><span class="row-icon row-x"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></span>Anyone looking for fully hands-off. The build is done-with-you. You show up, we build together.</div>
       </div>
     </div>
   </div>
@@ -831,26 +831,26 @@ footer .foot-links a:hover{color:var(--white);}
 
   <div class="offer-card glass reveal">
     <span class="chip"><span class="chip-dot"></span>90-Day Done-With-You Installation</span>
-    <h3 id="offer-heading">The Content Flywheel Installation</h3>
-    <p class="offer-sub">90-day done-with-you build program</p>
+    <h3 id="offer-heading">The InboundOS Installation</h3>
+    <p class="offer-sub">90-day done-with-you build. Your AI operating system, installed inside your business.</p>
     <ul class="offer-list">
       <li>4 weekly 1:1 strategy calls per month</li>
       <li>Company database mapped from your clients, calls, and frameworks</li>
       <li>Custom AI agents built and trained on your data: scripts, hooks, captions in your voice</li>
-      <li>Automated content workflows wired to your batching rhythm</li>
+      <li>Automated workflows wired to your content and delivery rhythm</li>
       <li>Script and hook reviews, up to 10 pieces per month</li>
       <li>Unlimited async support, 24/7</li>
-      <li>DM conversion flow and story sequence built and tested</li>
+      <li>DM qualification and follow-up flow built and tested</li>
       <li>Every agent and workflow lives in your business. You own all of it</li>
       <li>You don't touch n8n, Claude, or code. Outputs arrive in your inbox, ready to use</li>
     </ul>
     <a href="/apply" class="btn-filled">See If You're a Fit</a>
-    <p class="offer-foot">Built for solo DFY agency owners doing $5K–$12K/mo who are cold outreach dependent and hitting a volume ceiling they can't hire their way out of.</p>
+    <p class="offer-foot">Built for solo DFY agency owners doing $5K–$12K/mo who are the bottleneck in their own business and can't hire their way out of it.</p>
   </div>
 
   <div class="econ-close reveal" style="margin-top:14px;">
     <h3>If you don't make more money or save time, we keep working until you do.</h3>
-    <p>That's the guarantee. Not a refund policy — a commitment to stay in it with you until the system actually works for your business.</p>
+    <p>That's the guarantee. A commitment to stay in it with you until the system actually works for your business.</p>
   </div>
 
   <div class="retainer glass reveal">
@@ -901,7 +901,7 @@ footer .foot-links a:hover{color:var(--white);}
     </details>
     <details>
       <summary>What if it's not working?</summary>
-      <p class="faq-a">If you don't make more money or save time, we keep working with you until you do. That's not a refund policy — it's a commitment. We track what's converting from week one and adjust before problems compound. Done-with-you means you're never figuring it out alone.</p>
+      <p class="faq-a">If you don't make more money or save time, we keep working with you until you do. We track what's converting from week one and adjust before problems compound. Done-with-you means you're never figuring it out alone.</p>
     </details>
   </div>
 </section>
@@ -909,7 +909,7 @@ footer .foot-links a:hover{color:var(--white);}
 <!-- ── FINAL CTA ── -->
 <section class="final-cta" id="final-cta" aria-labelledby="final-cta-heading">
   <span class="chip"><span class="chip-dot"></span>Ready?</span>
-  <h2 id="final-cta-heading" style="margin-top:22px;">90 days from now, you'll have a flywheel running — or you'll still be in the DMs every morning.</h2>
+  <h2 id="final-cta-heading" style="margin-top:22px;">90 days from now, you'll have a system running. Or you'll still be the only thing keeping the business alive.</h2>
   <p>Apply below. We review every application personally and tell you straight if it's a fit. No Calendly, no sales call before we know it's right.</p>
   <a href="/apply" class="btn-filled">See If You're a Fit</a>
   <p class="final-note">Limited spots. Application required. We work with you until it works.</p>

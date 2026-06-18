@@ -68,39 +68,19 @@
     },
     {
       "source": "/dashboard",
-      "destination": "/dashboard/command.html"
+      "destination": "/dashboard/agents.html"
     },
     {
       "source": "/dashboard/",
-      "destination": "/dashboard/command.html"
+      "destination": "/dashboard/agents.html"
     },
     {
       "source": "/:client/dashboard",
-      "destination": "/dashboard/command.html"
-    },
-    {
-      "source": "/:client/command",
-      "destination": "/dashboard/command.html"
-    },
-    {
-      "source": "/:client/database",
-      "destination": "/dashboard/vault.html"
-    },
-    {
-      "source": "/:client/vault",
-      "destination": "/dashboard/vault.html"
+      "destination": "/dashboard/agents.html"
     },
     {
       "source": "/:client/clients",
       "destination": "/dashboard/clients.html"
-    },
-    {
-      "source": "/:client/sops",
-      "destination": "/dashboard/sops.html"
-    },
-    {
-      "source": "/:client/org-chart",
-      "destination": "/dashboard/org-chart.html"
     },
     {
       "source": "/:client/sales-calls",
@@ -127,14 +107,6 @@
       "destination": "/dashboard/clients.html"
     },
     {
-      "source": "/sops",
-      "destination": "/dashboard/sops.html"
-    },
-    {
-      "source": "/org-chart",
-      "destination": "/dashboard/org-chart.html"
-    },
-    {
       "source": "/sales-calls",
       "destination": "/dashboard/sales-calls.html"
     },
@@ -145,18 +117,6 @@
     {
       "source": "/performance",
       "destination": "/dashboard/performance.html"
-    },
-    {
-      "source": "/command",
-      "destination": "/dashboard/command.html"
-    },
-    {
-      "source": "/database",
-      "destination": "/dashboard/vault.html"
-    },
-    {
-      "source": "/vault",
-      "destination": "/dashboard/vault.html"
     },
     {
       "source": "/agents",
@@ -180,11 +140,11 @@
     },
     {
       "source": "/:client/roi",
-      "destination": "/dashboard/roi.html"
+      "destination": "/dashboard/metrics.html"
     },
     {
       "source": "/roi",
-      "destination": "/dashboard/roi.html"
+      "destination": "/dashboard/metrics.html"
     },
     {
       "source": "/:client/chat",
@@ -195,20 +155,36 @@
       "destination": "/dashboard/chat.html"
     },
     {
-      "source": "/:client/edge",
-      "destination": "/dashboard/edge.html"
-    },
-    {
-      "source": "/edge",
-      "destination": "/dashboard/edge.html"
-    },
-    {
       "source": "/:client/metrics",
       "destination": "/dashboard/metrics.html"
     },
     {
       "source": "/metrics",
       "destination": "/dashboard/metrics.html"
+    },
+    {
+      "source": "/:client/tasks",
+      "destination": "/dashboard/tasks.html"
+    },
+    {
+      "source": "/tasks",
+      "destination": "/dashboard/tasks.html"
+    },
+    {
+      "source": "/:client/activity",
+      "destination": "/dashboard/activity.html"
+    },
+    {
+      "source": "/activity",
+      "destination": "/dashboard/activity.html"
+    },
+    {
+      "source": "/:client/planner",
+      "destination": "/dashboard/planner/index.html"
+    },
+    {
+      "source": "/planner",
+      "destination": "/dashboard/planner/index.html"
     }
   ]
 }

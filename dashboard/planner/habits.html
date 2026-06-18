@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0D1117">
+<title>InboundOS — Habits</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/dashboard/planner/planner.css">
+</head>
+<body>
+<div class="layout">
+  <div id="sidebar-slot"></div>
+  <main class="main">
+    <div class="header">
+      <div class="header-left">
+        <h1>Habit <span>Streaks</span></h1>
+        <div class="date" id="hdr-date"></div>
+      </div>
+    </div>
+
+    <div class="section-label">Today's Checklist</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;flex-shrink:0;" id="checklist"></div>
+
+    <div class="section-label" style="margin-top:8px;">Last 8 Weeks</div>
+    <div class="habit-grid" id="habit-grid"></div>
+  </main>
+</div>
+
+<script src="/dashboard/planner/shared.js"></script>
+<script>
+document.getElementById('sidebar-slot').outerHTML = plSidebar('habits');
+document.getElementById('hdr-date').textContent = plDateLabel();
+
+// Habits from wiki: nutrition non-negotiables + sleep anchors + output
+const HABITS = [
+  { id: 'wake_12pm',     label: 'Wake 12PM — no snooze' },
+  { id: 'protein_176g',  label: 'Protein 176g' },
+  { id: 'creatine',      label: 'Creatine 5g' },
+  { id: 'no_sugar',      label: 'No sugar' },
+  { id: 'workout',       label: 'Workout / Run' },
+  { id: 'content_posted',label: 'Content posted' },
+  { id: 'melatonin',     label: 'Melatonin 11:30PM' },
+];
+
+let LOGS = []; // last 56 days
+
+async function load() {
+  const since = new Date(); since.setDate(since.getDate() - 56);
+  LOGS = await plGet('habit_logs', `date=gte.${plLocalISO(since)}&order=date.asc`);
+  render();
+}
+
+function isDone(habit, iso) {
+  return LOGS.some(l => l.habit === habit && l.date === iso && l.done);
+}
+
+function streak(habit) {
+  let n = 0;
+  const d = new Date();
+  if (new Date().getHours() < 5) d.setDate(d.getDate() - 1); // cycle day
+  // today doesn't break streak if not yet logged
+  if (!isDone(habit, plLocalISO(d))) d.setDate(d.getDate() - 1);
+  while (isDone(habit, plLocalISO(d))) { n++; d.setDate(d.getDate() - 1); }
+  return n;
+}
+
+function render() {
+  const today = plToday();
+  document.getElementById('checklist').innerHTML = HABITS.map(h => {
+    const done = isDone(h.id, today);
+    return `<div class="habit-check${done ? ' done' : ''}" onclick="toggle('${h.id}')">
+      <span>${done ? '✓' : '○'}</span> ${h.label}</div>`;
+  }).join('');
+
+  document.getElementById('habit-grid').innerHTML = HABITS.map(h => {
+    const cells = [];
+    const start = new Date(); start.setDate(start.getDate() - 55);
+    for (let i = 0; i < 56; i++) {
+      const d = new Date(start); d.setDate(d.getDate() + i);
+      const iso = plLocalISO(d);
+      cells.push(`<div class="heat-cell${isDone(h.id, iso) ? ' on' : ''}${iso === today ? ' today' : ''}" title="${iso}"></div>`);
+    }
+    return `<div class="habit-row">
+      <div class="habit-top"><span class="habit-name">${h.label}</span><span class="habit-streak">${streak(h.id)}🔥 streak</span></div>
+      <div class="heat">${cells.join('')}</div></div>`;
+  }).join('');
+}
+
+async function toggle(habit) {
+  const today = plToday();
+  const existing = LOGS.find(l => l.habit === habit && l.date === today);
+  if (existing) {
+    existing.done = !existing.done;
+    render();
+    await plPatch('habit_logs', `id=eq.${existing.id}`, { done: existing.done });
+  } else {
+    const [row] = await plInsert('habit_logs', [{ date: today, habit, done: true }]);
+    LOGS.push(row);
+    render();
+  }
+}
+
+plStartAnchors();
+load();
+</script>
+</body>
+</html>

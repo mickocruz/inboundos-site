@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0D1117">
+<title>InboundOS — Fitness</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/dashboard/planner/planner.css">
+</head>
+<body>
+<div class="layout">
+  <div id="sidebar-slot"></div>
+  <main class="main" style="overflow-y:auto;">
+    <div class="header">
+      <div class="header-left">
+        <h1>Fitness <span>· V-Taper</span></h1>
+        <div class="date">Goal: 10–12% BF lean aesthetic · currently Phase 1 Foundation</div>
+      </div>
+      <div class="header-right">
+        <button class="btn" onclick="openMetric()">Log Body Metrics</button>
+      </div>
+    </div>
+
+    <div class="stat-row" id="stat-row"></div>
+
+    <div class="fit-grid">
+      <div class="fit-card">
+        <div class="fit-title" id="wod-title">Today's Session</div>
+        <div id="wod-body"></div>
+        <button class="btn" style="margin-top:12px;" id="wod-save" onclick="saveWorkout()">Save Session</button>
+      </div>
+
+      <div class="fit-card">
+        <div class="fit-title">Phase 1 → 2 Milestones</div>
+        <div id="milestones"></div>
+      </div>
+
+      <div class="fit-card">
+        <div class="fit-title">Body Fat % → 10–12% Target</div>
+        <canvas class="chart" id="bf-chart" height="180"></canvas>
+      </div>
+
+      <div class="fit-card">
+        <div class="fit-title">Recent Sessions</div>
+        <div id="recent"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="modal-overlay" id="metric-modal" onclick="if(event.target===this)this.classList.remove('show')">
+  <div class="modal-box">
+    <h3>Log Body Metrics</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-family:var(--font-data);font-size:13px;">
+      <label>Weight kg<input type="number" step="0.1" id="m-weight" style="width:100%;margin-top:4px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:8px;color:#fff;"></label>
+      <label>Body fat %<input type="number" step="0.1" id="m-bf" style="width:100%;margin-top:4px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:8px;color:#fff;"></label>
+      <label>Waist cm<input type="number" step="0.1" id="m-waist" style="width:100%;margin-top:4px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:8px;color:#fff;"></label>
+      <label>Muscle kg<input type="number" step="0.1" id="m-muscle" style="width:100%;margin-top:4px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:8px;color:#fff;"></label>
+    </div>
+    <button class="btn" style="margin-top:14px;" onclick="saveMetric()">Save</button>
+  </div>
+</div>
+
+<script src="/dashboard/planner/shared.js"></script>
+<script>
+document.getElementById('sidebar-slot').outerHTML = plSidebar('fitness');
+
+// Phase 1 Foundation — from wiki MK_Fitness_Plan
+const PLAN = {
+  fullbody: [
+    { ex: 'Push-up', target: '3 × max' },
+    { ex: 'Bodyweight Squat', target: '3 × 15–20' },
+    { ex: 'Pike Push-up', target: '3 × 8–12' },
+    { ex: 'Reverse Lunge', target: '3 × 10 each' },
+    { ex: 'Plank', target: '3 × 30–45s' },
+    { ex: 'Glute Bridge', target: '3 × 15' },
+  ],
+  run: [{ ex: 'Run', target: '20–30 min' }],
+};
+const DOW = new Date().getDay(); // 0 Sun
+const IS_LIFT = [1, 3, 5].includes(DOW);   // M W F
+const IS_RUN  = [2, 4, 6].includes(DOW);   // T Th Sa
+const TODAY_PLAN = IS_LIFT ? PLAN.fullbody : IS_RUN ? PLAN.run : [];
+
+let WORKOUTS = [], METRICS = [];
+
+async function load() {
+  const since = new Date(); since.setDate(since.getDate() - 60);
+  [WORKOUTS, METRICS] = await Promise.all([
+    plGet('workout_logs', `date=gte.${plLocalISO(since)}&order=date.desc,created_at.desc`),
+    plGet('body_metrics', 'order=date.asc'),
+  ]);
+  render();
+}
+
+function render() {
+  // stats
+  const latest = METRICS[METRICS.length - 1] || {};
+  const week = WORKOUTS.filter(w => (Date.now() - new Date(w.date)) / 864e5 < 7);
+  const sessionsWk = new Set(week.map(w => w.date)).size;
+  document.getElementById('stat-row').innerHTML = `
+    <div class="stat-card"><div class="stat-val">${latest.weight_kg ?? '—'}</div><div class="stat-lbl">Weight kg</div></div>
+    <div class="stat-card"><div class="stat-val" style="color:var(--yellow);">${latest.body_fat_pct ?? '—'}%</div><div class="stat-lbl">Body Fat (→10–12%)</div></div>
+    <div class="stat-card"><div class="stat-val" style="color:var(--accent);">${sessionsWk}/6</div><div class="stat-lbl">Sessions This Week</div></div>
+    <div class="stat-card"><div class="stat-val" style="color:var(--green);">${bestReps('Push-up')}</div><div class="stat-lbl">Best Push-up Set</div></div>`;
+
+  // today's session
+  document.getElementById('wod-title').textContent =
+    IS_LIFT ? "Today's Session — Full Body (MWF)" : IS_RUN ? "Today's Session — Run (TTS)" : 'Rest Day — recover, walk, meal prep';
+  document.getElementById('wod-body').innerHTML = TODAY_PLAN.length
+    ? TODAY_PLAN.map((p, i) => `<div class="ex-row"><span class="ex-name">${p.ex}</span><span class="ex-target">${p.target}</span>
+        ${p.ex === 'Run' || p.ex === 'Plank'
+          ? `<input type="number" id="ex-${i}" placeholder="${p.ex === 'Run' ? 'min' : 'sec'}">`
+          : `<input type="number" id="ex-sets-${i}" placeholder="sets"><input type="number" id="ex-${i}" placeholder="reps">`}</div>`).join('')
+    : '<div style="font-family:var(--font-data);font-size:13px;color:var(--text-muted);">Nothing scheduled. Sunday = full rest.</div>';
+  document.getElementById('wod-save').style.display = TODAY_PLAN.length ? '' : 'none';
+
+  // milestones — Phase 1 unlock from wiki
+  const ms = [
+    { label: '3×15 clean push-ups', hit: bestReps('Push-up') >= 15 },
+    { label: '3×10 pike push-ups', hit: bestReps('Pike Push-up') >= 10 },
+    { label: 'Run 30min non-stop', hit: bestDuration('Run') >= 30 },
+  ];
+  document.getElementById('milestones').innerHTML = ms.map(m =>
+    `<div class="milestone${m.hit ? ' hit' : ''}">${m.hit ? '✓' : '○'} ${m.label}</div>`).join('') +
+    `<div style="font-family:var(--font-data);font-size:11px;color:var(--text-dim);margin-top:8px;">All 3 → Phase 2: Push/Pull/Legs/Core split + doorframe pull-up bar</div>`;
+
+  // recent
+  const byDate = {};
+  WORKOUTS.slice(0, 40).forEach(w => { (byDate[w.date] = byDate[w.date] || []).push(w); });
+  document.getElementById('recent').innerHTML = Object.entries(byDate).slice(0, 7).map(([d, rows]) =>
+    `<div class="ex-row"><span class="ex-name">${d}</span><span class="ex-target">${rows.map(r =>
+      r.duration_min ? `${r.exercise} ${r.duration_min}min` : `${r.exercise} ${r.sets ?? '?'}×${r.reps ?? '?'}`).join(' · ')}</span></div>`).join('')
+    || '<div style="font-family:var(--font-data);font-size:13px;color:var(--text-muted);">No sessions logged yet. Today is day one.</div>';
+
+  drawChart();
+}
+
+function bestReps(ex) { return Math.max(0, ...WORKOUTS.filter(w => w.exercise === ex && w.reps).map(w => w.reps)); }
+function bestDuration(ex) { return Math.max(0, ...WORKOUTS.filter(w => w.exercise === ex && w.duration_min).map(w => w.duration_min)); }
+
+async function saveWorkout() {
+  const rows = [];
+  TODAY_PLAN.forEach((p, i) => {
+    const val = +document.getElementById(`ex-${i}`)?.value || null;
+    const sets = +document.getElementById(`ex-sets-${i}`)?.value || null;
+    if (!val) return;
+    if (p.ex === 'Run') rows.push({ date: plLocalISO(new Date()), exercise: p.ex, duration_min: val });
+    else if (p.ex === 'Plank') rows.push({ date: plLocalISO(new Date()), exercise: p.ex, sets: sets || 3, duration_min: Math.round(val / 60) || 1, notes: `${val}s hold` });
+    else rows.push({ date: plLocalISO(new Date()), exercise: p.ex, sets: sets || 3, reps: val });
+  });
+  if (!rows.length) return;
+  const ins = await plInsert('workout_logs', rows);
+  WORKOUTS = [...ins, ...WORKOUTS];
+  // auto-tick workout habit
+  try { await plInsert('habit_logs', [{ date: plToday(), habit: 'workout', done: true }]); } catch (e) {}
+  render();
+}
+
+function openMetric() { document.getElementById('metric-modal').classList.add('show'); }
+async function saveMetric() {
+  const row = {
+    date: plLocalISO(new Date()),
+    weight_kg: +document.getElementById('m-weight').value || null,
+    body_fat_pct: +document.getElementById('m-bf').value || null,
+    waist_cm: +document.getElementById('m-waist').value || null,
+    muscle_kg: +document.getElementById('m-muscle').value || null,
+  };
+  const [ins] = await plInsert('body_metrics', [row]);
+  METRICS.push(ins);
+  document.getElementById('metric-modal').classList.remove('show');
+  render();
+}
+
+function drawChart() {
+  const c = document.getElementById('bf-chart');
+  const dpr = window.devicePixelRatio || 1;
+  const W = c.clientWidth, H = 180;
+  c.width = W * dpr; c.height = H * dpr;
+  const ctx = c.getContext('2d'); ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, W, H);
+  const pts = METRICS.filter(m => m.body_fat_pct != null);
+  const lo = 8, hi = 28;
+  const y = v => H - 20 - (v - lo) / (hi - lo) * (H - 40);
+  // target band 10–12%
+  ctx.fillStyle = 'rgba(74,222,128,0.08)';
+  ctx.fillRect(0, y(12), W, y(10) - y(12));
+  ctx.strokeStyle = 'rgba(74,222,128,0.35)'; ctx.setLineDash([4, 4]);
+  ctx.beginPath(); ctx.moveTo(0, y(12)); ctx.lineTo(W, y(12)); ctx.stroke();
+  ctx.setLineDash([]);
+  if (!pts.length) return;
+  const x = i => pts.length === 1 ? W / 2 : 30 + i / (pts.length - 1) * (W - 60);
+  ctx.strokeStyle = '#4FC3F7'; ctx.lineWidth = 2;
+  ctx.beginPath();
+  pts.forEach((p, i) => i ? ctx.lineTo(x(i), y(p.body_fat_pct)) : ctx.moveTo(x(i), y(p.body_fat_pct)));
+  ctx.stroke();
+  ctx.fillStyle = '#4FC3F7';
+  pts.forEach((p, i) => { ctx.beginPath(); ctx.arc(x(i), y(p.body_fat_pct), 3.5, 0, 7); ctx.fill(); });
+  ctx.fillStyle = 'rgba(255,255,255,0.5)'; ctx.font = '11px DM Sans';
+  pts.forEach((p, i) => ctx.fillText(`${p.body_fat_pct}%`, x(i) - 10, y(p.body_fat_pct) - 8));
+}
+
+plStartAnchors();
+load();
+window.addEventListener('resize', drawChart);
+</script>
+</body>
+</html>

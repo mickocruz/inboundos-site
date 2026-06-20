@@ -1,3 +1,12 @@
+// TOAST HELPER
+function showErrToast(msg) {
+  var t = document.createElement('div');
+  t.textContent = msg;
+  t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#c0392b;color:#fff;padding:10px 20px;border-radius:8px;font-size:14px;z-index:9999;pointer-events:none;';
+  document.body.appendChild(t);
+  setTimeout(function(){ t.remove(); }, 4000);
+}
+
 // settings-panel.js
 // Auto-detect server base — works on localhost and LAN (phone on same WiFi)
 window.SERVER_BASE = `http://${window.location.hostname}:3001`;
@@ -186,7 +195,7 @@ window.SERVER_BASE = `http://${window.location.hostname}:3001`;
       msg.classList.add('show');
       setTimeout(() => msg.classList.remove('show'), 2500);
     } catch (err) {
-      alert('Save failed: ' + err.message);
+      showErrToast('Settings save failed'); console.error('Save error:', err);
     }
 
     btn.disabled = false;

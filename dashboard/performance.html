@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script>(function(){var _h=location.hostname;var _isLocal=_h==='localhost'||_h==='127.0.0.1'||/^192\.168\./.test(_h)||/^10\./.test(_h)||/^172\.(1[6-9]|2[0-9]|3[01])\./.test(_h);if(_isLocal){if(!localStorage.getItem('sb_session')){localStorage.setItem('sb_session',JSON.stringify({access_token:'local',client_slug:'micko-cruz',expires_at:9999999999}));}document.cookie='ctrl_slug=micko-cruz;path=/;max-age=31536000';return;}var s=null;try{s=JSON.parse(localStorage.getItem("sb_session")||"null");}catch(e){}if(!s||!s.access_token||!s.client_slug){window.location.href="/login?from="+encodeURIComponent(window.location.pathname);return;}var exp=s.expires_at?s.expires_at*1000:0;if(exp&&exp<Date.now()){localStorage.removeItem("sb_session");window.location.href="/login?from="+encodeURIComponent(window.location.pathname);return;}var seg=window.location.pathname.split("/").filter(Boolean)[0];if(seg&&seg!==s.client_slug){window.location.href="/login?from="+encodeURIComponent(window.location.pathname);}})();</script>
+<head><script src="/dashboard/daymode.js"></script><script>(function(){var _h=location.hostname;var _isLocal=_h==='localhost'||_h==='127.0.0.1'||/^192\.168\./.test(_h)||/^10\./.test(_h)||/^172\.(1[6-9]|2[0-9]|3[01])\./.test(_h);if(_isLocal){if(!localStorage.getItem('sb_session')){localStorage.setItem('sb_session',JSON.stringify({access_token:'local',client_slug:'dashboard',expires_at:9999999999}));}document.cookie='ctrl_slug=dashboard;path=/;max-age=31536000';return;}var s=null;try{s=JSON.parse(localStorage.getItem("sb_session")||"null");}catch(e){}if(!s||!s.access_token||!s.client_slug){window.location.href="/login?from="+encodeURIComponent(window.location.pathname);return;}var exp=s.expires_at?s.expires_at*1000:0;if(exp&&exp<Date.now()){localStorage.removeItem("sb_session");window.location.href="/login?from="+encodeURIComponent(window.location.pathname);return;}var seg=window.location.pathname.split("/").filter(Boolean)[0];if(seg&&seg!==s.client_slug){window.location.href="/login?from="+encodeURIComponent(window.location.pathname);}})();</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>InboundOS - Performance</title>
@@ -13,7 +13,7 @@
 :root {
   --bg:#0D1117; --surface:rgba(255,255,255,0.015); --card:rgba(255,255,255,0.02); --border:rgba(255,255,255,0.07); --border-glow:rgba(79,195,247,0.2);
   --accent:#4FC3F7; --accent-dim:rgba(79,195,247,0.07); --text:#ffffff; --text-muted:rgba(255,255,255,0.3); --text-dim:rgba(255,255,255,0.22);
-  --green:#4ade80; --yellow:#fbbf24; --red:#f87171; --purple:#a78bfa;
+  --green:#4ade80; --yellow:#4FC3F7; --red:#f87171; --purple:#4FC3F7;
   --sidebar-w:180px; --feed-w:260px;
   --font-head:'NHGrotesk','Arial Black',Arial,sans-serif; --font-data:'DM Sans',sans-serif; --font-body:'DM Sans',sans-serif;
 }
@@ -42,7 +42,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .main::-webkit-scrollbar{width:3px;}.main::-webkit-scrollbar-thumb{background:rgba(79,195,247,0.15);border-radius:3px;}
 .header{display:flex;align-items:center;justify-content:space-between;}
 .header-left h1{font-family:var(--font-head);font-size:30px;font-weight:900;letter-spacing:-1.5px;line-height:1;}
-.header-left h1 span{color:var(--accent);}
+.header-left h1 span{color:var(--text);}
 .header-left .date{font-family:var(--font-data);font-size:11px;color:var(--text-muted);margin-top:5px;}
 .header-right{display:flex;gap:10px;}
 .pill{display:flex;align-items:center;gap:6px;border-radius:20px;padding:5px 12px;font-family:var(--font-data);font-size:11px;font-weight:500;}
@@ -52,15 +52,15 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .card{background:rgba(255,255,255,0.028);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);border:1px solid rgba(255,255,255,0.08);border-radius:14px;position:relative;overflow:hidden;transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.25s,border-color 0.25s;box-shadow:inset 0 1px 0 rgba(255,255,255,0.08),0 4px 20px rgba(0,0,0,0.3);}
 .card:hover{border-color:rgba(79,195,247,0.18);box-shadow:inset 0 1px 0 rgba(255,255,255,0.1),0 12px 40px rgba(0,0,0,0.45),0 0 0 1px rgba(79,195,247,0.08);transform:translateY(-2px);}
 .card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(79,195,247,0.025) 0%,transparent 55%);pointer-events:none;}
-.section-label{font-family:var(--font-head);font-size:10px;font-weight:900;letter-spacing:2.5px;text-transform:uppercase;color:var(--text-muted);display:flex;align-items:center;gap:10px;}
+.section-label{font-family:var(--font-data);font-size:12px;font-weight:700;letter-spacing:0.4px;text-transform:uppercase;color:rgba(255,255,255,0.6);display:flex;align-items:center;gap:10px;}
 .section-label::after{content:'';flex:1;height:1px;background:var(--border);}
 @keyframes liveArgus{0%,100%{opacity:1;}50%{opacity:0.45;}}
 
 
 /* OVERVIEW STATS */
 .overview-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
-.ov-card{padding:18px 20px;}
-.ov-label{font-family:var(--font-head);font-size:11px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;}
+.ov-card{padding:18px 20px;position:relative;}
+.ov-label{font-family:var(--font-data);font-size:12px;font-weight:700;letter-spacing:0.4px;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:8px;}
 .ov-val{font-family:var(--font-head);font-size:32px;font-weight:900;letter-spacing:-1.5px;line-height:1;}
 .ov-sub{font-family:var(--font-data);font-size:10px;color:var(--text-muted);margin-top:5px;}
 .ov-change{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-family:var(--font-data);font-weight:600;padding:2px 7px;border-radius:20px;margin-top:6px;}
@@ -102,7 +102,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 /* RIGHT SIDEBAR */
 .perf-sidebar{width:var(--feed-w);min-width:var(--feed-w);background:rgba(7,11,18,0.82);border-left:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column;overflow:hidden;backdrop-filter:blur(24px);}
 .ps-header{padding:20px 16px 14px;border-bottom:1px solid var(--border);flex-shrink:0;}
-.ps-title{font-family:var(--font-head);font-size:10px;font-weight:900;letter-spacing:2.5px;text-transform:uppercase;color:var(--text-muted);}
+.ps-title{font-family:var(--font-data);font-size:12px;font-weight:700;letter-spacing:0.4px;text-transform:uppercase;color:rgba(255,255,255,0.6);}
 .ps-body{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:12px;scrollbar-width:none;}
 .ps-body::-webkit-scrollbar{display:none;}
 .insight-card{background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:10px;padding:12px 14px;}
@@ -142,13 +142,13 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 /* DM Sans body */
 :root{--font-body:'DM Sans',sans-serif;}
 html,body{font-family:'DM Sans',sans-serif!important;}
-</style><link rel="stylesheet" href="/dashboard/spring-animations.css"/><link rel="stylesheet" href="/dashboard/mobile.css?v=14"/><link rel="stylesheet" href="/dashboard/settings-panel.css"/><script src="/dashboard/config.js"></script><script src="/dashboard/settings-panel.js"></script>  <link rel="manifest" href="/manifest.json">
+</style><link rel="stylesheet" href="/dashboard/spring-animations.css"/><link rel="stylesheet" href="/dashboard/mobile.css?v=14"/>
+<link rel="stylesheet" href="/dashboard/unify.css?v=6"><link rel="stylesheet" href="/dashboard/settings-panel.css"/><script src="/dashboard/config.js"></script><script src="/dashboard/settings-panel.js"></script>  <link rel="manifest" href="/manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="InboundOS">
   <link rel="apple-touch-icon" href="/icons/icon-192.png">
   <meta name="theme-color" content="#0D1117">
-<link rel="stylesheet" href="/dashboard/glass.css">
 </head>
 <body>
 <div class="amb amb-1"></div>
@@ -158,332 +158,797 @@ html,body{font-family:'DM Sans',sans-serif!important;}
   <nav class="sidebar">
     <div class="sidebar-logo-wrap" onclick="location.href='/'"><div class="sidebar-logo-text"><span style="color:#ffffff;">Inbound</span><span style="color:#4FC3F7;">OS</span></div></div>
     <div class="nav-section"><div class="nav-section-label">Command</div>
-            <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','database','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/command'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>Command Center</div>
-      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','database','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/agents'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="10" width="20" height="12" rx="2"/><path d="M12 2a5 5 0 0 1 5 5v3H7V7a5 5 0 0 1 5-5z"/><circle cx="12" cy="16" r="1.2" fill="currentColor" stroke="none"/></svg>Agents</div>
-      <div class="nav-item" id="nav-chat-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','chat','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/chat'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Chat</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','crm','tasks','roi','chat','metrics','login','activity'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/tasks.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="5" height="16" rx="1"/><rect x="10" y="4" width="5" height="10" rx="1"/><rect x="17" y="4" width="4" height="13" rx="1"/></svg>Tasks</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','crm','tasks','roi','chat','metrics','login','activity'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/agents.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="10" width="20" height="12" rx="2"/><path d="M12 2a5 5 0 0 1 5 5v3H7V7a5 5 0 0 1 5-5z"/><circle cx="12" cy="16" r="1.2" fill="currentColor" stroke="none"/></svg>Agents</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','crm','tasks','roi','chat','metrics','login','activity'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/chat.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Chat</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','crm','tasks','roi','chat','metrics','login','activity'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/activity.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>Live Activity</div>
     </div>
     <div class="nav-section"><div class="nav-section-label">Content</div>
-      <div class="nav-item active" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','database','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/performance'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="4" height="20" rx="1"/><rect x="10" y="8" width="4" height="14" rx="1"/><rect x="18" y="4" width="4" height="18" rx="1"/></svg>Instagram</div>
-      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','database','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/pipeline'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Content Pipeline</div>
-      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','database','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/research'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Research</div>
+      <div class="nav-item active" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','crm','tasks','roi','chat','metrics','login','activity'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/performance.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="4" height="20" rx="1"/><rect x="10" y="8" width="4" height="14" rx="1"/><rect x="18" y="4" width="4" height="18" rx="1"/></svg>Instagram</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','crm','tasks','roi','chat','metrics','login','activity'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/pipeline.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Content Pipeline</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','crm','tasks','roi','chat','metrics','login','activity'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/research.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Research</div>
     </div>
     <div class="nav-section"><div class="nav-section-label">Revenue</div>
-      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','database','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/clients'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Clients</div>
-      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','database','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/crm'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v4H3z"/><path d="M3 10h18v4H3z"/><path d="M3 17h18v4H3z"/></svg>CRM</div>
-      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','database','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/sales-calls'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.74 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.66 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Sales Calls</div>
-      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','roi','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/roi'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>ROI Report</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','crm','tasks','roi','chat','metrics','login','activity'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/clients.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Clients</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','crm','tasks','roi','chat','metrics','login','activity'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/crm.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v4H3z"/><path d="M3 10h18v4H3z"/><path d="M3 17h18v4H3z"/></svg>CRM</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','crm','tasks','roi','chat','metrics','login','activity'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/sales-calls.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.74 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.66 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Sales Calls</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','crm','tasks','roi','chat','metrics','login','activity'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/metrics.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Metrics</div>
     </div>
-    <div class="nav-section"><div class="nav-section-label">Intelligence</div>
-            <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','database','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/database'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Company Database</div>
-<div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','database','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/sops'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>SOPs</div>
-      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','sops','org-chart','crm','command','vault','database','login'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/org-chart'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><path d="M12 7v3M12 10l-5 7M12 10l5 7"/></svg>Org Chart</div>
-    </div>
-    
-    <!-- LIVE AGENT STATUS -->
     <div class="sidebar-agents" id="sidebar-agents-section" style="padding:10px 0 4px;">
-      <div style="font-family:var(--font-data);font-size:11px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:rgba(255,255,255,0.22);padding:0 16px;margin-bottom:6px;">Agents</div>
+      <div style="font-family:var(--font-data,'DM Sans',sans-serif);font-size:11px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:rgba(255,255,255,0.22);padding:0 16px;margin-bottom:6px;">Agents</div>
       <div id="sidebar-agent-status-list"></div>
     </div>
-    <div class="sidebar-bottom"><div class="mk-avatar-wrap" onclick="window.__settingsOpen()" style="cursor:pointer;"><img src="/micko.jpg" alt="MK" style="width:32px;height:32px;object-fit:cover;border-radius:50%;border:1px solid rgba(79,195,247,0.2);"/><div><div class="mk-name">Micko Cruz</div><div class="mk-role">Founder · InboundOS</div></div></div></div>
+    <div class="sidebar-bottom"><div style="display:flex;align-items:center;justify-content:space-between;width:100%;"><div class="mk-avatar-wrap" onclick="window.__settingsOpen&&window.__settingsOpen()" style="cursor:pointer;flex:1;min-width:0;"><img src="/micko.jpg" alt="MK" style="width:32px;height:32px;object-fit:cover;border-radius:50%;border:1px solid rgba(79,195,247,0.2);flex-shrink:0;"/><div style="min-width:0;overflow:hidden;"><div class="mk-name" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Micko Cruz</div><div class="mk-role" style="font-size:10px;opacity:0.7;line-height:1.3;">Founder</div><div class="mk-role" style="font-size:10px;opacity:0.55;line-height:1.3;">InboundOS</div></div></div><a href="/dashboard/settings.html" style="display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:7px;color:rgba(255,255,255,0.25);flex-shrink:0;transition:background 0.15s,color 0.15s;text-decoration:none;" onmouseover="this.style.background='rgba(79,195,247,0.08)';this.style.color='rgba(255,255,255,0.6)';" onmouseout="this.style.background='transparent';this.style.color='rgba(255,255,255,0.25)';" title="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></a></div></div>
   </nav>
 
   <main class="main">
     <div class="header">
       <div class="header-left">
-        <h1>Instagram</h1>
-        <div style="font-family:var(--font-data);font-size:12px;color:var(--text-muted);margin-top:2px;" id="perf-subtitle">Reels · analytics · reach.</div>
-        <div class="date">May 2026 · Instagram · Reels Tab · Live</div>
+        <h1 style="display:flex;align-items:center;gap:11px;"><span style="display:inline-flex;width:34px;height:34px;align-items:center;justify-content:center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#fff" stroke="none"/></svg></span><span>Instagram</span></h1>
+        <div class="date" id="ig-last-updated">Loading…</div>
       </div>
       <div class="header-right">
         <div class="pill pill-green"><div class="status-dot"></div>Live Data</div>
-        <button class="refresh-btn" id="perf-refresh-btn" onclick="refreshIGData('perf')" style="display:flex;align-items:center;gap:5px;background:transparent;border:1px solid var(--border-glow);color:var(--accent);border-radius:6px;padding:5px 12px;font-family:var(--font-data);font-size:11px;font-weight:600;cursor:pointer;letter-spacing:0.3px;">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-          ↻ Refresh Data
-        </button>
+        <button onclick="loadIG()" style="display:flex;align-items:center;gap:5px;background:transparent;border:1px solid var(--border-glow);color:var(--accent);border-radius:6px;padding:5px 12px;font-family:var(--font-data);font-size:11px;font-weight:600;cursor:pointer;">↻ Refresh</button>
       </div>
     </div>
 
-    <!-- OVERVIEW -->
-    <div class="section-label">Overview</div>
-    <div class="overview-grid">
-      <div class="card ov-card">
-        <div class="ov-label">IG Followers</div>
-        <div class="ov-val" id="perf-followers" style="color:var(--accent);">32</div>
-        <div class="ov-sub">@inboundos · growing</div>
-        <div class="ov-change up" id="perf-following">208 following</div>
-      </div>
-      <div class="card ov-card">
-        <div class="ov-label">Reels Found</div>
-        <div class="ov-val" id="perf-reel-count" style="color:var(--green);">—</div>
-        <div class="ov-sub" id="perf-reel-sub">Scraping reels tab…</div>
-        <div class="ov-change" id="perf-reel-change">↻ click refresh to load</div>
-      </div>
-      <div class="card ov-card">
-        <div class="ov-label">Avg Eng. Rate</div>
-        <div class="ov-val" id="perf-eng-rate" style="color:var(--yellow);">4.2%</div>
-        <div class="ov-sub">Likes ÷ followers × 100</div>
-        <div class="ov-change up" id="perf-eng-sub">Based on scraped posts</div>
-      </div>
-      <div class="card ov-card">
-        <div class="ov-label">Top Reel Views</div>
-        <div class="ov-val" id="perf-top-views" style="color:var(--purple);">—</div>
-        <div class="ov-sub" id="perf-top-title">Awaiting live data</div>
-        <div class="ov-change up" id="perf-top-date">↻ click refresh</div>
-      </div>
-    </div>
-
-    <!-- INSTAGRAM REELS -->
-    <div class="section-label" style="display:flex;align-items:center;gap:10px;">
-      Instagram Reels
-      <span id="perf-live-badge" style="font-size:10px;font-family:var(--font-data);font-weight:600;letter-spacing:0.5px;padding:2px 8px;border-radius:20px;background:rgba(79,195,247,0.1);color:var(--accent);border:1px solid rgba(79,195,247,0.28);animation:liveArgus 2s ease-in-out infinite;"> LIVE</span>
-    </div>
-    <div class="platform-section" id="perf-ig-section">
-      <div class="plat-head">
-        <div class="plat-identity">
-          <div class="plat-icon" style="background:rgba(225,48,108,0.09);color:#e1306c;"></div>
-          <div>
-            <div class="plat-name" id="perf-ig-name">Micko | AI Content Systems</div>
-            <div class="plat-handle" id="perf-ig-handle">@inboundos · 32 followers · 208 following</div>
+    <!-- PROFILE CARD -->
+    <div class="card" style="padding:20px 24px;overflow:visible;">
+      <div style="display:flex;align-items:flex-start;gap:18px;">
+        <div style="flex-shrink:0;width:72px;height:72px;position:relative;">
+          <img id="ig-avatar" src="" alt="" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid rgba(79,195,247,0.3);position:absolute;top:0;left:0;display:none;">
+          <div style="width:72px;height:72px;border-radius:50%;background:rgba(79,195,247,0.08);border:2px solid rgba(79,195,247,0.15);display:flex;align-items:center;justify-content:center;" id="ig-avatar-placeholder"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(79,195,247,0.4)" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
+        </div>
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+            <span id="ig-name" style="font-family:var(--font-head);font-size:17px;font-weight:900;letter-spacing:-0.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">—</span>
+            <span id="ig-username" style="font-family:var(--font-data);font-size:12px;color:var(--accent);white-space:nowrap;">@inboundos</span>
+          </div>
+          <div id="ig-bio" style="font-family:var(--font-data);font-size:11px;color:var(--text-muted);line-height:1.5;white-space:pre-line;margin-bottom:10px;">—</div>
+          <div style="display:flex;gap:20px;">
+            <div><span id="ig-followers" style="font-family:var(--font-head);font-size:15px;font-weight:900;">—</span><span style="font-family:var(--font-data);font-size:10px;color:var(--text-muted);margin-left:4px;">followers</span></div>
+            <div><span id="ig-following" style="font-family:var(--font-head);font-size:15px;font-weight:900;">—</span><span style="font-family:var(--font-data);font-size:10px;color:var(--text-muted);margin-left:4px;">following</span></div>
+            <div><span id="ig-posts" style="font-family:var(--font-head);font-size:15px;font-weight:900;">—</span><span style="font-family:var(--font-data);font-size:10px;color:var(--text-muted);margin-left:4px;">posts</span></div>
           </div>
         </div>
-        <div class="plat-kpis">
-          <div class="plat-kpi"><div class="plat-kpi-val" id="perf-kpi-followers" style="color:#e1306c;">32</div><div class="plat-kpi-lbl">Followers</div></div>
-          <div class="plat-kpi"><div class="plat-kpi-val" id="perf-kpi-avg-views" style="color:var(--accent);">—</div><div class="plat-kpi-lbl">Avg Views</div></div>
-          <div class="plat-kpi"><div class="plat-kpi-val" id="perf-kpi-eng" style="color:var(--green);">4.2%</div><div class="plat-kpi-lbl">Eng. Rate</div></div>
-          <div class="plat-kpi"><div class="plat-kpi-val" id="perf-kpi-reels">—</div><div class="plat-kpi-lbl">Reels</div></div>
+        <a href="https://instagram.com/inboundos" target="_blank" style="font-family:var(--font-data);font-size:11px;color:var(--accent);text-decoration:none;border:1px solid rgba(79,195,247,0.25);border-radius:6px;padding:5px 12px;white-space:nowrap;flex-shrink:0;">View Profile ↗</a>
+      </div>
+    </div>
+
+    <!-- STATS ROW -->
+    <div class="overview-grid" style="grid-template-columns:repeat(4,1fr);">
+      <div class="card ov-card">
+        <div class="ov-label">Followers</div>
+        <div class="ov-val" id="stat-followers">—</div>
+        <div class="ov-sub">@inboundos</div>
+      </div>
+      <div class="card ov-card">
+        <div class="ov-label">Following</div>
+        <div class="ov-val" id="stat-following">—</div>
+        <div class="ov-sub">accounts</div>
+      </div>
+      <div class="card ov-card">
+        <div class="ov-label">Total Reels</div>
+        <div class="ov-val" id="stat-reels">—</div>
+        <div class="ov-sub">videos found</div>
+      </div>
+      <div class="card ov-card">
+        <div class="ov-label">Avg Engagement</div>
+        <div class="ov-val" id="stat-eng">—</div>
+        <div class="ov-sub">likes ÷ followers</div>
+      </div>
+    </div>
+
+    <!-- REELS GRID -->
+    <div class="section-label" style="display:flex;align-items:center;gap:10px;">
+      Reels
+      <span style="display:inline-flex;align-items:center;gap:5px;font-size:10px;font-family:var(--font-data);font-weight:700;letter-spacing:0.8px;padding:3px 9px;border-radius:20px;background:rgba(79,195,247,0.14);color:#4FC3F7;border:1px solid rgba(79,195,247,0.32);animation:liveArgus 2s ease-in-out infinite;"><span style="width:5px;height:5px;border-radius:50%;background:#4FC3F7;box-shadow:0 0 6px #4FC3F7;"></span>LIVE</span>
+    </div>
+    <div id="ig-media-grid" style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;">
+      <div style="grid-column:1/-1;padding:24px;text-align:center;font-family:var(--font-data);font-size:12px;color:var(--text-dim);">Loading reels…</div>
+    </div>
+    <!-- HEATMAP + HOOK DONUT ROW -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+
+      <!-- BEST TIME TO POST HEATMAP -->
+      <div class="card" style="padding:18px 20px;">
+        <div style="font-family:var(--font-data);font-size:12px;font-weight:700;letter-spacing:0.4px;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:14px;">Best Time to Post</div>
+        <div id="heatmap-grid" style="overflow-x:auto;"></div>
+        <div id="heatmap-top3" style="margin-top:12px;display:flex;flex-direction:column;gap:4px;"></div>
+      </div>
+
+      <!-- HOOK TYPE DONUT CHART -->
+      <div class="card" style="padding:18px 20px;">
+        <div style="font-family:var(--font-data);font-size:12px;font-weight:700;letter-spacing:0.4px;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:14px;">Hook Type Mix</div>
+        <div style="display:flex;align-items:center;gap:20px;">
+          <div id="donut-svg-wrap" style="flex-shrink:0;position:relative;width:120px;height:120px;">
+            <svg id="donut-svg" width="120" height="120" viewBox="0 0 120 120"></svg>
+            <div id="donut-center" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;">
+              <div id="donut-hover-pct" style="font-family:var(--font-head);font-size:18px;font-weight:900;color:#fff;line-height:1;"></div>
+              <div id="donut-hover-label" style="font-family:var(--font-data);font-size:9px;color:rgba(255,255,255,0.4);margin-top:2px;text-align:center;max-width:55px;line-height:1.3;"></div>
+            </div>
+          </div>
+          <div id="donut-legend" style="display:flex;flex-direction:column;gap:5px;flex:1;"></div>
         </div>
       </div>
-      <!-- Sparkline: last 7 reels by views (populated by JS on refresh) -->
-      <div class="sparkline-bar">
-        <svg viewBox="0 0 800 40" preserveAspectRatio="none" id="perf-sparkline-svg">
-          <defs><linearGradient id="g-ig" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#e1306c" stop-opacity="0.3"/><stop offset="100%" stop-color="#e1306c" stop-opacity="0"/></linearGradient></defs>
-          <path id="perf-spark-line" d="" fill="none" stroke="#e1306c" stroke-width="1.5" opacity="0.8"/>
-          <path id="perf-spark-fill" d="" fill="url(#g-ig)"/>
-        </svg>
-      </div>
-      <div id="perf-loading-bar" style="display:none;padding:12px 20px;font-family:var(--font-data);font-size:11px;color:var(--accent);">⏳ Running Apify reel scraper… polling status</div>
-      <div id="perf-no-reels" style="display:none;padding:16px 20px;font-family:var(--font-data);font-size:12px;color:var(--text-muted);">No reels found on @inboundos yet. Post your first Reel to populate this section.</div>
-      <div class="reels-row" id="perf-reels-row">
-        <div style="display:flex;align-items:center;justify-content:center;width:100%;padding:16px 0;font-family:var(--font-data);font-size:11px;color:var(--text-dim);">Click ↻ Refresh Data to load live reels from @inboundos</div>
-      </div>
-      <div style="padding:0 20px 10px;font-family:var(--font-data);font-size:10px;color:var(--text-dim);" id="perf-last-updated">Last updated: —</div>
     </div>
+
+    <!-- VIRAL THRESHOLD + GOALS ROW -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+
+      <!-- VIRAL THRESHOLD -->
+      <div class="card" style="padding:18px 20px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+          <div style="font-family:var(--font-data);font-size:12px;font-weight:700;letter-spacing:0.4px;text-transform:uppercase;color:rgba(255,255,255,0.6);">Viral Threshold</div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <input id="viral-threshold-input" type="number" min="0" placeholder="e.g. 10000"
+              style="width:100px;background:rgba(255,255,255,0.04);border:1px solid rgba(79,195,247,0.2);border-radius:6px;padding:4px 8px;font-family:var(--font-data);font-size:11px;color:#fff;outline:none;text-align:center;"
+              oninput="saveViralThreshold(this.value)">
+            <span style="font-family:var(--font-data);font-size:10px;color:rgba(255,255,255,0.3);">views</span>
+          </div>
+        </div>
+        <div style="font-family:var(--font-data);font-size:11px;color:rgba(255,255,255,0.3);margin-bottom:12px;">Reels above threshold get ⚡ badge. Dashed line marks the level on sparkline.</div>
+        <!-- Mini sparkline with threshold marker -->
+        <div style="position:relative;height:56px;background:rgba(255,255,255,0.02);border-radius:8px;border:1px solid rgba(255,255,255,0.05);overflow:hidden;">
+          <svg id="viral-sparkline" width="100%" height="56" style="display:block;"></svg>
+          <div id="viral-threshold-line" style="position:absolute;left:0;right:0;border-top:1px dashed rgba(79,195,247,0.6);pointer-events:none;display:none;"></div>
+        </div>
+        <div id="viral-reels-list" style="margin-top:12px;display:flex;flex-direction:column;gap:5px;max-height:90px;overflow-y:auto;scrollbar-width:none;"></div>
+      </div>
+
+      <!-- GOALS PANEL (collapsible) -->
+      <div class="card" style="padding:18px 20px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;margin-bottom:12px;" onclick="toggleGoals()">
+          <div style="font-family:var(--font-data);font-size:12px;font-weight:700;letter-spacing:0.4px;text-transform:uppercase;color:rgba(255,255,255,0.6);">Goals</div>
+          <span id="goals-toggle-icon" style="font-family:var(--font-data);font-size:12px;color:rgba(255,255,255,0.3);">▾</span>
+        </div>
+        <div id="goals-body">
+          <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;">
+            <div>
+              <div style="font-family:var(--font-data);font-size:10px;color:rgba(255,255,255,0.4);margin-bottom:4px;">Avg Views Target</div>
+              <input id="goal-views" type="number" min="0" placeholder="e.g. 50000"
+                style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:6px 10px;font-family:var(--font-data);font-size:11px;color:#fff;outline:none;"
+                oninput="saveGoals()">
+            </div>
+            <div>
+              <div style="font-family:var(--font-data);font-size:10px;color:rgba(255,255,255,0.4);margin-bottom:4px;">Followers Target</div>
+              <input id="goal-followers" type="number" min="0" placeholder="e.g. 5000"
+                style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:6px 10px;font-family:var(--font-data);font-size:11px;color:#fff;outline:none;"
+                oninput="saveGoals()">
+            </div>
+            <div>
+              <div style="font-family:var(--font-data);font-size:10px;color:rgba(255,255,255,0.4);margin-bottom:4px;">Posts / Month Target</div>
+              <input id="goal-posts" type="number" min="0" placeholder="e.g. 20"
+                style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:6px 10px;font-family:var(--font-data);font-size:11px;color:#fff;outline:none;"
+                oninput="saveGoals()">
+            </div>
+          </div>
+          <div id="goals-progress-section" style="display:flex;flex-direction:column;gap:8px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTENT CALENDAR VIEW -->
+    <div class="card" style="padding:18px 20px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <div style="font-family:var(--font-data);font-size:12px;font-weight:700;letter-spacing:0.4px;text-transform:uppercase;color:rgba(255,255,255,0.6);">Content Calendar</div>
+        <div style="display:flex;gap:6px;">
+          <button id="cal-view-cards" onclick="switchCalView('cards')"
+            style="background:rgba(79,195,247,0.1);border:1px solid rgba(79,195,247,0.3);border-radius:6px;padding:4px 11px;font-family:var(--font-data);font-size:10px;font-weight:600;color:var(--accent);cursor:pointer;">Cards</button>
+          <button id="cal-view-cal" onclick="switchCalView('calendar')"
+            style="background:transparent;border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:4px 11px;font-family:var(--font-data);font-size:10px;font-weight:600;color:rgba(255,255,255,0.4);cursor:pointer;">Calendar</button>
+        </div>
+      </div>
+      <div id="cal-cards-view">
+        <div id="cal-cards-list" style="display:flex;flex-direction:column;gap:6px;"></div>
+      </div>
+      <div id="cal-calendar-view" style="display:none;">
+        <div id="cal-month-label" style="font-family:var(--font-head);font-size:13px;font-weight:900;color:rgba(255,255,255,0.7);margin-bottom:10px;"></div>
+        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:4px;">
+          <div style="font-family:var(--font-data);font-size:9px;font-weight:700;color:rgba(255,255,255,0.25);text-align:center;padding:3px 0;letter-spacing:0.5px;">SUN</div>
+          <div style="font-family:var(--font-data);font-size:9px;font-weight:700;color:rgba(255,255,255,0.25);text-align:center;padding:3px 0;letter-spacing:0.5px;">MON</div>
+          <div style="font-family:var(--font-data);font-size:9px;font-weight:700;color:rgba(255,255,255,0.25);text-align:center;padding:3px 0;letter-spacing:0.5px;">TUE</div>
+          <div style="font-family:var(--font-data);font-size:9px;font-weight:700;color:rgba(255,255,255,0.25);text-align:center;padding:3px 0;letter-spacing:0.5px;">WED</div>
+          <div style="font-family:var(--font-data);font-size:9px;font-weight:700;color:rgba(255,255,255,0.25);text-align:center;padding:3px 0;letter-spacing:0.5px;">THU</div>
+          <div style="font-family:var(--font-data);font-size:9px;font-weight:700;color:rgba(255,255,255,0.25);text-align:center;padding:3px 0;letter-spacing:0.5px;">FRI</div>
+          <div style="font-family:var(--font-data);font-size:9px;font-weight:700;color:rgba(255,255,255,0.25);text-align:center;padding:3px 0;letter-spacing:0.5px;">SAT</div>
+        </div>
+        <div id="cal-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;"></div>
+      </div>
+    </div>
+
     <div style="height:32px;"></div>
   </main>
-
-  <!-- INSIGHTS SIDEBAR -->
 </div>
 
 <script>
-//  PIPELINE IDEAS BRIDGE 
-function repurposeIdea(btn, title, platform) {
-  try {
-    const raw = localStorage.getItem('ctrl_pipeline_ideas');
-    const ideas = raw ? JSON.parse(raw) : [];
-    ideas.push({ title, platform });
-    localStorage.setItem('ctrl_pipeline_ideas', JSON.stringify(ideas));
-  } catch(e) {}
-  btn.textContent = 'Added ';
-  btn.style.color = 'var(--green)';
-  btn.style.borderColor = 'rgba(74,222,128,0.3)';
-  btn.disabled = true;
-}
-
-//  APIFY INSTAGRAM LIVE DATA 
-const PROXY = SERVER_BASE;
-const IG_USERNAME  = 'inboundos';
-const CACHE_KEY    = 'ctrl_ig_reels_v2';
-
-function sparklinePath(values, w=800, h=40, pad=3) {
-  if (!values || values.length < 2) return {line:'',fill:''};
-  const max = Math.max(...values) || 1;
-  const n = values.length;
-  const pts = values.map((v,i) => [
-    Math.round(i * w / (n-1)),
-    Math.round(h - pad - (v/max)*(h-pad*2))
-  ]);
-  let d = `M${pts[0][0]},${pts[0][1]}`;
-  for (let i=1; i<pts.length; i++) {
-    const cx = (pts[i-1][0]+pts[i][0])/2;
-    d += ` C${cx},${pts[i-1][1]} ${cx},${pts[i][1]} ${pts[i][0]},${pts[i][1]}`;
-  }
-  return {line:d, fill:d+` L${w},${h} L0,${h} Z`};
-}
+const IG_CACHE_KEY = 'ctrl_ig_graph_v1';
+const IG_CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
 
 function fmtNum(n) {
-  if (n==null||n===undefined) return '—';
-  if (n>=1000000) return (n/1000000).toFixed(1)+'M';
-  if (n>=1000) return (n/1000).toFixed(1)+'K';
+  if (n == null) return '—';
+  if (n >= 1000000) return (n/1000000).toFixed(1)+'M';
+  if (n >= 1000) return (n/1000).toFixed(1)+'K';
   return String(n);
 }
-function fmtDate(ts) {
-  if (!ts) return '—';
-  const d = new Date(ts);
-  return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
-}
 
-function applyIGData(profile, reels, page) {
-  const followers = profile?.followersCount ?? 32;
-  const following = profile?.followsCount ?? 208;
-  const sorted = [...reels].sort((a,b) => new Date(a.timestamp)-new Date(b.timestamp));
-  const last7 = sorted.slice(-7);
-  const viewVals = last7.map(r => r.videoPlayCount||r.viewsCount||r.likesCount||0);
-  const totalViews = reels.reduce((s,r) => s+(r.videoPlayCount||r.viewsCount||0), 0);
-  const avgViews = reels.length ? Math.round(totalViews/reels.length) : 0;
-  const totalLikes = reels.reduce((s,r) => s+(r.likesCount||0), 0);
-  const engRate = reels.length&&followers ? ((totalLikes/reels.length)/followers*100).toFixed(1)+'%' : '—';
-  const topReel = [...reels].sort((a,b) => (b.videoPlayCount||b.viewsCount||0)-(a.videoPlayCount||a.viewsCount||0))[0];
-  const ts = new Date().toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
-
-  if (page === 'perf') {
-    // Overview cards
-    document.getElementById('perf-followers').textContent = fmtNum(followers);
-    document.getElementById('perf-following').textContent = fmtNum(following)+' following';
-    document.getElementById('perf-reel-count').textContent = reels.length || '0';
-    document.getElementById('perf-reel-sub').textContent = reels.length ? `${reels.length} reels scraped` : 'No reels found yet';
-    document.getElementById('perf-reel-change').textContent = reels.length ? '↑ reels tab data' : '→ try posting a Reel';
-    document.getElementById('perf-eng-rate').textContent = engRate;
-    document.getElementById('perf-eng-sub').textContent = 'Likes ÷ followers × 100';
-    document.getElementById('perf-top-views').textContent = topReel ? fmtNum(topReel.videoPlayCount||topReel.viewsCount||topReel.likesCount||0) : '—';
-    document.getElementById('perf-top-title').textContent = topReel ? (topReel.caption||'').slice(0,40)+'…' : 'No data';
-    document.getElementById('perf-top-date').textContent = topReel ? '↑ '+fmtDate(topReel.timestamp) : '—';
-    // Profile header
-    document.getElementById('perf-ig-name').textContent = profile?.fullName || 'Micko | AI Content Systems';
-    document.getElementById('perf-ig-handle').textContent = `@${IG_USERNAME} · ${fmtNum(followers)} followers · ${fmtNum(following)} following`;
-    // KPIs
-    document.getElementById('perf-kpi-followers').textContent = fmtNum(followers);
-    document.getElementById('perf-kpi-avg-views').textContent = fmtNum(avgViews);
-    document.getElementById('perf-kpi-eng').textContent = engRate;
-    document.getElementById('perf-kpi-reels').textContent = reels.length || '0';
-    // Sparkline
-    const sp = sparklinePath(viewVals);
-    document.getElementById('perf-spark-line').setAttribute('d', sp.line);
-    document.getElementById('perf-spark-fill').setAttribute('d', sp.fill);
-    // Reel thumbnail cards
-    const reelsRow = document.getElementById('perf-reels-row');
-    const noReels = document.getElementById('perf-no-reels');
-    if (reels.length === 0) {
-      noReels.style.display = 'block';
-      reelsRow.innerHTML = '';
-    } else {
-      noReels.style.display = 'none';
-      const sorted2 = [...reels].sort((a,b) => (b.videoPlayCount||b.viewsCount||0)-(a.videoPlayCount||a.viewsCount||0)).slice(0,5);
-      const rankBgs = ['rgba(251,191,36,0.18)','rgba(255,255,255,0.07)','rgba(255,255,255,0.04)'];
-      const rankTxts = ['var(--yellow)','var(--text-muted)','var(--text-dim)'];
-      reelsRow.innerHTML = sorted2.map((r,i) => {
-        const views = r.videoPlayCount||r.viewsCount||0;
-        const likes = r.likesCount||0;
-        const comments = r.commentsCount||0;
-        const er = followers ? ((likes/followers)*100).toFixed(1)+'%' : '—';
-        const caption = (r.caption||'No caption').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-        const thumb = r.displayUrl||r.thumbnailUrl||r.previewImageUrl||'';
-        const thumbEl = thumb
-          ? `<img src="${thumb}" alt="" loading="lazy" onerror="this.parentElement.innerHTML='<div class=reel-thumb-placeholder></div>'">`
-          : `<div class="reel-thumb-placeholder"></div>`;
-        const rankEl = i < 3
-          ? `<div class="reel-rank-badge" style="background:${rankBgs[i]};color:${rankTxts[i]};">${i+1}</div>`
-          : '';
-        return `<a href="${r.url||'#'}" target="_blank" class="reel-card">
-          <div class="reel-thumb">
-            ${thumbEl}
-            <div class="reel-views-badge">${fmtNum(views)}</div>
-            ${rankEl}
-          </div>
-          <div class="reel-info">
-            <div class="reel-caption">${caption}</div>
-            <div class="reel-stats">
-              <span class="reel-stat"> <strong>${fmtNum(likes)}</strong></span>
-              <span class="reel-stat"> <strong>${fmtNum(comments)}</strong></span>
-              <span class="reel-stat">eng <strong style="color:${parseFloat(er)>5?'var(--green)':'var(--text-muted)'};">${er}</strong></span>
-            </div>
-          </div>
-        </a>`;
-      }).join('');
-    }
-    // Sidebar
-    // Sidebar removed
-    // Timestamp
-    document.getElementById('perf-last-updated').textContent = `Last updated: ${ts}`;
+function renderProfile(p) {
+  document.getElementById('ig-name').textContent = p.name || '—';
+  document.getElementById('ig-username').textContent = '@' + (p.username || 'inboundos');
+  document.getElementById('ig-bio').textContent = p.biography || '';
+  document.getElementById('ig-followers').textContent = fmtNum(p.followers_count);
+  document.getElementById('ig-following').textContent = fmtNum(p.follows_count);
+  document.getElementById('ig-posts').textContent = fmtNum(p.media_count);
+  document.getElementById('stat-followers').textContent = fmtNum(p.followers_count);
+  document.getElementById('stat-following').textContent = fmtNum(p.follows_count);
+  if (p.profile_picture_url) {
+    const img = document.getElementById('ig-avatar');
+    img.src = p.profile_picture_url;
+    img.style.display = 'block';
+    document.getElementById('ig-avatar-placeholder').style.display = 'none';
   }
 }
 
-function setRefreshLoading(page, on) {
-  const btn = document.getElementById(page+'-refresh-btn');
-  if (btn) { btn.disabled=on; }
-  const bar = document.getElementById('perf-loading-bar');
-  if (bar) bar.style.display = on ? 'block' : 'none';
-}
-
-let _igLastRefresh = 0;
-async function refreshIGData(page) {
-  const now = Date.now();
-  if (now - _igLastRefresh < 30000) {
-    const el = document.getElementById('perf-last-updated');
-    const remaining = Math.ceil((30000 - (now - _igLastRefresh)) / 1000);
-    if (el) el.textContent = `Wait ${remaining}s before refreshing again`;
+function renderMedia(items, followers) {
+  const grid = document.getElementById('ig-media-grid');
+  // Filter reels only
+  const reels = items.filter(m => m.media_type === 'VIDEO');
+  if (!reels.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;padding:24px;text-align:center;font-family:var(--font-data);font-size:12px;color:var(--text-dim);">No reels found.</div>';
+    document.getElementById('stat-reels').textContent = '0';
+    document.getElementById('stat-eng').textContent = '—';
     return;
   }
-  _igLastRefresh = now;
-  setRefreshLoading(page, true);
+  document.getElementById('stat-reels').textContent = reels.length;
+  const totalLikes = reels.reduce((s,m) => s + (m.like_count||0), 0);
+  const avgEng = followers ? ((totalLikes / reels.length) / followers * 100).toFixed(1) + '%' : '—';
+  document.getElementById('stat-eng').textContent = avgEng;
+
+  grid.innerHTML = reels.slice(0,6).map(m => {
+    const thumb = m.thumbnail_url || m.media_url || '';
+    const cap = (m.caption || 'No caption').slice(0, 60) + ((m.caption||'').length > 60 ? '…' : '');
+    const date = m.timestamp ? new Date(m.timestamp).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '';
+    const likes = m.like_count || 0;
+    const comments = m.comments_count || 0;
+    const er = followers ? ((likes / followers) * 100).toFixed(2) + '%' : '—';
+    const erHigh = followers && (likes / followers * 100) >= 2;
+    return `<div style="display:flex;flex-direction:column;gap:0;">
+      <a href="${m.permalink}" target="_blank" style="text-decoration:none;display:block;">
+        <div style="background:#0a0f17;border:1px solid var(--border);border-radius:10px 10px 0 0;overflow:hidden;transition:border-color 0.2s;" onmouseover="this.style.borderColor='rgba(79,195,247,0.3)'" onmouseout="this.style.borderColor='var(--border)'">
+          <div style="position:relative;aspect-ratio:9/16;background:#0a0f17;overflow:hidden;">
+            ${thumb ? `<img src="${thumb}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy" onerror="this.style.display='none'">` : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.15);font-size:28px;">▶</div>'}
+            <div style="position:absolute;top:6px;left:6px;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);border-radius:4px;padding:1px 5px;font-family:var(--font-data);font-size:8px;font-weight:700;color:#4FC3F7;letter-spacing:0.5px;">REEL</div>
+            <div style="position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);border-radius:4px;padding:1px 5px;font-family:var(--font-data);font-size:8px;color:#fff;">${date}</div>
+          </div>
+          <div style="padding:8px 10px 6px;">
+            <div style="font-family:var(--font-data);font-size:10px;color:var(--text-muted);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${cap}</div>
+          </div>
+        </div>
+      </a>
+      <!-- ANALYTICS TABLE -->
+      <div style="background:rgba(255,255,255,0.015);border:1px solid var(--border);border-top:none;border-radius:0 0 10px 10px;padding:8px 10px 10px;">
+        <div style="font-family:var(--font-data);font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--accent);margin-bottom:6px;">Analytics</div>
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-family:var(--font-data);font-size:10px;color:var(--text-muted);">Likes</span>
+            <span style="font-family:var(--font-head);font-size:11px;font-weight:900;">${fmtNum(likes)}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-family:var(--font-data);font-size:10px;color:var(--text-muted);">Comments</span>
+            <span style="font-family:var(--font-head);font-size:11px;font-weight:900;">${fmtNum(comments)}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-family:var(--font-data);font-size:10px;color:var(--text-muted);">Eng. Rate</span>
+            <span style="font-family:var(--font-head);font-size:11px;font-weight:900;color:${erHigh?'var(--green)':'var(--text)'};">${er}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-family:var(--font-data);font-size:10px;color:var(--text-muted);">Total</span>
+            <span style="font-family:var(--font-head);font-size:11px;font-weight:900;">${fmtNum(likes+comments)}</span>
+          </div>
+        </div>
+        <div style="margin-top:6px;padding-top:6px;border-top:1px solid var(--border);">
+          <div style="font-family:var(--font-data);font-size:9px;color:var(--text-dim);">Views · Reach · Watch time not available without Meta app review</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function loadIG(forceRefresh) {
+  const ts = new Date().toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+  if (!forceRefresh) {
+    try {
+      const c = JSON.parse(localStorage.getItem(IG_CACHE_KEY)||'null');
+      if (c && Date.now() - c.ts < IG_CACHE_TTL) {
+        renderProfile(c.profile);
+        renderMedia(c.media, c.profile.followers_count);
+        document.getElementById('ig-last-updated').textContent = `Cached · ${Math.round((Date.now()-c.ts)/60000)}m ago`;
+        return;
+      }
+    } catch(e) {}
+  }
+  document.getElementById('ig-last-updated').textContent = 'Fetching live data…';
   try {
-    const data = await fetch(`${PROXY}/apify/instagram`, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({ page })
-    }).then(r => r.json());
-    if (data.error) throw new Error(data.error);
-    const cache = {profile:data.profile||null, reels:data.reels||[], ts:Date.now()};
-    localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
-    applyIGData(cache.profile, cache.reels, page);
+    const [pRes, mRes] = await Promise.all([
+      fetch(`${SERVER_BASE}/instagram/profile`, {method:'POST'}),
+      fetch(`${SERVER_BASE}/instagram/media`, {method:'POST'})
+    ]);
+    const profile = await pRes.json();
+    const mediaData = await mRes.json();
+    if (profile.error) throw new Error(profile.error);
+    const media = mediaData.data || [];
+    localStorage.setItem(IG_CACHE_KEY, JSON.stringify({profile, media, ts: Date.now()}));
+    renderProfile(profile);
+    renderMedia(media, profile.followers_count);
+    document.getElementById('ig-last-updated').textContent = `Live · updated ${ts}`;
   } catch(e) {
-    console.error('Apify refresh error:', e);
-    const el = document.getElementById('perf-last-updated');
-    if (el) el.textContent = `Refresh failed — ${e.message}`;
-  } finally {
-    setRefreshLoading(page, false);
+    // Try stale cache as fallback
+    try {
+      const c = JSON.parse(localStorage.getItem(IG_CACHE_KEY)||'null');
+      if (c && c.profile) {
+        renderProfile(c.profile);
+        renderMedia(c.media || [], c.profile.followers_count);
+        const age = Math.round((Date.now()-c.ts)/60000);
+        document.getElementById('ig-last-updated').textContent = `Stale cache · ${age}m ago (API error: ${e.message})`;
+        return;
+      }
+    } catch(_) {}
+    document.getElementById('ig-last-updated').textContent = `Offline — start proxy server to load data`;
+    // Show compact offline states so cards don't leave dead space
+    const offlineMsg = '<div style="font-family:var(--font-data);font-size:11px;color:rgba(255,255,255,0.2);padding:10px 0;text-align:center;">No data — server offline</div>';
+    const grid = document.getElementById('ig-media-grid');
+    if (grid) grid.innerHTML = '<div style="grid-column:1/-1;font-family:var(--font-data);font-size:11px;color:rgba(255,255,255,0.2);padding:10px 0;text-align:center;">No data — server offline</div>';
+    const heatmap = document.getElementById('heatmap-grid');
+    if (heatmap) heatmap.innerHTML = offlineMsg;
+    const top3 = document.getElementById('heatmap-top3');
+    if (top3) top3.innerHTML = '';
+    const donut = document.getElementById('donut-legend');
+    if (donut) donut.innerHTML = offlineMsg;
+    const donutSvg = document.getElementById('donut-svg');
+    if (donutSvg) donutSvg.innerHTML = '';
+    const viralList = document.getElementById('viral-reels-list');
+    if (viralList) viralList.innerHTML = offlineMsg;
+    const sparkSvg = document.getElementById('viral-sparkline');
+    if (sparkSvg) sparkSvg.innerHTML = '';
   }
 }
 
-// On load: restore cache
-(function loadCache() {
-  try {
-    const raw = localStorage.getItem(CACHE_KEY);
-    if (!raw) {
-      const el = document.getElementById('perf-last-updated');
-      if (el) el.textContent = 'No cache — click ↻ Refresh Data to fetch live reels';
-      return;
-    }
-    const {profile, reels, ts} = JSON.parse(raw);
-    applyIGData(profile, reels||[], 'perf');
-    const age = Math.round((Date.now()-ts)/60000);
-    const el = document.getElementById('perf-last-updated');
-    if (el) el.textContent = `Cached data · ${age}m ago — click ↻ Refresh for fresh scrape`;
-  } catch(e) { /* ignore bad cache */ }
-})();
-
-//  GOAL PROGRESS (sync with client tab) 
-(function updateGoalProgress() {
-  try {
-    const CLIENT_TARGET = 5;
-    const CLIENT_RETAINER = 1000; // $ per client per month
-    const MRR_TARGET = CLIENT_TARGET * CLIENT_RETAINER;
-    const count = parseInt(localStorage.getItem('ctrl_client_count') || '1', 10);
-    const need = Math.max(0, CLIENT_TARGET - count);
-    const mrr = count * CLIENT_RETAINER;
-    const el = document.getElementById('goal-progress-val');
-    const sub = document.getElementById('goal-progress-sub');
-    if (el) el.textContent = `${count} / ${CLIENT_TARGET} clients`;
-    if (sub) sub.textContent = need > 0
-      ? `Need ${need} more for $${(MRR_TARGET/1000).toFixed(0)}K/mo target. Current: $${mrr.toLocaleString()} (${count} client${count !== 1 ? 's' : ''})`
-      : `$${(MRR_TARGET/1000).toFixed(0)}K/mo target reached! ${count} clients active.`;
-  } catch(e) {}
-})();
-
-// Spin animation for refresh btn
-const style = document.createElement('style');
-style.textContent = '@keyframes spin{to{transform:rotate(360deg);}} .refresh-btn.loading svg{animation:spin 1s linear infinite;}';
-document.head.appendChild(style);
+document.addEventListener('DOMContentLoaded', () => loadIG(false));
 </script>
+
+<script>
+/* ================================================================
+   PERFORMANCE FEATURES — heatmap, donut, viral threshold, goals, calendar
+   ================================================================ */
+
+// ── UTILS ──────────────────────────────────────────────────────
+function getCachedReels() {
+  try {
+    const c = JSON.parse(localStorage.getItem(IG_CACHE_KEY) || 'null');
+    return (c && c.media) ? c.media.filter(m => m.media_type === 'VIDEO') : [];
+  } catch(e) { return []; }
+}
+
+// ── HEATMAP ────────────────────────────────────────────────────
+const DAYS_SHORT = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const HOURS_LABELS = ['12a','2a','4a','6a','8a','10a','12p','2p','4p','6p','8p','10p'];
+
+function buildHeatmap() {
+  const reels = getCachedReels();
+  // bucket[day][hour2] = {total, count}
+  const bucket = {};
+  for (let d = 0; d < 7; d++) {
+    bucket[d] = {};
+    for (let h = 0; h < 12; h++) bucket[d][h] = { total: 0, count: 0 };
+  }
+
+  const combos = [];
+  reels.forEach(r => {
+    if (!r.timestamp) return;
+    const dt = new Date(r.timestamp);
+    const day = dt.getDay();
+    const hourSlot = Math.floor(dt.getHours() / 2);
+    const views = r.play_count || r.like_count || 0;
+    bucket[day][hourSlot].total += views;
+    bucket[day][hourSlot].count++;
+    combos.push({ day, hourSlot, views });
+  });
+
+  // find max avg for color scale
+  let maxAvg = 0;
+  for (let d = 0; d < 7; d++) {
+    for (let h = 0; h < 12; h++) {
+      const b = bucket[d][h];
+      const avg = b.count ? b.total / b.count : 0;
+      if (avg > maxAvg) maxAvg = avg;
+    }
+  }
+
+  const grid = document.getElementById('heatmap-grid');
+  if (!grid) return;
+  if (!reels.length) {
+    grid.innerHTML = '<div style="font-family:var(--font-data);font-size:11px;color:rgba(255,255,255,0.2);padding:8px 0;">No reels cached yet.</div>';
+    return;
+  }
+
+  // Build table
+  let html = '<table style="border-collapse:separate;border-spacing:2px;font-family:var(--font-data);">';
+  // Header row — hours
+  html += '<tr><td style="width:28px;"></td>';
+  HOURS_LABELS.forEach(h => {
+    html += `<td style="text-align:center;font-size:9px;color:rgba(255,255,255,0.25);padding:0 1px;white-space:nowrap;">${h}</td>`;
+  });
+  html += '</tr>';
+
+  // Collect all combos for top 3
+  const avgMap = [];
+  for (let d = 0; d < 7; d++) {
+    html += `<tr><td style="font-size:9px;color:rgba(255,255,255,0.3);padding-right:6px;white-space:nowrap;">${DAYS_SHORT[d]}</td>`;
+    for (let h = 0; h < 12; h++) {
+      const b = bucket[d][h];
+      const avg = b.count ? b.total / b.count : 0;
+      if (b.count) avgMap.push({ day: d, hour: h, avg });
+      const intensity = maxAvg > 0 ? avg / maxAvg : 0;
+      const alpha = 0.06 + intensity * 0.75;
+      const bg = b.count
+        ? `rgba(79,195,247,${alpha.toFixed(2)})`
+        : 'rgba(255,255,255,0.03)';
+      const tooltip = b.count ? `${DAYS_SHORT[d]} ${HOURS_LABELS[h]} · avg ${Math.round(avg).toLocaleString()} views (${b.count} reels)` : `${DAYS_SHORT[d]} ${HOURS_LABELS[h]} · no data`;
+      html += `<td title="${tooltip}" style="width:22px;height:18px;background:${bg};border-radius:3px;cursor:default;"></td>`;
+    }
+    html += '</tr>';
+  }
+  html += '</table>';
+  grid.innerHTML = html;
+
+  // Top 3 combos
+  avgMap.sort((a, b) => b.avg - a.avg);
+  const top3 = avgMap.slice(0, 3);
+  const top3El = document.getElementById('heatmap-top3');
+  if (!top3El) return;
+  if (!top3.length) {
+    top3El.innerHTML = '<div style="font-family:var(--font-data);font-size:10px;color:rgba(255,255,255,0.2);">No data yet — post some reels</div>';
+    return;
+  }
+  top3El.innerHTML = top3.map((c, i) => {
+    const medals = ['🥇','🥈','🥉'];
+    const hourLabel = HOURS_LABELS[c.hour];
+    return `<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;background:rgba(79,195,247,0.06);border:1px solid rgba(79,195,247,0.1);border-radius:6px;">
+      <span style="font-size:13px;">${medals[i]}</span>
+      <div style="font-family:var(--font-data);font-size:11px;color:rgba(255,255,255,0.7);">${DAYS_SHORT[c.day]} · ${hourLabel}</div>
+      <div style="flex:1;text-align:right;font-family:var(--font-head);font-size:11px;font-weight:900;color:var(--accent);">${Math.round(c.avg).toLocaleString()} avg views</div>
+    </div>`;
+  }).join('');
+}
+
+// ── DONUT CHART ────────────────────────────────────────────────
+const HOOK_TYPES = [
+  { key:'Question',   color:'#4FC3F7', patterns:[/\?/,'who ','what ','why ','when ','how ','is this','are you','do you','can you'] },
+  { key:'How-to',     color:'#4ade80', patterns:['how to ','step ','guide','tips','formula','system','process','method'] },
+  { key:'Stat',       color:'#f59e0b', patterns:[/\d+[\.,]?\d*[kKmMbB%]?\s*(views|leads|clients|figure|result|income|revenue|sale|dollar|follower|month|day|hour|week)/i, /\d+x\b/i,'$','results'] },
+  { key:'Story',      color:'#a78bfa', patterns:['i used to','i was ','my story','confession','truth about','honest','real talk','nobody told'] },
+  { key:'Controversy',color:'#f87171', patterns:['wrong','myth','stop ','never ','don\'t ','nobody','unpopular','hate ','but actually','opposite'] },
+];
+
+function classifyCaption(caption) {
+  if (!caption) return 'Other';
+  const lower = caption.toLowerCase();
+  for (const type of HOOK_TYPES) {
+    for (const p of type.patterns) {
+      if (p instanceof RegExp) { if (p.test(caption)) return type.key; }
+      else if (lower.includes(p)) return type.key;
+    }
+  }
+  return 'Other';
+}
+
+function buildDonut() {
+  const reels = getCachedReels();
+  const svg = document.getElementById('donut-svg');
+  const legend = document.getElementById('donut-legend');
+  if (!svg || !legend) return;
+  if (!reels.length) {
+    legend.innerHTML = '<div style="font-family:var(--font-data);font-size:11px;color:rgba(255,255,255,0.2);padding:8px 0;">No reels cached yet.</div>';
+    return;
+  }
+  const counts = { Question:0,'How-to':0,Stat:0,Story:0,Controversy:0,Other:0 };
+  reels.forEach(r => { counts[classifyCaption(r.caption)]++; });
+
+  const total = reels.length || 1;
+  const allTypes = [...HOOK_TYPES, { key:'Other', color:'rgba(255,255,255,0.2)' }];
+  const data = allTypes.map(t => ({ ...t, count: counts[t.key] || 0, pct: (counts[t.key] || 0) / total }));
+
+  const cx = 60, cy = 60, r = 46, innerR = 30;
+  let startAngle = -Math.PI / 2;
+  let svgPaths = '';
+
+  data.forEach(d => {
+    if (!d.count) return;
+    const angle = d.pct * Math.PI * 2;
+    const endAngle = startAngle + angle;
+    const x1 = cx + r * Math.cos(startAngle);
+    const y1 = cy + r * Math.sin(startAngle);
+    const x2 = cx + r * Math.cos(endAngle);
+    const y2 = cy + r * Math.sin(endAngle);
+    const ix1 = cx + innerR * Math.cos(endAngle);
+    const iy1 = cy + innerR * Math.sin(endAngle);
+    const ix2 = cx + innerR * Math.cos(startAngle);
+    const iy2 = cy + innerR * Math.sin(startAngle);
+    const largeArc = angle > Math.PI ? 1 : 0;
+    const path = `M${x1},${y1} A${r},${r} 0 ${largeArc} 1 ${x2},${y2} L${ix1},${iy1} A${innerR},${innerR} 0 ${largeArc} 0 ${ix2},${iy2} Z`;
+    svgPaths += `<path d="${path}" fill="${d.color}" opacity="0.9" style="cursor:pointer;transition:opacity 0.15s;"
+      onmouseover="document.getElementById('donut-hover-pct').textContent='${Math.round(d.pct*100)}%';document.getElementById('donut-hover-label').textContent='${d.key}';this.setAttribute('opacity','1');"
+      onmouseout="document.getElementById('donut-hover-pct').textContent='';document.getElementById('donut-hover-label').textContent='';this.setAttribute('opacity','0.9');"/>`;
+    startAngle = endAngle;
+  });
+
+  svg.innerHTML = svgPaths;
+
+  legend.innerHTML = data.filter(d => d.count > 0).map(d =>
+    `<div style="display:flex;align-items:center;gap:7px;">
+      <div style="width:8px;height:8px;border-radius:2px;background:${d.color};flex-shrink:0;"></div>
+      <div style="font-family:var(--font-data);font-size:10px;color:rgba(255,255,255,0.6);flex:1;">${d.key}</div>
+      <div style="font-family:var(--font-head);font-size:10px;font-weight:900;color:rgba(255,255,255,0.5);">${d.count}</div>
+    </div>`
+  ).join('');
+}
+
+// ── VIRAL THRESHOLD ─────────────────────────────────────────────
+const VIRAL_KEY = 'perf_viral_threshold';
+
+function saveViralThreshold(val) {
+  localStorage.setItem(VIRAL_KEY, val);
+  renderViralThreshold();
+}
+
+function renderViralThreshold() {
+  const threshold = parseInt(localStorage.getItem(VIRAL_KEY) || '0') || 0;
+  const input = document.getElementById('viral-threshold-input');
+  if (input && !input.value && threshold) input.value = threshold;
+
+  const reels = getCachedReels();
+  const listEl = document.getElementById('viral-reels-list');
+  const sparkSvg = document.getElementById('viral-sparkline');
+  const threshLine = document.getElementById('viral-threshold-line');
+  if (!listEl || !sparkSvg) return;
+
+  // Build sparkline from last 30 reels by date
+  const sorted = [...reels].sort((a,b) => new Date(a.timestamp||0) - new Date(b.timestamp||0)).slice(-30);
+  if (!sorted.length) return;
+
+  const values = sorted.map(r => r.play_count || r.like_count || 0);
+  const maxV = Math.max(...values, threshold || 1);
+  const minV = Math.min(...values);
+  const w = 100, h = 56, pad = 4;
+  const pts = values.map((v, i) => {
+    const x = pad + (i / Math.max(values.length - 1, 1)) * (w - 2*pad);
+    const y = h - pad - ((v - minV) / (maxV - minV || 1)) * (h - 2*pad);
+    return `${x},${y}`;
+  });
+
+  const sparkPath = `M${pts.join(' L')}`;
+  sparkSvg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+  sparkSvg.innerHTML = `<polyline points="${pts.join(' ')}" fill="none" stroke="rgba(79,195,247,0.5)" stroke-width="1.5" stroke-linejoin="round"/>
+    ${values.map((v, i) => {
+      const [x, y] = pts[i].split(',');
+      const isViral = threshold > 0 && v >= threshold;
+      return isViral
+        ? `<text x="${x}" y="${parseFloat(y)-5}" text-anchor="middle" font-size="8" fill="rgba(79,195,247,0.9)">⚡</text>`
+        : `<circle cx="${x}" cy="${y}" r="2" fill="rgba(79,195,247,0.4)"/>`;
+    }).join('')}`;
+
+  // threshold line
+  if (threshold > 0 && threshLine) {
+    const pct = Math.max(0, Math.min(1, (threshold - minV) / (maxV - minV || 1)));
+    const yPos = h - pad - pct * (h - 2*pad);
+    const topPct = (yPos / h * 100).toFixed(1);
+    threshLine.style.display = 'block';
+    threshLine.style.top = topPct + '%';
+  } else if (threshLine) {
+    threshLine.style.display = 'none';
+  }
+
+  // Viral reels list
+  const viralReels = threshold > 0
+    ? reels.filter(r => (r.play_count || r.like_count || 0) >= threshold)
+        .sort((a,b) => (b.play_count||b.like_count||0) - (a.play_count||a.like_count||0))
+        .slice(0, 5)
+    : [];
+
+  if (!viralReels.length) {
+    listEl.innerHTML = threshold > 0
+      ? `<div style="font-family:var(--font-data);font-size:10px;color:rgba(255,255,255,0.2);">No reels above threshold yet</div>`
+      : '';
+    return;
+  }
+
+  listEl.innerHTML = viralReels.map(r => {
+    const views = r.play_count || r.like_count || 0;
+    const cap = (r.caption || '').slice(0, 45) + ((r.caption||'').length > 45 ? '…' : '');
+    return `<div style="display:flex;align-items:center;gap:7px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+      <span style="font-size:12px;">⚡</span>
+      <div style="font-family:var(--font-data);font-size:10px;color:rgba(255,255,255,0.6);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${cap || '(no caption)'}</div>
+      <div style="font-family:var(--font-head);font-size:10px;font-weight:900;color:var(--accent);flex-shrink:0;">${fmtNum(views)}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── GOALS ───────────────────────────────────────────────────────
+const GOALS_KEY = 'perf_goals';
+let goalsOpen = true;
+
+function toggleGoals() {
+  goalsOpen = !goalsOpen;
+  document.getElementById('goals-body').style.display = goalsOpen ? 'block' : 'none';
+  document.getElementById('goals-toggle-icon').textContent = goalsOpen ? '▾' : '▸';
+}
+
+function saveGoals() {
+  const g = {
+    views: parseInt(document.getElementById('goal-views').value) || 0,
+    followers: parseInt(document.getElementById('goal-followers').value) || 0,
+    posts: parseInt(document.getElementById('goal-posts').value) || 0,
+  };
+  localStorage.setItem(GOALS_KEY, JSON.stringify(g));
+  renderGoalProgress(g);
+}
+
+function renderGoalProgress(g) {
+  const reels = getCachedReels();
+  const cache = (() => { try { return JSON.parse(localStorage.getItem(IG_CACHE_KEY)||'null'); } catch(e){return null;} })();
+  const followers = cache?.profile?.followers_count || 0;
+  const totalLikes = reels.reduce((s,r)=>s+(r.like_count||0),0);
+  const avgViews = reels.length ? Math.round(totalLikes / reels.length) : 0;
+  // posts this month
+  const now = new Date();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+  const postsThisMonth = reels.filter(r => r.timestamp && new Date(r.timestamp) >= monthStart).length;
+
+  const metrics = [
+    { label: 'Avg Views', current: avgViews, target: g.views },
+    { label: 'Followers', current: followers, target: g.followers },
+    { label: 'Posts/Month', current: postsThisMonth, target: g.posts },
+  ];
+
+  const el = document.getElementById('goals-progress-section');
+  if (!el) return;
+  el.innerHTML = metrics.map(m => {
+    const pct = m.target > 0 ? Math.min(100, Math.round(m.current / m.target * 100)) : 0;
+    const color = pct >= 100 ? 'var(--green)' : pct >= 60 ? 'var(--accent)' : 'rgba(255,255,255,0.25)';
+    return `<div>
+      <div style="display:flex;justify-content:space-between;font-family:var(--font-data);font-size:10px;color:rgba(255,255,255,0.4);margin-bottom:4px;">
+        <span>${m.label}</span>
+        <span style="color:${color};">${fmtNum(m.current)} / ${m.target ? fmtNum(m.target) : '—'} ${m.target ? `(${pct}%)` : ''}</span>
+      </div>
+      <div style="height:4px;background:rgba(255,255,255,0.06);border-radius:2px;">
+        <div style="width:${pct}%;height:100%;background:${color};border-radius:2px;transition:width 0.6s ease;"></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function loadGoals() {
+  try {
+    const g = JSON.parse(localStorage.getItem(GOALS_KEY) || 'null');
+    if (!g) return;
+    if (g.views) document.getElementById('goal-views').value = g.views;
+    if (g.followers) document.getElementById('goal-followers').value = g.followers;
+    if (g.posts) document.getElementById('goal-posts').value = g.posts;
+    renderGoalProgress(g);
+  } catch(e) {}
+}
+
+// ── CONTENT CALENDAR ────────────────────────────────────────────
+let calView = 'cards';
+
+function switchCalView(view) {
+  calView = view;
+  document.getElementById('cal-cards-view').style.display = view === 'cards' ? 'block' : 'none';
+  document.getElementById('cal-calendar-view').style.display = view === 'calendar' ? 'block' : 'none';
+  document.getElementById('cal-view-cards').style.background = view === 'cards' ? 'rgba(79,195,247,0.1)' : 'transparent';
+  document.getElementById('cal-view-cards').style.color = view === 'cards' ? 'var(--accent)' : 'rgba(255,255,255,0.4)';
+  document.getElementById('cal-view-cards').style.borderColor = view === 'cards' ? 'rgba(79,195,247,0.3)' : 'rgba(255,255,255,0.08)';
+  document.getElementById('cal-view-cal').style.background = view === 'calendar' ? 'rgba(79,195,247,0.1)' : 'transparent';
+  document.getElementById('cal-view-cal').style.color = view === 'calendar' ? 'var(--accent)' : 'rgba(255,255,255,0.4)';
+  document.getElementById('cal-view-cal').style.borderColor = view === 'calendar' ? 'rgba(79,195,247,0.3)' : 'rgba(255,255,255,0.08)';
+}
+
+function buildCalendar() {
+  const reels = getCachedReels();
+  const sorted = [...reels].sort((a,b) => new Date(b.timestamp||0) - new Date(a.timestamp||0));
+
+  // Cards view — list of recent reels with date
+  const cardsEl = document.getElementById('cal-cards-list');
+  if (cardsEl) {
+    if (!sorted.length) {
+      cardsEl.innerHTML = '<div style="font-family:var(--font-data);font-size:11px;color:rgba(255,255,255,0.2);padding:8px 0;">No reels cached yet.</div>';
+    } else {
+      cardsEl.innerHTML = sorted.slice(0, 10).map(r => {
+        const dt = r.timestamp ? new Date(r.timestamp) : null;
+        const dateStr = dt ? dt.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) : '—';
+        const cap = (r.caption || '').slice(0, 60) + ((r.caption||'').length > 60 ? '…' : '');
+        const views = r.play_count || r.like_count || 0;
+        return `<div style="display:flex;align-items:center;gap:10px;padding:7px 10px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:7px;">
+          <div style="flex-shrink:0;font-family:var(--font-data);font-size:10px;color:rgba(255,255,255,0.35);width:72px;">${dateStr}</div>
+          <div style="flex:1;font-family:var(--font-data);font-size:10px;color:rgba(255,255,255,0.6);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${cap || '(no caption)'}</div>
+          <div style="flex-shrink:0;font-family:var(--font-head);font-size:10px;font-weight:900;color:rgba(255,255,255,0.35);">${fmtNum(views)}</div>
+        </div>`;
+      }).join('');
+    }
+  }
+
+  // Calendar view — current month with dots
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  const monthLabel = now.toLocaleDateString('en-US',{month:'long',year:'numeric'});
+  const labelEl = document.getElementById('cal-month-label');
+  if (labelEl) labelEl.textContent = monthLabel;
+
+  // Build set of days with posts
+  const postedDays = new Set();
+  sorted.forEach(r => {
+    if (!r.timestamp) return;
+    const dt = new Date(r.timestamp);
+    if (dt.getFullYear() === year && dt.getMonth() === month) {
+      postedDays.add(dt.getDate());
+    }
+  });
+
+  const calGrid = document.getElementById('cal-grid');
+  if (!calGrid) return;
+
+  const firstDay = new Date(year, month, 1).getDay(); // 0=Sun
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const today = now.getDate();
+
+  let cells = '';
+  // empty cells before first day
+  for (let i = 0; i < firstDay; i++) {
+    cells += '<div style="height:36px;"></div>';
+  }
+  for (let d = 1; d <= daysInMonth; d++) {
+    const isToday = d === today;
+    const hasPost = postedDays.has(d);
+    const bg = isToday ? 'rgba(79,195,247,0.12)' : 'rgba(255,255,255,0.02)';
+    const border = isToday ? '1px solid rgba(79,195,247,0.3)' : '1px solid rgba(255,255,255,0.04)';
+    cells += `<div style="height:36px;background:${bg};border:${border};border-radius:5px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;">
+      <span style="font-family:var(--font-data);font-size:10px;color:${isToday ? 'var(--accent)' : 'rgba(255,255,255,0.4)'};">${d}</span>
+      ${hasPost ? '<div style="width:5px;height:5px;border-radius:50%;background:var(--accent);"></div>' : ''}
+    </div>`;
+  }
+  calGrid.innerHTML = cells;
+}
+
+// ── INIT ────────────────────────────────────────────────────────
+function initPerfFeatures() {
+  // Restore viral threshold input
+  const savedThreshold = localStorage.getItem(VIRAL_KEY);
+  if (savedThreshold) {
+    const inp = document.getElementById('viral-threshold-input');
+    if (inp) inp.value = savedThreshold;
+  }
+  buildHeatmap();
+  buildDonut();
+  renderViralThreshold();
+  loadGoals();
+  buildCalendar();
+}
+
+// Run after IG data loads
+const _origRenderMedia = renderMedia;
+window.renderMedia = function(items, followers) {
+  _origRenderMedia(items, followers);
+  setTimeout(initPerfFeatures, 100);
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Try from cache on initial load
+  setTimeout(initPerfFeatures, 500);
+});
+</script>
+
 <script>
 // Unlock chat nav if API key is available
 (function() {
@@ -510,9 +975,9 @@ document.head.appendChild(style);
 <script>
 (function sidebarAgentStatus() {
   var AGENTS = [
-    {name:'Argus',color:'#4FC3F7'},{name:'Apollo',color:'#fbbf24'},
+    {name:'Atlas',color:'#4FC3F7'},{name:'Argus',color:'#4FC3F7'},{name:'Apollo',color:'#4FC3F7'},
     
-    {name:'Hermes',color:'#f472b6'},{name:'Clio',color:'#a78bfa'}
+    {name:'Hermes',color:'#4FC3F7'},{name:'Clio',color:'#4FC3F7'}
   ];
   function getStatuses() {
     var s = {};
@@ -532,7 +997,7 @@ document.head.appendChild(style);
     var statuses = getStatuses();
     el.innerHTML = AGENTS.map(function(a){
       var st = statuses[a.name]||'idle';
-      var dotColor = st==='working'?'#fbbf24':st==='queued'?'#fbbf24':'rgba(255,255,255,0.15)';
+      var dotColor = st==='working'?'#4FC3F7':st==='queued'?'#4FC3F7':'rgba(255,255,255,0.15)';
       var stLabel = st==='working'?'running':st==='queued'?'queued':'idle';
       return '<div style="display:flex;align-items:center;gap:10px;padding:8px 16px;cursor:pointer;" onclick="window.location.href=window.location.href.replace(/\/[^\/]*$/, \'/agents\')">'
         +'<div style="width:9px;height:9px;border-radius:50%;flex-shrink:0;background:'+dotColor+';"></div>'
@@ -542,8 +1007,269 @@ document.head.appendChild(style);
     }).join('');
   }
   document.addEventListener('DOMContentLoaded', render);
-  setInterval(render, 5000);
+  setInterval(render, 30000);
 })();
 </script>
+<!-- ═══════════════════════════════════════════════════════════════
+     INBOUNDOS GLOBAL UI — Command Palette · Search · Shortcuts · Dim · Collapse
+     Self-contained. No conflicts with existing code.
+═══════════════════════════════════════════════════════════════ -->
+<style id="iob-ui-styles">
+/* ── BASE MODAL ── */
+.iob-overlay{position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,0.72);backdrop-filter:blur(12px);display:flex;align-items:flex-start;justify-content:center;padding-top:80px;opacity:0;pointer-events:none;transition:opacity 0.18s ease;}
+.iob-overlay.open{opacity:1;pointer-events:all;}
+.iob-modal{width:500px;max-width:calc(100vw - 32px);background:#0d1520;border:1px solid rgba(79,195,247,0.2);border-radius:14px;box-shadow:0 32px 80px rgba(0,0,0,0.8),0 0 0 1px rgba(79,195,247,0.06);overflow:hidden;transform:scale(0.94) translateY(-8px);transition:transform 0.22s cubic-bezier(0.34,1.56,0.64,1),opacity 0.18s;}
+.iob-overlay.open .iob-modal{transform:scale(1) translateY(0);}
+.iob-input-wrap{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.07);}
+.iob-input-icon{color:rgba(79,195,247,0.6);flex-shrink:0;font-size:14px;}
+.iob-input{flex:1;background:transparent;border:none;outline:none;font-family:'DM Sans',sans-serif;font-size:14px;color:#fff;}
+.iob-input::placeholder{color:rgba(255,255,255,0.22);}
+.iob-label-bar{font-family:'DM Sans',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.25);padding:10px 16px 4px;}
+.iob-results{max-height:320px;overflow-y:auto;padding:4px 6px 8px;}
+.iob-results::-webkit-scrollbar{width:3px;}
+.iob-results::-webkit-scrollbar-thumb{background:rgba(79,195,247,0.15);border-radius:3px;}
+.iob-result-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;cursor:pointer;transition:background 0.12s;}
+.iob-result-item:hover,.iob-result-item.active{background:rgba(79,195,247,0.09);}
+.iob-result-icon{font-size:14px;width:22px;text-align:center;flex-shrink:0;opacity:0.7;}
+.iob-result-name{font-family:'DM Sans',sans-serif;font-size:13px;color:#fff;}
+.iob-result-type{font-family:'DM Sans',sans-serif;font-size:10px;color:rgba(255,255,255,0.3);margin-left:auto;}
+.iob-empty{font-family:'DM Sans',sans-serif;font-size:12px;color:rgba(255,255,255,0.25);text-align:center;padding:24px;}
+/* ── SHORTCUTS MODAL ── */
+.iob-shortcuts-box{background:#0d1520;border:1px solid rgba(79,195,247,0.18);border-radius:14px;padding:24px;width:360px;max-width:calc(100vw - 32px);box-shadow:0 32px 80px rgba(0,0,0,0.8);}
+.iob-shortcuts-title{font-family:'NHGrotesk','Arial Black',sans-serif;font-size:16px;font-weight:900;letter-spacing:-0.3px;color:#fff;margin-bottom:18px;}
+.iob-shortcut-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);}
+.iob-shortcut-row:last-child{border-bottom:none;}
+.iob-shortcut-desc{font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.65);}
+.iob-kbd{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:700;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:5px;padding:3px 8px;color:rgba(255,255,255,0.5);}
+
+
+  top:16px;right:16px;z-index:8000;';
+}
+
+/* ═══════════════ COMMAND PALETTE ═══════════════ */
+var cpActiveIdx=-1;
+
+function openCP(){
+  document.getElementById('iob-cp-overlay').classList.add('open');
+  var inp=document.getElementById('iob-cp-input');
+  inp.value='';
+  renderCPResults('');
+  setTimeout(function(){inp.focus();},60);
+}
+function closeCP(){
+  document.getElementById('iob-cp-overlay').classList.remove('open');
+  cpActiveIdx=-1;
+}
+function renderCPResults(q){
+  var res=document.getElementById('iob-cp-results');
+  var list=PAGES.filter(function(p){return !q||p.name.toLowerCase().indexOf(q.toLowerCase())!==-1;});
+  if(!list.length){res.innerHTML='<div class="iob-empty">No pages found</div>';return;}
+  res.innerHTML=list.map(function(p){
+    return '<div class="iob-result-item" data-page="'+p.page+'" onclick="(function(){window.__iobNavTo(\''+p.page+'\')})()">'+
+      '<span class="iob-result-icon">'+p.icon+'</span>'+
+      '<span class="iob-result-name">'+p.name+'</span>'+
+    '</div>';
+  }).join('');
+  cpActiveIdx=-1;
+}
+window.__iobNavTo=navTo;
+
+document.addEventListener('input',function(e){
+  if(e.target.id==='iob-cp-input') renderCPResults(e.target.value);
+});
+
+/* ═══════════════ GLOBAL SEARCH ═══════════════ */
+function openSR(){
+  document.getElementById('iob-sr-overlay').classList.add('open');
+  var inp=document.getElementById('iob-sr-input');
+  inp.value='';
+  document.getElementById('iob-sr-results').innerHTML='<div class="iob-empty">Type to search…</div>';
+  setTimeout(function(){inp.focus();},60);
+}
+function closeSR(){
+  document.getElementById('iob-sr-overlay').classList.remove('open');
+}
+
+var srTimer=null;
+document.addEventListener('input',function(e){
+  if(e.target.id!=='iob-sr-input') return;
+  clearTimeout(srTimer);
+  var q=e.target.value.trim();
+  if(!q){document.getElementById('iob-sr-results').innerHTML='<div class="iob-empty">Type to search…</div>';return;}
+  srTimer=setTimeout(function(){runSearch(q);},280);
+});
+
+function runSearch(q){
+  var res=[];
+
+  /* pipeline cards from localStorage */
+  try{
+    var board=JSON.parse(localStorage.getItem('ctrl_pipeline_board')||'{}');
+    var cols=['scripting','filming','editing','scheduled','published'];
+    cols.forEach(function(col){
+      var cards=board[col];
+      if(!Array.isArray(cards)) return;
+      cards.forEach(function(card){
+        var title=card.title||card.name||'';
+        if(title.toLowerCase().indexOf(q.toLowerCase())!==-1){
+          res.push({type:'Pipeline',name:title,icon:'\u{1F4CB}',page:'pipeline'});
+        }
+      });
+    });
+  }catch(e){}
+
+  /* supabase clients */
+  var sbUrl='https://cscfbuhwlfhblxprkwnh.supabase.co';
+  var apikey='sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8';
+  fetch(sbUrl+'/rest/v1/clients?select=name,id&name=ilike.*'+encodeURIComponent(q)+'*',{
+    headers:{'apikey':apikey,'Authorization':'Bearer '+apikey}
+  }).then(function(r){return r.ok?r.json():[];}).then(function(clients){
+    var clientRes=clients.map(function(c){return{type:'Client',name:c.name,icon:'\u{1F465}',page:'clients'};});
+    renderSRResults(res.concat(clientRes),q);
+  }).catch(function(){
+    renderSRResults(res,q);
+  });
+}
+
+function renderSRResults(items,q){
+  var el=document.getElementById('iob-sr-results');
+  if(!items.length){el.innerHTML='<div class="iob-empty">No results for "'+escHtml(q)+'"</div>';return;}
+
+  /* group by type */
+  var groups={};
+  items.forEach(function(it){
+    if(!groups[it.type]) groups[it.type]=[];
+    groups[it.type].push(it);
+  });
+
+  var html='';
+  Object.keys(groups).forEach(function(type){
+    html+='<div class="iob-label-bar">'+escHtml(type)+'</div>';
+    groups[type].forEach(function(it){
+      html+='<div class="iob-result-item" onclick="(function(){window.__iobNavTo(\''+it.page+'\')})()">'+
+        '<span class="iob-result-icon">'+it.icon+'</span>'+
+        '<span class="iob-result-name">'+escHtml(it.name)+'</span>'+
+      '</div>';
+    });
+  });
+  el.innerHTML=html;
+}
+
+function escHtml(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+';
+}
+
+/* ═══════════════ KEYBOARD ═══════════════ */
+document.addEventListener('keydown',function(e){
+  var tag=(document.activeElement||{}).tagName||'';
+  var inInput=/^(INPUT|TEXTAREA|SELECT)$/i.test(tag);
+  var isContentEditable=(document.activeElement||{}).isContentEditable;
+
+  /* ESC */
+  if(e.key==='Escape'){
+    if(document.getElementById('iob-cp-overlay').classList.contains('open')){closeCP();e.preventDefault();return;}
+    if(document.getElementById('iob-sr-overlay').classList.contains('open')){closeSR();e.preventDefault();return;}
+    if(document.getElementById('iob-sc-overlay').classList.contains('open')){document.getElementById('iob-sc-overlay').classList.remove('open');e.preventDefault();return;}
+  }
+
+  /* Cmd+K */
+  if((e.metaKey||e.ctrlKey)&&e.key==='k'){
+    e.preventDefault();
+    if(document.getElementById('iob-cp-overlay').classList.contains('open')){closeCP();}else{openCP();}
+    return;
+  }
+
+  /* Cmd+/ */
+  if((e.metaKey||e.ctrlKey)&&e.key==='/'){
+    e.preventDefault();
+    if(document.getElementById('iob-sr-overlay').classList.contains('open')){closeSR();}else{openSR();}
+    return;
+  }
+
+  /* ? */
+  if(e.key==='?'&&!inInput&&!isContentEditable&&!e.metaKey&&!e.ctrlKey){
+    e.preventDefault();
+    var sc=document.getElementById('iob-sc-overlay');
+    if(sc.classList.contains('open')){sc.classList.remove('open');}else{sc.classList.add('open');}
+    return;
+  }
+
+  /* Arrow keys in command palette */
+  if(document.getElementById('iob-cp-overlay').classList.contains('open')){
+    var items=document.querySelectorAll('#iob-cp-results .iob-result-item');
+    if(!items.length) return;
+    if(e.key==='ArrowDown'){
+      e.preventDefault();
+      cpActiveIdx=Math.min(cpActiveIdx+1,items.length-1);
+      items.forEach(function(el,i){el.classList.toggle('active',i===cpActiveIdx);});
+    } else if(e.key==='ArrowUp'){
+      e.preventDefault();
+      cpActiveIdx=Math.max(cpActiveIdx-1,0);
+      items.forEach(function(el,i){el.classList.toggle('active',i===cpActiveIdx);});
+    } else if(e.key==='Enter'){
+      e.preventDefault();
+      var active=document.querySelector('#iob-cp-results .iob-result-item.active')||items[0];
+      if(active) active.click();
+    }
+  }
+});
+
+/* ═══════════════ SECTION COLLAPSE ═══════════════ */
+function initCollapse(){
+  var PAGE=window.location.pathname.split('/').filter(Boolean).pop()||'page';
+  var selectors=['.section-label','.kanban-col-head','.col-header','.ds-header','.tp-head','.dp-head'];
+  var sectionIdx=0;
+
+  selectors.forEach(function(sel){
+    document.querySelectorAll(sel).forEach(function(header){
+      if(header.dataset.iobCollapse) return;
+      header.dataset.iobCollapse='1';
+      var body=header.nextElementSibling;
+      if(!body) return;
+      if(!body.children.length&&!body.textContent.trim()) return;
+
+      var idx=sectionIdx++;
+      var key='ui_collapse_'+PAGE+'_'+idx;
+      var isCollapsed=localStorage.getItem(key)==='1';
+
+      var chevron=document.createElement('button');
+      chevron.className='iob-collapse-btn'+(isCollapsed?' collapsed':'');
+      chevron.innerHTML='▼';
+      chevron.title='Collapse/expand';
+      chevron.onclick=function(e){
+        e.stopPropagation();
+        isCollapsed=!isCollapsed;
+        chevron.classList.toggle('collapsed',isCollapsed);
+        body.classList.toggle('collapsed',isCollapsed);
+        localStorage.setItem(key,isCollapsed?'1':'0');
+      };
+
+      if(getComputedStyle(header).display==='block'||!header.style.display){
+        header.style.display='flex';
+      }
+      header.style.alignItems='center';
+      header.appendChild(chevron);
+
+      if(isCollapsed) body.classList.add('collapsed');
+    });
+  });
+}
+
+/* ═══════════════ INIT ═══════════════ */
+function init(){
+  inject();
+  setTimeout(initCollapse,400);
+}
+
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded',init);
+} else {
+  init();
+}
+
+})();
+</script>
+
 </body>
 </html>

@@ -19,8 +19,11 @@ import argparse, json, re, os, sys, glob
 import urllib.request, urllib.error
 
 # ── YOUR MASTER SUPABASE ──────────────────────────────────────
-MASTER_URL = 'https://cscfbuhwlfhblxprkwnh.supabase.co'
-MASTER_SVC = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTQ2MzIyNSwiZXhwIjoyMDk1MDM5MjI1fQ.8ik968LXAthPkd6nkKOOOFlzTbR-94A22l5T_9T17GE'
+MASTER_URL = os.environ.get('SUPABASE_URL', 'https://cscfbuhwlfhblxprkwnh.supabase.co')
+MASTER_SVC = os.environ.get('SUPABASE_SERVICE_ROLE_KEY', '')
+if not MASTER_SVC:
+    print('ERROR: SUPABASE_SERVICE_ROLE_KEY env var not set. Set it before running.')
+    sys.exit(1)
 
 SCRIPT_DIR  = os.path.dirname(os.path.abspath(__file__))
 WORKFLOWS_DIR = os.path.join(SCRIPT_DIR, '..', 'workflows')

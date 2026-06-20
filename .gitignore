@@ -3,6 +3,12 @@
 .env.*
 .env.local
 .env*.local
+qualify-server/.env*
 secrets.json
 *.secret
 node_modules/
+supabase/.temp/
+ONBOARDING_SOP_INTERNAL.md
+INSTALLATION_GUIDE.md
+NOTES.md
+client-workflows/

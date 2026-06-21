@@ -492,9 +492,10 @@ You have two helper scripts (the only way you touch the database):
 - WRITE: node "${SB_WRITE}" <table> '<json row>'   (only agent_comms and daily_reports are writable)
 
 Steps:
+0. Read pm_tasks where status=in.(todo,in_progress). For each agent (apollo, hermes, clio, argus), note what open tasks already exist. Do NOT assign a new task if they already have an open one covering the same gap.
 1. Read agent_activity (run_date=eq.${today} or recent), agent_runs, outreach_leads (count by qualifier+stage), clients, sales_calls, agent_goals, and last-24h agent_comms.
 2. Build the report exactly in the format your skill defines. Each section on its own line, blank line between sections. NEVER merge sections into one paragraph. Apply the VOICE rules hard. No reframe pattern.
-3. Assign up to 3 concrete tasks by writing each to agent_comms.
+3. Assign up to 3 concrete tasks by writing each to agent_comms. TITLE: 3-6 word verb phrase only (e.g. "DM 20 Hot Leads"). DESCRIPTION: plain English, what to do and why, no code or database terms.
 4. Save the report to daily_reports (one row, report_date=${today}, include raw_md).
 5. After saving, print ONLY the raw_md report text as your final output (nothing else).`;
 
@@ -656,6 +657,27 @@ const server = http.createServer(async (req, res) => {
       if (!r.ok) return sendJSON(res, 502, { error: 'delete failed', detail: await r.text() });
       return sendJSON(res, 200, { ok: true });
     } catch (e) { return sendJSON(res, 502, { error: 'delete failed' }); }
+  }
+
+  const pipelineScriptMatch = urlPath.match(/^\/pipeline\/item\/([0-9a-f-]+)\/script$/);
+  if (pipelineScriptMatch && req.method === 'PATCH') {
+    if (!checkAuth(req)) return sendJSON(res, 401, { error: 'Unauthorized' });
+    const itemId = pipelineScriptMatch[1];
+    let body; try { body = JSON.parse(await readBody(req)); } catch { return sendJSON(res, 400, { error: 'bad json' }); }
+    if (typeof body.content !== 'string') return sendJSON(res, 400, { error: 'content required' });
+    try {
+      // Fetch existing metadata to merge (don't wipe other fields)
+      const cur = await fetch(`${SB_URL}/rest/v1/agent_items?id=eq.${itemId}&select=metadata`, { headers: SB_HEADERS });
+      const rows = cur.ok ? await cur.json() : [];
+      const existingMeta = (rows[0] && rows[0].metadata) || {};
+      const newMeta = { ...existingMeta, ...(body.metadata || {}) };
+      const r = await fetch(`${SB_URL}/rest/v1/agent_items?id=eq.${itemId}`, {
+        method: 'PATCH', headers: { ...SB_HEADERS, Prefer: 'return=minimal' },
+        body: JSON.stringify({ content: body.content, metadata: newMeta })
+      });
+      if (!r.ok) return sendJSON(res, 502, { error: 'update failed', detail: await r.text() });
+      return sendJSON(res, 200, { ok: true });
+    } catch (e) { return sendJSON(res, 502, { error: 'update failed' }); }
   }
 
   const pipelineStatusMatch = urlPath.match(/^\/pipeline\/item\/([0-9a-f-]+)\/status$/);
@@ -828,8 +850,13 @@ const server = http.createServer(async (req, res) => {
         // Auto-sync task comms → pm_tasks
         if (isTask && c.id && c.message) {
           const assignee = (c.to_agent || '').toLowerCase();
+          // Build a short title (verb + object, max 6 words) from the first sentence
+          const firstSentence = (c.message || '').split(/[.\n]/)[0].trim();
+          const words = firstSentence.split(/\s+/).slice(0, 6);
+          const shortTitle = words.join(' ').replace(/[,;:]+$/, '') || 'Task from Atlas';
+          // Description is plain English: what to do, why it matters, no code/jargon
           const row = {
-            title: (c.message || '').split('\n')[0].trim().slice(0, 120) || 'Task from Atlas',
+            title: shortTitle,
             description: c.message || null,
             status: 'todo',
             priority: 'high',
@@ -843,8 +870,11 @@ const server = http.createServer(async (req, res) => {
         // Auto-create micko task when agent message flags human action needed
         const MICKO_TRIGGERS = /micko (needs to|has to|must|should|just|please|will need to)|needs to be (sent|posted|done|approved) by micko|micko sends|micko posts|blocked|escalat/i;
         if (!isTask && c.message && MICKO_TRIGGERS.test(c.message) && c.id) {
+          const firstSentenceMicko = (c.message || '').split(/[.\n]/)[0].trim();
+          const wordsMicko = firstSentenceMicko.split(/\s+/).slice(0, 6);
+          const shortTitleMicko = `[${fromAgent}] ` + wordsMicko.join(' ').replace(/[,;:]+$/, '');
           const mRow = {
-            title: `[${fromAgent}] ` + (c.message || '').split('\n')[0].trim().slice(0, 110),
+            title: shortTitleMicko,
             description: c.message || null,
             status: 'todo',
             priority: /blocked|escalat/i.test(c.message) ? 'urgent' : 'high',
@@ -986,19 +1016,48 @@ const server = http.createServer(async (req, res) => {
       try { skillContent = fs.readFileSync(sp, 'utf8'); break; } catch(e) { console.error(`[${agent}] skill read failed at ${sp}:`, e.message); }
     }
 
-    const prompt = `You are ${agent}, an InboundOS AI agent. Your task: ${safeTask}.${safeIdeaTitle ? ` Content idea to work with: "${safeIdeaTitle}".` : ''}${safeFunnelStage ? ` Funnel stage: ${safeFunnelStage}.` : ''}
+    const prompt = `You are ${agent}, an InboundOS AI agent.
 
-${skillContent ? `--- SKILL ---\n${skillContent.slice(0, 8000)}\n--- END SKILL ---\n\n` : ''}Complete the task. Return ONLY a JSON object with this structure:
+## STEP 0 — Check your task queue first (always do this before anything else)
+Run this command to read your open tasks:
+  node "${SB_QUERY}" pm_tasks "id,title,description,priority" "assignee=eq.${skillName}&status=in.(todo,in_progress)&order=priority.desc,created_at.asc"
+
+If there are open tasks:
+- Work through them in order (urgent first, then high, then others).
+- For each task: do what the description says, then remember the task id — you'll report it in your summary.
+- If a task is already in_progress (you or a prior run started it), finish it or note why it's blocked.
+
+If there are no open tasks, skip to the triggered task below.
+
+## TRIGGERED TASK
+${safeTask}${safeIdeaTitle ? ` Content idea: "${safeIdeaTitle}".` : ''}${safeFunnelStage ? ` Funnel stage: ${safeFunnelStage}.` : ''}
+
+${skillContent ? `--- SKILL ---\n${skillContent.slice(0, 8000)}\n--- END SKILL ---\n\n` : ''}Complete all work above. Return ONLY a JSON object with this structure:
 {
   "kind": "${skillName}_result",
-  "summary": "one sentence summary of what was done",
-  "output": "the full output text, script, or result"
+  "summary": "one sentence: what tasks you ran and what got done",
+  "output": "the full output text, scripts, or results"
 }`;
 
     console.log(`[${agent}] Running task: ${task}`);
+
+    // Find matching pm_tasks row by id (if provided) or source_comm_id
+    const patchTask = async (status) => {
+      if (!id) return;
+      const uuidRe = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      if (!uuidRe.test(id)) return;
+      await fetch(`${SB_URL}/rest/v1/pm_tasks?id=eq.${id}`, {
+        method: 'PATCH',
+        headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ status, updated_at: new Date().toISOString() }),
+      }).catch((e) => console.error(`[${agent}] pm_tasks patch failed:`, e.message));
+    };
+
+    await patchTask('in_progress');
+
     try {
       const result = await new Promise((resolve, reject) => {
-        const args = ['-p', '--allowedTools', 'Read,Write', prompt];
+        const args = ['-p', '--allowedTools', `Read,Write,Bash(node ${SB_QUERY}:*)`, prompt];
         execFile('claude', args, { timeout: 120000, maxBuffer: 1024 * 1024 * 8 }, (err, stdout, stderr) => {
           if (err) return reject(new Error(stderr || err.message));
           let text = stdout.trim().replace(/^```json\n?/, '').replace(/\n?```$/, '').trim();
@@ -1007,6 +1066,7 @@ ${skillContent ? `--- SKILL ---\n${skillContent.slice(0, 8000)}\n--- END SKILL -
         });
       });
       console.log(`[${agent}] Done: ${result.summary || 'complete'}`);
+      await patchTask('done');
       nexusAlert(`✅ *${agent}* done — ${result.summary || task}`);
       // Log to agent_activity
       fetch(`${SB_URL}/rest/v1/agent_activity`, {
@@ -1023,6 +1083,7 @@ ${skillContent ? `--- SKILL ---\n${skillContent.slice(0, 8000)}\n--- END SKILL -
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ task: { id, agent, task, status: 'done', progress: 100, result, updatedAt: Date.now() } }));
     } catch(e) {
+      await patchTask('todo');
       console.error(`[${agent}] Error:`, e.message);
       nexusAlert(`❌ *${agent}* failed — ${e.message}`);
       await logError(`agent/${agent}`, e.message, { task });

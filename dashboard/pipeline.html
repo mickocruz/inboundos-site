@@ -289,9 +289,6 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
 .kcard-age-badge.critical{background:rgba(248,113,113,0.12);color:#f87171;border:1px solid rgba(248,113,113,0.3);}
 
 /* WORD COUNT BADGE */
-.kcard-wc{font-family:var(--font-data);font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px;flex-shrink:0;}
-.kcard-wc.good{background:rgba(74,222,128,0.1);color:#4ade80;border:1px solid rgba(74,222,128,0.25);}
-.kcard-wc.off{background:rgba(255,200,0,0.1);color:#ffd000;border:1px solid rgba(255,200,0,0.25);}
 
 /* DUPLICATE BUTTON */
 .dup-btn{background:transparent;border:1px solid rgba(79,195,247,0.18);color:rgba(79,195,247,0.6);border-radius:4px;padding:2px 6px;font-family:var(--font-data);font-size:11px;cursor:pointer;transition:all 0.15s;flex-shrink:0;line-height:1.2;}
@@ -340,7 +337,7 @@ html,body{font-family:'DM Sans',sans-serif!important;}
       <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','crm','tasks','roi','chat','metrics','login','activity'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/activity.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>Live Activity</div>
     </div>
     <div class="nav-section"><div class="nav-section-label">Content</div>
-      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','crm','tasks','roi','chat','metrics','login','activity'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/performance.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="4" height="20" rx="1"/><rect x="10" y="8" width="4" height="14" rx="1"/><rect x="18" y="4" width="4" height="18" rx="1"/></svg>Instagram</div>
+      <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','crm','tasks','roi','chat','metrics','login','activity'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/performance.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>Instagram</div>
       <div class="nav-item active" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','crm','tasks','roi','chat','metrics','login','activity'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/pipeline.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Content Pipeline</div>
       <div class="nav-item" onclick="location.href='/'+(function(){var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');var s=v?v[2]:'';if(!s){var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','crm','tasks','roi','chat','metrics','login','activity'];var p=window.location.pathname.split('/').filter(Boolean);var seg=p[0]||'';s=pages.indexOf(seg)===-1?seg:'';}if(!s){window.location.href='/login';return '';}return s;})()+'/research.html'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Research</div>
     </div>
@@ -1209,17 +1206,18 @@ function populateScriptModal(scriptRaw) {
 }
 
 async function supaUpdateScript(id, script, hook, caption) {
-  const cur = await fetch(`${SUPA_URL}/rest/v1/agent_items?id=eq.${id}&select=metadata`, {
-    headers: { 'apikey': SUPA_ANON, 'Authorization': `Bearer ${SUPA_TOKEN}` }
+  const _sess = (() => { try { return JSON.parse(localStorage.getItem('sb_session') || '{}'); } catch { return {}; } })();
+  const token = _sess.access_token || '';
+  const res = await fetch(`${SERVER_BASE}/pipeline/item/${id}/script`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+    body: JSON.stringify({ content: script, metadata: { hook, caption, text_hook: hook } }),
   });
-  const rows = cur.ok ? await cur.json() : [];
-  const existingMeta = (rows[0] && rows[0].metadata) || {};
-  const newMeta = { ...existingMeta, hook, caption, text_hook: hook };
-  const res = await fetch(`${SUPA_URL}/rest/v1/agent_items?id=eq.${id}`, {
-    method: 'PATCH', headers: _wHeaders,
-    body: JSON.stringify({ content: script, metadata: newMeta }),
-  });
-  if (!res.ok) console.error('Failed to save script to Supabase:', res.status, id, await res.text());
+  if (!res.ok) {
+    const errText = await res.text();
+    console.error('Failed to save script:', res.status, id, errText);
+    showPipeToast(' Save failed — check server', '#f87171');
+  }
 }
 
 async function saveScriptModal(moveCard = true) {
@@ -1370,16 +1368,51 @@ function resizeScriptTextareas() {
 
 function openSavedScriptModal(card) {
   if (card.classList.contains('dragging')) return;
-  openScriptModal(card, false);
-  const ns = scriptModalKeyNs(card);
-  const hook    = localStorage.getItem(ns + '_hook')    || '';
-  const body    = localStorage.getItem(ns + '_body')    || '';
-  const cta     = localStorage.getItem(ns + '_cta')     || '';
-  const caption = localStorage.getItem(ns + '_caption') || '';
-  document.getElementById('script-modal-loading').style.display = 'none';
-  document.getElementById('script-modal-body').style.display    = 'flex';
-  populateScriptFields(hook, body, cta, caption);
-  resizeScriptTextareas();
+  const supaId = card.dataset.supaId;
+  openScriptModal(card, !!supaId);
+  if (supaId) {
+    document.getElementById('script-modal-loading-text').textContent = 'LOADING…';
+    document.getElementById('script-modal-loading-sub').textContent = '';
+    // Always fetch fresh from Supabase so edits persist across reloads
+    fetch(`${SUPA_URL}/rest/v1/agent_items?id=eq.${supaId}&select=content,metadata`, {
+      headers: { 'apikey': SUPA_ANON, 'Authorization': `Bearer ${SUPA_TOKEN}` }
+    }).then(r => r.ok ? r.json() : []).then(rows => {
+      const item = rows[0];
+      if (!item) return;
+      const meta = item.metadata || {};
+      const contentParas = (item.content || '').split(/\n\n+/);
+      const hook    = meta.hook || contentParas[0] || '';
+      const body    = contentParas.slice(1).join('\n\n');
+      const caption = meta.caption || '';
+      const ns = scriptModalKeyNs(card);
+      localStorage.setItem(ns + '_hook',    hook);
+      localStorage.setItem(ns + '_body',    body);
+      localStorage.setItem(ns + '_caption', caption);
+      document.getElementById('script-modal-loading').style.display = 'none';
+      document.getElementById('script-modal-body').style.display    = 'flex';
+      populateScriptFields(hook, body, '', caption);
+      resizeScriptTextareas();
+    }).catch(() => {
+      // fallback to localStorage if fetch fails
+      const ns = scriptModalKeyNs(card);
+      const hook    = localStorage.getItem(ns + '_hook')    || '';
+      const body    = localStorage.getItem(ns + '_body')    || '';
+      const caption = localStorage.getItem(ns + '_caption') || '';
+      document.getElementById('script-modal-loading').style.display = 'none';
+      document.getElementById('script-modal-body').style.display    = 'flex';
+      populateScriptFields(hook, body, '', caption);
+      resizeScriptTextareas();
+    });
+  } else {
+    const ns = scriptModalKeyNs(card);
+    const hook    = localStorage.getItem(ns + '_hook')    || '';
+    const body    = localStorage.getItem(ns + '_body')    || '';
+    const caption = localStorage.getItem(ns + '_caption') || '';
+    document.getElementById('script-modal-loading').style.display = 'none';
+    document.getElementById('script-modal-body').style.display    = 'flex';
+    populateScriptFields(hook, body, '', caption);
+    resizeScriptTextareas();
+  }
 }
 
 // Called when " Script it" is clicked on an idea card
@@ -1531,8 +1564,8 @@ async function supaUpdateStatus(id, status) {
   });
   if (!res.ok) {
     const errText = await res.text();
-    console.error('Failed to save card status:',
-    showErrToast('Failed to save — try again'); res.status, id, status, errText);
+    console.error('Failed to save card status:', res.status, id, status, errText);
+    showErrToast('Failed to save — try again');
     showPipeToast(' Move not saved — check server', '#f87171');
   } else {
     showPipeToast(' Saved', '#4ade80');
@@ -1733,7 +1766,7 @@ async function loadFromSupabase() {
       const ns = SCRIPT_NS + item.id;
       const contentParas = item.content.split(/\n\n+/);
       const savedHook = meta.hook || contentParas[0] || '';
-      const savedBody = meta.hook ? item.content : contentParas.slice(1).join('\n\n');
+      const savedBody = contentParas.slice(1).join('\n\n');
       localStorage.setItem(ns + '_hook',    savedHook);
       localStorage.setItem(ns + '_body',    savedBody);
       localStorage.setItem(ns + '_cta',     meta.cta     || '');
@@ -1748,7 +1781,7 @@ async function loadFromSupabase() {
   sortAllColumns();
   updateMoveButtons();
   // enhancements after supa load
-  setTimeout(() => { applyCardAging(); applyWordCountBadges(); document.querySelectorAll('.kcard').forEach(card => { if (!card.closest('#col-archive')) { addDupBtn(card); addCheckbox(card); } }); }, 200);
+  setTimeout(() => { applyCardAging(); document.querySelectorAll('.kcard').forEach(card => { if (!card.closest('#col-archive')) { addDupBtn(card); addCheckbox(card); } }); }, 200);
 }
 
 function buildRealtimeCard(item) {
@@ -1783,7 +1816,7 @@ function buildRealtimeCard(item) {
     const ns = SCRIPT_NS + item.id;
     const contentParas = item.content.split(/\n\n+/);
     const savedHook = meta.hook || contentParas[0] || '';
-    const savedBody = meta.hook ? item.content : contentParas.slice(1).join('\n\n');
+    const savedBody = contentParas.slice(1).join('\n\n');
     localStorage.setItem(ns + '_hook',    savedHook);
     localStorage.setItem(ns + '_body',    savedBody);
     localStorage.setItem(ns + '_cta',     meta.cta     || '');
@@ -2464,29 +2497,6 @@ function resetCardEnteredAt(card) {
 }
 
 // ===== WORD COUNT BADGE =====
-function applyWordCountBadges() {
-  ['scripting','filming','editing','scheduled','published'].forEach(colId => {
-    const col = document.getElementById('col-' + colId);
-    if (!col) return;
-    col.querySelectorAll('.kcard.scripted').forEach(card => {
-      // Remove old WC badge
-      card.querySelectorAll('.kcard-wc').forEach(b => b.remove());
-      const ns = SCRIPT_NS + (card.dataset.id || card.querySelector('.kcard-title')?.textContent?.trim());
-      const hook = localStorage.getItem(ns + '_hook') || '';
-      const body = localStorage.getItem(ns + '_body') || '';
-      const full = (hook + ' ' + body).trim();
-      if (!full) return;
-      const wc = full.split(/\s+/).filter(Boolean).length;
-      if (!wc) return;
-      const badge = document.createElement('span');
-      badge.className = 'kcard-wc ' + (wc >= 150 && wc <= 250 ? 'good' : 'off');
-      badge.textContent = wc + 'w';
-      badge.title = wc + ' words' + (wc >= 150 && wc <= 250 ? ' (on target)' : ' (target: 150–250)');
-      const meta = card.querySelector('.kcard-meta');
-      if (meta) meta.insertBefore(badge, meta.firstChild);
-    });
-  });
-}
 
 // ===== DUPLICATE CARD =====
 function duplicateCard(e, btn) {
@@ -2617,7 +2627,6 @@ function initPipelineEnhancements() {
     }
   });
   applyCardAging();
-  applyWordCountBadges();
   updateArchiveCount();
   // Restore archive from localStorage
   try {
@@ -2660,7 +2669,7 @@ function serializeArchive() {
 }
 
 // Schedule aging refresh every 30 minutes
-setInterval(() => { applyCardAging(); applyWordCountBadges(); }, 30 * 60 * 1000);
+setInterval(() => { applyCardAging(); }, 30 * 60 * 1000);
 
 // shared toast helper
 function showPipeToast(msg, color) {

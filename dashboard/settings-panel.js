@@ -34,7 +34,7 @@ window.SERVER_BASE = `http://${window.location.hostname}:3001`;
       if (!data.access_token) return;
       const updated = { ...s, access_token: data.access_token, refresh_token: data.refresh_token || s.refresh_token, expires_at: data.expires_at || Math.floor(Date.now()/1000) + 3600 };
       localStorage.setItem('sb_session', JSON.stringify(updated));
-    } catch(e) {}
+    } catch(e) { console.error('[settings] token refresh failed:', e.message); }
   }
   maybeRefreshToken();
 
@@ -101,7 +101,7 @@ window.SERVER_BASE = `http://${window.location.hostname}:3001`;
       if (!res.ok) throw new Error();
       const rows = await res.json();
       return rows[0] || null;
-    } catch { return null; }
+    } catch(e) { console.error('[settings] profile fetch failed:', e.message); return null; }
   }
 
   async function saveProfile(id, data) {

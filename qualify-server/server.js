@@ -61,14 +61,13 @@ function checkAuth(req) {
     const payload = JSON.parse(Buffer.from(parts[1], 'base64url').toString());
     if (!payload.sub) return false;
     if (payload.exp && payload.exp * 1000 < Date.now()) return false;
-    // Verify HMAC-SHA256 signature if JWT secret is available
+    // Verify HMAC-SHA256 signature — fail closed if secret not set
     const jwtSecret = process.env.SUPABASE_JWT_SECRET;
-    if (jwtSecret) {
-      const crypto = require('crypto');
-      const signingInput = parts[0] + '.' + parts[1];
-      const expected = crypto.createHmac('sha256', jwtSecret).update(signingInput).digest('base64url');
-      if (expected !== parts[2]) return false;
-    }
+    if (!jwtSecret) return false;
+    const crypto = require('crypto');
+    const signingInput = parts[0] + '.' + parts[1];
+    const expected = crypto.createHmac('sha256', jwtSecret).update(signingInput).digest('base64url');
+    if (expected !== parts[2]) return false;
     return true;
   } catch { return false; }
 }
@@ -93,34 +92,7 @@ async function logError(page, message, context) {
   } catch(e) { /* non-fatal */ }
 }
 const APOLLO_WORKFLOW_ID = process.env.APOLLO_WORKFLOW_ID || '0QoReLvsYWUaIrIO';
-
-// ── Life Planner (migrated from planner/server.js) ──
-const PLANNER_WEBHOOK_SECRET = process.env.PLANNER_WEBHOOK_SECRET;
-if (!PLANNER_WEBHOOK_SECRET) { console.error('[FATAL] PLANNER_WEBHOOK_SECRET not set in .env'); process.exit(1); }
 const SB_HEADERS = { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}`, 'Content-Type': 'application/json' };
-
-// cycle date: day rolls at 5AM local
-function plannerCycleDate() {
-  const d = new Date();
-  if (d.getHours() < 5) d.setDate(d.getDate() - 1);
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-}
-
-// rollover: carry unfinished tasks from old cycles into current
-async function plannerRollover() {
-  const current = plannerCycleDate();
-  try {
-    const r = await fetch(`${SB_URL}/rest/v1/planner_tasks?cycle_date=lt.${current}&status=neq.done`, {
-      method: 'PATCH',
-      headers: { ...SB_HEADERS, Prefer: 'return=representation' },
-      body: JSON.stringify({ cycle_date: current, carried: true, updated_at: new Date().toISOString() }),
-    });
-    if (r.ok) {
-      const moved = await r.json();
-      if (moved.length) console.log(`[planner rollover] carried ${moved.length} task(s) → ${current}`);
-    }
-  } catch (e) { console.error('[planner rollover]', e.message); }
-}
 
 const SKILL_PATH = path.join(os.homedir(), '.claude/skills/inboundos-daily-dm/SKILL.md');
 
@@ -314,24 +286,9 @@ function resolveSlugRoute(urlPath) {
   return null;
 }
 
-// Life Planner clean routes: /dashboard/planner[/] -> index.html, /dashboard/planner/{page} -> {page}.html
-const PLANNER_PAGES = ['focus', 'habits', 'fitness'];
-function resolvePlannerRoute(urlPath) {
-  if (urlPath === '/dashboard/planner' || urlPath === '/dashboard/planner/') {
-    return '/dashboard/planner/index.html';
-  }
-  const m = urlPath.match(/^\/dashboard\/planner\/([a-z]+)$/);
-  if (m && PLANNER_PAGES.includes(m[1])) return `/dashboard/planner/${m[1]}.html`;
-  return null;
-}
-
 function serveStatic(req, res) {
   let urlPath = req.url.split('?')[0];
   if (urlPath === '/' || urlPath === '') urlPath = '/index.html';
-
-  // Life Planner extensionless routes
-  const plannerRoute = resolvePlannerRoute(urlPath);
-  if (plannerRoute) urlPath = plannerRoute;
 
   // Rewrite slug-based nav routes to dashboard HTML files
   const rewritten = resolveSlugRoute(urlPath);
@@ -374,7 +331,7 @@ const AGENT_SETTINGS = path.join(__dirname, 'agent-settings.json');
 const SB_QUERY = path.join(__dirname, 'sb-query.js');
 
 // Tables the chat agent may read (mirrors sb-query.js allowlist for the prompt)
-const READABLE_TABLES = 'sops, systems, knowledge_base, clients, client_tasks, competitors, content_bucket, content_pillars, hooks, icp_profile, micko_profile, agent_roster, agent_activity, agent_runs, agent_comms, agent_goals, agent_memory, org_chart, revenue_sales, weekly_reports, daily_reports, outreach_leads, inbound_leads, sales_calls, niche_news, documents, routines, pm_tasks, planner_tasks';
+const READABLE_TABLES = 'sops, systems, knowledge_base, clients, client_tasks, competitors, content_bucket, content_pillars, hooks, icp_profile, micko_profile, agent_roster, agent_activity, agent_runs, agent_comms, agent_goals, agent_memory, org_chart, revenue_sales, weekly_reports, daily_reports, outreach_leads, inbound_leads, sales_calls, niche_news, documents, routines, pm_tasks';
 
 // ── Agent routing ──
 // Each specialist owns a domain. ATLAS (orchestrator / CEO) is the default for general or
@@ -441,7 +398,7 @@ async function handleAgentChat(req, res) {
   const skillName = String(chosen).toLowerCase().replace(/[^a-z0-9-]/g, '');
   let skillContent = '';
   const sp = findSkillFile(skillName);
-  if (sp) { try { skillContent = fs.readFileSync(sp, 'utf8').slice(0, 12000); } catch (e) {} }
+  if (sp) { try { skillContent = fs.readFileSync(sp, 'utf8').slice(0, 12000); } catch (e) { console.error('[chat] skill read failed:', e.message); } }
 
   // Build a single prompt: system framing + conversation transcript.
   // The agent answers from Micko's live Supabase data via the read-only sb-query.js helper.
@@ -521,7 +478,7 @@ async function handleAtlasRun(req, res) {
 
   let skill = '';
   const sp = findSkillFile('atlas');
-  if (sp) { try { skill = fs.readFileSync(sp, 'utf8'); } catch (e) {} }
+  if (sp) { try { skill = fs.readFileSync(sp, 'utf8'); } catch (e) { console.error('[atlas] skill read failed:', e.message); } }
   if (!skill) return sendJSON(res, 500, { error: 'ATLAS skill not found' });
 
   const today = new Date().toISOString().slice(0, 10);
@@ -654,36 +611,6 @@ const server = http.createServer(async (req, res) => {
       res.end(body);
     } catch (e) { sendJSON(res, 500, { error: e.message }); }
     return;
-  }
-
-  // ── Life Planner API (migrated from planner/server.js) ──
-  if (urlPath === '/api/webhook' && req.method === 'POST') {
-    if (req.headers['x-webhook-secret'] !== PLANNER_WEBHOOK_SECRET) return sendJSON(res, 401, { error: 'unauthorized' });
-    let b;
-    try { b = JSON.parse(await readBody(req)); } catch { b = {}; }
-    const title = String(b.title || '').trim().slice(0, 200);
-    if (!title) return sendJSON(res, 400, { error: 'title required' });
-    const row = {
-      title,
-      block: ['promote', 'fulfill', 'build'].includes(b.block) ? b.block : 'build',
-      lane: ['inboundos', 'music', 'personal'].includes(b.lane) ? b.lane : 'inboundos',
-      priority: [1, 2, 3].includes(b.priority) ? b.priority : 2,
-      source: String(b.source || 'n8n').slice(0, 40),
-      source_id: b.source_id ? String(b.source_id).slice(0, 120) : null,
-      cycle_date: b.cycle_date || plannerCycleDate(),
-    };
-    const r = await fetch(`${SB_URL}/rest/v1/planner_tasks`, {
-      method: 'POST',
-      headers: { ...SB_HEADERS, Prefer: 'return=representation,resolution=merge-duplicates' },
-      body: JSON.stringify([row]),
-    });
-    if (!r.ok) return sendJSON(res, 502, { error: 'supabase insert failed', detail: await r.text() });
-    const [task] = await r.json();
-    return sendJSON(res, 200, { ok: true, id: task?.id });
-  }
-  if (urlPath === '/api/rollover' && req.method === 'POST') {
-    await plannerRollover();
-    return sendJSON(res, 200, { ok: true });
   }
 
   // Approve DMs page — read drafts (service key, bypasses RLS). Localhost-trusted.
@@ -911,7 +838,7 @@ const server = http.createServer(async (req, res) => {
             sort_order: new Date(c.created_at).getTime(),
             source_comm_id: String(c.id),
           };
-          fetch(`${SB_URL}/rest/v1/pm_tasks`, { method: 'POST', headers: sbHdrs, body: JSON.stringify(row) }).catch(() => {});
+          fetch(`${SB_URL}/rest/v1/pm_tasks`, { method: 'POST', headers: sbHdrs, body: JSON.stringify(row) }).catch((e) => { console.error('[activity] agent task write failed:', e.message); });
         }
         // Auto-create micko task when agent message flags human action needed
         const MICKO_TRIGGERS = /micko (needs to|has to|must|should|just|please|will need to)|needs to be (sent|posted|done|approved) by micko|micko sends|micko posts|blocked|escalat/i;
@@ -926,7 +853,7 @@ const server = http.createServer(async (req, res) => {
             sort_order: new Date(c.created_at).getTime(),
             source_comm_id: 'micko-' + String(c.id),
           };
-          fetch(`${SB_URL}/rest/v1/pm_tasks`, { method: 'POST', headers: sbHdrs, body: JSON.stringify(mRow) }).catch(() => {});
+          fetch(`${SB_URL}/rest/v1/pm_tasks`, { method: 'POST', headers: sbHdrs, body: JSON.stringify(mRow) }).catch((e) => { console.error('[activity] micko task write failed:', e.message); });
         }
       }
 
@@ -1042,6 +969,11 @@ const server = http.createServer(async (req, res) => {
     if (!ALLOWED_AGENTS.includes(agent.toLowerCase())) {
       res.writeHead(400); res.end(JSON.stringify({ error: 'Unknown agent' })); return;
     }
+    // Strip prompt injection attempts before embedding user input in agent prompts
+    const sanitizeInput = (s) => typeof s === 'string' ? s.replace(/---\s*[\w\s]*---/g, '').replace(/IGNORE\s+(ABOVE|PREVIOUS|ALL)/gi, '').slice(0, 500) : s;
+    const safeTask = sanitizeInput(task);
+    const safeIdeaTitle = sanitizeInput(ideaTitle);
+    const safeFunnelStage = sanitizeInput(funnelStage);
 
     // Build skill path
     const skillName = agent.toLowerCase();
@@ -1051,10 +983,10 @@ const server = http.createServer(async (req, res) => {
     ];
     let skillContent = '';
     for (const sp of skillPaths) {
-      try { skillContent = fs.readFileSync(sp, 'utf8'); break; } catch(e) {}
+      try { skillContent = fs.readFileSync(sp, 'utf8'); break; } catch(e) { console.error(`[${agent}] skill read failed at ${sp}:`, e.message); }
     }
 
-    const prompt = `You are ${agent}, an InboundOS AI agent. Your task: ${task}.${ideaTitle ? ` Content idea to work with: "${ideaTitle}".` : ''}${funnelStage ? ` Funnel stage: ${funnelStage}.` : ''}
+    const prompt = `You are ${agent}, an InboundOS AI agent. Your task: ${safeTask}.${safeIdeaTitle ? ` Content idea to work with: "${safeIdeaTitle}".` : ''}${safeFunnelStage ? ` Funnel stage: ${safeFunnelStage}.` : ''}
 
 ${skillContent ? `--- SKILL ---\n${skillContent.slice(0, 8000)}\n--- END SKILL ---\n\n` : ''}Complete the task. Return ONLY a JSON object with this structure:
 {
@@ -1080,14 +1012,14 @@ ${skillContent ? `--- SKILL ---\n${skillContent.slice(0, 8000)}\n--- END SKILL -
       fetch(`${SB_URL}/rest/v1/agent_activity`, {
         method: 'POST',
         headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ agent_name: agent, run_date: new Date().toISOString().slice(0,10), output_summary: result.summary || task, raw_json: { task } })
-      }).catch(() => {});
+        body: JSON.stringify({ agent_name: agent, run_date: new Date().toISOString().slice(0,10), output_summary: result.summary || safeTask, raw_json: { task: safeTask } })
+      }).catch((e) => { console.error(`[${agent}] activity log failed:`, e.message); });
       // Write real reply to agent_comms so activity feed shows actual status, not fake ack
       fetch(`${SB_URL}/rest/v1/agent_comms`, {
         method: 'POST',
         headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ from_agent: agent.toUpperCase(), to_agent: 'ATLAS', message: result.summary || task, metadata: { type: 'status', status: 'done' } })
-      }).catch(() => {});
+        body: JSON.stringify({ from_agent: agent.toUpperCase(), to_agent: 'ATLAS', message: result.summary || safeTask, metadata: { type: 'status', status: 'done' } })
+      }).catch((e) => { console.error(`[${agent}] comms log failed:`, e.message); });
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ task: { id, agent, task, status: 'done', progress: 100, result, updatedAt: Date.now() } }));
     } catch(e) {
@@ -1265,8 +1197,5 @@ server.listen(PORT, '0.0.0.0', () => {
   console.log(`\n✓ InboundOS running at:`);
   console.log(`  Mac:   http://localhost:${PORT}/micko-cruz/agents`);
   console.log(`  Phone: http://${localIP}:${PORT}/micko-cruz/agents`);
-  console.log(`  Planner: http://localhost:${PORT}/dashboard/planner`);
   console.log(`  n8n:   ${N8N_URL}\n`);
-  plannerRollover();                            // catch up on start
-  setInterval(plannerRollover, 60 * 60 * 1000); // hourly (idempotent)
 });

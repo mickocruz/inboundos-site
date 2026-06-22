@@ -33,7 +33,7 @@
       "source": "/apply.html",
       "destination": "/apply",
       "permanent": true
-    },
+    }
   ],
   "rewrites": [
     {

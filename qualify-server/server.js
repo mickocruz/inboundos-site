@@ -64,6 +64,8 @@ function checkAuth(req) {
     // Verify HMAC-SHA256 signature — fail closed if secret not set
     const jwtSecret = process.env.SUPABASE_JWT_SECRET;
     if (!jwtSecret) return false;
+    const header = JSON.parse(Buffer.from(parts[0], 'base64url').toString());
+    if (header.alg !== 'HS256') return false; // reject alg:none
     const crypto = require('crypto');
     const signingInput = parts[0] + '.' + parts[1];
     const expected = crypto.createHmac('sha256', jwtSecret).update(signingInput).digest('base64url');
@@ -799,10 +801,13 @@ const server = http.createServer(async (req, res) => {
     try {
       const sb = (p) => fetch(`${SB_URL}/rest/v1/${p}`, { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } }).then(r => r.ok ? r.json() : []);
       const sbHdrs = { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}`, 'Content-Type': 'application/json', Prefer: 'return=minimal,resolution=ignore-duplicates' };
-      const [reports, comms, activity] = await Promise.all([
+      const todayMidnight = new Date().toISOString().slice(0,10) + 'T00:00:00.000Z';
+      const cutoff48h = new Date(Date.now()-48*60*60*1000).toISOString();
+      const [reports, comms, activity, todayTaskComms] = await Promise.all([
         sb('daily_reports?select=report_date,headline,raw_md,created_at&order=created_at.desc&limit=10'),
-        sb('agent_comms?select=id,from_agent,to_agent,message,metadata,created_at&order=created_at.desc&limit=60'),
+        sb(`agent_comms?select=id,from_agent,to_agent,message,metadata,created_at&order=created_at.desc&limit=60&created_at=gte.${cutoff48h}`),
         sb('agent_activity?select=agent_name,output_summary,run_date,created_at&order=created_at.desc&limit=60'),
+        sb(`agent_comms?select=id,from_agent,to_agent,message,metadata,created_at&order=created_at.desc&limit=20&created_at=gte.${todayMidnight}&metadata->>type=eq.task`),
       ]);
 
       // Map messy n8n workflow names → canonical agent names
@@ -847,44 +852,26 @@ const server = http.createServer(async (req, res) => {
         const toAgent = normalizeAgent(c.to_agent) || c.to_agent || '';
         const isTask = (c.metadata && c.metadata.type) === 'task';
         events.push({ kind: isTask ? 'task' : 'message', agent: fromAgent, to: toAgent, ts: c.created_at, body: c.message });
-        // Auto-sync task comms → pm_tasks
-        if (isTask && c.id && c.message) {
-          const assignee = (c.to_agent || '').toLowerCase();
-          // Build a short title (verb + object, max 6 words) from the first sentence
-          const firstSentence = (c.message || '').split(/[.\n]/)[0].trim();
-          const words = firstSentence.split(/\s+/).slice(0, 6);
-          const shortTitle = words.join(' ').replace(/[,;:]+$/, '') || 'Task from Atlas';
-          // Description is plain English: what to do, why it matters, no code/jargon
-          const row = {
-            title: shortTitle,
-            description: c.message || null,
-            status: 'todo',
-            priority: 'high',
-            assignee: VALID_ASSIGNEES.has(assignee) ? assignee : null,
-            tags: ['atlas'],
-            sort_order: new Date(c.created_at).getTime(),
-            source_comm_id: String(c.id),
-          };
-          fetch(`${SB_URL}/rest/v1/pm_tasks`, { method: 'POST', headers: sbHdrs, body: JSON.stringify(row) }).catch((e) => { console.error('[activity] agent task write failed:', e.message); });
-        }
-        // Auto-create micko task when agent message flags human action needed
-        const MICKO_TRIGGERS = /micko (needs to|has to|must|should|just|please|will need to)|needs to be (sent|posted|done|approved) by micko|micko sends|micko posts|blocked|escalat/i;
-        if (!isTask && c.message && MICKO_TRIGGERS.test(c.message) && c.id) {
-          const firstSentenceMicko = (c.message || '').split(/[.\n]/)[0].trim();
-          const wordsMicko = firstSentenceMicko.split(/\s+/).slice(0, 6);
-          const shortTitleMicko = `[${fromAgent}] ` + wordsMicko.join(' ').replace(/[,;:]+$/, '');
-          const mRow = {
-            title: shortTitleMicko,
-            description: c.message || null,
-            status: 'todo',
-            priority: /blocked|escalat/i.test(c.message) ? 'urgent' : 'high',
-            assignee: 'micko',
-            tags: [fromAgent.toLowerCase(), 'auto-flagged'],
-            sort_order: new Date(c.created_at).getTime(),
-            source_comm_id: 'micko-' + String(c.id),
-          };
-          fetch(`${SB_URL}/rest/v1/pm_tasks`, { method: 'POST', headers: sbHdrs, body: JSON.stringify(mRow) }).catch((e) => { console.error('[activity] micko task write failed:', e.message); });
-        }
+      }
+
+      // Auto-sync only TODAY's task comms → pm_tasks (UNIQUE constraint blocks re-inserts)
+      for (const c of todayTaskComms) {
+        if (!c.id || !c.message) continue;
+        const assignee = (c.to_agent || '').toLowerCase();
+        const firstSentence = (c.message || '').split(/[.\n]/)[0].trim();
+        const words = firstSentence.split(/\s+/).slice(0, 6);
+        const shortTitle = words.join(' ').replace(/[,;:]+$/, '') || 'Task from Atlas';
+        const row = {
+          title: shortTitle,
+          description: c.message || null,
+          status: 'todo',
+          priority: 'high',
+          assignee: VALID_ASSIGNEES.has(assignee) ? assignee : null,
+          tags: ['atlas'],
+          sort_order: new Date(c.created_at).getTime(),
+          source_comm_id: String(c.id),
+        };
+        fetch(`${SB_URL}/rest/v1/pm_tasks`, { method: 'POST', headers: sbHdrs, body: JSON.stringify(row) }).catch((e) => { console.error('[activity] agent task write failed:', e.message); nexusAlert(`⚠️ agent task write failed — ${e.message.slice(0,100)}`); });
       }
 
       // Add agent_activity rows — normalize agent name, skip unrecognizable ones
@@ -1073,13 +1060,13 @@ ${skillContent ? `--- SKILL ---\n${skillContent.slice(0, 8000)}\n--- END SKILL -
         method: 'POST',
         headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ agent_name: agent, run_date: new Date().toISOString().slice(0,10), output_summary: result.summary || safeTask, raw_json: { task: safeTask } })
-      }).catch((e) => { console.error(`[${agent}] activity log failed:`, e.message); });
+      }).catch((e) => { console.error(`[${agent}] activity log failed:`, e.message); nexusAlert(`⚠️ *${agent}* activity log failed — ${e.message.slice(0,100)}`); });
       // Write real reply to agent_comms so activity feed shows actual status, not fake ack
       fetch(`${SB_URL}/rest/v1/agent_comms`, {
         method: 'POST',
         headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ from_agent: agent.toUpperCase(), to_agent: 'ATLAS', message: result.summary || safeTask, metadata: { type: 'status', status: 'done' } })
-      }).catch((e) => { console.error(`[${agent}] comms log failed:`, e.message); });
+      }).catch((e) => { console.error(`[${agent}] comms log failed:`, e.message); nexusAlert(`⚠️ *${agent}* comms log failed — ${e.message.slice(0,100)}`); });
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ task: { id, agent, task, status: 'done', progress: 100, result, updatedAt: Date.now() } }));
     } catch(e) {
@@ -1244,6 +1231,7 @@ process.on('uncaughtException', (err) => {
 });
 process.on('unhandledRejection', (reason) => {
   console.error('[unhandledRejection]', reason);
+  nexusAlert(`⚠️ qualify-server unhandled rejection: ${String(reason).slice(0, 200)}`);
 });
 
 server.listen(PORT, '0.0.0.0', () => {

@@ -703,12 +703,12 @@ function init() {
     } catch(e) { renderFlywheel(); }
   } else { renderFlywheel(); }
 
-  // Refresh agent status every 5s, flywheel every 5min
+  // Refresh agent status every 15s, flywheel every 5min
   setInterval(() => {
     renderSidebarAgents();
     renderAgentChatGrid();
     renderTaskLog();
-  }, 5000);
+  }, 15000);
   setInterval(renderFlywheel, 5 * 60 * 1000);
 }
 

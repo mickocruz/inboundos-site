@@ -37,14 +37,15 @@ function verifySession(req) {
 
     // Cryptographic signature verification using Supabase JWT secret
     const jwtSecret = process.env.SUPABASE_JWT_SECRET;
-    if (jwtSecret) {
-      const signingInput = `${parts[0]}.${parts[1]}`;
-      const expected = createHmac('sha256', jwtSecret).update(signingInput).digest('base64url');
-      const actual = parts[2];
-      try {
-        if (!timingSafeEqual(Buffer.from(expected), Buffer.from(actual))) return false;
-      } catch { return false; }
-    }
+    if (!jwtSecret) return false; // fail closed — never skip sig check
+    const header = JSON.parse(Buffer.from(parts[0], 'base64url').toString());
+    if (header.alg !== 'HS256') return false; // reject alg:none and other algs
+    const signingInput = `${parts[0]}.${parts[1]}`;
+    const expected = createHmac('sha256', jwtSecret).update(signingInput).digest('base64url');
+    const actual = parts[2];
+    try {
+      if (!timingSafeEqual(Buffer.from(expected), Buffer.from(actual))) return false;
+    } catch { return false; }
     return true;
   } catch { return false; }
 }

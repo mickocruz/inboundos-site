@@ -86,12 +86,22 @@ document.getElementById('password').addEventListener('keydown', function(e) { if
 function togglePw() {
   const inp = document.getElementById('password');
   const icon = document.getElementById('eye-icon');
-  if (inp.type === 'password') {
-    inp.type = 'text';
-    icon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+  const shown = inp.type === 'text';
+  inp.type = shown ? 'password' : 'text';
+  icon.parentElement.setAttribute('data-shown', !shown);
+  if (!shown) {
+    icon.setAttribute('d', 'M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z');
+    if (!icon.parentElement.querySelector('circle')) {
+      const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      circle.setAttribute('cx', '12');
+      circle.setAttribute('cy', '12');
+      circle.setAttribute('r', '3');
+      icon.parentElement.appendChild(circle);
+    }
   } else {
-    inp.type = 'password';
-    icon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>';
+    icon.setAttribute('d', 'M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19M1 1l22 22');
+    const circle = icon.parentElement.querySelector('circle');
+    if (circle) circle.remove();
   }
 }
 
@@ -103,11 +113,25 @@ function loginWithGoogle() {
   window.location.href = SB_URL + '/auth/v1/authorize?provider=google&redirect_to=' + encodeURIComponent(redirectTo);
 }
 
+let loginAttempts = 0;
+const MAX_ATTEMPTS = 5;
+const LOCKOUT_TIME = 60000; // 60 seconds
+let lockedUntil = 0;
+
 async function login() {
   const un = document.getElementById('username').value.trim().toLowerCase();
   const pw = document.getElementById('password').value;
   const err = document.getElementById('error');
   const btn = document.getElementById('btn');
+
+  // Rate limiting
+  if (Date.now() < lockedUntil) {
+    const remaining = Math.ceil((lockedUntil - Date.now()) / 1000);
+    err.style.display = 'block';
+    err.textContent = `Too many attempts. Try again in ${remaining}s.`;
+    btn.disabled = true;
+    return;
+  }
 
   err.style.display = 'none';
   btn.textContent = 'Signing in...';
@@ -122,6 +146,10 @@ async function login() {
     const data = await res.json();
 
     if (!res.ok) {
+      loginAttempts++;
+      if (loginAttempts >= MAX_ATTEMPTS) {
+        lockedUntil = Date.now() + LOCKOUT_TIME;
+      }
       err.style.display = 'block';
       err.textContent = data.error || 'Login failed';
       btn.textContent = 'Sign In';
@@ -130,6 +158,10 @@ async function login() {
       document.getElementById('password').focus();
       return;
     }
+
+    // Reset on success
+    loginAttempts = 0;
+    lockedUntil = 0;
 
     localStorage.setItem('sb_session', JSON.stringify({
       access_token: data.access_token,

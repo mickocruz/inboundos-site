@@ -600,7 +600,7 @@
         </div>
       </div>
 
-      <!-- Step 9: Content History -->
+      <!-- Step 8: Content History -->
       <div class="step" id="step-8">
         <div class="step-eyebrow">Your content</div>
         <div class="step-question">What have you posted<br>before?</div>
@@ -745,7 +745,7 @@
         <p class="sub-hint">Where should we send your system setup guide and next steps?</p>
 
         <div class="field-wrap">
-          <input type="email" id="email" placeholder="your@email.com" autocomplete="email" />
+          <input type="email" id="email" placeholder="your@email.com" autocomplete="email" required />
           <div class="field-error" id="email-error">Valid email required.</div>
         </div>
 
@@ -761,7 +761,7 @@
 
   <footer>
     <span class="footer-logo"><span>Inbound</span>OS</span>
-    <span class="footer-copy"> 2026 InboundOS</span>
+    <span class="footer-copy">© 2026 InboundOS</span>
   </footer>
 </div>
 
@@ -773,10 +773,13 @@
     <p class="end-body">
       Got everything. Micko will review your profile and reach out within <strong>24 hours</strong> to schedule your installation kickoff call.
     </p>
+    <a href="https://calendly.com/inboundos/discovery-call" class="end-link" target="_blank" rel="noopener">
+      Book a call now →
+    </a>
   </div>
   <footer>
     <span class="footer-logo"><span>Inbound</span>OS</span>
-    <span class="footer-copy"> 2026 InboundOS</span>
+    <span class="footer-copy">© 2026 InboundOS</span>
   </footer>
 </div>
 
@@ -839,6 +842,19 @@
       const val = v(fieldId);
       err(errId, !val);
       return !!val;
+    }
+
+    // Step 14: Validate radio groups
+    if (step === 14) {
+      const n8nVal = checked('n8n');
+      const claudeVal = checked('claude-plan');
+      const email = v('email');
+      const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+      err('n8n-error', !n8nVal);
+      err('claude-error', !claudeVal);
+      err('email-error', !emailOk);
+      return !!(n8nVal && claudeVal && emailOk);
     }
 
     return true;

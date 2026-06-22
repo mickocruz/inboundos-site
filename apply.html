@@ -556,7 +556,7 @@
 
 <!-- Nav -->
 <nav>
-  <a class="nav-logo" href="#"><span>Inbound</span>OS</a>
+  <a class="nav-logo" href="/"><span>Inbound</span>OS</a>
   <span class="nav-tag">Application</span>
 </nav>
 
@@ -852,7 +852,7 @@
         <p class="sub-hint">I'll email if we're a fit. One message, either way. No spam.</p>
 
         <div class="field-wrap">
-          <input type="email" id="email" placeholder="your@email.com" autocomplete="email" />
+          <input type="email" id="email" placeholder="your@email.com" autocomplete="email" required />
           <div class="field-error" id="email-error">Valid email required.</div>
         </div>
 
@@ -887,7 +887,7 @@
       Based on what you shared, now might not be the right moment. That's just honest.<br><br>
       Best move: <strong>follow the content, implement what you can, come back when you're ready.</strong>
     </p>
-    <a class="end-link" href="https://www.instagram.com" target="_blank" rel="noopener">
+    <a class="end-link" href="https://www.instagram.com/inboundos" target="_blank" rel="noopener">
       Follow on Instagram →
     </a>
   </div>
@@ -984,7 +984,16 @@
       },
       2: () => { const b = v('what-you-do'); err('biz-error', !b); return !!b; },
       3: () => { const c = checked('revenue'); err('rev-error', !c); return !!c; },
-      4: () => { const c = checked('blocker'); err('block-error', !c); return !!c; },
+      4: () => {
+        const c = checked('blocker');
+        err('block-error', !c);
+        if (c === 'other') {
+          const otherVal = v('other-blocker');
+          err('block-error', !otherVal);
+          return !!otherVal;
+        }
+        return !!c;
+      },
       5: () => { const c = checked('duration'); err('dur-error', !c); return !!c; },
       6: () => { const c = checked('investment'); err('inv-error', !c); return !!c; },
     };
@@ -1127,6 +1136,17 @@
       document.getElementById('other-wrap').style.display =
         e.target.value === 'other' ? 'block' : 'none';
     }
+  });
+
+  // Clear error on input focus
+  document.querySelectorAll('input[type="text"], input[type="email"], textarea').forEach(field => {
+    field.addEventListener('input', () => {
+      const wrap = field.closest('.field-wrap');
+      if (wrap) {
+        const error = wrap.querySelector('.field-error');
+        if (error) error.classList.remove('show');
+      }
+    });
   });
 </script>
 </body>

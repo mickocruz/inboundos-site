@@ -639,6 +639,14 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
       </div>
     </div>
 
+    <!-- AGENT ACTIVITY HEATMAP -->
+    <div style="display:none" id="heatmap-section">
+      <div class="section-label">Agent Activity — Last 30 Days</div>
+      <div style="background:rgba(255,255,255,0.028);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:20px;overflow-x:auto;margin-bottom:20px;">
+        <svg id="agentHeatmap" width="100%" height="120" viewBox="0 0 1000 120" style="min-width:800px;"></svg>
+      </div>
+    </div>
+
     <!-- AGENT CARDS -->
     <div class="agents-row">
 
@@ -1907,6 +1915,105 @@ async function runClio() {
 </script>
 <script>
 //  SUPABASE AGENT STATUS 
+// Draw agent activity heatmap
+async function drawAgentHeatmap() {
+  try {
+    const _sbSess = JSON.parse(localStorage.getItem('sb_session') || '{}');
+    const SERVER_BASE = `http://${window.location.hostname}:3001`;
+    const res = await fetch(`${SERVER_BASE}/api/sb/agent_runs?select=agent,created_at&order=created_at.desc`);
+    if (!res.ok) return;
+    const runs = await res.json();
+
+    const AGENTS = ['Atlas','Argus','Apollo','Hermes','Clio'];
+    const days = [];
+    const now = new Date();
+    for (let i = 29; i >= 0; i--) {
+      const d = new Date(now);
+      d.setDate(d.getDate() - i);
+      days.push(d.toISOString().slice(0,10));
+    }
+
+    const heatData = {};
+    AGENTS.forEach(a => { heatData[a] = {}; days.forEach(d => { heatData[a][d] = 0; }); });
+    runs.forEach(r => {
+      const d = (r.created_at || '').slice(0,10);
+      const a = (r.agent || '').toLowerCase();
+      const displayName = ['atlas','argus','apollo','hermes','clio'].includes(a) ? a.charAt(0).toUpperCase() + a.slice(1) : null;
+      if (displayName && heatData[displayName] && d in heatData[displayName]) heatData[displayName][d]++;
+    });
+
+    const svg = document.getElementById('agentHeatmap');
+    svg.innerHTML = '';
+    const w = 30, h = 15, gap = 3, px = 50, py = 40;
+
+    // Days header
+    const dayLbls = document.createElementNS('http://www.w3.org/2000/svg','g');
+    days.forEach((d,i) => {
+      if (i % 5 === 0) {
+        const txt = document.createElementNS('http://www.w3.org/2000/svg','text');
+        txt.setAttribute('x', px + i * (w + gap) + w / 2);
+        txt.setAttribute('y', py - 8);
+        txt.setAttribute('text-anchor', 'middle');
+        txt.setAttribute('font-family', 'DM Sans');
+        txt.setAttribute('font-size', '9');
+        txt.setAttribute('fill', 'rgba(255,255,255,0.3)');
+        txt.textContent = d.slice(5);
+        dayLbls.appendChild(txt);
+      }
+    });
+    svg.appendChild(dayLbls);
+
+    // Agent rows
+    AGENTS.forEach((agent, ai) => {
+      const lbl = document.createElementNS('http://www.w3.org/2000/svg','text');
+      lbl.setAttribute('x', px - 12);
+      lbl.setAttribute('y', py + ai * (h + gap) + h / 2 + 4);
+      lbl.setAttribute('text-anchor', 'end');
+      lbl.setAttribute('font-family', 'DM Sans');
+      lbl.setAttribute('font-size', '10');
+      lbl.setAttribute('font-weight', '600');
+      lbl.setAttribute('fill', '#4FC3F7');
+      lbl.textContent = agent;
+      svg.appendChild(lbl);
+
+      days.forEach((d, di) => {
+        const cnt = heatData[agent][d] || 0;
+        const max = 5;
+        const opacity = Math.min(cnt / max, 1);
+        const rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+        rect.setAttribute('x', px + di * (w + gap));
+        rect.setAttribute('y', py + ai * (h + gap));
+        rect.setAttribute('width', w);
+        rect.setAttribute('height', h);
+        rect.setAttribute('fill', cnt === 0 ? 'rgba(79,195,247,0.05)' : 'rgba(79,195,247,' + (0.1 + opacity * 0.4) + ')');
+        rect.setAttribute('stroke', 'rgba(79,195,247,' + (0.1 + opacity * 0.2) + ')');
+        rect.setAttribute('stroke-width', '0.5');
+        rect.setAttribute('rx', '2');
+        if (cnt > 0) {
+          rect.setAttribute('data-count', cnt);
+          rect.style.cursor = 'pointer';
+        }
+        svg.appendChild(rect);
+        if (cnt > 0) {
+          const txt = document.createElementNS('http://www.w3.org/2000/svg','text');
+          txt.setAttribute('x', px + di * (w + gap) + w / 2);
+          txt.setAttribute('y', py + ai * (h + gap) + h / 2 + 3);
+          txt.setAttribute('text-anchor', 'middle');
+          txt.setAttribute('font-family', 'DM Sans');
+          txt.setAttribute('font-size', '7');
+          txt.setAttribute('font-weight', '700');
+          txt.setAttribute('fill', 'rgba(255,255,255,0.4)');
+          txt.textContent = cnt;
+          svg.appendChild(txt);
+        }
+      });
+    });
+
+    document.getElementById('heatmap-section').style.display = '';
+  } catch(e) {}
+}
+drawAgentHeatmap();
+
 (async function loadAgentRunsFromSupabase() {
   const _sbSess = JSON.parse(localStorage.getItem('sb_session') || '{}');
   const SUPA_URL = _sbSess.client_supabase_url || 'https://cscfbuhwlfhblxprkwnh.supabase.co';

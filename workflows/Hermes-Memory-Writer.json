@@ -1,0 +1,77 @@
+{
+  "name": "Hermes-Memory-Writer",
+  "nodes": [
+    {
+      "id": "hmw-webhook",
+      "name": "Memory Write Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "parameters": {
+        "path": "hermes-memory-write",
+        "httpMethod": "POST",
+        "responseMode": "responseNode"
+      },
+      "webhookId": "hermes-memory-write"
+    },
+    {
+      "id": "hmw-respond",
+      "name": "Respond OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [200, 200],
+      "parameters": { "respondWith": "text", "responseBody": "ok" }
+    },
+    {
+      "id": "hmw-upsert",
+      "name": "Upsert Memory",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [200, 0],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/agent_memory",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          { "name": "apikey", "value": "={{ $env.SUPABASE_KEY }}" },
+          { "name": "Authorization", "value": "=Bearer {{ $env.SUPABASE_KEY }}" },
+          { "name": "Content-Type", "value": "application/json" },
+          { "name": "Prefer", "value": "resolution=merge-duplicates,return=minimal" }
+        ]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={ \"agent\": \"{{ $json.body.agent || 'Hermes' }}\", \"key\": \"{{ $json.body.key }}\", \"value\": \"{{ $json.body.value }}\", \"context\": {{ JSON.stringify($json.body.context || {}) }}, \"confidence\": {{ $json.body.confidence || 1.0 }}, \"source\": \"{{ $json.body.source || 'observed' }}\" }"
+      }
+    },
+    {
+      "id": "hmw-log",
+      "name": "Log to Agent Comms",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [400, 0],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/agent_comms",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          { "name": "apikey", "value": "={{ $env.SUPABASE_KEY }}" },
+          { "name": "Authorization", "value": "=Bearer {{ $env.SUPABASE_KEY }}" },
+          { "name": "Content-Type", "value": "application/json" }
+        ]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={ \"from_agent\": \"{{ $('Memory Write Webhook').first().json.body.agent || 'Hermes' }}\", \"message\": \"Memory updated: {{ $('Memory Write Webhook').first().json.body.key }} = {{ $('Memory Write Webhook').first().json.body.value }}\", \"metadata\": { \"type\": \"memory_write\", \"key\": \"{{ $('Memory Write Webhook').first().json.body.key }}\" } }"
+      }
+    }
+  ],
+  "connections": {
+    "Memory Write Webhook": {
+      "main": [[
+        { "node": "Upsert Memory", "type": "main", "index": 0 },
+        { "node": "Respond OK", "type": "main", "index": 0 }
+      ]]
+    },
+    "Upsert Memory": { "main": [[{ "node": "Log to Agent Comms", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" }
+}

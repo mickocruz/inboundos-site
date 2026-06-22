@@ -1,0 +1,144 @@
+{
+  "name": "Signal-Router",
+  "nodes": [
+    {
+      "id": "sr-webhook",
+      "name": "Supabase Signal Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "parameters": {
+        "path": "signal-router",
+        "responseMode": "responseNode",
+        "httpMethod": "POST"
+      },
+      "webhookId": "signal-router"
+    },
+    {
+      "id": "sr-respond",
+      "name": "Respond 200",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [200, 200],
+      "parameters": { "respondWith": "text", "responseBody": "ok" }
+    },
+    {
+      "id": "sr-extract",
+      "name": "Extract Signal",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [200, 0],
+      "parameters": {
+        "jsCode": "// Accepts: Supabase webhook { type:'INSERT', record:{...} } OR ManyChat { ig_handle, message, signal_type:'dm_received' }\nconst body = $input.first().json.body || $input.first().json;\n\n// ManyChat payload\nif (body.signal_type === 'dm_received' || body.ig_handle) {\n  return [{ json: {\n    signal_id: null,\n    from_agent: 'ManyChat',\n    to_agent: 'Hermes',\n    signal_type: 'dm_received',\n    payload: {\n      ig_handle: body.ig_handle || body.subscriber?.ig_handle,\n      message: body.message || body.last_input_text,\n      manychat_id: body.subscriber_id || body.id,\n    }\n  }}];\n}\n\n// Supabase webhook payload\nconst record = body.record || body;\nreturn [{ json: {\n  signal_id: record.id,\n  from_agent: record.from_agent,\n  to_agent: record.to_agent,\n  signal_type: record.signal_type,\n  payload: record.payload || {},\n}}];"
+      }
+    },
+    {
+      "id": "sr-route",
+      "name": "Route by Signal Type",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [400, 0],
+      "parameters": {
+        "mode": "expression",
+        "output": "={{ $json.signal_type + '__' + $json.to_agent }}",
+        "rules": {
+          "rules": [
+            { "outputKey": "stage_change__Hermes", "value": "stage_change__Hermes" },
+            { "outputKey": "dm_received__Hermes", "value": "dm_received__Hermes" },
+            { "outputKey": "wake__Apollo", "value": "wake__Apollo" },
+            { "outputKey": "handoff__Clio", "value": "handoff__Clio" }
+          ]
+        },
+        "fallbackOutput": "none"
+      }
+    },
+    {
+      "id": "sr-hermes-action",
+      "name": "Hermes Auto-Action",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, -200],
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:5678/webhook/hermes-stage-action",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [{ "name": "Content-Type", "value": "application/json" }]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.payload) }}"
+      }
+    },
+    {
+      "id": "sr-apollo-wake",
+      "name": "Wake Apollo",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, 0],
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:5678/webhook/apollo-trigger",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [{ "name": "Content-Type", "value": "application/json" }]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.payload) }}"
+      }
+    },
+    {
+      "id": "sr-clio-handoff",
+      "name": "Trigger Clio Onboarding",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, 200],
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:5678/webhook/clio-new-client",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [{ "name": "Content-Type", "value": "application/json" }]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.payload) }}"
+      }
+    },
+    {
+      "id": "sr-mark-done",
+      "name": "Mark Signal Done",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [900, 0],
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/agent_signals?id=eq.{{ $('Extract Signal').item.json.signal_id }}",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          { "name": "apikey", "value": "={{ $env.SUPABASE_KEY }}" },
+          { "name": "Authorization", "value": "=Bearer {{ $env.SUPABASE_KEY }}" },
+          { "name": "Content-Type", "value": "application/json" }
+        ]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\"status\":\"done\",\"processed_at\":\"={{ $now.toISO() }}\"}"
+      }
+    }
+  ],
+  "connections": {
+    "Supabase Signal Webhook": {
+      "main": [[
+        { "node": "Extract Signal", "type": "main", "index": 0 },
+        { "node": "Respond 200", "type": "main", "index": 0 }
+      ]]
+    },
+    "Extract Signal": { "main": [[{ "node": "Route by Signal Type", "type": "main", "index": 0 }]] },
+    "Route by Signal Type": {
+      "main": [
+        [{ "node": "Hermes Auto-Action", "type": "main", "index": 0 }],
+        [{ "node": "Wake Apollo", "type": "main", "index": 0 }],
+        [{ "node": "Trigger Clio Onboarding", "type": "main", "index": 0 }]
+      ]
+    },
+    "Hermes Auto-Action": { "main": [[{ "node": "Mark Signal Done", "type": "main", "index": 0 }]] },
+    "Wake Apollo": { "main": [[{ "node": "Mark Signal Done", "type": "main", "index": 0 }]] },
+    "Trigger Clio Onboarding": { "main": [[{ "node": "Mark Signal Done", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" }
+}

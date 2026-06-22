@@ -1,0 +1,146 @@
+{
+  "name": "Goal-Tracker",
+  "nodes": [
+    {
+      "id": "gt-schedule",
+      "name": "Daily 11pm Check",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 0],
+      "parameters": {
+        "rule": { "interval": [{ "field": "cronExpression", "expression": "0 23 * * *" }] }
+      }
+    },
+    {
+      "id": "gt-count-leads",
+      "name": "Count New Leads This Week",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [200, -200],
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/outreach_leads?created_at=gte.{{ new Date(Date.now()-7*24*3600*1000).toISOString() }}&select=id",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          { "name": "apikey", "value": "={{ $env.SUPABASE_KEY }}" },
+          { "name": "Authorization", "value": "=Bearer {{ $env.SUPABASE_KEY }}" },
+          { "name": "Prefer", "value": "count=exact" }
+        ]}
+      }
+    },
+    {
+      "id": "gt-count-openers",
+      "name": "Count Openers Sent",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [200, 0],
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/outreach_leads?stage=gte.1&opener_sent_at=gte.{{ new Date(Date.now()-7*24*3600*1000).toISOString() }}&select=id",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          { "name": "apikey", "value": "={{ $env.SUPABASE_KEY }}" },
+          { "name": "Authorization", "value": "=Bearer {{ $env.SUPABASE_KEY }}" },
+          { "name": "Prefer", "value": "count=exact" }
+        ]}
+      }
+    },
+    {
+      "id": "gt-count-replies",
+      "name": "Count Replies This Week",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [200, 200],
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/outreach_leads?stage=gte.2&stage_updated_at=gte.{{ new Date(Date.now()-7*24*3600*1000).toISOString() }}&select=id",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          { "name": "apikey", "value": "={{ $env.SUPABASE_KEY }}" },
+          { "name": "Authorization", "value": "=Bearer {{ $env.SUPABASE_KEY }}" },
+          { "name": "Prefer", "value": "count=exact" }
+        ]}
+      }
+    },
+    {
+      "id": "gt-count-calls",
+      "name": "Count Calls Booked",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [200, 400],
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/outreach_leads?stage=gte.5&stage_updated_at=gte.{{ new Date(Date.now()-7*24*3600*1000).toISOString() }}&select=id",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          { "name": "apikey", "value": "={{ $env.SUPABASE_KEY }}" },
+          { "name": "Authorization", "value": "=Bearer {{ $env.SUPABASE_KEY }}" },
+          { "name": "Prefer", "value": "count=exact" }
+        ]}
+      }
+    },
+    {
+      "id": "gt-count-scripts",
+      "name": "Count Scripts This Week",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [200, 600],
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/agent_items?agent=eq.apollo&type=eq.script&created_at=gte.{{ new Date(Date.now()-7*24*3600*1000).toISOString() }}&select=id",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          { "name": "apikey", "value": "={{ $env.SUPABASE_KEY }}" },
+          { "name": "Authorization", "value": "=Bearer {{ $env.SUPABASE_KEY }}" },
+          { "name": "Prefer", "value": "count=exact" }
+        ]}
+      }
+    },
+    {
+      "id": "gt-update-goals",
+      "name": "Update Goal Progress",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [500, 200],
+      "parameters": {
+        "jsCode": "const SUPA_URL = $env.SUPABASE_URL;\nconst SUPA_KEY = $env.SUPABASE_KEY;\nconst hdrs = { 'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_KEY}`, 'Content-Type': 'application/json' };\n\nconst weekStart = new Date(Date.now() - (new Date().getDay() || 7) * 24*3600*1000);\nweekStart.setHours(0,0,0,0);\nconst ws = weekStart.toISOString().split('T')[0];\n\n// Extract counts from Content-Range header or body length\nfunction getCount(node) {\n  const items = $node[node].all();\n  return items.length;\n}\n\nconst updates = [\n  { agent: 'Hermes', goal_key: 'new_leads_added', current_value: getCount('Count New Leads This Week') },\n  { agent: 'Hermes', goal_key: 'openers_sent', current_value: getCount('Count Openers Sent') },\n  { agent: 'Hermes', goal_key: 'replies_received', current_value: getCount('Count Replies This Week') },\n  { agent: 'Hermes', goal_key: 'calls_booked', current_value: getCount('Count Calls Booked') },\n  { agent: 'Apollo', goal_key: 'scripts_generated', current_value: getCount('Count Scripts This Week') }\n];\n\nfor (const u of updates) {\n  await fetch(`${SUPA_URL}/rest/v1/agent_goals?agent=eq.${u.agent}&goal_key=eq.${u.goal_key}&week_start=eq.${ws}`, {\n    method: 'PATCH',\n    headers: hdrs,\n    body: JSON.stringify({ current_value: u.current_value })\n  });\n}\n\nreturn [{ json: { updates, week_start: ws, updated_at: new Date().toISOString() } }];"
+      }
+    },
+    {
+      "id": "gt-log",
+      "name": "Log Goal Update",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, 200],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/agent_comms",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          { "name": "apikey", "value": "={{ $env.SUPABASE_KEY }}" },
+          { "name": "Authorization", "value": "=Bearer {{ $env.SUPABASE_KEY }}" },
+          { "name": "Content-Type", "value": "application/json" }
+        ]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={ \"from_agent\": \"System\", \"message\": \"Daily goal sync complete for week {{ $json.week_start }}. {{ $json.updates.length }} metrics updated.\", \"metadata\": { \"type\": \"goal_sync\", \"updates\": {{ JSON.stringify($json.updates) }} } }"
+      }
+    }
+  ],
+  "connections": {
+    "Daily 11pm Check": { "main": [[
+      { "node": "Count New Leads This Week", "type": "main", "index": 0 },
+      { "node": "Count Openers Sent", "type": "main", "index": 0 },
+      { "node": "Count Replies This Week", "type": "main", "index": 0 },
+      { "node": "Count Calls Booked", "type": "main", "index": 0 },
+      { "node": "Count Scripts This Week", "type": "main", "index": 0 }
+    ]]},
+    "Count New Leads This Week": { "main": [[{ "node": "Update Goal Progress", "type": "main", "index": 0 }]] },
+    "Count Openers Sent": { "main": [[{ "node": "Update Goal Progress", "type": "main", "index": 0 }]] },
+    "Count Replies This Week": { "main": [[{ "node": "Update Goal Progress", "type": "main", "index": 0 }]] },
+    "Count Calls Booked": { "main": [[{ "node": "Update Goal Progress", "type": "main", "index": 0 }]] },
+    "Count Scripts This Week": { "main": [[{ "node": "Update Goal Progress", "type": "main", "index": 0 }]] },
+    "Update Goal Progress": { "main": [[{ "node": "Log Goal Update", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" }
+}

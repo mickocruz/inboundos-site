@@ -1,0 +1,170 @@
+{
+  "name": "Apollo-Self-Improve",
+  "nodes": [
+    {
+      "id": "asi-schedule",
+      "name": "Daily 7:30AM",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 0],
+      "parameters": {
+        "rule": { "interval": [{ "field": "cronExpression", "expression": "30 7 * * *" }] }
+      }
+    },
+    {
+      "id": "asi-fetch-scripts",
+      "name": "Fetch Today Scripts",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [200, 0],
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/agent_items?status=eq.scripting&created_at=gte.{{ new Date().toISOString().split('T')[0] }}&select=*&limit=7",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          { "name": "apikey", "value": "={{ $env.SUPABASE_KEY }}" },
+          { "name": "Authorization", "value": "=Bearer {{ $env.SUPABASE_KEY }}" }
+        ]}
+      }
+    },
+    {
+      "id": "asi-split",
+      "name": "Split Scripts",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [400, 0],
+      "parameters": { "fieldToSplitOut": "body" }
+    },
+    {
+      "id": "asi-critic",
+      "name": "Claude — Hook Critic",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [600, 0],
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:3456/generate",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          { "name": "Content-Type", "value": "application/json" }
+        ]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"prompt\": \"You are a harsh hook critic. Evaluate this Reel hook for a solo DFY agency owner audience.\\n\\nHook: {{ $json.metadata?.hook || $json.hook || '' }}\\nText hook: {{ $json.metadata?.text_hook || $json.text_hook || '' }}\\nScript type: {{ $json.metadata?.script_type || $json.script_type || 'TOFU' }} (TOFU/MOFU/BOFU)\\n\\nScore 1-10 on: Pattern interrupt strength, Specificity (numbers/names beat vague), Curiosity gap.\\nReturn ONLY JSON:\\n{\\n  \\\"score\\\": 7,\\n  \\\"weakness\\\": \\\"one-line description of the main weakness\\\",\\n  \\\"rewrite\\\": \\\"improved hook if score < 7, else null\\\",\\n  \\\"rewrite_text_hook\\\": \\\"improved text hook if score < 7, else null\\\"\\n}\", \"model\": \"claude-haiku-4-5-20251001\", \"max_tokens\": 300}"
+      }
+    },
+    {
+      "id": "asi-parse",
+      "name": "Parse Critique",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [800, 0],
+      "parameters": {
+        "jsCode": "const raw = $input.first().json.content?.[0]?.text || $input.first().json.response || $input.first().json.output || '';\nlet parsed;\ntry {\n  const clean = raw.replace(/^```json\\n?/, '').replace(/\\n?```$/, '').trim();\n  parsed = JSON.parse(clean);\n} catch(e) {\n  parsed = { score: 5, weakness: 'parse_error', rewrite: null, rewrite_text_hook: null };\n}\nconst scriptItem = $('Split Scripts').item.json;\nreturn [{ json: { ...parsed, item_id: scriptItem.id, current_metadata: scriptItem.metadata || {}, needs_rewrite: parsed.score < 7 } }];"
+      }
+    },
+    {
+      "id": "asi-if-rewrite",
+      "name": "Score < 7?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1000, 0],
+      "parameters": {
+        "conditions": { "options": { "caseSensitive": false }, "conditions": [
+          { "id": "needs-rewrite", "leftValue": "={{ $json.needs_rewrite }}", "rightValue": true, "operator": { "type": "boolean", "operation": "equals" } }
+        ]}
+      }
+    },
+    {
+      "id": "asi-patch-hook",
+      "name": "Patch Rewritten Hook",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1200, -100],
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/agent_items?id=eq.{{ $json.item_id }}",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          { "name": "apikey", "value": "={{ $env.SUPABASE_KEY }}" },
+          { "name": "Authorization", "value": "=Bearer {{ $env.SUPABASE_KEY }}" },
+          { "name": "Content-Type", "value": "application/json" },
+          { "name": "Prefer", "value": "return=minimal" }
+        ]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"metadata\": { ...{{ JSON.stringify($json.current_metadata) }}, \"hook\": \"{{ $json.rewrite }}\", \"text_hook\": \"{{ $json.rewrite_text_hook }}\", \"hook_score\": {{ $json.score }}, \"hook_weakness\": \"{{ $json.weakness }}\" }}"
+      }
+    },
+    {
+      "id": "asi-merge",
+      "name": "Merge Results",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [1400, 0],
+      "parameters": { "mode": "append" }
+    },
+    {
+      "id": "asi-count-rewrites",
+      "name": "Count Rewrites",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1600, 0],
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst rewritten = items.filter(i => i.json.needs_rewrite === true).length;\nconst total = items.length;\nreturn [{ json: { rewritten, total, summary: `Apollo Self-Improve: rewrote ${rewritten}/${total} hooks` } }];"
+      }
+    },
+    {
+      "id": "asi-log",
+      "name": "Log to Agent Comms",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1800, 0],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/agent_comms",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          { "name": "apikey", "value": "={{ $env.SUPABASE_KEY }}" },
+          { "name": "Authorization", "value": "=Bearer {{ $env.SUPABASE_KEY }}" },
+          { "name": "Content-Type", "value": "application/json" }
+        ]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"from_agent\": \"Apollo\", \"message\": \"{{ $json.summary }}\", \"metadata\": {\"type\": \"hook_critic\", \"rewritten\": {{ $json.rewritten }}, \"total\": {{ $json.total }}}}"
+      }
+    },
+    {
+      "id": "asi-telegram",
+      "name": "Telegram Summary",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2000, 0],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.telegram.org/bot{{ $env.TELEGRAM_BOT_TOKEN }}/sendMessage",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"chat_id\": \"{{ $env.TELEGRAM_CHAT_ID }}\", \"text\": \"🪄 Apollo Self-Improve: {{ $('Count Rewrites').first().json.rewritten }} hooks rewritten today\"}"
+      }
+    }
+  ],
+  "connections": {
+    "Daily 7:30AM": { "main": [[{ "node": "Fetch Today Scripts", "type": "main", "index": 0 }]] },
+    "Fetch Today Scripts": { "main": [[{ "node": "Split Scripts", "type": "main", "index": 0 }]] },
+    "Split Scripts": { "main": [[{ "node": "Claude — Hook Critic", "type": "main", "index": 0 }]] },
+    "Claude — Hook Critic": { "main": [[{ "node": "Parse Critique", "type": "main", "index": 0 }]] },
+    "Parse Critique": { "main": [[{ "node": "Score < 7?", "type": "main", "index": 0 }]] },
+    "Score < 7?": {
+      "main": [
+        [{ "node": "Patch Rewritten Hook", "type": "main", "index": 0 }],
+        [{ "node": "Merge Results", "type": "main", "index": 1 }]
+      ]
+    },
+    "Patch Rewritten Hook": { "main": [[{ "node": "Merge Results", "type": "main", "index": 0 }]] },
+    "Merge Results": { "main": [[{ "node": "Count Rewrites", "type": "main", "index": 0 }]] },
+    "Count Rewrites": { "main": [[{ "node": "Log to Agent Comms", "type": "main", "index": 0 }]] },
+    "Log to Agent Comms": { "main": [[{ "node": "Telegram Summary", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" }
+}

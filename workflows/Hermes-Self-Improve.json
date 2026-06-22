@@ -1,0 +1,153 @@
+{
+  "name": "Hermes-Self-Improve",
+  "nodes": [
+    {
+      "id": "hsi-schedule",
+      "name": "Every Monday 6:30am",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 0],
+      "parameters": {
+        "rule": { "interval": [{ "field": "cronExpression", "expression": "30 6 * * 1" }] }
+      }
+    },
+    {
+      "id": "hsi-fetch-leads",
+      "name": "Fetch Last 2 Weeks Leads",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [200, 0],
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/outreach_leads?created_at=gte.{{ new Date(Date.now()-14*24*3600*1000).toISOString() }}&select=ig_handle,stage,opener_text,notes,niche,followup_count&order=created_at.desc&limit=100",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          { "name": "apikey", "value": "={{ $env.SUPABASE_KEY }}" },
+          { "name": "Authorization", "value": "=Bearer {{ $env.SUPABASE_KEY }}" }
+        ]}
+      }
+    },
+    {
+      "id": "hsi-fetch-memory",
+      "name": "Fetch Hermes Memory",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [200, 200],
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/agent_memory?agent=eq.Hermes&select=key,value",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          { "name": "apikey", "value": "={{ $env.SUPABASE_KEY }}" },
+          { "name": "Authorization", "value": "=Bearer {{ $env.SUPABASE_KEY }}" }
+        ]}
+      }
+    },
+    {
+      "id": "hsi-fetch-goals",
+      "name": "Fetch Last Week Hermes Goals",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [200, 400],
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/agent_goals?agent=eq.Hermes&week_start=gte.{{ new Date(Date.now()-7*24*3600*1000).toISOString().split('T')[0] }}&select=*",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          { "name": "apikey", "value": "={{ $env.SUPABASE_KEY }}" },
+          { "name": "Authorization", "value": "=Bearer {{ $env.SUPABASE_KEY }}" }
+        ]}
+      }
+    },
+    {
+      "id": "hsi-analyze",
+      "name": "Claude — Analyze Hermes Performance",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [500, 200],
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:3456/generate",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"prompt\": \"You are Hermes's self-improvement module. Analyze outreach performance and update memory.\\n\\nLeads from last 2 weeks (sample):\\n{{ JSON.stringify($('Fetch Last 2 Weeks Leads').all().map(i=>i.json).slice(0,30)) }}\\n\\nCurrent memory:\\n{{ JSON.stringify($('Fetch Hermes Memory').all().map(i=>i.json)) }}\\n\\nGoal performance:\\n{{ JSON.stringify($('Fetch Last Week Hermes Goals').all().map(i=>i.json)) }}\\n\\nAnalyze:\\n1. What % of leads reached stage 2+ (replied) — this is reply_rate\\n2. What opener patterns appeared in leads that progressed furthest\\n3. What disqualify signals appeared in stuck/unqualified leads\\n4. Best estimated send time if inferrable\\n5. Are we hitting goals? What to adjust?\\n\\nReturn ONLY valid JSON:\\n{\\n  \\\"avg_reply_rate\\\": \\\"X%\\\",\\n  \\\"best_opener_pattern\\\": \\\"describe pattern\\\",\\n  \\\"disqualify_signals\\\": \\\"comma-separated signals\\\",\\n  \\\"best_send_time\\\": \\\"morning|afternoon|evening|unknown\\\",\\n  \\\"improvement_note\\\": \\\"1-2 sentence insight\\\",\\n  \\\"goal_hit_rate\\\": \\\"X/Y goals met\\\"\\n}\", \"model\": \"claude-haiku-4-5-20251001\", \"max_tokens\": 600}"
+      }
+    },
+    {
+      "id": "hsi-parse",
+      "name": "Parse Hermes Analysis",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [700, 200],
+      "parameters": {
+        "jsCode": "const raw = $input.first().json.content?.[0]?.text || $input.first().json.response || '';\nlet parsed;\ntry {\n  const clean = raw.replace(/^```json\\n?/, '').replace(/\\n?```$/, '').trim();\n  parsed = JSON.parse(clean);\n} catch(e) {\n  parsed = { avg_reply_rate: 'parse_error', best_opener_pattern: 'unknown', disqualify_signals: 'unknown', best_send_time: 'unknown', improvement_note: raw.slice(0,200), goal_hit_rate: 'unknown' };\n}\nreturn [{ json: parsed }];"
+      }
+    },
+    {
+      "id": "hsi-write-memory",
+      "name": "Batch Write Hermes Memory",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 200],
+      "parameters": {
+        "jsCode": "const p = $input.first().json;\nconst SUPA_URL = $env.SUPABASE_URL;\nconst SUPA_KEY = $env.SUPABASE_KEY;\nconst hdrs = { 'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'resolution=merge-duplicates,return=minimal' };\n\nconst updates = [\n  { agent: 'Hermes', key: 'avg_reply_rate', value: p.avg_reply_rate, source: 'self_improve' },\n  { agent: 'Hermes', key: 'best_opener_pattern', value: p.best_opener_pattern, source: 'self_improve' },\n  { agent: 'Hermes', key: 'disqualify_signals', value: p.disqualify_signals, source: 'self_improve' },\n  { agent: 'Hermes', key: 'best_send_time', value: p.best_send_time, source: 'self_improve' }\n];\n\nfor (const u of updates) {\n  await fetch(`${SUPA_URL}/rest/v1/agent_memory`, { method: 'POST', headers: hdrs, body: JSON.stringify(u) });\n}\n\nreturn [{ json: { ...p, memory_updated: true } }];"
+      }
+    },
+    {
+      "id": "hsi-seed-goals",
+      "name": "Seed This Week Hermes Goals",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1100, 200],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/agent_goals",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          { "name": "apikey", "value": "={{ $env.SUPABASE_KEY }}" },
+          { "name": "Authorization", "value": "=Bearer {{ $env.SUPABASE_KEY }}" },
+          { "name": "Content-Type", "value": "application/json" },
+          { "name": "Prefer", "value": "resolution=ignore-duplicates,return=minimal" }
+        ]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "[{\"agent\":\"Hermes\",\"goal_key\":\"new_leads_added\",\"goal_label\":\"New leads added\",\"target_value\":20,\"unit\":\"leads\"},{\"agent\":\"Hermes\",\"goal_key\":\"openers_sent\",\"goal_label\":\"Opener DMs sent\",\"target_value\":15,\"unit\":\"DMs\"},{\"agent\":\"Hermes\",\"goal_key\":\"replies_received\",\"goal_label\":\"Replies received\",\"target_value\":8,\"unit\":\"replies\"},{\"agent\":\"Hermes\",\"goal_key\":\"calls_booked\",\"goal_label\":\"Calls booked\",\"target_value\":2,\"unit\":\"calls\"}]"
+      }
+    },
+    {
+      "id": "hsi-log",
+      "name": "Log Hermes Self-Improve",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1300, 200],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/agent_comms",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          { "name": "apikey", "value": "={{ $env.SUPABASE_KEY }}" },
+          { "name": "Authorization", "value": "=Bearer {{ $env.SUPABASE_KEY }}" },
+          { "name": "Content-Type", "value": "application/json" }
+        ]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={ \"from_agent\": \"Hermes\", \"message\": \"Self-improve complete. Reply rate: {{ $('Parse Hermes Analysis').first().json.avg_reply_rate }}. {{ $('Parse Hermes Analysis').first().json.goal_hit_rate }} goals hit. Insight: {{ $('Parse Hermes Analysis').first().json.improvement_note }}\", \"metadata\": { \"type\": \"self_improve\", \"reply_rate\": \"{{ $('Parse Hermes Analysis').first().json.avg_reply_rate }}\", \"best_send_time\": \"{{ $('Parse Hermes Analysis').first().json.best_send_time }}\" } }"
+      }
+    }
+  ],
+  "connections": {
+    "Every Monday 6:30am": { "main": [[
+      { "node": "Fetch Last 2 Weeks Leads", "type": "main", "index": 0 },
+      { "node": "Fetch Hermes Memory", "type": "main", "index": 0 },
+      { "node": "Fetch Last Week Hermes Goals", "type": "main", "index": 0 }
+    ]]},
+    "Fetch Last 2 Weeks Leads": { "main": [[{ "node": "Claude — Analyze Hermes Performance", "type": "main", "index": 0 }]] },
+    "Fetch Hermes Memory": { "main": [[{ "node": "Claude — Analyze Hermes Performance", "type": "main", "index": 0 }]] },
+    "Fetch Last Week Hermes Goals": { "main": [[{ "node": "Claude — Analyze Hermes Performance", "type": "main", "index": 0 }]] },
+    "Claude — Analyze Hermes Performance": { "main": [[{ "node": "Parse Hermes Analysis", "type": "main", "index": 0 }]] },
+    "Parse Hermes Analysis": { "main": [[{ "node": "Batch Write Hermes Memory", "type": "main", "index": 0 }]] },
+    "Batch Write Hermes Memory": { "main": [[{ "node": "Seed This Week Hermes Goals", "type": "main", "index": 0 }]] },
+    "Seed This Week Hermes Goals": { "main": [[{ "node": "Log Hermes Self-Improve", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" }
+}

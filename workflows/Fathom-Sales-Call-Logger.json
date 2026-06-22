@@ -1,0 +1,113 @@
+{
+  "name": "Fathom Sales Call Logger",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "fathom-webhook",
+        "responseMode": "onReceived",
+        "responseData": "firstEntryJson",
+        "options": {}
+      },
+      "id": "fathom-webhook-trigger",
+      "name": "Fathom Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "fathom-webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Verify Fathom webhook signature\nconst crypto = require('crypto');\n\nconst secret = process.env.FATHOM_WEBHOOK_SECRET || '';\nconst body = JSON.stringify($input.first().json.body || $input.first().json);\nconst webhookId = $input.first().headers['webhook-id'] || '';\nconst webhookTimestamp = $input.first().headers['webhook-timestamp'] || '';\nconst webhookSig = $input.first().headers['webhook-signature'] || '';\n\n// Fathom uses svix signing: \"webhook-id.webhook-timestamp.body\"\nconst toSign = `${webhookId}.${webhookTimestamp}.${body}`;\n\n// Secret comes as whsec_<base64> — strip prefix and decode\nconst secretBytes = Buffer.from(secret.replace('whsec_', ''), 'base64');\nconst computedSig = crypto.createHmac('sha256', secretBytes).update(toSign).digest('base64');\n\n// Signature header can have multiple: \"v1,<sig1> v1,<sig2>\"\nconst sigs = webhookSig.split(' ').map(s => s.replace('v1,', ''));\nconst valid = sigs.some(s => s === computedSig);\n\nif (!valid) {\n  throw new Error('Invalid Fathom webhook signature');\n}\n\nreturn $input.all();"
+      },
+      "id": "verify-signature",
+      "name": "Verify Signature",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst body = data.body || data;\n\n// Extract meeting title as prospect name (calendar event title)\nconst meetingTitle = body.meeting_title || body.title || '';\n\n// Extract summary text\nlet summaryText = '';\nif (body.default_summary) {\n  if (typeof body.default_summary === 'string') {\n    summaryText = body.default_summary;\n  } else if (body.default_summary.summary) {\n    summaryText = body.default_summary.summary;\n  } else if (body.default_summary.text) {\n    summaryText = body.default_summary.text;\n  }\n}\n\n// Call date from scheduled start or recording start\nconst callDate = (body.scheduled_start_time || body.recording_start_time || '').slice(0, 10);\n\n// Action items\nconst actionItems = body.action_items || null;\n\n// Attendees\nconst attendees = body.calendar_invitees || null;\n\n// Transcript\nconst transcript = body.transcript || null;\n\n// Recording ID and URL\nconst fathomRecordingId = body.recording_id || null;\nconst fathomUrl = body.url || body.share_url || null;\n\nreturn [{\n  json: {\n    prospect_name: meetingTitle,\n    call_date: callDate || null,\n    notes: summaryText,\n    summary: summaryText,\n    transcript: transcript ? JSON.stringify(transcript) : null,\n    action_items: actionItems ? JSON.stringify(actionItems) : null,\n    attendees: attendees ? JSON.stringify(attendees) : null,\n    fathom_recording_id: fathomRecordingId,\n    fathom_url: fathomUrl,\n    qualified: false,\n    closed: false\n  }\n}];"
+      },
+      "id": "parse-payload",
+      "name": "Parse Payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://cscfbuhwlfhblxprkwnh.supabase.co/rest/v1/sales_calls",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $env.SUPABASE_SERVICE_ROLE_KEY }}"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.SUPABASE_SERVICE_ROLE_KEY }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Prefer",
+              "value": "return=representation"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": []
+        },
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "options": {}
+      },
+      "id": "insert-supabase",
+      "name": "Insert to Supabase",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "{{SLACK_WEBHOOK_URL}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"text\": \":phone: *New sales call logged*\\n\\n*Prospect:* {{ $('Parse Payload').item.json.prospect_name }}\\n*Date:* {{ $('Parse Payload').item.json.call_date }}\\n*Fathom:* {{ $('Parse Payload').item.json.fathom_url }}\"}",
+        "options": {}
+      },
+      "id": "slack-notify",
+      "name": "Slack Notify",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1120, 300]
+    }
+  ],
+  "connections": {
+    "Fathom Webhook": {
+      "main": [[{ "node": "Verify Signature", "type": "main", "index": 0 }]]
+    },
+    "Verify Signature": {
+      "main": [[{ "node": "Parse Payload", "type": "main", "index": 0 }]]
+    },
+    "Parse Payload": {
+      "main": [[{ "node": "Insert to Supabase", "type": "main", "index": 0 }]]
+    },
+    "Insert to Supabase": {
+      "main": [[{ "node": "Slack Notify", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": ["sales", "fathom", "automation"]
+}

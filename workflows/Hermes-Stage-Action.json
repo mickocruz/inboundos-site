@@ -1,0 +1,243 @@
+{
+  "name": "Hermes-Stage-Action",
+  "nodes": [
+    {
+      "id": "hsa-webhook",
+      "name": "Stage Action Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "parameters": {
+        "path": "hermes-stage-action",
+        "httpMethod": "POST",
+        "responseMode": "responseNode"
+      },
+      "webhookId": "hermes-stage-action"
+    },
+    {
+      "id": "hsa-respond",
+      "name": "Respond OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [200, 200],
+      "parameters": { "respondWith": "text", "responseBody": "ok" }
+    },
+    {
+      "id": "hsa-fetch-lead",
+      "name": "Fetch Full Lead",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [200, 0],
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/outreach_leads?id=eq.{{ $json.body.lead_id }}&select=*",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          { "name": "apikey", "value": "={{ $env.SUPABASE_KEY }}" },
+          { "name": "Authorization", "value": "=Bearer {{ $env.SUPABASE_KEY }}" }
+        ]}
+      }
+    },
+    {
+      "id": "hsa-fetch-memory",
+      "name": "Fetch Hermes Memory",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [400, 200],
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/agent_memory?agent=eq.Hermes&select=key,value",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          { "name": "apikey", "value": "={{ $env.SUPABASE_KEY }}" },
+          { "name": "Authorization", "value": "=Bearer {{ $env.SUPABASE_KEY }}" }
+        ]}
+      }
+    },
+    {
+      "id": "hsa-route-stage",
+      "name": "Route by New Stage",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [400, 0],
+      "parameters": {
+        "mode": "expression",
+        "output": "={{ $json.body.new_stage }}",
+        "rules": {
+          "rules": [
+            { "outputKey": "2", "value": "2" },
+            { "outputKey": "3", "value": "3" },
+            { "outputKey": "4", "value": "4" },
+            { "outputKey": "5", "value": "5" },
+            { "outputKey": "9", "value": "9" }
+          ]
+        },
+        "fallbackOutput": "none"
+      }
+    },
+    {
+      "id": "hsa-gen-stage2",
+      "name": "Claude — Write Apollo Offer DM",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, -400],
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:3456/generate",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"prompt\": \"You are Hermes, InboundOS sales agent.\\n\\nYour memory (learned from past performance):\\n{{ $('Fetch Hermes Memory').all().map(i=>i.json.key+': '+i.json.value).join('\\\\n') }}\\n\\nWrite a short DM for @{{ $('Fetch Full Lead').first().json[0].ig_handle }} who just replied to our opener. They're in the {{ $('Fetch Full Lead').first().json[0].niche }} niche. Conversation so far: {{ $('Fetch Full Lead').first().json[0].conversation_thread || 'no thread saved' }}\\n\\nWrite the Apollo Offer DM: offer to send them a free AI scriptwriter trained for their niche. Apply your best_opener_pattern memory. Keep it casual, 2-3 sentences, all lowercase. End by asking for their email. Avoid disqualify signals from memory.\", \"model\": \"claude-haiku-4-5-20251001\", \"max_tokens\": 200}"
+      }
+    },
+    {
+      "id": "hsa-gen-stage3",
+      "name": "Claude — Write Qualify Questions",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, -200],
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:3456/generate",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"prompt\": \"You are Hermes, InboundOS sales agent.\\n\\nYour memory:\\n{{ $('Fetch Hermes Memory').all().map(i=>i.json.key+': '+i.json.value).join('\\\\n') }}\\n\\n@{{ $('Fetch Full Lead').first().json[0].ig_handle }} is interested ({{ $('Fetch Full Lead').first().json[0].niche }} niche). Write 2-3 qualify questions to understand their situation: how many clients, current content output, biggest pain point. Casual, lowercase, conversational. Use the disqualify_signals in memory to probe any red flags.\", \"model\": \"claude-haiku-4-5-20251001\", \"max_tokens\": 200}"
+      }
+    },
+    {
+      "id": "hsa-gen-stage4",
+      "name": "Claude — Write Calendly DM",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, 0],
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:3456/generate",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"prompt\": \"You are Hermes, InboundOS sales agent. @{{ $('Fetch Full Lead').first().json[0].ig_handle }} answered qualify questions. Write a DM sending them the Calendly link to book a call. Reference their niche ({{ $('Fetch Full Lead').first().json[0].niche }}). Include: https://calendly.com/inboundos/discovery-call — casual, lowercase, 2 sentences.\", \"model\": \"claude-haiku-4-5-20251001\", \"max_tokens\": 200}"
+      }
+    },
+    {
+      "id": "hsa-clio-reminder",
+      "name": "Signal Clio — Call Booked",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [700, 200],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/agent_comms",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          { "name": "apikey", "value": "={{ $env.SUPABASE_KEY }}" },
+          { "name": "Authorization", "value": "=Bearer {{ $env.SUPABASE_KEY }}" },
+          { "name": "Content-Type", "value": "application/json" }
+        ]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"from_agent\":\"Hermes\",\"to_agent\":\"Clio\",\"message\":\"@{{ $('Fetch Full Lead').first().json[0].ig_handle }} booked a call. Stage 5. Watch for call completion.\",\"metadata\":{\"lead_id\":\"{{ $('Fetch Full Lead').first().json[0].id }}\",\"stage\":5}}"
+      }
+    },
+    {
+      "id": "hsa-send-dm-stage2",
+      "name": "ManyChat — Send Apollo Offer DM",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [900, -500],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.manychat.com/fb/sending/sendContent",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          { "name": "Authorization", "value": "=Bearer {{ $env.MANYCHAT_API_KEY }}" },
+          { "name": "Content-Type", "value": "application/json" }
+        ]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"subscriber_id\": \"{{ $('Fetch Full Lead').first().json[0].manychat_id }}\", \"data\": {\"version\": \"v2\", \"content\": {\"messages\": [{\"type\": \"text\", \"text\": \"{{ $json.content?.[0]?.text || $json.response || '' }}\"}]}}}"
+      }
+    },
+    {
+      "id": "hsa-save-dm-stage2",
+      "name": "Save Draft DM Stage 2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [900, -400],
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/outreach_leads?id=eq.{{ $('Fetch Full Lead').first().json[0].id }}",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          { "name": "apikey", "value": "={{ $env.SUPABASE_KEY }}" },
+          { "name": "Authorization", "value": "=Bearer {{ $env.SUPABASE_KEY }}" },
+          { "name": "Content-Type", "value": "application/json" }
+        ]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"next_action\":\"send_apollo_offer\",\"notes\":\"{{ $json.content?.[0]?.text || $json.response || '' }}\"}"
+      }
+    },
+    {
+      "id": "hsa-log-comms-2",
+      "name": "Log Comms — Stage 2 Action",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1100, -400],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/agent_comms",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          { "name": "apikey", "value": "={{ $env.SUPABASE_KEY }}" },
+          { "name": "Authorization", "value": "=Bearer {{ $env.SUPABASE_KEY }}" },
+          { "name": "Content-Type", "value": "application/json" }
+        ]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"from_agent\":\"Hermes\",\"message\":\"Apollo offer DM drafted for @{{ $('Fetch Full Lead').first().json[0].ig_handle }}. Ready to send.\",\"metadata\":{\"lead_id\":\"{{ $('Fetch Full Lead').first().json[0].id }}\",\"stage\":2}}"
+      }
+    },
+    {
+      "id": "hsa-telegram",
+      "name": "Telegram Alert",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [900, 400],
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "=🤖 *Hermes* auto-action fired\n@{{ $('Fetch Full Lead').first().json[0].ig_handle }} → Stage {{ $('Stage Action Webhook').first().json.body.new_stage }}\n_{{ $('Stage Action Webhook').first().json.body.intent }}_",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "credentials": {
+        "telegramApi": {
+          "id": "CY3u6gaCITg8Oo2S",
+          "name": "Telegram Bot (Nexus)"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Stage Action Webhook": {
+      "main": [[
+        { "node": "Fetch Full Lead", "type": "main", "index": 0 },
+        { "node": "Respond OK", "type": "main", "index": 0 }
+      ]]
+    },
+    "Fetch Full Lead": { "main": [[
+      { "node": "Route by New Stage", "type": "main", "index": 0 },
+      { "node": "Fetch Hermes Memory", "type": "main", "index": 0 }
+    ]]},
+    "Route by New Stage": {
+      "main": [
+        [{ "node": "Claude — Write Apollo Offer DM", "type": "main", "index": 0 }],
+        [{ "node": "Claude — Write Qualify Questions", "type": "main", "index": 0 }],
+        [{ "node": "Claude — Write Calendly DM", "type": "main", "index": 0 }],
+        [{ "node": "Signal Clio — Call Booked", "type": "main", "index": 0 }]
+      ]
+    },
+    "Claude — Write Apollo Offer DM": { "main": [[{ "node": "Save Draft DM Stage 2", "type": "main", "index": 0 }]] },
+    "Save Draft DM Stage 2": { "main": [[{ "node": "Log Comms — Stage 2 Action", "type": "main", "index": 0 }]] },
+    "Log Comms — Stage 2 Action": { "main": [[{ "node": "Telegram Alert", "type": "main", "index": 0 }]] },
+    "Signal Clio — Call Booked": { "main": [[{ "node": "Telegram Alert", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" }
+}

@@ -1,0 +1,258 @@
+{
+  "updatedAt": "2026-06-13T00:00:00.000Z",
+  "createdAt": "2026-06-13T00:00:00.000Z",
+  "id": "WeeklyCLAUDEUpdate01",
+  "name": "Weekly-CLAUDE-Update",
+  "description": "Every Monday 9AM PHT — reads current CLAUDE.md + wiki log, asks Claude to update stale sections, writes back.",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 1 * * 1"
+            }
+          ]
+        }
+      },
+      "id": "wcu-schedule",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [200, 300]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "fileName": "/Users/mknevamiss/.claude/CLAUDE.md",
+        "encoding": "utf8"
+      },
+      "id": "wcu-read-claude",
+      "name": "Read Current CLAUDE.md",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [450, 200]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "fileName": "/Users/mknevamiss/Documents/Obsidian Vault/Obsidian Vault/Wiki/index.md",
+        "encoding": "utf8"
+      },
+      "id": "wcu-read-wiki",
+      "name": "Read Wiki Index",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [450, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "const fs = require('fs');\nconst logPath = '/Users/mknevamiss/Documents/Obsidian Vault/Obsidian Vault/Wiki/log.md';\n\nlet logContent = '';\ntry {\n  const full = fs.readFileSync(logPath, 'utf8');\n  const lines = full.split('\\n');\n  logContent = lines.slice(-50).join('\\n');\n} catch (e) {\n  logContent = '(log not found)';\n}\n\nreturn [{ json: { recentLog: logContent } }];"
+      },
+      "id": "wcu-read-log",
+      "name": "Read Recent Log",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [450, 600]
+    },
+    {
+      "parameters": {
+        "jsCode": "const claudeMd = $('Read Current CLAUDE.md').item.json.data || $('Read Current CLAUDE.md').item.json.content || '';\nconst recentLog = $('Read Recent Log').item.json.recentLog || '';\n\nconst prompt = `You are updating a CLAUDE.md global context file. Current file:\n\n${claudeMd}\n\nRecent wiki activity (last 7 days from log.md):\n${recentLog}\n\nUpdate ONLY these sections with fresh info:\n- \"Active offer\" line — if wiki shows offer changed\n- Any outdated metrics (revenue, client count)\n\nRules:\n- Keep under 60 lines total\n- Overwrite, don't archive\n- Preserve all formatting exactly\n- Return the COMPLETE updated file content only. No explanation.`;\n\nreturn [{ json: { prompt } }];"
+      },
+      "id": "wcu-build-prompt",
+      "name": "Build Update Prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [700, 400]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:3456/generate",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"model\":\"claude-sonnet-4-6\",\"max_tokens\":800,\"prompt\":\"{{ $json.prompt }}\"}",
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "wcu-claude",
+      "name": "Claude — Update",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [950, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "const rawOutput = $input.item.json;\nconst updatedContent = rawOutput.text || rawOutput.content || rawOutput.completion || rawOutput.output || JSON.stringify(rawOutput);\nreturn [{ json: { content: updatedContent } }];"
+      },
+      "id": "wcu-extract",
+      "name": "Extract Claude Output",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1200, 400]
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "/Users/mknevamiss/.claude/CLAUDE.md",
+        "dataPropertyName": "content",
+        "encoding": "utf8"
+      },
+      "id": "wcu-write",
+      "name": "Write Updated CLAUDE.md",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [1450, 400]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.telegram.org/bot{{ $env.TELEGRAM_TOKEN }}/sendMessage",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"chat_id\":\"{{ $env.TELEGRAM_CHAT_ID }}\",\"text\":\"🧠 CLAUDE.md updated for the week\",\"parse_mode\":\"Markdown\"}",
+        "options": {}
+      },
+      "id": "wcu-telegram",
+      "name": "Telegram Alert",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1700, 400]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Read Current CLAUDE.md",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Read Wiki Index",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Read Recent Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Current CLAUDE.md": {
+      "main": [
+        [
+          {
+            "node": "Build Update Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Wiki Index": {
+      "main": [
+        [
+          {
+            "node": "Build Update Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Recent Log": {
+      "main": [
+        [
+          {
+            "node": "Build Update Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Update Prompt": {
+      "main": [
+        [
+          {
+            "node": "Claude — Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claude — Update": {
+      "main": [
+        [
+          {
+            "node": "Extract Claude Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Claude Output": {
+      "main": [
+        [
+          {
+            "node": "Write Updated CLAUDE.md",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write Updated CLAUDE.md": {
+      "main": [
+        [
+          {
+            "node": "Telegram Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+  "activeVersionId": null,
+  "versionCounter": 1,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-06-13T00:00:00.000Z",
+      "createdAt": "2026-06-13T00:00:00.000Z",
+      "role": "workflow:owner",
+      "workflowId": "WeeklyCLAUDEUpdate01",
+      "projectId": "IZgFAE28VHkL4DJK",
+      "project": {
+        "updatedAt": "2026-05-16T00:22:59.398Z",
+        "createdAt": "2026-05-16T00:22:36.732Z",
+        "id": "IZgFAE28VHkL4DJK",
+        "name": "Micko Cruz <mickocruz333@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "6e2df52d-83ce-499a-be38-a69f9acd1df9"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": null
+}

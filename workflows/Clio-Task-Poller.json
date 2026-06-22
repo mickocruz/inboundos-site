@@ -1,0 +1,260 @@
+{
+  "name": "Clio — Task Poller",
+  "description": "Every hour: (1) checks pm_tasks for assigned tasks, (2) polls agent_comms, (3) executes via Claude, (4) marks done + auto-moves task to done column.",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "hours", "hoursInterval": 1 }]
+        }
+      },
+      "id": "node-schedule",
+      "name": "Every Hour",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [-400, 0]
+    },
+    {
+      "parameters": {
+        "url": "https://cscfbuhwlfhblxprkwnh.supabase.co/rest/v1/pm_tasks",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            { "name": "assignee", "value": "eq.clio" },
+            { "name": "status", "value": "neq.done" },
+            { "name": "select", "value": "id,title,description,status,priority,due_date,tags" },
+            { "name": "order", "value": "priority.desc,due_date.asc.nullslast" }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "={{ $env.SUPABASE_SERVICE_KEY }}" },
+            { "name": "Authorization", "value": "Bearer {{ $env.SUPABASE_SERVICE_KEY }}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        }
+      },
+      "id": "node-fetch-pm-tasks",
+      "name": "Fetch My Tasks",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-160, -120]
+    },
+    {
+      "parameters": {
+        "url": "https://cscfbuhwlfhblxprkwnh.supabase.co/rest/v1/agent_comms",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            { "name": "to_agent", "value": "eq.Clio" },
+            { "name": "status", "value": "eq.pending" },
+            { "name": "select", "value": "*" },
+            { "name": "order", "value": "created_at.asc" },
+            { "name": "limit", "value": "5" }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "={{ $env.SUPABASE_SERVICE_KEY }}" },
+            { "name": "Authorization", "value": "Bearer {{ $env.SUPABASE_SERVICE_KEY }}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        }
+      },
+      "id": "node-fetch-comms",
+      "name": "Fetch Pending Comms",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-160, 60]
+    },
+    {
+      "parameters": {
+        "jsCode": "const pmTasks = $('Fetch My Tasks').all().map(i => i.json);\nconst comms = $('Fetch Pending Comms').all().map(i => i.json);\n\nif (!comms.length) return [];\n\nconst taskList = pmTasks.length\n  ? pmTasks.map(t => `[${t.priority?.toUpperCase()}] ${t.title}${t.description ? ': ' + t.description : ''}${t.due_date ? ' (due ' + t.due_date + ')' : ''}`).join('\\n')\n  : 'No pm_tasks assigned.';\n\nreturn comms.map(c => ({ json: { ...c, pm_task_context: taskList, pm_tasks_raw: pmTasks } }));"
+      },
+      "id": "node-merge",
+      "name": "Merge Context",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [100, 0]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict" },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": { "type": "string", "operation": "notEmpty" }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "node-check-tasks",
+      "name": "Has Comms?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [320, 0]
+    },
+    {
+      "parameters": {
+        "model": "claude-sonnet-4-6",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "=You are Clio, InboundOS COO. You handle client delivery, onboarding check-ins, task tracking, and operations. Ensure active clients are progressing, flag anything off-track, close out completed deliverables.\n\nYOUR ACTIVE TASKS FROM THE DASHBOARD:\n{{ $json.pm_task_context }}\n\nThese are tasks Atlas or Micko assigned you. Keep them in mind. If this comm relates to one, note which task it completes.\n\nOutput actual deliverables — check-in messages, status summaries, action items. Be concise and operational."
+            },
+            {
+              "role": "user",
+              "content": "=Task from Atlas:\n\n{{ $json.message }}\n\nComplete this task now. Output the actual deliverable."
+            }
+          ]
+        },
+        "options": { "maxTokens": 2000 }
+      },
+      "id": "node-claude",
+      "name": "Claude — Execute Task",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.2,
+      "position": [560, -80]
+    },
+    {
+      "parameters": {
+        "url": "https://cscfbuhwlfhblxprkwnh.supabase.co/rest/v1/agent_comms",
+        "method": "POST",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "={{ $env.SUPABASE_SERVICE_KEY }}" },
+            { "name": "Authorization", "value": "Bearer {{ $env.SUPABASE_SERVICE_KEY }}" },
+            { "name": "Content-Type", "value": "application/json" },
+            { "name": "Prefer", "value": "return=minimal" }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "from_agent", "value": "Clio" },
+            { "name": "to_agent", "value": "Atlas" },
+            { "name": "message", "value": "={{ $json.text }}" },
+            { "name": "status", "value": "done" },
+            { "name": "metadata", "value": "={{ JSON.stringify({ task_id: $('Merge Context').item.json.id, type: 'task_reply' }) }}" }
+          ]
+        }
+      },
+      "id": "node-write-reply",
+      "name": "Write Reply to DB",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [800, -80]
+    },
+    {
+      "parameters": {
+        "url": "=https://cscfbuhwlfhblxprkwnh.supabase.co/rest/v1/agent_comms?id=eq.{{ $('Merge Context').item.json.id }}",
+        "method": "PATCH",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "={{ $env.SUPABASE_SERVICE_KEY }}" },
+            { "name": "Authorization", "value": "Bearer {{ $env.SUPABASE_SERVICE_KEY }}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "status", "value": "done" }
+          ]
+        }
+      },
+      "id": "node-mark-comm-done",
+      "name": "Mark Comm Done",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1040, -80]
+    },
+    {
+      "parameters": {
+        "jsCode": "const pmTasks = $('Merge Context').item.json.pm_tasks_raw || [];\nconst output = $('Claude — Execute Task').item.json.text || '';\nconst matched = pmTasks.filter(t => output.toLowerCase().includes(t.title.toLowerCase()));\nreturn matched.map(t => ({ json: { pm_task_id: t.id, pm_task_title: t.title } }));"
+      },
+      "id": "node-find-completed-tasks",
+      "name": "Find Completed PM Tasks",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1040, 80]
+    },
+    {
+      "parameters": {
+        "url": "=https://cscfbuhwlfhblxprkwnh.supabase.co/rest/v1/pm_tasks?id=eq.{{ $json.pm_task_id }}",
+        "method": "PATCH",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "={{ $env.SUPABASE_SERVICE_KEY }}" },
+            { "name": "Authorization", "value": "Bearer {{ $env.SUPABASE_SERVICE_KEY }}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "status", "value": "done" },
+            { "name": "completed_at", "value": "={{ new Date().toISOString() }}" }
+          ]
+        }
+      },
+      "id": "node-auto-move-done",
+      "name": "Auto-Move Task to Done",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1280, 80]
+    },
+    {
+      "parameters": {
+        "url": "https://cscfbuhwlfhblxprkwnh.supabase.co/rest/v1/agent_activity",
+        "method": "POST",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "={{ $env.SUPABASE_SERVICE_KEY }}" },
+            { "name": "Authorization", "value": "Bearer {{ $env.SUPABASE_SERVICE_KEY }}" },
+            { "name": "Content-Type", "value": "application/json" },
+            { "name": "Prefer", "value": "return=minimal" }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "agent_name", "value": "Clio" },
+            { "name": "action", "value": "task_completed" },
+            { "name": "summary", "value": "=Completed: {{ $('Merge Context').item.json.message.substring(0, 120) }}..." },
+            { "name": "metadata", "value": "={{ JSON.stringify({ comm_id: $('Merge Context').item.json.id }) }}" }
+          ]
+        }
+      },
+      "id": "node-log-activity",
+      "name": "Log to agent_activity",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1280, -80]
+    }
+  ],
+  "connections": {
+    "Every Hour": { "main": [[{ "node": "Fetch My Tasks", "type": "main", "index": 0 }, { "node": "Fetch Pending Comms", "type": "main", "index": 0 }]] },
+    "Fetch My Tasks": { "main": [[{ "node": "Merge Context", "type": "main", "index": 0 }]] },
+    "Fetch Pending Comms": { "main": [[{ "node": "Merge Context", "type": "main", "index": 0 }]] },
+    "Merge Context": { "main": [[{ "node": "Has Comms?", "type": "main", "index": 0 }]] },
+    "Has Comms?": { "main": [[{ "node": "Claude — Execute Task", "type": "main", "index": 0 }], []] },
+    "Claude — Execute Task": { "main": [[{ "node": "Write Reply to DB", "type": "main", "index": 0 }, { "node": "Find Completed PM Tasks", "type": "main", "index": 0 }]] },
+    "Write Reply to DB": { "main": [[{ "node": "Mark Comm Done", "type": "main", "index": 0 }]] },
+    "Mark Comm Done": { "main": [[{ "node": "Log to agent_activity", "type": "main", "index": 0 }]] },
+    "Find Completed PM Tasks": { "main": [[{ "node": "Auto-Move Task to Done", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "tags": ["clio", "task-poller", "autonomous"]
+}

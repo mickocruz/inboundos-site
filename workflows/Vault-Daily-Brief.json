@@ -1,0 +1,202 @@
+{
+  "updatedAt": "2026-06-13T00:00:00.000Z",
+  "createdAt": "2026-06-13T00:00:00.000Z",
+  "id": "VaultDailyBrief001",
+  "name": "Vault-Daily-Brief",
+  "description": "Reads recent Obsidian clippings, generates a daily brief via Claude, saves to vault, sends Telegram alert.",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 22 * * *"
+            }
+          ]
+        }
+      },
+      "id": "vdb-schedule",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [200, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const fs = require('fs');\nconst path = require('path');\n\nconst clippingsDir = '/Users/mknevamiss/Documents/Obsidian Vault/Obsidian Vault/Clippings';\nconst cutoff = Date.now() - 24 * 60 * 60 * 1000;\n\nlet files;\ntry {\n  files = fs.readdirSync(clippingsDir);\n} catch (e) {\n  return [{ json: { filenames: [], fileCount: 0 } }];\n}\n\nconst recent = files\n  .filter(f => f.endsWith('.md') && !f.startsWith('brief-') && !f.startsWith('capture-'))\n  .filter(f => {\n    try {\n      const stat = fs.statSync(path.join(clippingsDir, f));\n      return stat.mtimeMs >= cutoff;\n    } catch (e) {\n      return false;\n    }\n  });\n\nreturn [{ json: { filenames: recent, fileCount: recent.length, clippingsDir } }];"
+      },
+      "id": "vdb-read-inbox",
+      "name": "Read Recent Clippings",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const filenames = $input.item.json.filenames || [];\nconst list = filenames.length > 0 ? filenames.join('\\n- ') : '(no new clippings in last 24h)';\n\nconst prompt = `Read my Obsidian wiki. Focus on recent clippings and wiki updates.\n\nDo three things:\n1. CONNECTIONS — 3 most interesting connections between recent captures and older wiki concepts. Specific. Quote relevant passages.\n2. PATTERN — One pattern across everything I've been reading this week. What is my brain clearly working on?\n3. QUESTION — One question worth sitting with today based on the pattern. Not a task. A question.\n\nRecent clippings titles:\n- ${list}\n\nWrite as clean markdown. Be direct. Challenge assumptions.`;\n\nconst today = new Date().toISOString().split('T')[0];\n\nreturn [{ json: { prompt, today, fileCount: filenames.length } }];"
+      },
+      "id": "vdb-build-prompt",
+      "name": "Build Brief Prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [700, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:3456/generate",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"model\":\"claude-sonnet-4-6\",\"max_tokens\":1000,\"prompt\":\"{{ $json.prompt }}\"}",
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "vdb-claude",
+      "name": "Claude — Generate Brief",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [950, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const today = $('Build Brief Prompt').item.json.today;\nconst rawOutput = $input.item.json;\n\n// Handle both direct text and nested response shapes\nconst claudeText = rawOutput.text || rawOutput.content || rawOutput.completion || rawOutput.output || JSON.stringify(rawOutput);\n\nconst content = `# Daily Brief — ${today}\\n\\n${claudeText}`;\n\nreturn [{ json: { content, today, filePath: `/Users/mknevamiss/Documents/Obsidian Vault/Obsidian Vault/Clippings/brief-${today}.md` } }];"
+      },
+      "id": "vdb-format-brief",
+      "name": "Format Brief",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1200, 300]
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "={{ $json.filePath }}",
+        "dataPropertyName": "content",
+        "encoding": "utf8"
+      },
+      "id": "vdb-save",
+      "name": "Save Brief to Vault",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [1450, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.telegram.org/bot{{ $env.TELEGRAM_TOKEN }}/sendMessage",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"chat_id\":\"{{ $env.TELEGRAM_CHAT_ID }}\",\"text\":\"🌅 Daily brief ready — check Obsidian Clippings folder\",\"parse_mode\":\"Markdown\"}",
+        "options": {}
+      },
+      "id": "vdb-telegram",
+      "name": "Telegram Alert",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1700, 300]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Read Recent Clippings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Recent Clippings": {
+      "main": [
+        [
+          {
+            "node": "Build Brief Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Brief Prompt": {
+      "main": [
+        [
+          {
+            "node": "Claude — Generate Brief",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claude — Generate Brief": {
+      "main": [
+        [
+          {
+            "node": "Format Brief",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Brief": {
+      "main": [
+        [
+          {
+            "node": "Save Brief to Vault",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Brief to Vault": {
+      "main": [
+        [
+          {
+            "node": "Telegram Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "activeVersionId": null,
+  "versionCounter": 1,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-06-13T00:00:00.000Z",
+      "createdAt": "2026-06-13T00:00:00.000Z",
+      "role": "workflow:owner",
+      "workflowId": "VaultDailyBrief001",
+      "projectId": "IZgFAE28VHkL4DJK",
+      "project": {
+        "updatedAt": "2026-05-16T00:22:59.398Z",
+        "createdAt": "2026-05-16T00:22:36.732Z",
+        "id": "IZgFAE28VHkL4DJK",
+        "name": "Micko Cruz <mickocruz333@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "6e2df52d-83ce-499a-be38-a69f9acd1df9"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": null
+}

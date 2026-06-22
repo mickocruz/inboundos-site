@@ -1,0 +1,193 @@
+{
+  "name": "Hermes-DM-Poller",
+  "nodes": [
+    {
+      "id": "hdp-schedule",
+      "name": "Every 15 Min",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 0],
+      "parameters": {
+        "rule": { "interval": [{ "field": "minutes", "minutesInterval": 15 }] }
+      }
+    },
+    {
+      "id": "hdp-fetch-leads",
+      "name": "Fetch Leads Stage 1-4",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [200, 0],
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/outreach_leads?stage=gte.1&stage=lte.4&ig_user_id=not.is.null&select=*&order=last_dm_checked_at.asc.nullsfirst&limit=30",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          { "name": "apikey", "value": "={{ $env.SUPABASE_KEY }}" },
+          { "name": "Authorization", "value": "=Bearer {{ $env.SUPABASE_KEY }}" }
+        ]}
+      }
+    },
+    {
+      "id": "hdp-split",
+      "name": "Split Leads",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [400, 0],
+      "parameters": { "fieldToSplitOut": "body" }
+    },
+    {
+      "id": "hdp-fetch-dms",
+      "name": "Fetch IG DMs via RapidAPI",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [600, 0],
+      "parameters": {
+        "method": "GET",
+        "url": "=https://instagram-api-fast-reliable-data-scraper.p.rapidapi.com/direct_messages?user_id={{ $json.ig_user_id }}&limit=10",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          { "name": "x-rapidapi-host", "value": "instagram-api-fast-reliable-data-scraper.p.rapidapi.com" },
+          { "name": "x-rapidapi-key", "value": "={{ $env.RAPIDAPI_KEY }}" }
+        ]}
+      }
+    },
+    {
+      "id": "hdp-classify",
+      "name": "Claude — Classify Intent",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [800, 0],
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:3456/generate",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          { "name": "Content-Type", "value": "application/json" }
+        ]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"prompt\": \"You are Hermes, InboundOS sales agent. Analyze this DM thread and classify the lead's current intent.\\n\\nLead: @{{ $('Split Leads').item.json.ig_handle }}\\nCurrent stage: {{ $('Split Leads').item.json.stage }}\\nDM thread:\\n{{ JSON.stringify($json.messages || []) }}\\n\\nReturn ONLY valid JSON:\\n{\\n  \\\"has_new_reply\\\": true/false,\\n  \\\"new_stage\\\": 0-9 (use current stage if no change needed),\\n  \\\"intent\\\": \\\"interested|objection|question|wants_call|not_interested|no_reply\\\",\\n  \\\"summary\\\": \\\"1 sentence of what they said\\\",\\n  \\\"auto_reply\\\": \\\"the DM text Hermes should send next, or null if no action needed\\\",\\n  \\\"objection_type\\\": \\\"price|timing|trust|already_have_solution|not_decision_maker|null\\\",\\n  \\\"urgency\\\": \\\"hot|warm|cold\\\"\\n}\\n\\nobjection_type: only set if intent=objection, otherwise null.\\nurgency: hot=eager/fast replies/ready to move, warm=engaged but cautious, cold=passive/slow/disengaged.\\n\\nStage guide: 1=opener sent, 2=replied/interested, 3=qualify questions sent, 4=qualify done/Calendly sent, 5=call booked, 6=call done, 7=not interested, 9=closed\", \"model\": \"claude-haiku-4-5-20251001\", \"max_tokens\": 450}"
+      }
+    },
+    {
+      "id": "hdp-parse",
+      "name": "Parse Classification",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1000, 0],
+      "parameters": {
+        "jsCode": "const raw = $input.first().json.content?.[0]?.text || $input.first().json.response || $input.first().json.output || '';\nlet parsed;\ntry {\n  const clean = raw.replace(/^```json\\n?/, '').replace(/\\n?```$/, '').trim();\n  parsed = JSON.parse(clean);\n} catch(e) {\n  parsed = { has_new_reply: false, new_stage: $('Split Leads').item.json.stage, intent: 'parse_error', summary: raw.slice(0,100), auto_reply: null, objection_type: null, urgency: 'cold' };\n}\nreturn [{ json: { ...parsed, objection_type: parsed.objection_type ?? null, urgency: parsed.urgency ?? 'cold', lead_id: $('Split Leads').item.json.id, ig_handle: $('Split Leads').item.json.ig_handle, current_stage: $('Split Leads').item.json.stage } }];"
+      }
+    },
+    {
+      "id": "hdp-if-changed",
+      "name": "Stage Changed?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1200, 0],
+      "parameters": {
+        "conditions": { "options": { "caseSensitive": false }, "conditions": [
+          { "id": "changed", "leftValue": "={{ $json.has_new_reply }}", "rightValue": true, "operator": { "type": "boolean", "operation": "equals" } }
+        ]}
+      }
+    },
+    {
+      "id": "hdp-patch-stage",
+      "name": "Update Lead Stage",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1400, -100],
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/outreach_leads?id=eq.{{ $json.lead_id }}",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          { "name": "apikey", "value": "={{ $env.SUPABASE_KEY }}" },
+          { "name": "Authorization", "value": "=Bearer {{ $env.SUPABASE_KEY }}" },
+          { "name": "Content-Type", "value": "application/json" },
+          { "name": "Prefer", "value": "return=minimal" }
+        ]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"stage\": {{ $json.new_stage }}, \"stage_updated_at\": \"{{ $now.toISO() }}\", \"last_dm_checked_at\": \"{{ $now.toISO() }}\", \"notes\": \"{{ $json.summary }}\"}"
+      }
+    },
+    {
+      "id": "hdp-emit-signal",
+      "name": "Emit Stage Signal",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1600, -100],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/agent_signals",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          { "name": "apikey", "value": "={{ $env.SUPABASE_KEY }}" },
+          { "name": "Authorization", "value": "=Bearer {{ $env.SUPABASE_KEY }}" },
+          { "name": "Content-Type", "value": "application/json" }
+        ]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"from_agent\": \"Hermes\", \"to_agent\": \"Hermes\", \"signal_type\": \"stage_change\", \"payload\": {\"lead_id\": \"{{ $('Parse Classification').item.json.lead_id }}\", \"ig_handle\": \"{{ $('Parse Classification').item.json.ig_handle }}\", \"old_stage\": {{ $('Parse Classification').item.json.current_stage }}, \"new_stage\": {{ $('Parse Classification').item.json.new_stage }}, \"auto_reply\": \"{{ $('Parse Classification').item.json.auto_reply }}\", \"intent\": \"{{ $('Parse Classification').item.json.intent }}\"}}"
+      }
+    },
+    {
+      "id": "hdp-log-comms",
+      "name": "Log to Agent Comms",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1800, -100],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/agent_comms",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          { "name": "apikey", "value": "={{ $env.SUPABASE_KEY }}" },
+          { "name": "Authorization", "value": "=Bearer {{ $env.SUPABASE_KEY }}" },
+          { "name": "Content-Type", "value": "application/json" }
+        ]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"from_agent\": \"Hermes\", \"message\": \"@{{ $('Parse Classification').item.json.ig_handle }} moved stage {{ $('Parse Classification').item.json.current_stage }} → {{ $('Parse Classification').item.json.new_stage }}. Intent: {{ $('Parse Classification').item.json.intent }}. {{ $('Parse Classification').item.json.summary }}\", \"metadata\": {\"lead_id\": \"{{ $('Parse Classification').item.json.lead_id }}\", \"new_stage\": {{ $('Parse Classification').item.json.new_stage }}}}"
+      }
+    },
+    {
+      "id": "hdp-stamp-checked",
+      "name": "Stamp Last Checked (no change)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1400, 100],
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/outreach_leads?id=eq.{{ $json.lead_id }}",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          { "name": "apikey", "value": "={{ $env.SUPABASE_KEY }}" },
+          { "name": "Authorization", "value": "=Bearer {{ $env.SUPABASE_KEY }}" },
+          { "name": "Content-Type", "value": "application/json" }
+        ]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"last_dm_checked_at\": \"{{ $now.toISO() }}\"}"
+      }
+    }
+  ],
+  "connections": {
+    "Every 15 Min": { "main": [[{ "node": "Fetch Leads Stage 1-4", "type": "main", "index": 0 }]] },
+    "Fetch Leads Stage 1-4": { "main": [[{ "node": "Split Leads", "type": "main", "index": 0 }]] },
+    "Split Leads": { "main": [[{ "node": "Fetch IG DMs via RapidAPI", "type": "main", "index": 0 }]] },
+    "Fetch IG DMs via RapidAPI": { "main": [[{ "node": "Claude — Classify Intent", "type": "main", "index": 0 }]] },
+    "Claude — Classify Intent": { "main": [[{ "node": "Parse Classification", "type": "main", "index": 0 }]] },
+    "Parse Classification": { "main": [[{ "node": "Stage Changed?", "type": "main", "index": 0 }]] },
+    "Stage Changed?": {
+      "main": [
+        [{ "node": "Update Lead Stage", "type": "main", "index": 0 }],
+        [{ "node": "Stamp Last Checked (no change)", "type": "main", "index": 0 }]
+      ]
+    },
+    "Update Lead Stage": { "main": [[{ "node": "Emit Stage Signal", "type": "main", "index": 0 }]] },
+    "Emit Stage Signal": { "main": [[{ "node": "Log to Agent Comms", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" }
+}

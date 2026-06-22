@@ -1,0 +1,199 @@
+{
+  "updatedAt": "2026-06-13T00:00:00.000Z",
+  "createdAt": "2026-06-13T00:00:00.000Z",
+  "id": "TelegramVaultCapture1",
+  "name": "Telegram-Vault-Capture",
+  "description": "Listens for /note or /capture messages on the Nexus Telegram bot and saves them as md files in Obsidian Clippings.",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "updates": ["message"],
+        "additionalFields": {}
+      },
+      "id": "tvc-trigger",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [200, 300],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram-nexus-bot",
+          "name": "Telegram Nexus Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.message.text }}",
+              "operation": "startsWith",
+              "value2": "/note"
+            }
+          ]
+        },
+        "combineOperation": "any"
+      },
+      "id": "tvc-filter-note",
+      "name": "Is /note command",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [450, 200]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.message.text }}",
+              "operation": "startsWith",
+              "value2": "/capture"
+            }
+          ]
+        },
+        "combineOperation": "any"
+      },
+      "id": "tvc-filter-capture",
+      "name": "Is /capture command",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [450, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "const msgText = $input.item.json.message.text || '';\n\n// Strip the command prefix (/note or /capture) from the message\nconst bodyText = msgText.replace(/^\\/(note|capture)\\s*/i, '').trim();\n\nconst now = new Date();\nconst pad = n => String(n).padStart(2, '0');\nconst dateStr = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}`;\nconst timeStr = `${pad(now.getHours())}${pad(now.getMinutes())}`;\nconst dateTimeStr = `${dateStr} ${pad(now.getHours())}:${pad(now.getMinutes())}`;\n\nconst content = `# Quick Capture — ${dateTimeStr}\\n\\n${bodyText}\\n\\nSource: Telegram\\nDate: ${dateTimeStr}\\n`;\nconst filePath = `/Users/mknevamiss/Documents/Obsidian Vault/Obsidian Vault/Clippings/capture-${dateStr}-${timeStr}.md`;\nconst chatId = $input.item.json.message.chat.id;\n\nreturn [{ json: { content, filePath, chatId, dateTimeStr } }];"
+      },
+      "id": "tvc-format-note",
+      "name": "Format Note",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [700, 300]
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "={{ $json.filePath }}",
+        "dataPropertyName": "content",
+        "encoding": "utf8"
+      },
+      "id": "tvc-write",
+      "name": "Write to Vault",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [950, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.telegram.org/bot{{ $env.TELEGRAM_TOKEN }}/sendMessage",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"chat_id\":\"{{ $('Format Note').item.json.chatId }}\",\"text\":\"✅ Captured to vault\",\"parse_mode\":\"Markdown\"}",
+        "options": {}
+      },
+      "id": "tvc-confirm",
+      "name": "Confirm to Telegram",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1200, 300]
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Is /note command",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Is /capture command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is /note command": {
+      "main": [
+        [
+          {
+            "node": "Format Note",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Is /capture command": {
+      "main": [
+        [
+          {
+            "node": "Format Note",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Format Note": {
+      "main": [
+        [
+          {
+            "node": "Write to Vault",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write to Vault": {
+      "main": [
+        [
+          {
+            "node": "Confirm to Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "c3d4e5f6-a7b8-9012-cdef-123456789012",
+  "activeVersionId": null,
+  "versionCounter": 1,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-06-13T00:00:00.000Z",
+      "createdAt": "2026-06-13T00:00:00.000Z",
+      "role": "workflow:owner",
+      "workflowId": "TelegramVaultCapture1",
+      "projectId": "IZgFAE28VHkL4DJK",
+      "project": {
+        "updatedAt": "2026-05-16T00:22:59.398Z",
+        "createdAt": "2026-05-16T00:22:36.732Z",
+        "id": "IZgFAE28VHkL4DJK",
+        "name": "Micko Cruz <mickocruz333@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "6e2df52d-83ce-499a-be38-a69f9acd1df9"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": null
+}

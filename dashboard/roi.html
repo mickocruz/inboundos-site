@@ -664,6 +664,35 @@ function buildAttributionTable(calls) {
   wrap.innerHTML = html;
 }
 
+function buildAttributionTable(calls) {
+  const closed = calls.filter(c => c.closed && c.deal_value > 0);
+  const wrap = document.getElementById('attribution-table-wrap');
+
+  if (!closed.length) {
+    wrap.innerHTML = '<div style="font-family:var(--font-data);font-size:11px;color:var(--text-dim);padding:12px 0;">No closed deals yet.</div>';
+    return;
+  }
+
+  let html = `<table style="width:100%;font-family:var(--font-data);font-size:11px;border-collapse:collapse;">
+    <thead><tr style="border-bottom:1px solid rgba(255,255,255,0.07);">
+      <th style="text-align:left;padding:8px 0;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.5px;font-weight:700;font-size:10px;">Client</th>
+      <th style="text-align:right;padding:8px 0;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.5px;font-weight:700;font-size:10px;">Revenue</th>
+      <th style="text-align:left;padding:8px 0;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.5px;font-weight:700;font-size:10px;">Closed</th>
+    </tr></thead><tbody>`;
+
+  closed.forEach(c => {
+    const closedDate = c.created_at ? new Date(c.created_at).toLocaleDateString('en-US', {month:'short', day:'numeric'}) : '—';
+    html += `<tr style="border-bottom:1px solid rgba(255,255,255,0.03);">
+      <td style="padding:9px 0;color:#fff;">${c.client_name || '—'}</td>
+      <td style="padding:9px 0;color:var(--green);font-weight:600;text-align:right;">$${(c.deal_value || 0).toLocaleString()}</td>
+      <td style="padding:9px 0;color:var(--text-muted);font-size:10px;">${closedDate}</td>
+    </tr>`;
+  });
+
+  html += `</tbody></table>`;
+  wrap.innerHTML = html;
+}
+
 // Chart defaults
 Chart.defaults.color = 'rgba(255,255,255,0.3)';
 Chart.defaults.font.family = "'DM Sans', sans-serif";

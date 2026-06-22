@@ -794,6 +794,54 @@ const server = http.createServer(async (req, res) => {
     await handleAtlasRun(req, res); return;
   }
 
+
+  // Health check endpoint — returns status of Supabase and n8n
+  if (req.method === 'GET' && (urlPath === '/health' || urlPath === '/api/health')) {
+    try {
+      const checks = { supabase: false, n8n: false };
+
+      // Check Supabase with quick SELECT 1
+      try {
+        const sbRes = await fetch(`${SB_URL}/rest/v1/rpc/health_check`, {
+          method: 'POST',
+          headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}`, 'Content-Type': 'application/json' },
+          signal: AbortSignal.timeout(3000)
+        });
+        checks.supabase = sbRes.ok;
+      } catch(e) {
+        // Fallback: try a simple table query
+        try {
+          const sbRes = await fetch(`${SB_URL}/rest/v1/agent_activity?select=count&limit=1`, {
+            headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` },
+            signal: AbortSignal.timeout(3000)
+          });
+          checks.supabase = sbRes.ok;
+        } catch(e2) { checks.supabase = false; }
+      }
+
+      // Check n8n
+      try {
+        const n8nRes = await fetch(`${N8N_URL}/healthz`, {
+          signal: AbortSignal.timeout(3000)
+        });
+        checks.n8n = n8nRes.ok;
+      } catch(e) { checks.n8n = false; }
+
+      return sendJSON(res, 200, {
+        status: 'ok',
+        services: checks,
+        timestamp: new Date().toISOString()
+      });
+    } catch(e) {
+      return sendJSON(res, 200, {
+        status: 'error',
+        services: { supabase: false, n8n: false },
+        error: e.message,
+        timestamp: new Date().toISOString()
+      });
+    }
+  }
+
   // Live Activity feed — merged stream of ATLAS reports, agent messages, agent runs.
   // Served through the server (service key) since these tables are authenticated-read only.
   if (req.method === 'GET' && (urlPath === '/activity' || urlPath === '/api/activity')) {

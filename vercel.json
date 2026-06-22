@@ -191,6 +191,38 @@
     {
       "source": "/planner",
       "destination": "/dashboard/planner/index.html"
+    },
+    {
+      "source": "/:client/settings",
+      "destination": "/dashboard/settings.html"
+    },
+    {
+      "source": "/settings",
+      "destination": "/dashboard/settings.html"
+    },
+    {
+      "source": "/:client/vault",
+      "destination": "/dashboard/vault.html"
+    },
+    {
+      "source": "/vault",
+      "destination": "/dashboard/vault.html"
+    },
+    {
+      "source": "/:client/command",
+      "destination": "/dashboard/command.html"
+    },
+    {
+      "source": "/command",
+      "destination": "/dashboard/command.html"
+    },
+    {
+      "source": "/:client/edge",
+      "destination": "/dashboard/edge.html"
+    },
+    {
+      "source": "/edge",
+      "destination": "/dashboard/edge.html"
     }
   ]
 }

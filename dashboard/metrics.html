@@ -230,6 +230,32 @@ tr:hover td{background:rgba(255,255,255,0.015);}
         <div class="table-wrap" id="routines-table-wrap"><div class="loading-txt">Loading routines...</div></div>
       </section>
 
+      <section>
+        <div class="section-label">Capacity Planning</div>
+        <div class="stat-grid">
+          <div class="stat"><div class="stat-label">Current Load</div><div class="stat-val" id="capacity-current">—</div><div class="stat-sub">active clients</div></div>
+          <div class="stat"><div class="stat-label">Capacity</div><div class="stat-val" id="capacity-max">—</div><div class="stat-sub">slots available</div></div>
+          <div class="stat"><div class="stat-label">Utilization</div><div class="stat-val ac" id="capacity-pct">—</div><div class="stat-sub">of total</div></div>
+        </div>
+        <div class="chart-card" style="margin-top:10px;">
+          <div class="chart-title">Client Load vs Capacity</div>
+          <div id="capacity-bar-wrap" style="padding:16px 0;display:flex;align-items:center;gap:16px;">
+            <div style="flex:1;height:12px;background:rgba(255,255,255,0.06);border-radius:6px;overflow:hidden;"><div id="capacity-progress" style="height:100%;background:rgba(79,195,247,0.6);width:0%;border-radius:6px;transition:width 0.5s;"></div></div>
+            <div style="font-family:var(--font-head);font-size:14px;font-weight:900;color:var(--text);min-width:40px;" id="capacity-ratio">—</div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-label">Projected Revenue (30/60/90 days)</div>
+        <div class="stat-grid-4">
+          <div class="stat"><div class="stat-label">30-Day Proj.</div><div class="stat-val gr" id="proj-30d">$—</div><div class="stat-sub">next month</div></div>
+          <div class="stat"><div class="stat-label">60-Day Proj.</div><div class="stat-val" id="proj-60d">$—</div><div class="stat-sub">2 months</div></div>
+          <div class="stat"><div class="stat-label">90-Day Proj.</div><div class="stat-val" id="proj-90d">$—</div><div class="stat-sub">3 months</div></div>
+          <div class="stat"><div class="stat-label">Avg Close Rate</div><div class="stat-val ac" id="proj-close-rate">—</div><div class="stat-sub">by stage</div></div>
+        </div>
+      </section>
+
     </div><!-- /tab-ops -->
 
     <!-- ── TAB 2: ROI & CONVERSIONS ── -->
@@ -460,6 +486,37 @@ async function loadAll() {
       <td><span class="badge ${r.active?'badge-active':'badge-cancelled'}">${r.active?'active':'paused'}</span></td>
     </tr>`).join('')}</tbody></table>`
   : '<div class="empty">No routines found.</div>';
+
+  // ── CAPACITY PLANNING ──
+  const MAX_CAPACITY = 5; // solo operator capacity
+  const activeCnt = activeClients.length;
+  const available = Math.max(0, MAX_CAPACITY - activeCnt);
+  const utilPct = activeCnt > 0 ? Math.round(activeCnt / MAX_CAPACITY * 100) : 0;
+  set('capacity-current', activeCnt);
+  set('capacity-max', MAX_CAPACITY);
+  set('capacity-pct', utilPct + '%');
+  setBar('capacity-progress', utilPct);
+  const capEl = document.getElementById('capacity-ratio');
+  if (capEl) capEl.textContent = activeCnt + '/' + MAX_CAPACITY;
+
+  // ── PROJECTED REVENUE ──
+  const closedCalls = calls.filter(c => c.closed);
+  const closedRevenue = closedCalls.reduce((s, c) => s + (c.deal_value || 0), 0);
+  const avgDealValue = closedCalls.length > 0 ? closedRevenue / closedCalls.length : 0;
+
+  // Stage-based close probabilities
+  const interested = leads.filter(l => l.stage === 0).length;
+  const qualified = leads.filter(l => l.stage === 1).length;
+  const proposal = leads.filter(l => l.stage === 2).length;
+  const proj30 = (interested * avgDealValue * 0.10) + (qualified * avgDealValue * 0.30) + (proposal * avgDealValue * 0.60);
+  const proj60 = proj30 * 2;
+  const proj90 = proj30 * 3;
+  const closeRateAvg = calls.length > 0 ? Math.round(closedCalls.length / calls.length * 100) : 0;
+
+  set('proj-30d', '$' + Math.round(proj30).toLocaleString());
+  set('proj-60d', '$' + Math.round(proj60).toLocaleString());
+  set('proj-90d', '$' + Math.round(proj90).toLocaleString());
+  set('proj-close-rate', closeRateAvg + '%');
 
   // If ROI tab already visible, rebuild charts
   if (document.getElementById('tab-roi').classList.contains('active')) buildROICharts();

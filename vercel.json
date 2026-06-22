@@ -33,6 +33,11 @@
       "source": "/apply.html",
       "destination": "/apply",
       "permanent": true
+    },
+    {
+      "source": "/landing.html",
+      "destination": "/",
+      "permanent": true
     }
   ],
   "rewrites": [

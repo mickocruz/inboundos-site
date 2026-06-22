@@ -374,6 +374,74 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
 }
+
+/* ── AGENT ACTIVE GLOW ─────────────────────────────────────────
+   When agent has run in last 24h (active), show green pulse glow.
+   When inactive (no run in 24h), show red/dimmed state.
+*/
+
+/* Active agent — green glow ring around avatar */
+.agent-exp.agent-active .agent-avatar-lg {
+  box-shadow:
+    0 0 0 2px rgba(13, 17, 23, 1),
+    0 0 20px rgba(74, 222, 128, 0.8),
+    0 0 40px rgba(74, 222, 128, 0.4),
+    inset 0 0 12px rgba(74, 222, 128, 0.2);
+  animation: agent-glow-green 2s ease-in-out infinite;
+}
+
+/* Active status text should reflect green */
+.agent-exp.agent-active .agent-status-badge {
+  background: rgba(74, 222, 128, 0.12) !important;
+  border-color: rgba(74, 222, 128, 0.4) !important;
+  color: #4ade80 !important;
+}
+
+.agent-exp.agent-active .agent-status-badge::before {
+  background: #4ade80 !important;
+}
+
+/* Inactive agent — subtle gray, no glow */
+.agent-exp.agent-inactive .agent-avatar-lg {
+  box-shadow: 0 0 0 2px rgba(13, 17, 23, 1);
+  opacity: 0.65;
+}
+
+.agent-exp.agent-inactive .agent-status-badge {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: rgba(255, 255, 255, 0.3) !important;
+}
+
+.agent-exp.agent-inactive .agent-status-badge::before {
+  background: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Green pulse animation */
+@keyframes agent-glow-green {
+  0% {
+    box-shadow:
+      0 0 0 2px rgba(13, 17, 23, 1),
+      0 0 16px rgba(74, 222, 128, 0.8),
+      0 0 32px rgba(74, 222, 128, 0.4),
+      inset 0 0 12px rgba(74, 222, 128, 0.2);
+  }
+  50% {
+    box-shadow:
+      0 0 0 2px rgba(13, 17, 23, 1),
+      0 0 24px rgba(74, 222, 128, 1),
+      0 0 48px rgba(74, 222, 128, 0.6),
+      inset 0 0 12px rgba(74, 222, 128, 0.3);
+  }
+  100% {
+    box-shadow:
+      0 0 0 2px rgba(13, 17, 23, 1),
+      0 0 16px rgba(74, 222, 128, 0.8),
+      0 0 32px rgba(74, 222, 128, 0.4),
+      inset 0 0 12px rgba(74, 222, 128, 0.2);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .amb,.agent-avatar-lg::before,.card.agent-exp { animation: none !important; transition: none !important; }
   .card.agent-exp { opacity: 1 !important; transform: none !important; }
@@ -2738,3 +2806,62 @@ if(document.readyState==='loading'){
 
 </body>
 </html>
+
+<script>
+/* ── AGENT ACTIVE STATUS — Check if agent ran in last 24h ────────
+   Fetches agent_runs table and applies agent-active/agent-inactive
+   classes to each agent card for visual glow indication.
+*/
+
+async function updateAgentStatusGlow() {
+  try {
+    const sess = JSON.parse(localStorage.getItem('sb_session') || '{}');
+    const SUPA = sess.client_supabase_url || 'https://cscfbuhwlfhblxprkwnh.supabase.co';
+    const KEY = sess.client_supabase_anon || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
+    const hdrs = { 'apikey': KEY, 'Authorization': 'Bearer ' + (sess.access_token || KEY) };
+
+    // Fetch agent_runs from last 24 hours
+    const now = new Date();
+    const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const isoYesterday = yesterday.toISOString();
+
+    const res = await fetch(SUPA + '/rest/v1/agent_runs?select=agent_name&run_date=gte.' + isoYesterday, {
+      headers: hdrs
+    });
+
+    if (!res.ok) {
+      console.warn('[updateAgentStatusGlow] Failed to fetch agent_runs:', res.status);
+      return;
+    }
+
+    const runs = await res.json();
+    const activeAgents = new Set(runs.map(r => r.agent_name).filter(Boolean));
+
+    // Get all agent cards and update their status
+    const agents = ['Argus', 'Apollo', 'Hermes', 'Clio', 'Atlas', 'Nexus'];
+    agents.forEach(agentName => {
+      const card = document.querySelector(`[id*="${agentName.toLowerCase()}"]`)?.closest('.agent-exp')
+        || document.querySelector(`.agent-exp:has(.agent-name-lg:contains("${agentName}"))`);
+
+      if (card) {
+        if (activeAgents.has(agentName)) {
+          card.classList.remove('agent-inactive');
+          card.classList.add('agent-active');
+        } else {
+          card.classList.remove('agent-active');
+          card.classList.add('agent-inactive');
+        }
+      }
+    });
+
+  } catch (err) {
+    console.error('[updateAgentStatusGlow] Error:', err);
+  }
+}
+
+// Initialize on page load and refresh every 5 minutes
+document.addEventListener('DOMContentLoaded', () => {
+  updateAgentStatusGlow();
+  setInterval(updateAgentStatusGlow, 5 * 60 * 1000);
+});
+</script>

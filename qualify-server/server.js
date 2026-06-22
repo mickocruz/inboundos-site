@@ -28,8 +28,7 @@ const SB_ANON_KEY = process.env.SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_1ZqI
 const SB_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || SB_ANON_KEY;
 const N8N_API_KEY = process.env.N8N_API_KEY || '';
 const N8N_URL = process.env.N8N_URL || 'http://localhost:5678';
-const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN || '';
-const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || '';
+const SLACK_WEBHOOK = process.env.SLACK_WEBHOOK_DASHBOARD || '';
 const INTERNAL_TOKEN = process.env.INTERNAL_TOKEN || '';
 const IG_TOKEN = process.env.IG_ACCESS_TOKEN || '';
 
@@ -75,13 +74,14 @@ function checkAuth(req) {
 }
 
 async function nexusAlert(msg) {
+  if (!SLACK_WEBHOOK) return;
   try {
-    await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
+    await fetch(SLACK_WEBHOOK, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: `🤖 InboundOS\n${msg}`, parse_mode: 'Markdown' })
+      body: JSON.stringify({ text: `*InboundOS — Atlas*\n${msg}` })
     });
-  } catch(e) { console.error('[nexusAlert] failed:', e.message); }
+  } catch(e) { console.error('[nexusAlert] slack failed:', e.message); }
 }
 
 async function logError(page, message, context) {
@@ -518,7 +518,7 @@ Steps:
     }
     const report = stdout.trim();
     console.log('[ATLAS] Done. Report saved.');
-    nexusAlert(report.slice(0, 3500)); // Telegram cap
+    nexusAlert(report.slice(0, 3000));
     sendJSON(res, 200, { ok: true, report });
   });
 }

@@ -5,6 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>InboundOS — The AI Operating System for Solo Agency Owners</title>
 <meta name="description" content="You're the bottleneck. We install custom AI agents and automated workflows so your agency keeps running whether you're selling, delivering, or offline.">
+<meta property="og:title" content="InboundOS — The AI Operating System for Solo Agency Owners">
+<meta property="og:description" content="You're the bottleneck. We install custom AI agents and automated workflows so your agency keeps running whether you're selling, delivering, or offline.">
+<meta property="og:image" content="https://inboundos.vercel.app/og-image.png">
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:title" content="InboundOS — The AI Operating System for Solo Agency Owners">
+<meta property="twitter:description" content="You're the bottleneck. We install custom AI agents and automated workflows so your agency keeps running whether you're selling, delivering, or offline.">
+<meta property="twitter:image" content="https://inboundos.vercel.app/og-image.png">
+<link rel="canonical" href="https://inboundos.vercel.app">
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
 <link rel="preload" href="/NHGDisplay95Black.otf" as="font" type="font/otf" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -188,7 +197,6 @@ h2{font-size:clamp(30px,4.4vw,52px);margin-bottom:14px;}
 .console-name{font-size:13px;font-weight:600;}
 .console-status{display:flex;align-items:center;gap:5px;font-size:11px;color:#34C759;}
 .console-status::before{content:'';width:5px;height:5px;border-radius:50%;background:#34C759;animation:pulse 2s ease-in-out infinite;}
-.console-step{margin-left:auto;font-size:11px;color:var(--label-3);font-variant-numeric:tabular-nums;}
 .console-body{padding:20px 18px 22px;display:flex;flex-direction:column;gap:12px;min-height:170px;}
 .msg{
   max-width:88%;padding:11px 15px;font-size:14px;line-height:1.5;
@@ -205,6 +213,57 @@ h2{font-size:clamp(30px,4.4vw,52px);margin-bottom:14px;}
 .typing i:nth-child(2){animation-delay:.18s;}
 .typing i:nth-child(3){animation-delay:.36s;}
 @keyframes blink{0%,80%,100%{opacity:.25;}40%{opacity:1;}}
+
+/* ── Stagger animation for list rows ── */
+.list-row{opacity:0;transform:translateX(-20px);}
+.list-group.visible .list-row{animation:row-in .5s var(--ease) forwards;}
+.list-group.visible .list-row:nth-child(1){animation-delay:0ms;}
+.list-group.visible .list-row:nth-child(2){animation-delay:80ms;}
+.list-group.visible .list-row:nth-child(3){animation-delay:160ms;}
+.list-group.visible .list-row:nth-child(4){animation-delay:240ms;}
+.list-group.visible .list-row:nth-child(5){animation-delay:320ms;}
+.list-group.visible .list-row:nth-child(6){animation-delay:400ms;}
+@keyframes row-in{from{opacity:0;transform:translateX(-20px);}to{opacity:1;transform:translateX(0);}}
+
+/* ── Demo step progression animation ── */
+.demo-step{opacity:0;transform:translateY(10px);}
+.demo-step.s-done{animation:step-pop .4s var(--spring) forwards;}
+.demo-step.s-run{animation:step-pop .4s var(--spring) forwards;position:relative;}
+.demo-step.s-next{animation:step-fade .5s var(--ease) forwards;}
+@keyframes step-pop{to{opacity:1;transform:translateY(0);}}
+@keyframes step-fade{to{opacity:.5;transform:translateY(0);}}
+.demo-step .s.s-run::after{content:'';position:absolute;bottom:4px;left:9px;width:42px;height:2px;background:var(--ice);border-radius:1px;animation:progress-bar 2s ease-in-out infinite;}
+@keyframes progress-bar{0%{width:0;}50%{width:42px;}100%{width:0;}}
+
+/* ── Diff pair directional reveal ── */
+.diff-cell.old{opacity:0;transform:translateX(-40px);}
+.diff-cell.new{opacity:0;transform:translateX(40px);}
+.diff-pair.visible .diff-cell.old{animation:slide-in-left .5s var(--ease) forwards;}
+.diff-pair.visible .diff-cell.new{animation:slide-in-right .5s var(--ease) forwards;}
+@keyframes slide-in-left{to{opacity:1;transform:translateX(0);}}
+@keyframes slide-in-right{to{opacity:1;transform:translateX(0);}}
+
+/* ── CTA button shimmer ── */
+.btn-filled{position:relative;overflow:hidden;}
+.btn-filled::after{
+  content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.25),transparent);
+  animation:shimmer 4s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes shimmer{0%{left:-100%;}50%{left:100%;}100%{left:100%;}}
+
+/* ── FAQ smooth height transition ── */
+.faq-a{max-height:0;overflow:hidden;transition:max-height .25s var(--ease),padding .25s var(--ease);}
+.faq-group details[open] .faq-a{max-height:500px;}
+
+/* ── Nav active link ── */
+.nav-link{position:relative;}
+.nav-link.active::after{
+  content:'';position:absolute;bottom:-8px;left:0;right:0;height:2px;background:var(--ice);
+  animation:underline-in .3s var(--ease) forwards;
+}
+@keyframes underline-in{from{transform:scaleX(0);transform-origin:left;}to{transform:scaleX(1);}}
 
 /* ── iOS inset grouped list ── */
 .list-group{
@@ -320,21 +379,10 @@ h2{font-size:clamp(30px,4.4vw,52px);margin-bottom:14px;}
 .proof-avatar{width:52px;height:52px;border-radius:50%;object-fit:cover;border:0.5px solid var(--glass-border);flex:none;}
 .proof-client-info .name{font-size:15px;font-weight:700;margin-bottom:2px;}
 .proof-client-info .handle{font-size:12px;color:var(--label-3);}
-.proof-stat-row{display:flex;gap:14px;flex-wrap:wrap;margin-top:20px;}
-.proof-stat{padding:16px 20px;border-radius:var(--radius-md);text-align:center;flex:1;min-width:100px;}
+.proof-stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:20px;}
+.proof-stat{padding:16px 20px;border-radius:var(--radius-md);text-align:center;}
 .proof-stat .v{font-family:var(--font-head);font-size:24px;letter-spacing:-0.02em;line-height:1;}
 .proof-stat .l{font-size:11px;color:var(--label-3);margin-top:5px;line-height:1.4;}
-
-.tiktok-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:0;}
-.tiktok-embed-wrap{
-  border-radius:var(--radius-lg);overflow:hidden;
-  border:0.5px solid var(--glass-border);
-  background:var(--glass-bg);
-  backdrop-filter:blur(12px);
-  -webkit-backdrop-filter:blur(12px);
-  display:flex;flex-direction:column;align-items:center;
-}
-.tiktok-embed-wrap blockquote{margin:0 !important;width:100% !important;}
 
 .proof-duo{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px;}
 .proof-photo{border-radius:var(--radius-lg);overflow:hidden;border:0.5px solid var(--glass-border);}
@@ -387,7 +435,8 @@ h2{font-size:clamp(30px,4.4vw,52px);margin-bottom:14px;}
 .faq-group summary:hover{background:rgba(255,255,255,0.03);}
 .faq-group summary::after{content:'+';font-size:19px;font-weight:400;color:var(--label-3);transition:transform .25s var(--spring);flex:none;}
 .faq-group details[open] summary::after{transform:rotate(45deg);}
-.faq-a{padding:0 22px 20px;font-size:14px;color:var(--label-2);line-height:1.7;max-width:680px;}
+.faq-a{max-height:0;overflow:hidden;padding:0 22px;font-size:14px;color:var(--label-2);line-height:1.7;max-width:680px;transition:max-height .3s var(--ease),padding .3s var(--ease);}
+.faq-group details[open] .faq-a{max-height:500px;padding:20px 22px;}
 
 /* ── Final CTA ── */
 .final-cta{text-align:center;padding:110px 40px;}
@@ -459,7 +508,7 @@ footer .foot-links a:hover{color:var(--white);}
 <nav class="glass-nav" id="main-nav" aria-label="Main">
   <a href="/" class="logo">Inbound<span class="os">OS</span></a>
   <div class="nav-links">
-    <a href="/" class="nav-link home active">Home</a>
+    <a href="/" class="nav-link home">Home</a>
     <a href="/client-wins" class="nav-link">Client Wins</a>
     <a href="/about" class="nav-link">About</a>
   </div>
@@ -470,11 +519,11 @@ footer .foot-links a:hover{color:var(--white);}
 <header class="hero" id="hero">
   <div class="hero-text">
     <span class="chip"><span class="chip-dot"></span>90-Day Done-With-You Installation</span>
-    <h1>Your own A+ content team.<br><span class="ice">Trained on your ICP. Running 24/7.</span></h1>
-    <p class="hero-sub">We install a team of AI agents trained on 1,000+ viral hooks, your company database, and your exact ICP. Scripts every morning. Leads qualified. Follow-ups sent. No Upwork hire who ghosts. No VA who needs retraining every month. A system that knows your business better than any freelancer ever will.</p>
+    <h1>5 scripts a day in your voice.<br><span class="ice">Trained on your ICP. You own it.</span></h1>
+    <p class="hero-sub">Custom AI agents installed inside your business. Trained on your calls, your hooks, your audience. Scripts every morning. Qualified leads. Automated follow-ups. One install. Then it's yours forever.</p>
     <div class="hero-ctas">
-      <a href="/apply" class="btn-filled">See If You're a Fit</a>
-      <a href="/client-wins" class="btn-ghost">See Receipts</a>
+      <a href="/apply" class="btn-filled">Apply Now</a>
+      <a href="/client-wins" class="btn-ghost">See Proof</a>
     </div>
     <p class="hero-note">Application required. Limited spots. No Calendly. We review every application personally.</p>
   </div>
@@ -485,12 +534,11 @@ footer .foot-links a:hover{color:var(--white);}
         <div class="console-name">InboundOS Agent</div>
         <div class="console-status">Online</div>
       </div>
-      <div class="console-step">01 / 03</div>
     </div>
     <div class="console-body">
       <div class="msg msg-agent">What's your current bottleneck in content creation?</div>
       <div class="msg msg-user">Scripting takes forever. I post maybe twice a week.</div>
-      <div class="msg msg-agent second"><span class="typing"><i></i><i></i><i></i></span></div>
+      <div class="msg msg-agent second">We'll have you writing 5 scripts a day, every day, in your voice. Trained on your ICP and hooks.</div>
     </div>
   </div>
 </header>
@@ -502,12 +550,12 @@ footer .foot-links a:hover{color:var(--white);}
   <p class="section-sub">VAs, SMMs, Upwork freelancers — they don't know your hooks, your ICP, or your offer. They produce content that could belong to anyone.</p>
 
   <div class="list-group reveal">
-    <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg></span>Your VA wrote captions that sounded nothing like you. Engagement dropped. You went back to doing it yourself.</div>
-    <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>Your Upwork SMM posted consistently. But the content didn't convert. It had no hooks, no ICP targeting, no offer-led angles.</div>
-    <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><polyline points="21 3 21 9 15 9"/></svg></span>Every new hire needed weeks of onboarding. You trained them on your voice. They left anyway.</div>
-    <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><polyline points="3 7 12 13 21 7"/></svg></span>ChatGPT scripts sounded robotic. Templates sounded borrowed. Nothing sounded like you because nothing was trained on you.</div>
-    <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><path d="M12 17h.01"/></svg></span>You know what good content looks like. You just can't produce it at volume while running client delivery at the same time.</div>
-    <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="8" x2="20" y2="8"/><circle cx="9" cy="8" r="2.5"/><line x1="4" y1="16" x2="20" y2="16"/><circle cx="15" cy="16" r="2.5"/></svg></span>The best content people are expensive, unreliable, and don't stay. You need a team that runs on your data, not their availability.</div>
+    <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg></span>Your VA wrote captions that felt generic. Zero voice, zero ICP targeting. Engagement tanked. You fired them and wrote it yourself.</div>
+    <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>Your Upwork SMM posted on schedule. But nothing converted. No real hooks. No targeting. Just template noise that could be anyone's.</div>
+    <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><polyline points="21 3 21 9 15 9"/></svg></span>Every hire you trained quit or ghosted. You burned weeks teaching them your voice. The cycle repeats.</div>
+    <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><polyline points="3 7 12 13 21 7"/></svg></span>ChatGPT scripts feel generic. Templates feel borrowed. Nothing sounds like you. So you write everything yourself anyway.</div>
+    <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><path d="M12 17h.01"/></svg></span>You know what converts. You just can't write 5 scripts a day AND deliver client work AND close sales.</div>
+    <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="8" x2="20" y2="8"/><circle cx="9" cy="8" r="2.5"/><line x1="4" y1="16" x2="20" y2="16"/><circle cx="15" cy="16" r="2.5"/></svg></span>Hiring good people is expensive. They quit. You need a system that doesn't need feeding, doesn't get sick, and actually remembers what works.</div>
   </div>
 
   <div class="gap-callout glass reveal">
@@ -533,28 +581,28 @@ footer .foot-links a:hover{color:var(--white);}
 <!-- ── DIFFERENCE ── -->
 <section class="section" id="comparison" aria-labelledby="comparison-heading">
   <div class="section-label">The Difference</div>
-  <h2 id="comparison-heading">Upwork hire vs.<br>InboundOS agent team.</h2>
+  <h2 id="comparison-heading">Hiring humans vs.<br>installing a system.</h2>
   <p class="section-sub">Same founder, same offer, same audience. The difference is what's producing the content.</p>
 
   <div class="diff-head">
-    <div class="without">Upwork / VA / Freelance SMM</div>
-    <div class="with">InboundOS Agent Team</div>
+    <div class="without">Hiring People</div>
+    <div class="with">Installing Systems</div>
   </div>
   <div class="diff-pair reveal">
-    <div class="diff-cell old">Learns your voice after weeks of back-and-forth. Maybe.</div>
-    <div class="diff-cell new glass">Trained on your company database, your calls, your frameworks from day one.</div>
+    <div class="diff-cell old">Learns your voice in weeks. If they stay long enough.</div>
+    <div class="diff-cell new glass">Trained on your voice, ICP, and hooks on day one. Never forgets.</div>
   </div>
   <div class="diff-pair reveal">
-    <div class="diff-cell old">Generic scripts with no hook strategy. Posts consistently, converts nobody.</div>
-    <div class="diff-cell new glass">1,000+ viral hooks built in. Every script is ICP-targeted and offer-led.</div>
+    <div class="diff-cell old">Posts on schedule. Content converts nothing. Generic is generic.</div>
+    <div class="diff-cell new glass">Every script is ICP-targeted, hook-tested, and offer-led. Built on 1,000+ viral patterns.</div>
   </div>
   <div class="diff-pair reveal">
-    <div class="diff-cell old">Ghosts, burns out, leaves, needs replacing every few months.</div>
-    <div class="diff-cell new glass">Runs 24/7. Gets sharper over time. Owns the muscle memory you lose every time someone quits.</div>
+    <div class="diff-cell old">Ghosts. Gets hired elsewhere. Takes 6 months to replace. Starts over.</div>
+    <div class="diff-cell new glass">Runs 24/7. Never quits. Gets smarter the longer it runs. You keep all the knowledge.</div>
   </div>
   <div class="diff-pair reveal">
-    <div class="diff-cell old">You manage them. Answer questions, review everything, re-explain context.</div>
-    <div class="diff-cell new glass">You film and close. Agents handle research, scripting, qualification, and follow-up.</div>
+    <div class="diff-cell old">You manage them. Review work. Answer questions. Babysit their productivity.</div>
+    <div class="diff-cell new glass">You film. You close. Agents handle research, scripting, qualification, follow-ups. Fully automatic.</div>
   </div>
   <div class="diff-pair reveal">
     <div class="diff-cell old">Costs $2K–$5K/month. Outputs disappear when they leave.</div>
@@ -565,7 +613,7 @@ footer .foot-links a:hover{color:var(--white);}
 <!-- ── ECONOMICS ── -->
 <section class="section" id="shift" aria-labelledby="shift-heading">
   <div class="section-label">The Economics</div>
-  <h2 id="shift-heading">An A+ content team costs $43K/month to hire. We build the AI version for a fraction.</h2>
+  <h2 id="shift-heading">A real content team costs $43K/month. You build one once, own it forever.</h2>
   <p class="section-sub">Researcher, scriptwriter, video editor, SMM, DM setter, ops. That's the team behind every high-output creator. We build AI agents that fill each role — trained on your ICP, your hooks, your data.</p>
 
   <div class="role-grid">
@@ -615,8 +663,8 @@ footer .foot-links a:hover{color:var(--white);}
   </div>
 
   <div class="econ-close reveal">
-    <h3>We build your A+ agent team inside your business.</h3>
-    <p>Custom AI agents trained on 1,000+ viral hooks, your company database, your ICP, your voice. Scripts every morning. Leads qualified. Follow-ups sent. All of it automated and handed over to you. Outputs arrive ready to use. You don't touch n8n, Claude, or code.</p>
+    <h3>We install the team. You own it forever.</h3>
+    <p>Custom AI agents built on your voice, your hooks, your ICP, your audience. Outputs arrive ready to use — scripts, qualified leads, follow-up sequences. No code to learn. No tool access needed. One build. Then it's yours.</p>
   </div>
 
   <p class="bls-note">Benchmarks use rounded U.S. monthly salary equivalents from BLS OEWS occupational wage categories, mapped to comparable content team roles.</p>
@@ -761,6 +809,37 @@ footer .foot-links a:hover{color:var(--white);}
 </section>
 
 <!-- ── RESULTS ── -->
+<section class="section" id="results" aria-labelledby="results-heading">
+  <div class="section-label">Results</div>
+  <h2 id="results-heading">What happens when the system runs.</h2>
+
+  <div class="proof-stat-row">
+    <div class="proof-stat glass reveal">
+      <div class="v">5</div>
+      <div class="l">scripts written in your voice every morning. Offer-led, ICP-targeted, ready to film.</div>
+    </div>
+    <div class="proof-stat glass reveal">
+      <div class="v">80+</div>
+      <div class="l">leads per month on average. Qualified through Hermes agent before they hit your DMs.</div>
+    </div>
+    <div class="proof-stat glass reveal">
+      <div class="v">0</div>
+      <div class="l">Upwork hires. No training cycles. No ghosting. One system that never leaves.</div>
+    </div>
+  </div>
+
+  <div class="proof-duo">
+    <div class="proof-quote glass reveal">
+      <blockquote>"We went from posting twice a month to five times a week. Our DMs look different now. People are actually asking about the offer, not just liking the content."</blockquote>
+      <div class="attrib">Agency Owner · Philippines</div>
+    </div>
+    <div class="proof-quote glass reveal" style="background:rgba(79,195,247,0.07);border:0.5px solid rgba(79,195,247,0.22);">
+      <blockquote>"The scripts feel like they came from me. That's the crazy part. It's not some generic AI thing. I recognized my own thinking in the outputs."</blockquote>
+      <div class="attrib">Consultant · Southeast Asia</div>
+    </div>
+  </div>
+</section>
+
 <!-- ── PROCESS ── -->
 <section class="section" id="process" aria-labelledby="process-heading">
   <div class="section-label">How We Work</div>
@@ -834,23 +913,23 @@ footer .foot-links a:hover{color:var(--white);}
     <h3 id="offer-heading">The InboundOS Installation</h3>
     <p class="offer-sub">90-day done-with-you build. Your AI operating system, installed inside your business.</p>
     <ul class="offer-list">
-      <li>4 weekly 1:1 strategy calls per month</li>
-      <li>Company database mapped from your clients, calls, and frameworks</li>
-      <li>Custom AI agents built and trained on your data: scripts, hooks, captions in your voice</li>
-      <li>Automated workflows wired to your content and delivery rhythm</li>
-      <li>Script and hook reviews, up to 10 pieces per month</li>
+      <li>5 scripts per day in your voice — ready to film every morning</li>
+      <li>Your ICP and offer baked into every script</li>
+      <li>Leads auto-qualified via DM. Prospects land on your calendar filtered.</li>
+      <li>Weekly 1:1 strategy calls to dial in quality and performance</li>
       <li>Unlimited async support, 24/7</li>
-      <li>DM qualification and follow-up flow built and tested</li>
-      <li>Every agent and workflow lives in your business. You own all of it</li>
-      <li>You don't touch n8n, Claude, or code. Outputs arrive in your inbox, ready to use</li>
+      <li>Custom AI agents built specifically for your business</li>
+      <li>Everything documented so you can run it solo after 90 days</li>
+      <li>You own all agents, workflows, and prompt libraries</li>
+      <li>No code access needed. Outputs arrive ready to use.</li>
     </ul>
-    <a href="/apply" class="btn-filled">See If You're a Fit</a>
+    <a href="/apply" class="btn-filled">Apply Now</a>
     <p class="offer-foot">Built for solo DFY agency owners doing $5K–$12K/mo who've tried VAs and freelancers and want a content team that actually knows their ICP, their hooks, and their offer.</p>
   </div>
 
   <div class="econ-close reveal" style="margin-top:14px;">
-    <h3>If you don't make more money or save time, we keep working until you do.</h3>
-    <p>That's the guarantee. A commitment to stay in it with you until the system actually works for your business.</p>
+    <h3>If the system doesn't make you more money or save you time, we keep working until it does.</h3>
+    <p>We track what's converting from week one. We adjust before problems compound. Done-with-you means we're in it with you, fully responsible for results.</p>
   </div>
 
   <div class="retainer glass reveal">
@@ -903,15 +982,19 @@ footer .foot-links a:hover{color:var(--white);}
       <summary>What if it's not working?</summary>
       <p class="faq-a">If you don't make more money or save time, we keep working with you until you do. We track what's converting from week one and adjust before problems compound. Done-with-you means you're never figuring it out alone.</p>
     </details>
+    <details>
+      <summary>How much does this cost?</summary>
+      <p class="faq-a">The 90-day build is a one-time investment. Exact cost depends on your scope — size of your database, number of agents, integration complexity. We price it on discovery. But here's what matters: one build, you own it forever. No monthly fees. No dependency. Agencies charge $3K–$10K/month and keep the system when you leave. We do the opposite.</p>
+    </details>
   </div>
 </section>
 
 <!-- ── FINAL CTA ── -->
 <section class="final-cta" id="final-cta" aria-labelledby="final-cta-heading">
   <span class="chip"><span class="chip-dot"></span>Ready?</span>
-  <h2 id="final-cta-heading" style="margin-top:22px;">90 days from now, you'll have an A+ agent team running your content. Or you'll still be retraining another Upwork hire.</h2>
-  <p>Apply below. We review every application personally and tell you straight if it's a fit. No Calendly, no sales call before we know it's right.</p>
-  <a href="/apply" class="btn-filled">See If You're a Fit</a>
+  <h2 id="final-cta-heading" style="margin-top:22px;">In 90 days you'll have a system that runs your content. Or you'll still be doing it yourself.</h2>
+  <p>Apply below. We review personally and tell you if it's a fit before we waste your time. No Calendly. No pitch call until we know it's real.</p>
+  <a href="/apply" class="btn-filled">Apply Now</a>
   <p class="final-note">Limited spots. Application required. We work with you until it works.</p>
 </section>
 
@@ -943,6 +1026,70 @@ footer .foot-links a:hover{color:var(--white);}
   }, { threshold: 0.1, rootMargin: '0px 0px -48px 0px' });
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 </script>
-<script async src="https://www.tiktok.com/embed.js"></script>
+<script>
+  // Set active nav link based on current pathname
+  const currentPath = window.location.pathname;
+  document.querySelectorAll('.nav-link').forEach(link => {
+    const href = link.getAttribute('href');
+    if ((href === '/' && currentPath === '/') || (href !== '/' && currentPath.startsWith(href))) {
+      link.classList.add('active');
+    }
+  });
+</script>
+<script>
+  // ── Scroll-triggered animations for list rows, demo steps, diff pairs ──
+  const scrollAnimIO = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        scrollAnimIO.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.list-group, .diff-pair').forEach(el => {
+    scrollAnimIO.observe(el);
+  });
+
+  // ── Number counter animation ──
+  function countUp(element, target, duration = 1200) {
+    if (element.dataset.counted) return;
+    element.dataset.counted = true;
+    
+    const start = 0;
+    const startTime = performance.now();
+    const ease = (t) => t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+    
+    const animate = (currentTime) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = ease(progress);
+      const current = Math.floor(start + (target - start) * eased);
+      element.textContent = current.toLocaleString();
+      if (progress < 1) requestAnimationFrame(animate);
+    };
+    requestAnimationFrame(animate);
+  }
+
+  const counterIO = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const el = e.target;
+        let numStr = el.textContent.trim().replace(/[^0-9.]/g, '');
+        let target = parseFloat(numStr) || 0;
+        if (target > 0) {
+          if (numStr.includes('+')) countUp(el, target, 1200);
+          else countUp(el, target, 1200);
+        }
+        counterIO.unobserve(el);
+      }
+    });
+  }, { threshold: 0.5 });
+
+  document.querySelectorAll('.mini-stat .v, .total-big, .proof-stat .v, .funnel .fv').forEach(el => {
+    counterIO.observe(el);
+  });
+</script>
+
 </body>
 </html>

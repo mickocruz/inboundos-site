@@ -207,5 +207,347 @@ plStartAnchors();
 load();
 window.addEventListener('resize', drawChart);
 </script>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     INBOUNDOS GLOBAL UI — Command Palette · Search · Shortcuts · Dim · Collapse
+     Self-contained. No conflicts with existing code.
+═══════════════════════════════════════════════════════════════ -->
+<style id="iob-ui-styles">
+/* ── BASE MODAL ── */
+.iob-overlay{position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,0.72);backdrop-filter:blur(12px);display:flex;align-items:flex-start;justify-content:center;padding-top:80px;opacity:0;pointer-events:none;transition:opacity 0.18s ease;}
+.iob-overlay.open{opacity:1;pointer-events:all;}
+.iob-modal{width:500px;max-width:calc(100vw - 32px);background:#0d1520;border:1px solid rgba(79,195,247,0.2);border-radius:14px;box-shadow:0 32px 80px rgba(0,0,0,0.8),0 0 0 1px rgba(79,195,247,0.06);overflow:hidden;transform:scale(0.94) translateY(-8px);transition:transform 0.22s cubic-bezier(0.34,1.56,0.64,1),opacity 0.18s;}
+.iob-overlay.open .iob-modal{transform:scale(1) translateY(0);}
+.iob-input-wrap{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.07);}
+.iob-input-icon{color:rgba(79,195,247,0.6);flex-shrink:0;font-size:14px;}
+.iob-input{flex:1;background:transparent;border:none;outline:none;font-family:'DM Sans',sans-serif;font-size:14px;color:#fff;}
+.iob-input::placeholder{color:rgba(255,255,255,0.22);}
+.iob-label-bar{font-family:'DM Sans',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.25);padding:10px 16px 4px;}
+.iob-results{max-height:320px;overflow-y:auto;padding:4px 6px 8px;}
+.iob-results::-webkit-scrollbar{width:3px;}
+.iob-results::-webkit-scrollbar-thumb{background:rgba(79,195,247,0.15);border-radius:3px;}
+.iob-result-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;cursor:pointer;transition:background 0.12s;}
+.iob-result-item:hover,.iob-result-item.active{background:rgba(79,195,247,0.09);}
+.iob-result-icon{font-size:14px;width:22px;text-align:center;flex-shrink:0;opacity:0.7;}
+.iob-result-name{font-family:'DM Sans',sans-serif;font-size:13px;color:#fff;}
+.iob-result-type{font-family:'DM Sans',sans-serif;font-size:10px;color:rgba(255,255,255,0.3);margin-left:auto;}
+.iob-empty{font-family:'DM Sans',sans-serif;font-size:12px;color:rgba(255,255,255,0.25);text-align:center;padding:24px;}
+/* ── SHORTCUTS MODAL ── */
+.iob-shortcuts-box{background:#0d1520;border:1px solid rgba(79,195,247,0.18);border-radius:14px;padding:24px;width:360px;max-width:calc(100vw - 32px);box-shadow:0 32px 80px rgba(0,0,0,0.8);}
+.iob-shortcuts-title{font-family:'NHGrotesk','Arial Black',sans-serif;font-size:16px;font-weight:900;letter-spacing:-0.3px;color:#fff;margin-bottom:18px;}
+.iob-shortcut-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);}
+.iob-shortcut-row:last-child{border-bottom:none;}
+.iob-shortcut-desc{font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.65);}
+.iob-kbd{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:700;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:5px;padding:3px 8px;color:rgba(255,255,255,0.5);}
+/* ── DIM BUTTON ── */
+/* ── COLLAPSE CHEVRON ── */
+.iob-collapse-btn{background:transparent;border:none;cursor:pointer;color:rgba(255,255,255,0.3);font-size:11px;padding:0 4px;line-height:1;transition:transform 0.18s,color 0.15s;flex-shrink:0;}
+.iob-collapse-btn:hover{color:rgba(79,195,247,0.8);}
+.iob-collapse-btn.collapsed{transform:rotate(-90deg);}
+.iob-section-body.collapsed{display:none!important;}
+/* ── DIM MODE ── */
+</style>
+
+<script>
+(function(){
+'use strict';
+
+/* ── SLUG HELPER (matches existing nav pattern) ── */
+function getSlug(){
+  var v=document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');
+  var s=v?v[2]:'';
+  if(!s){
+    var pages=['dashboard','agents','pipeline','performance','research','clients','sales-calls','crm','tasks','roi','chat','metrics','login','activity'];
+    var p=window.location.pathname.split('/').filter(Boolean);
+    var seg=p[0]||'';
+    s=pages.indexOf(seg)===-1?seg:'';
+  }
+  return s;
+}
+function navTo(page){
+  var slug=getSlug();
+  if(!slug){window.location.href='/login';return;}
+  window.location.href='/'+slug+'/'+page;
+}
+
+/* ── PAGE REGISTRY ── */
+var PAGES=[
+  {name:'Agents',page:'agents',icon:'\u{1F916}'},
+  {name:'Content Pipeline',page:'pipeline',icon:'\u{1F4CB}'},
+  {name:'Clients',page:'clients',icon:'\u{1F465}'},
+  {name:'Instagram',page:'performance',icon:'\u{1F4CA}'},
+  {name:'Research',page:'research',icon:'\u{1F50D}'},
+  {name:'Sales Calls',page:'sales-calls',icon:'\u{1F4DE}'},
+  {name:'Tasks',page:'tasks',icon:'✅'},
+  {name:'Live Activity',page:'activity',icon:'⚡'},
+  {name:'Chat',page:'chat',icon:'\u{1F4AC}'},
+  {name:'CRM',page:'crm',icon:'\u{1F5C2}️'},
+  {name:'Metrics',page:'metrics',icon:'\u{1F4C8}'}
+];
+
+/* ═══════════════ DOM INJECTION ═══════════════ */
+function inject(){
+  /* ── COMMAND PALETTE ── */
+  var cpEl=document.createElement('div');
+  cpEl.id='iob-cp-overlay';
+  cpEl.className='iob-overlay';
+  cpEl.innerHTML='<div class="iob-modal"><div class="iob-input-wrap"><span class="iob-input-icon">⌘</span><input class="iob-input" id="iob-cp-input" placeholder="Go to page…" autocomplete="off" spellcheck="false"></div><div class="iob-results" id="iob-cp-results"></div></div>';
+  document.body.appendChild(cpEl);
+  cpEl.addEventListener('click',function(e){if(e.target===cpEl)closeCP();});
+
+  /* ── SEARCH MODAL ── */
+  var srEl=document.createElement('div');
+  srEl.id='iob-sr-overlay';
+  srEl.className='iob-overlay';
+  srEl.innerHTML='<div class="iob-modal"><div class="iob-input-wrap"><span class="iob-input-icon">\u{1F50D}</span><input class="iob-input" id="iob-sr-input" placeholder="Search pipeline, clients…" autocomplete="off" spellcheck="false"></div><div class="iob-results" id="iob-sr-results"></div></div>';
+  document.body.appendChild(srEl);
+  srEl.addEventListener('click',function(e){if(e.target===srEl)closeSR();});
+
+  /* ── SHORTCUTS MODAL ── */
+  var scEl=document.createElement('div');
+  scEl.id='iob-sc-overlay';
+  scEl.className='iob-overlay';
+  scEl.innerHTML='<div class="iob-shortcuts-box"><div class="iob-shortcuts-title">Keyboard Shortcuts</div>'+
+    '<div class="iob-shortcut-row"><span class="iob-shortcut-desc">Command palette</span><span class="iob-kbd">⌘ K</span></div>'+
+    '<div class="iob-shortcut-row"><span class="iob-shortcut-desc">Global search</span><span class="iob-kbd">⌘ /</span></div>'+
+    '<div class="iob-shortcut-row"><span class="iob-shortcut-desc">Shortcuts panel</span><span class="iob-kbd">?</span></div>'+
+    '<div style="margin-top:16px;"><button onclick="document.getElementById(\'iob-sc-overlay\').classList.remove(\'open\')" style="background:transparent;border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:6px 14px;font-family:\'DM Sans\',sans-serif;font-size:11px;color:rgba(255,255,255,0.4);cursor:pointer;">Close</button></div></div>';
+  document.body.appendChild(scEl);
+  scEl.addEventListener('click',function(e){if(e.target===scEl)scEl.classList.remove('open');});
+
+  /* inject dim button into header-right or page-header */
+  var hr=document.querySelector('.header-right');
+  if(!hr) hr=document.querySelector('.page-header .header-right');
+  if(hr){
+  } else {
+    /* fallback: fixed position top-right */
+  }
+
+}
+
+/* ═══════════════ COMMAND PALETTE ═══════════════ */
+var cpActiveIdx=-1;
+
+function openCP(){
+  document.getElementById('iob-cp-overlay').classList.add('open');
+  var inp=document.getElementById('iob-cp-input');
+  inp.value='';
+  renderCPResults('');
+  setTimeout(function(){inp.focus();},60);
+}
+function closeCP(){
+  document.getElementById('iob-cp-overlay').classList.remove('open');
+  cpActiveIdx=-1;
+}
+function renderCPResults(q){
+  var res=document.getElementById('iob-cp-results');
+  var list=PAGES.filter(function(p){return !q||p.name.toLowerCase().indexOf(q.toLowerCase())!==-1;});
+  if(!list.length){res.innerHTML='<div class="iob-empty">No pages found</div>';return;}
+  res.innerHTML=list.map(function(p){
+    return '<div class="iob-result-item" data-page="'+p.page+'" onclick="(function(){window.__iobNavTo(\''+p.page+'\')})()">'+
+      '<span class="iob-result-icon">'+p.icon+'</span>'+
+      '<span class="iob-result-name">'+p.name+'</span>'+
+    '</div>';
+  }).join('');
+  cpActiveIdx=-1;
+}
+window.__iobNavTo=navTo;
+
+document.addEventListener('input',function(e){
+  if(e.target.id==='iob-cp-input') renderCPResults(e.target.value);
+});
+
+/* ═══════════════ GLOBAL SEARCH ═══════════════ */
+function openSR(){
+  document.getElementById('iob-sr-overlay').classList.add('open');
+  var inp=document.getElementById('iob-sr-input');
+  inp.value='';
+  document.getElementById('iob-sr-results').innerHTML='<div class="iob-empty">Type to search…</div>';
+  setTimeout(function(){inp.focus();},60);
+}
+function closeSR(){
+  document.getElementById('iob-sr-overlay').classList.remove('open');
+}
+
+var srTimer=null;
+document.addEventListener('input',function(e){
+  if(e.target.id!=='iob-sr-input') return;
+  clearTimeout(srTimer);
+  var q=e.target.value.trim();
+  if(!q){document.getElementById('iob-sr-results').innerHTML='<div class="iob-empty">Type to search…</div>';return;}
+  srTimer=setTimeout(function(){runSearch(q);},280);
+});
+
+function runSearch(q){
+  var res=[];
+
+  /* pipeline cards from localStorage */
+  try{
+    var board=JSON.parse(localStorage.getItem('ctrl_pipeline_board')||'{}');
+    var cols=['scripting','filming','editing','scheduled','published'];
+    cols.forEach(function(col){
+      var cards=board[col];
+      if(!Array.isArray(cards)) return;
+      cards.forEach(function(card){
+        var title=card.title||card.name||'';
+        if(title.toLowerCase().indexOf(q.toLowerCase())!==-1){
+          res.push({type:'Pipeline',name:title,icon:'\u{1F4CB}',page:'pipeline'});
+        }
+      });
+    });
+  }catch(e){}
+
+  /* supabase clients */
+  var sbUrl='https://cscfbuhwlfhblxprkwnh.supabase.co';
+  var apikey='sb_publishable_1ZqIVolUXpUocXTtHP3yBA_UFNidOD8';
+  fetch(sbUrl+'/rest/v1/clients?select=name,id&name=ilike.*'+encodeURIComponent(q)+'*',{
+    headers:{'apikey':apikey,'Authorization':'Bearer '+apikey}
+  }).then(function(r){return r.ok?r.json():[];}).then(function(clients){
+    var clientRes=clients.map(function(c){return{type:'Client',name:c.name,icon:'\u{1F465}',page:'clients'};});
+    renderSRResults(res.concat(clientRes),q);
+  }).catch(function(){
+    renderSRResults(res,q);
+  });
+}
+
+function renderSRResults(items,q){
+  var el=document.getElementById('iob-sr-results');
+  if(!items.length){el.innerHTML='<div class="iob-empty">No results for "'+escHtml(q)+'"</div>';return;}
+
+  /* group by type */
+  var groups={};
+  items.forEach(function(it){
+    if(!groups[it.type]) groups[it.type]=[];
+    groups[it.type].push(it);
+  });
+
+  var html='';
+  Object.keys(groups).forEach(function(type){
+    html+='<div class="iob-label-bar">'+escHtml(type)+'</div>';
+    groups[type].forEach(function(it){
+      html+='<div class="iob-result-item" onclick="(function(){window.__iobNavTo(\''+it.page+'\')})()">'+
+        '<span class="iob-result-icon">'+it.icon+'</span>'+
+        '<span class="iob-result-name">'+escHtml(it.name)+'</span>'+
+      '</div>';
+    });
+  });
+  el.innerHTML=html;
+}
+
+function escHtml(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+
+/* ═══════════════ KEYBOARD ═══════════════ */
+document.addEventListener('keydown',function(e){
+  var tag=(document.activeElement||{}).tagName||'';
+  var inInput=/^(INPUT|TEXTAREA|SELECT)$/i.test(tag);
+  var isContentEditable=(document.activeElement||{}).isContentEditable;
+
+  /* ESC */
+  if(e.key==='Escape'){
+    if(document.getElementById('iob-cp-overlay').classList.contains('open')){closeCP();e.preventDefault();return;}
+    if(document.getElementById('iob-sr-overlay').classList.contains('open')){closeSR();e.preventDefault();return;}
+    if(document.getElementById('iob-sc-overlay').classList.contains('open')){document.getElementById('iob-sc-overlay').classList.remove('open');e.preventDefault();return;}
+  }
+
+  /* Cmd+K */
+  if((e.metaKey||e.ctrlKey)&&e.key==='k'){
+    e.preventDefault();
+    if(document.getElementById('iob-cp-overlay').classList.contains('open')){closeCP();}else{openCP();}
+    return;
+  }
+
+  /* Cmd+/ */
+  if((e.metaKey||e.ctrlKey)&&e.key==='/'){
+    e.preventDefault();
+    if(document.getElementById('iob-sr-overlay').classList.contains('open')){closeSR();}else{openSR();}
+    return;
+  }
+
+  /* ? */
+  if(e.key==='?'&&!inInput&&!isContentEditable&&!e.metaKey&&!e.ctrlKey){
+    e.preventDefault();
+    var sc=document.getElementById('iob-sc-overlay');
+    if(sc.classList.contains('open')){sc.classList.remove('open');}else{sc.classList.add('open');}
+    return;
+  }
+
+  /* Arrow keys in command palette */
+  if(document.getElementById('iob-cp-overlay').classList.contains('open')){
+    var items=document.querySelectorAll('#iob-cp-results .iob-result-item');
+    if(!items.length) return;
+    if(e.key==='ArrowDown'){
+      e.preventDefault();
+      cpActiveIdx=Math.min(cpActiveIdx+1,items.length-1);
+      items.forEach(function(el,i){el.classList.toggle('active',i===cpActiveIdx);});
+    } else if(e.key==='ArrowUp'){
+      e.preventDefault();
+      cpActiveIdx=Math.max(cpActiveIdx-1,0);
+      items.forEach(function(el,i){el.classList.toggle('active',i===cpActiveIdx);});
+    } else if(e.key==='Enter'){
+      e.preventDefault();
+      var active=document.querySelector('#iob-cp-results .iob-result-item.active')||items[0];
+      if(active) active.click();
+    }
+  }
+});
+
+/* ═══════════════ SECTION COLLAPSE ═══════════════ */
+function initCollapse(){
+  var PAGE=window.location.pathname.split('/').filter(Boolean).pop()||'page';
+  var selectors=['.section-label','.kanban-col-head','.col-header','.ds-header','.tp-head','.dp-head'];
+  var sectionIdx=0;
+
+  selectors.forEach(function(sel){
+    document.querySelectorAll(sel).forEach(function(header){
+      if(header.dataset.iobCollapse) return;
+      header.dataset.iobCollapse='1';
+      var body=header.nextElementSibling;
+      if(!body) return;
+      if(!body.children.length&&!body.textContent.trim()) return;
+
+      var idx=sectionIdx++;
+      var key='ui_collapse_'+PAGE+'_'+idx;
+      var isCollapsed=localStorage.getItem(key)==='1';
+
+      var chevron=document.createElement('button');
+      chevron.className='iob-collapse-btn'+(isCollapsed?' collapsed':'');
+      chevron.innerHTML='▼';
+      chevron.title='Collapse/expand';
+      chevron.onclick=function(e){
+        e.stopPropagation();
+        isCollapsed=!isCollapsed;
+        chevron.classList.toggle('collapsed',isCollapsed);
+        body.classList.toggle('collapsed',isCollapsed);
+        localStorage.setItem(key,isCollapsed?'1':'0');
+      };
+
+      if(getComputedStyle(header).display==='block'||!header.style.display){
+        header.style.display='flex';
+      }
+      header.style.alignItems='center';
+      header.appendChild(chevron);
+
+      if(isCollapsed) body.classList.add('collapsed');
+    });
+  });
+}
+
+/* ═══════════════ INIT ═══════════════ */
+function init(){
+  inject();
+  setTimeout(initCollapse,400);
+}
+
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded',init);
+} else {
+  init();
+}
+
+})();
+</script>
+
+
 </body>
 </html>

@@ -433,7 +433,7 @@ var _sbSess = null;
 try { _sbSess = JSON.parse(localStorage.getItem('sb_session') || 'null'); } catch(e) {}
 _sbSess = _sbSess || {};
 
-const SERVER_BASE = `http://${window.location.hostname}:3001`;
+const SERVER_BASE = localStorage.getItem('ctrl_proxy_url') || `http://${window.location.hostname}:3001`;
 const SUPA_URL  = _sbSess.client_supabase_url || 'https://cscfbuhwlfhblxprkwnh.supabase.co';
 const SUPA_ANON = _sbSess.client_supabase_anon || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzY2ZidWh3bGZoYmx4cHJrd25oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NjMyMjUsImV4cCI6MjA5NTAzOTIyNX0.TNIW7H0iR7WxtPJSJi9LPBmqIiQu8w1xJ2MY4eDYVsA';
 const SUPA_TOK  = _sbSess.access_token || SUPA_ANON;

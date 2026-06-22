@@ -1,2 +1,2 @@
-// Auto-detect server base URL — works on localhost and LAN (phone on same WiFi)
-const SERVER_BASE = `http://${window.location.hostname}:3001`;
+// Use saved proxy URL from settings, fall back to localhost:3001 for local dev
+const SERVER_BASE = localStorage.getItem('ctrl_proxy_url') || `http://${window.location.hostname}:3001`;

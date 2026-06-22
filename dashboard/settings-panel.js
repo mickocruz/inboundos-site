@@ -8,8 +8,8 @@ function showErrToast(msg) {
 }
 
 // settings-panel.js
-// Auto-detect server base — works on localhost and LAN (phone on same WiFi)
-window.SERVER_BASE = `http://${window.location.hostname}:3001`;
+// Use saved proxy URL from settings, fall back to localhost:3001 for local dev
+window.SERVER_BASE = localStorage.getItem('ctrl_proxy_url') || `http://${window.location.hostname}:3001`;
 
 (function () {
   const _sp = JSON.parse(localStorage.getItem('sb_session') || '{}');

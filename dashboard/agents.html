@@ -1987,7 +1987,7 @@ async function runClio() {
 async function drawAgentHeatmap() {
   try {
     const _sbSess = JSON.parse(localStorage.getItem('sb_session') || '{}');
-    const SERVER_BASE = `http://${window.location.hostname}:3001`;
+    const SERVER_BASE = localStorage.getItem('ctrl_proxy_url') || `http://${window.location.hostname}:3001`;
     const res = await fetch(`${SERVER_BASE}/api/sb/agent_runs?select=agent,created_at&order=created_at.desc`);
     if (!res.ok) return;
     const runs = await res.json();

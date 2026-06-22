@@ -378,7 +378,7 @@ tr:hover td{background:rgba(255,255,255,0.015);}
 </div>
 
 <script>
-const SERVER_BASE = `http://${location.hostname}:3001`;
+const SERVER_BASE = localStorage.getItem('ctrl_proxy_url') || `http://${location.hostname}:3001`;
 
 function goTo(page) {
   var v = document.cookie.match('(^|;) ?ctrl_slug=([^;]*)(;|$)');

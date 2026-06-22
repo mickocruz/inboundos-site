@@ -1050,7 +1050,7 @@
 
     // Trigger Clio webhook — fire and cliot, non-blocking
     if (applicationId) {
-      fetch('http://localhost:5678/webhook/clio-apply', {
+      fetch('/api/webhook/clio-apply', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -1089,7 +1089,7 @@
       ? (payload.other_blocker || payload.blocker)
       : payload.blocker;
 
-    fetch('http://localhost:5678/webhook/inbound-lead', {
+    fetch('/api/webhook/inbound-lead', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

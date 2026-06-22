@@ -132,6 +132,9 @@ tr:hover td{background:rgba(255,255,255,0.015);}
 .rate-lbl{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;}
 .rate-val{font-family:var(--font-head);font-size:28px;font-weight:900;letter-spacing:-1px;line-height:1;color:var(--text);}
 .rate-sub{font-size:10px;color:var(--text-muted);margin-top:5px;}
+/* SPARKLINES */
+.sparkline-wrap{display:inline-block;width:60px;height:20px;margin-top:4px;background:rgba(79,195,247,0.05);border-radius:4px;overflow:hidden;}
+.sparkline-svg{display:block;width:100%;height:100%;}
 </style>
 <link rel="stylesheet" href="/dashboard/mobile.css?v=14">
 <link rel="stylesheet" href="/dashboard/unify.css?v=6">
@@ -188,9 +191,9 @@ tr:hover td{background:rgba(255,255,255,0.015);}
       <section>
         <div class="section-label">Revenue</div>
         <div class="stat-grid" style="margin-bottom:10px;">
-          <div class="stat"><div class="stat-label">Active Clients</div><div class="stat-val ac" id="active-clients">—</div><div class="stat-sub" id="total-clients"></div></div>
-          <div class="stat"><div class="stat-label">MRR</div><div class="stat-val gr" id="mrr">—</div><div class="stat-sub">Monthly Recurring Revenue</div></div>
-          <div class="stat"><div class="stat-label">LTV (est.)</div><div class="stat-val" id="ltv">—</div><div class="stat-sub">12-month estimate</div></div>
+          <div class="stat"><div class="stat-label">Active Clients</div><div class="stat-val ac" id="active-clients">—</div><div class="stat-sub" id="total-clients"></div><div class="sparkline-wrap"><svg class="sparkline-svg" id="spark-clients" viewBox="0 0 60 20"></svg></div></div>
+          <div class="stat"><div class="stat-label">MRR</div><div class="stat-val gr" id="mrr">—</div><div class="stat-sub">Monthly Recurring Revenue</div><div class="sparkline-wrap"><svg class="sparkline-svg" id="spark-mrr" viewBox="0 0 60 20"></svg></div></div>
+          <div class="stat"><div class="stat-label">LTV (est.)</div><div class="stat-val" id="ltv">—</div><div class="stat-sub">12-month estimate</div><div class="sparkline-wrap"><svg class="sparkline-svg" id="spark-ltv" viewBox="0 0 60 20"></svg></div></div>
         </div>
         <div class="table-wrap" id="clients-table-wrap"><div class="loading-txt">Loading clients...</div></div>
       </section>
@@ -657,6 +660,24 @@ function buildRevenueChart(calls) {
       scales: { x: { grid: { display: false }, ticks: { color: 'rgba(255,255,255,0.2)' }, border: { display: false } },
         y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: 'rgba(255,255,255,0.2)', callback: v => '$'+v.toLocaleString() }, border: { display: false } } } }
   });
+}
+
+// Draw sparkline
+function drawSparkline(svgId, data) {
+  const svg = document.getElementById(svgId);
+  if (!svg || !data || data.length < 2) return;
+  const w = 60, h = 20, pad = 2;
+  const max = Math.max(...data, 1);
+  const min = Math.min(...data, 0);
+  const range = max - min || 1;
+  const points = data.map((v, i) => {
+    const x = pad + (i / (data.length - 1)) * (w - pad * 2);
+    const y = h - pad - ((v - min) / range) * (h - pad * 2);
+    return [x, y];
+  });
+  const path = 'M ' + points.map(p => p[0] + ',' + p[1]).join(' L');
+  const color = data[data.length-1] >= data[0] ? '#4ade80' : '#f87171';
+  svg.innerHTML = `<path d="${path}" fill="none" stroke="${color}" stroke-width="1.5" vector-effect="non-scaling-stroke"/>`;
 }
 
 loadAll();

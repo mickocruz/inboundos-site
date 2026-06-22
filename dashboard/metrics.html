@@ -222,7 +222,6 @@ tr:hover td{background:rgba(255,255,255,0.015);}
         <div class="section-label">Agent Output (Last 30 Days)</div>
         <div class="stat-grid-4">
           <div class="stat"><div class="stat-label">Apollo</div><div class="stat-val" id="agent-apollo">—</div><div class="stat-sub">scripts written</div></div>
-          <div class="stat"><div class="stat-label">Quill</div><div class="stat-val" id="agent-quill">—</div><div class="stat-sub">scripts written</div></div>
           <div class="stat"><div class="stat-label">Clio</div><div class="stat-val" id="agent-clio">—</div><div class="stat-sub">reports</div></div>
           <div class="stat"><div class="stat-label">Hermes</div><div class="stat-val" id="agent-hermes">—</div><div class="stat-sub">leads sourced</div></div>
         </div>
@@ -472,8 +471,7 @@ async function loadAll() {
   r30.forEach(i => byAgent[i.agent] = (byAgent[i.agent]||0) + 1);
   // Hermes writes to outreach_leads, not agent_items — count from there
   const hermesLeads30d = leads.filter(l => l.source === 'hermes_routine' && l.created_at >= day30).length;
-  set('agent-apollo', byAgent.apollo||0);
-  set('agent-quill', byAgent.quill||0);
+  set('agent-apollo', (byAgent.apollo||0) + (byAgent.quill||0));
   set('agent-clio', byAgent.clio||0);
   set('agent-hermes', hermesLeads30d);
 

@@ -145,6 +145,7 @@ window.SERVER_BASE = localStorage.getItem('ctrl_proxy_url') || `http://${window.
 
       <button class="sp-save-btn" id="sp-save-btn" onclick="window.__settingsSave()">Save Changes</button>
       <div class="sp-saved-msg" id="sp-saved-msg">Changes saved</div>
+      <a href="/settings" class="sp-full-settings-link">⚙ Full Settings (Dark Mode, Integrations…)</a>
       <button class="sp-logout-btn" onclick="window.__settingsLogout()">Sign Out</button>
     `;
 

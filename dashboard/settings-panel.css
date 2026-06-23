@@ -199,6 +199,31 @@
   cursor: not-allowed;
 }
 
+.sp-full-settings-link {
+  display: block;
+  width: 100%;
+  padding: 10px 16px;
+  margin-top: 8px;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 10px;
+  color: rgba(255,255,255,0.35);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  transition: border-color 0.15s, color 0.15s;
+  box-sizing: border-box;
+}
+.sp-full-settings-link:hover {
+  border-color: rgba(79,195,247,0.3);
+  color: #4FC3F7;
+}
+
 .sp-logout-btn {
   width: 100%;
   padding: 10px 16px;

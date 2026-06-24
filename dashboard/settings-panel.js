@@ -219,7 +219,17 @@ window.SERVER_BASE = localStorage.getItem('ctrl_proxy_url') || `http://${window.
   window.__settingsOpen = openPanel;
   window.__settingsClose = closePanel;
 
-  window.__settingsLogout = function() {
+  window.__settingsLogout = async function() {
+    // Revoke the session server-side so a stolen token can't be reused after logout.
+    try {
+      const sess = JSON.parse(localStorage.getItem('sb_session') || '{}');
+      if (sess.access_token && sess.access_token !== 'local') {
+        await fetch(`${SB_URL}/auth/v1/logout`, {
+          method: 'POST',
+          headers: { apikey: SB_ANON, Authorization: 'Bearer ' + sess.access_token }
+        });
+      }
+    } catch (e) { /* network fail — still clear local session below */ }
     localStorage.removeItem('sb_session');
     window.location.href = '/login';
   };

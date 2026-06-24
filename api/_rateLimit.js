@@ -35,11 +35,13 @@ export async function checkRateLimit(key, limit, windowMs) {
 
     if (!res.ok) {
       // If RPC doesn't exist yet, fall through to allow (fail open on infra error)
+      console.error('[rateLimit] fail-open: RPC returned', res.status, 'for key', key);
       return true;
     }
     const data = await res.json();
     return data === true || data?.allowed === true;
-  } catch {
+  } catch (e) {
+    console.error('[rateLimit] fail-open: network error for key', key, '-', e.message);
     return true; // fail open on network error — don't block legit users
   }
 }

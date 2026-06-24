@@ -538,6 +538,8 @@ async function handleGenerate(req, res) {
   if (!checkAuth(req)) return sendJSON(res, 401, { error: 'Unauthorized' });
   let body = '';
   try { body = (await readBody(req)).toString('utf8'); } catch (e) { return sendJSON(res, 400, { error: 'Bad body' }); }
+  // Cap input size — guards the Anthropic budget against oversized prompts.
+  if (body.length > 50000) return sendJSON(res, 413, { error: 'Payload too large' });
 
   let system = '', prompt = '';
   const ct = (req.headers['content-type'] || '').toLowerCase();
@@ -797,6 +799,7 @@ const server = http.createServer(async (req, res) => {
 
   // Health check endpoint — returns status of Supabase and n8n
   if (req.method === 'GET' && (urlPath === '/health' || urlPath === '/api/health')) {
+    if (!checkAuth(req)) return sendJSON(res, 401, { error: 'Unauthorized' });
     try {
       const checks = { supabase: false, n8n: false };
 

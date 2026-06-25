@@ -9,14 +9,15 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 
-// Load .env from project root
-const ENV_PATH = path.join(__dirname, '..', '.env');
-if (fs.existsSync(ENV_PATH)) {
-  fs.readFileSync(ENV_PATH, 'utf8').split('\n').forEach(line => {
-    const [k, ...v] = line.split('=');
-    if (k && v.length) process.env[k.trim()] = v.join('=').trim();
-  });
-}
+// Load .env from project root and qualify-server dir
+[path.join(__dirname, '..', '.env'), path.join(__dirname, '.env')].forEach(ENV_PATH => {
+  if (fs.existsSync(ENV_PATH)) {
+    fs.readFileSync(ENV_PATH, 'utf8').split('\n').forEach(line => {
+      const [k, ...v] = line.split('=');
+      if (k && v.length) process.env[k.trim()] = v.join('=').trim();
+    });
+  }
+});
 
 const PORT = 3001;
 const SB_URL = process.env.SUPABASE_URL || 'https://cscfbuhwlfhblxprkwnh.supabase.co';
@@ -114,7 +115,7 @@ Output ONLY valid JSON with this exact structure:
   "disqualify_reason": null,
   "content_read": "what you actually observe about their content from the screenshot: post count, how recent the last posts look, view counts or like counts if visible, whether reels vs photos, whether hooks/captions repeat or vary, comment activity. Be concrete. If a signal isn't visible, say 'not visible' for it — do NOT guess.",
   "pain_point": "their SINGLE most likely content pain, chosen from what content_read actually shows — pick ONE and only if the evidence supports it. Options: 'low_views' (posting but views/likes low for follower count), 'inconsistent_posting' (clear gaps, stale last post), 'no_hook_variety' (same hook/format repeated), 'no_clear_icp' (bio/content doesn't name who they help), 'good_content_no_cta' (decent content, no offer/conversion path), 'high_volume_low_engagement' (lots of posts, dead comments/likes), 'strong_proof_quiet_content' (great results in bio but barely posts). If genuinely unclear, use 'unknown'. NEVER default to 'inconsistent_posting' just because it's easy — only if you SEE gaps.",
-  "opener_text": "Stage 1 cold DM opener. TROJAN HORSE METHOD: appear as a genuinely curious peer or observer — NOT a vendor, NOT a helper, NOT an agency. Your only job is to get a reply. One reply = thread in their Primary inbox = mission complete. NEVER pitch, offer, or hint at a service. NEVER ask for anything except a simple answer to a specific question.\n\nRULES:\n- 1-2 sentences MAX. Under 28 words total.\n- All lowercase. Commas and periods only — no em dashes, no exclamation marks.\n- Sound like a real person who noticed something specific, not a template.\n- Reference ONE hyper-specific detail visible in their profile: a reel topic, a caption phrase, their bio claim, a result they posted, a highlight label. If you can't name a specific real detail, you are not being specific enough.\n- Ask ONE question that is so easy to answer it would feel rude to ignore. The question should feel like natural curiosity — not a setup, not a segue into your offer.\n- NEVER: 'i love your content', 'great profile', 'i built you a tool', 'AI', 'scriptwriter', 'agency', 'i help people like you', 'would you be open to', 'just wanted to reach out', offer, link, email ask.\n- Never start a sentence with 'I' as the opening word.\n\nPAIN-TO-ANGLE MAP (question must match the diagnosed pain):\n- low_views -> noticed the output but views look quiet for their size. ask what they think is holding the reach back, or if a specific format they tried did better.\n- inconsistent_posting -> saw a gap in posting. ask what's been pulling them away from it lately — clients? capacity?\n- no_hook_variety -> same hook or format repeating. acknowledge the format seems to work, ask if they've tested a different angle with that topic.\n- no_clear_icp -> bio or content is broad. ask who they're specifically trying to reach — be curious, not corrective.\n- good_content_no_cta -> decent content but no conversion path. ask where they usually send people after a reel lands.\n- high_volume_low_engagement -> lots of posts, low interaction. ask if the engagement is matching the effort they're putting in.\n- strong_proof_quiet_content -> strong results or client proof in bio, but barely posting. ask why they're not putting those wins out more.\n- unknown -> pick one genuinely visible, specific detail and ask a simple honest question about it.\n\nEXAMPLES (notice: specific, short, curious, zero setup):\n- low_views: 'hey sarah, your posting rhythm looks solid but the views seem light for 12k. what do you think is capping the reach?'\n- strong_proof_quiet_content: 'hey marco, 200+ clients in the bio but the grid's been pretty quiet. any reason you're not putting those wins out more?'\n- no_clear_icp: 'hey jen, saw the reels but couldn't tell from the profile who you're actually trying to reach. who's the main client?'\n- inconsistent_posting: 'hey dave, noticed a stretch without posts. clients getting busy or just pulling focus elsewhere?'\n- good_content_no_cta: 'hey lisa, the reels are landing well. where do people usually go after they watch — do you send them anywhere?'\n\nEach opener must read like it was written for this one person. If it could work on 50 other accounts unchanged, rewrite it.",
+  "opener_text": "Stage 1 cold DM opener. TROJAN HORSE METHOD: appear as a genuinely curious peer or observer — NOT a vendor, NOT a helper, NOT an agency. Your only job is to get a reply. One reply = thread in their Primary inbox = mission complete. NEVER pitch, offer, or hint at a service.\n\nSTRUCTURE — every opener follows this exact two-part format:\n1. ONE specific compliment about their actual content (not bio) — always positive, never critical. Compliment: how often they post, how consistent they are, a format they're good at, strong reel views, solid output volume, clean hook style. Frame it as something impressive you noticed. Bio claims are OFF LIMITS — must be rooted in what you can observe from their content.\n2. ONE question — always some variation of: 'you doing all that yourself or do you have something handling most of it?' The question is always about whether they have a system/process already. Never deviate from this angle.\n\nRULES:\n- 2 sentences MAX. Under 30 words total.\n- All lowercase. Commas and periods only — no em dashes, no exclamation marks.\n- Sound like a real person who noticed something, not a template.\n- NEVER: 'i love', 'great profile', 'i built you a tool', 'AI', 'scriptwriter', 'agency', 'i help people like you', 'would you be open to', 'just wanted to reach out', offer, link, pitch of any kind.\n- Never start with 'I' as the opening word.\n\nQUESTION VARIANTS (pick the one that fits most naturally, always same intent — do they have a system):\n- 'you doing all that yourself or do you have something handling most of it?'\n- 'you mapping all that out yourself or got a system running it?'\n- 'you still doing all the content work yourself or is something running 80% of it for you?'\n- 'that all manual or do you have something handling the heavy part?'\n- 'you running that solo or got a process behind it?'\n\nEXAMPLES (compliment first, system question second — never critical):\n- 'hey sarah, talking-head format is really consistent across your reels. you doing all that yourself or got something handling most of it?'\n- 'hey mike, posting rhythm looks solid for your size. that all manual or do you have a process behind it?'\n- 'hey james, 1,500 posts is serious output. you running all that solo or got a system handling most of it?'\n- 'hey lisa, reels going out really consistently. you mapping all that out yourself or got something running it?'\n- 'hey caleb, those reel numbers look strong for your follower count. that all you or do you have something handling 80% of it?'\n\nEach opener must be rooted in one specific observable content behavior. If the observation could describe 50 accounts, it is not specific enough — rewrite it.",
   "notes": "the specific profile detail + the pain_point you diagnosed, in plain words — must be verifiable from the screenshot. never 'great content' or generic compliments."
 }
 
@@ -622,7 +623,7 @@ const server = http.createServer(async (req, res) => {
   if (req.method === 'GET' && urlPath === '/api/leads') {
     if (!checkAuth(req)) return sendJSON(res, 401, { error: 'Unauthorized' });
     try {
-      const sel = 'id,ig_handle,full_name,niche,followers,qualifier,opener_text,notes,approved,dm_sent,stage_label';
+      const sel = 'id,ig_handle,full_name,niche,followers,qualifier,opener_text,notes,approved,dm_sent,dm_sent_at,stage,stage_label,stage_updated_at,next_followup_at,followup_count,their_pain,their_offer';
       const r = await fetch(`${SB_URL}/rest/v1/outreach_leads?select=${sel}&order=qualifier.asc,updated_at.desc&limit=300`, { headers: SB_HEADERS });
       const data = await r.json();
       return sendJSON(res, 200, Array.isArray(data) ? data : []);
@@ -635,7 +636,7 @@ const server = http.createServer(async (req, res) => {
     let body;
     try { body = JSON.parse(await readBody(req)); } catch (e) { return sendJSON(res, 400, { error: 'Invalid JSON' }); }
     // Allowlist columns the page may change. Nothing else gets through.
-    const allowed = ['approved','approved_at','dm_sent','dm_sent_at','opener_text','stage','stage_label','opener_sent_at'];
+    const allowed = ['approved','approved_at','dm_sent','dm_sent_at','opener_text','stage','opener_sent_at','stage_updated_at','next_followup_at','followup_count','last_message_at','notes'];
     const patch = {};
     for (const k of allowed) if (k in body) patch[k] = body[k];
     if (!Object.keys(patch).length) return sendJSON(res, 400, { error: 'No valid fields' });
@@ -1135,6 +1136,67 @@ ${skillContent ? `--- SKILL ---\n${skillContent.slice(0, 8000)}\n--- END SKILL -
   if (req.method === 'POST' && urlPath.startsWith('/instagram/')) {
     if (!checkAuth(req)) return sendJSON(res, 401, { error: 'Unauthorized' });
   }
+
+  // Composio-backed: full IG data with real insights (no IG_ACCESS_TOKEN needed)
+  if (req.method === 'POST' && urlPath === '/instagram/composio-full') {
+    const { execSync } = require('child_process');
+    const composio = `${process.env.HOME}/.composio/composio`;
+    try {
+      // 1. Profile
+      const profileRaw = execSync(`${composio} execute INSTAGRAM_GET_USER_INFO -d '{}'`, { timeout: 15000 }).toString();
+      const profileRes = JSON.parse(profileRaw);
+      if (!profileRes.successful) throw new Error('Profile fetch failed: ' + profileRes.error);
+      const profile = profileRes.data;
+      const igUserId = profile.id;
+
+      // 2. Media
+      const mediaRaw = execSync(`${composio} execute INSTAGRAM_GET_IG_USER_MEDIA -d '{"ig_user_id":"${igUserId}","fields":"id,caption,media_type,media_url,thumbnail_url,permalink,timestamp,like_count,comments_count"}'`, { timeout: 20000 }).toString();
+      let mediaRes = JSON.parse(mediaRaw);
+      // If large response stored in file, read it
+      if (mediaRes.storedInFile && mediaRes.outputFilePath) {
+        mediaRes = JSON.parse(fs.readFileSync(mediaRes.outputFilePath, 'utf8'));
+      }
+      let media = [];
+      if (mediaRes.successful) {
+        const d = mediaRes.data;
+        media = d?.data?.data || d?.data || d || [];
+        if (!Array.isArray(media)) media = [];
+      }
+
+      // 3. Per-reel insights (parallel via child processes — run sequentially to avoid rate limit)
+      const reels = media.filter(m => m.media_type === 'VIDEO');
+      for (const reel of reels) {
+        try {
+          const insRaw = execSync(`${composio} execute INSTAGRAM_GET_IG_MEDIA_INSIGHTS -d '{"ig_media_id":"${reel.id}","metric":["plays","reach","saved","shares","total_interactions","likes","comments"]}'`, { timeout: 12000 }).toString();
+          const insRes = JSON.parse(insRaw);
+          if (insRes.successful) {
+            const insData = insRes.data?.data || [];
+            for (const ins of insData) {
+              let v = null;
+              if (ins.values && ins.values.length) v = ins.values[0].value;
+              else if (ins.total_value) v = ins.total_value.value;
+              reel[ins.name] = v;
+            }
+          }
+        } catch(e) { /* skip failed reel insights */ }
+      }
+
+      // 4. Account-level insights
+      let accountInsights = {};
+      try {
+        const accRaw = execSync(`${composio} execute INSTAGRAM_GET_USER_INSIGHTS -d '{"ig_user_id":"${igUserId}","metric":["reach","accounts_engaged","total_interactions","likes","shares","saves","views"],"period":"week","metric_type":"total_value","graph_api_version":"v21.0"}'`, { timeout: 15000 }).toString();
+        const accRes = JSON.parse(accRaw);
+        if (accRes.successful) {
+          for (const ins of (accRes.data?.data || [])) {
+            accountInsights[ins.name] = ins.total_value?.value ?? null;
+          }
+        }
+      } catch(e) {}
+
+      return sendJSON(res, 200, { profile, media, account_insights: accountInsights });
+    } catch(e) { return sendJSON(res, 500, { error: e.message }); }
+  }
+
   if (req.method === 'POST' && urlPath === '/instagram/profile') {
     if (!IG_TOKEN) return sendJSON(res, 500, { error: 'IG_ACCESS_TOKEN not set in .env' });
     try {
@@ -1168,6 +1230,43 @@ ${skillContent ? `--- SKILL ---\n${skillContent.slice(0, 8000)}\n--- END SKILL -
       const data = await r.json();
       if (data.error) throw new Error(data.error.message);
       return sendJSON(res, 200, data);
+    } catch(e) { return sendJSON(res, 500, { error: e.message }); }
+  }
+
+  // Fetch all media + batch insights for each reel in parallel
+  if (req.method === 'POST' && urlPath === '/instagram/media-with-insights') {
+    if (!IG_TOKEN) return sendJSON(res, 500, { error: 'IG_ACCESS_TOKEN not set in .env' });
+    try {
+      const fields = 'id,caption,media_type,media_url,thumbnail_url,permalink,timestamp,like_count,comments_count';
+      const mRes = await fetch(`https://graph.instagram.com/v21.0/me/media?fields=${fields}&limit=50&access_token=${IG_TOKEN}`);
+      const mData = await mRes.json();
+      if (mData.error) throw new Error(mData.error.message);
+      const media = mData.data || [];
+
+      // Fetch insights for VIDEO items in parallel (non-video items don't support reel metrics)
+      const reels = media.filter(m => m.media_type === 'VIDEO');
+      const insightResults = await Promise.allSettled(
+        reels.map(m =>
+          fetch(`https://graph.instagram.com/v21.0/${m.id}/insights?metric=reach,impressions,plays,saved,shares,total_interactions&access_token=${IG_TOKEN}`)
+            .then(r => r.json())
+            .then(d => ({ id: m.id, insights: d.data || [] }))
+            .catch(() => ({ id: m.id, insights: [] }))
+        )
+      );
+
+      // Merge insights back onto media items
+      const insightMap = {};
+      for (const r of insightResults) {
+        if (r.status === 'fulfilled') {
+          const { id, insights } = r.value;
+          insightMap[id] = {};
+          for (const ins of insights) {
+            insightMap[id][ins.name] = ins.values?.[0]?.value ?? ins.value ?? null;
+          }
+        }
+      }
+      const enriched = media.map(m => ({ ...m, ...(insightMap[m.id] || {}) }));
+      return sendJSON(res, 200, { data: enriched });
     } catch(e) { return sendJSON(res, 500, { error: e.message }); }
   }
 

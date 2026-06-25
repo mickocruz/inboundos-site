@@ -733,8 +733,10 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
         <div style="font-family:'DM Sans',sans-serif;font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:6px;text-align:center;">Chief Intelligence Officer</div>
         <div class="agent-role-lg" style="font-size:11px !important;color:rgba(255,255,255,0.45) !important;min-height:0 !important;margin-bottom:12px !important;">Tracks everything competitors are doing before you even think to look</div>
         <div class="agent-actions-list">
+          <div class="agent-action-item">Weekly IG audit — reels, skip rate, watch time, top performer</div>
+          <div class="agent-action-item">Weekly summary card — what works, what doesn't, 3 actions</div>
           <div class="agent-action-item">Competitor IG analysis · weekly</div>
-          <div class="agent-action-item">Content angle generation</div>
+          <div class="agent-action-item">Content angle generation from top-performer patterns</div>
           <div class="agent-action-item">Weekly intelligence brief</div>
         </div>
         <div style="font-family:'DM Sans',sans-serif;font-size:10px;color:rgba(255,255,255,0.2);text-align:center;margin-bottom:12px;letter-spacing:0.3px;">n8n · Scraper + Analyzer · Scheduled</div>
@@ -866,7 +868,7 @@ html, body { font-family: 'DM Sans', sans-serif !important; }
     <div class="card" style="padding:0;overflow:hidden;max-height:300px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,0.06) transparent;" id="sysTaskLog"></div>
 
     <div class="section-label">Activity Log</div>
-    <div class="card" style="padding:0;overflow:hidden;max-height:260px;overflow-y:auto;" id="logList">
+    <div class="card" style="padding:0;overflow:hidden;" id="logList">
       <div class="log-list"></div>
     </div>
     <div style="height:32px;"></div>
@@ -1808,20 +1810,50 @@ window.addEventListener('load', () => {
       }
     });
   })();
-  const raw = localStorage.getItem('ctrl_activity_log');
-  const list = document.querySelector('#logList .log-list');
-  if (raw && list) {
+  // Load real activity log from done tasks in Supabase
+  (async function loadActivityLog() {
+    const list = document.querySelector('#logList .log-list');
+    if (!list) return;
+    list.innerHTML = '<div style="padding:14px 16px;font-family:var(--font-data);font-size:11px;color:rgba(255,255,255,0.15);">Loading…</div>';
     try {
+      const AGENT_COLOR_MAP = { argus:'#4FC3F7', apollo:'#4ade80', hermes:'#f472b6', clio:'#a78bfa', micko:'#4FC3F7', atlas:'#4FC3F7' };
+      // Fetch completed tasks ordered by most recently updated
+      const r = await fetch(`${SERVER_BASE}/api/sb/pm_tasks?select=id,title,assignee,updated_at,created_at,tags&status=eq.done&order=updated_at.desc.nullslast`);
+      const tasks = r.ok ? await r.json() : [];
+      // Also pull from localStorage for any manually-assigned tasks not yet in DB
+      let localEntries = [];
+      try { localEntries = JSON.parse(localStorage.getItem('ctrl_activity_log') || '[]'); } catch(e) {}
       list.innerHTML = '';
-      JSON.parse(raw).slice(0, 10).forEach(entry => {
+      if (!tasks.length && !localEntries.length) {
+        list.innerHTML = '<div style="padding:24px 16px;text-align:center;font-family:var(--font-data);font-size:11px;color:rgba(255,255,255,0.12);">No completed tasks yet. Routines will log here once they run.</div>';
+        return;
+      }
+      // Render DB tasks
+      tasks.forEach(t => {
+        const agent = (t.assignee || 'system').toLowerCase();
+        const color = AGENT_COLOR_MAP[agent] || '#8b95a5';
+        const agentLabel = (t.assignee || 'System').charAt(0).toUpperCase() + (t.assignee || 'system').slice(1);
+        const ts = new Date(t.updated_at || t.created_at).getTime();
+        const tags = (t.tags || []).slice(0,2).map(x=>`<span style="display:inline-block;margin-left:5px;font-size:9.5px;background:rgba(79,195,247,0.08);color:#4FC3F7;border-radius:4px;padding:1px 5px;">${escapeText(x)}</span>`).join('');
+        const item = document.createElement('div');
+        item.className = 'log-item';
+        item.dataset.ts = ts;
+        item.innerHTML = `<div class="log-icon" style="background:${color}22;border:1px solid ${color}44;color:${color};font-size:9px;font-weight:700;">${agentLabel[0]}</div><div class="log-body"><div class="log-text"><strong style="color:${color};">${escapeText(agentLabel)}</strong> <span style="color:rgba(255,255,255,0.35);">completed</span> ${escapeText(t.title)}${tags}</div><div class="log-time">${relativeTime(ts)}</div></div>`;
+        list.appendChild(item);
+      });
+      // Append local-only entries not already in DB
+      localEntries.forEach(entry => {
         const item = document.createElement('div');
         item.className = 'log-item';
         item.dataset.ts = entry.time;
         item.innerHTML = `<div class="log-icon" style="background:rgba(79,195,247,0.14);"></div><div class="log-body"><div class="log-text"><strong>${escapeText(entry.agent)}</strong> assigned: ${escapeText(entry.task)}</div><div class="log-time">${relativeTime(entry.time)}</div></div>`;
         list.appendChild(item);
       });
-    } catch(e) {}
-  }
+    } catch(e) {
+      const list2 = document.querySelector('#logList .log-list');
+      if (list2) list2.innerHTML = '<div style="padding:14px 16px;font-family:var(--font-data);font-size:11px;color:rgba(248,113,113,0.5);">Failed to load activity log.</div>';
+    }
+  })();
   setInterval(() => {
     document.querySelectorAll('#logList .log-item[data-ts]').forEach(item => {
       const ts = parseInt(item.dataset.ts);

@@ -329,6 +329,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
     <div id="view-drafts-panel" style="display:none;flex:1;overflow:hidden;flex-direction:column;">
       <div style="display:flex;gap:6px;padding:12px 24px 10px;flex-shrink:0;align-items:center;">
         <div class="draft-chip on" data-df="pending" onclick="setDraftFilter('pending')">To send</div>
+        <div class="draft-chip" data-df="followup" onclick="setDraftFilter('followup')">Follow Up</div>
         <div class="draft-chip" data-df="sent" onclick="setDraftFilter('sent')">Done</div>
         <div class="draft-chip" data-df="all" onclick="setDraftFilter('all')">All</div>
         <span id="draft-sub" style="margin-left:auto;font-family:var(--font-data);font-size:11px;color:var(--text-muted);"></span>
@@ -397,6 +398,7 @@ function sbConfig(){
 const KANBAN_COLS = [
   {stage:0, label:'Fresh Lead',    dot:'#4FC3F7', auto:'Hermes writes opener'},
   {stage:1, label:'Opener Sent',   dot:'rgba(255,255,255,0.4)', auto:'Hermes polls for reply'},
+  {stage:'followup', label:'Follow Up', dot:'#f87171', auto:'Send follow-up DM'},
   {stage:2, label:'Replied',       dot:'#4FC3F7', auto:'Hermes sends Apollo offer DM'},
   {stage:3, label:'Interested',    dot:'#60a5fa', auto:'Hermes sends qualify questions'},
   {stage:4, label:'Qualify Done',  dot:'#4FC3F7', auto:'Hermes sends Calendly link'},
@@ -448,10 +450,21 @@ async function loadDrafts(){
     renderDrafts();
   }catch(e){document.getElementById('draft-feed').innerHTML='<div class="empty">Error loading drafts (local server down?).</div>';}
 }
+function isFollowupDue(l){
+  if(!l.next_followup_at) return false;
+  const days=followupDaysLeft(l.next_followup_at);
+  return days!==null && days<=0;
+}
+function draftIsFollowupDue(l){
+  if(!l.dm_sent||!l.next_followup_at) return false;
+  const days=followupDaysLeft(l.next_followup_at);
+  return days!==null && days<=0;
+}
 function draftVisible(){
   return draftState.filter(l=>{
     const has=l.opener_text&&l.opener_text.trim().length>0;
     if(draftFilter==='pending')return has&&!l.dm_sent;
+    if(draftFilter==='followup')return draftIsFollowupDue(l);
     if(draftFilter==='sent')return l.dm_sent;
     return has;
   });
@@ -459,23 +472,32 @@ function draftVisible(){
 function renderDrafts(){
   const list=draftVisible(), feed=document.getElementById('draft-feed');
   const pending=draftState.filter(l=>l.opener_text&&!l.dm_sent).length;
+  const fuCount=draftState.filter(draftIsFollowupDue).length;
+  const fuChip=document.querySelector('.draft-chip[data-df="followup"]');
+  if(fuChip){fuChip.innerHTML='Follow Up'+(fuCount>0?` <span style="font-size:10px;font-weight:700;padding:1px 5px;border-radius:8px;background:rgba(248,113,113,0.15);color:#f87171;margin-left:4px;">${fuCount}</span>`:'');}
   document.getElementById('draft-sub').textContent=pending+' draft'+(pending!==1?'s':'')+' ready to send';
   if(!list.length){feed.innerHTML='<div style="text-align:center;padding:60px 24px;color:var(--text-dim);font-family:var(--font-data);"><div style="font-family:var(--font-head);font-size:18px;color:var(--text-muted);margin-bottom:8px;">Nothing here.</div>'+(draftFilter==='pending'?'No drafts waiting. Run the morning routine.':'Switch filter to see more.')+'</div>';return;}
   feed.innerHTML=list.map(l=>{
-    const draft=l.opener_text||'', n=draftParseNotes(l.notes);
+    const isFollowupMode=draftFilter==='followup';
+    const draft=isFollowupMode?followupDraft(l):(l.opener_text||'');
+    const n=draftParseNotes(l.notes);
     const why=n.why?'<div class="draft-why"><span class="draft-why-label">Why reach out:</span> '+escHtml(n.why)+(n.score!=null?' <span class="draft-score">fit '+n.score+'/10</span>':'')+'</div>':'';
-    return '<div class="draft-card'+(l.dm_sent?' done':'')+'">'+
+    const days=l.next_followup_at?followupDaysLeft(l.next_followup_at):null;
+    const fuLabel=days===null?'':(days<0?`<span style="font-family:var(--font-data);font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(248,113,113,0.12);border:1px solid rgba(248,113,113,0.3);color:#f87171;margin-left:auto;">${Math.abs(days)}d overdue</span>`:(days===0?`<span style="font-family:var(--font-data);font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(79,195,247,0.1);border:1px solid rgba(79,195,247,0.3);color:#4FC3F7;margin-left:auto;">due today</span>`:(days<=3?`<span style="font-family:var(--font-data);font-size:10px;padding:2px 8px;border-radius:10px;background:rgba(79,195,247,0.06);border:1px solid rgba(79,195,247,0.15);color:rgba(79,195,247,0.7);margin-left:auto;">due in ${days}d</span>`:'')));
+    return '<div class="draft-card'+(l.dm_sent&&!isFollowupMode?' done':'')+'">'+
       '<div class="draft-top">'+
         '<a class="draft-handle" href="https://instagram.com/'+escHtml(l.ig_handle)+'" target="_blank" rel="noopener">@'+escHtml(l.ig_handle)+'</a>'+
         draftBadge(l.qualifier)+'<span class="draft-niche">'+escHtml(l.niche||'')+'</span>'+
-        '<span style="margin-left:auto;font-family:var(--font-data);font-size:11px;color:var(--text-muted);">'+escHtml(l.followers||'')+(l.followers?' followers':'')+'</span>'+
+        (isFollowupMode&&fuLabel?fuLabel:'<span style="margin-left:auto;font-family:var(--font-data);font-size:11px;color:var(--text-muted);">'+escHtml(l.followers||'')+(l.followers?' followers':'')+'</span>')+
       '</div>'+why+
       '<textarea class="draft-dm" id="draft-dm-'+l.id+'">'+escHtml(draft)+'</textarea>'+
       '<div class="draft-actions">'+
         '<button class="draft-btn draft-copy" onclick="draftCopy(\''+l.id+'\',this)">Copy DM</button>'+
         '<a class="draft-btn draft-openig" href="https://instagram.com/'+escHtml(l.ig_handle)+'" target="_blank" rel="noopener">Open IG ↗</a>'+
-        '<button class="draft-btn draft-sent'+(l.dm_sent?' on':'')+'" onclick="draftMarkSent(\''+l.id+'\')">'+(l.dm_sent?'✓ Sent':'Mark sent')+'</button>'+
-        '<button class="draft-btn draft-skip" onclick="draftSkip(\''+l.id+'\')">Skip</button>'+
+        (isFollowupMode
+          ?'<button class="draft-btn draft-sent" onclick="draftMarkFollowupSent(\''+l.id+'\')">Mark sent</button>'
+          :'<button class="draft-btn draft-sent'+(l.dm_sent?' on':'')+'" onclick="draftMarkSent(\''+l.id+'\')">'+(l.dm_sent?'✓ Sent':'Mark sent')+'</button>')+
+        '<button class="draft-btn draft-skip" onclick="draftUnqualify(\''+l.id+'\')">Unqualified</button>'+
       '</div></div>';
   }).join('');
 }
@@ -487,12 +509,22 @@ async function draftPatch(id,body){
 }
 async function draftMarkSent(id){
   const followupDate=new Date();followupDate.setDate(followupDate.getDate()+3);
-  const ok=await draftPatch(id,{dm_sent:true,dm_sent_at:new Date().toISOString(),opener_text:draftGet(id),stage:1,stage_label:'Opener Sent',opener_sent_at:new Date().toISOString(),next_followup_at:followupDate.toISOString().slice(0,10),followup_count:0});
+  const ok=await draftPatch(id,{dm_sent:true,dm_sent_at:new Date().toISOString(),opener_text:draftGet(id),stage:1,opener_sent_at:new Date().toISOString(),next_followup_at:followupDate.toISOString().slice(0,10),followup_count:0});
   if(ok){const l=draftState.find(x=>x.id===id);if(l){l.dm_sent=true;l.opener_text=draftGet(id);}renderDrafts();loadLeads&&loadLeads();}
 }
-async function draftSkip(id){
-  const ok=await draftPatch(id,{dm_sent:true,dm_sent_at:new Date().toISOString(),stage:0,stage_label:'Skipped'});
-  if(ok){const l=draftState.find(x=>x.id===id);if(l){l.dm_sent=true;l.stage_label='Skipped';}renderDrafts();}
+async function draftUnqualify(id){
+  const ok=await draftPatch(id,{stage:7,stage_updated_at:new Date().toISOString()});
+  if(ok){const l=draftState.find(x=>x.id===id);if(l){l.stage=7;}renderDrafts();loadLeads&&loadLeads();}
+}
+async function draftMarkFollowupSent(id){
+  const l=draftState.find(x=>x.id===id);
+  const count=(l?(l.followup_count||0):0)+1;
+  const nextDate=new Date();nextDate.setDate(nextDate.getDate()+3);
+  const patch={followup_count:count,last_message_at:new Date().toISOString()};
+  if(count<2) patch.next_followup_at=nextDate.toISOString().slice(0,10);
+  else patch.next_followup_at=null;
+  const ok=await draftPatch(id,patch);
+  if(ok){if(l){l.followup_count=count;l.next_followup_at=patch.next_followup_at||null;}renderDrafts();}
 }
 function draftCopy(id,btn){navigator.clipboard.writeText(draftGet(id)).then(()=>{btn.textContent='Copied ✓';setTimeout(()=>btn.textContent='Copy DM',1600);});}
 function setDraftFilter(f){draftFilter=f;document.querySelectorAll('.draft-chip').forEach(c=>c.classList.toggle('on',c.dataset.df===f));renderDrafts();}
@@ -558,17 +590,25 @@ function renderStats(){
 function renderKanban(){
   const board = document.getElementById('view-kanban-board');
   board.innerHTML = KANBAN_COLS.map(col=>{
-    let colLeads = leads.filter(l=>l.stage===col.stage);
-    // Overdue leads float to top of Opener Sent column
-    if(col.stage===1) colLeads=[...colLeads].sort((a,b)=>(isOverdue(b)?1:0)-(isOverdue(a)?1:0));
+    let colLeads;
+    if(col.stage==='followup'){
+      colLeads=leads.filter(l=>l.stage===1&&isFollowupDue(l));
+    } else if(col.stage===1){
+      colLeads=leads.filter(l=>l.stage===1&&!isFollowupDue(l));
+    } else {
+      colLeads=leads.filter(l=>l.stage===col.stage);
+    }
     const cards = colLeads.map(l=>{
       const overdue=isOverdue(l);
+      const isFollowupCol=col.stage==='followup';
+      const days=l.next_followup_at?followupDaysLeft(l.next_followup_at):null;
+      const fuBadge=isFollowupCol&&days!==null?(days<0?`<div style="margin-top:5px;padding:3px 7px;background:rgba(248,113,113,0.15);border:1px solid rgba(248,113,113,0.4);border-radius:5px;font-family:var(--font-data);font-size:9px;font-weight:700;color:#f87171;">${Math.abs(days)}d OVERDUE</div>`:(days===0?`<div style="margin-top:5px;padding:3px 7px;background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);border-radius:5px;font-family:var(--font-data);font-size:9px;font-weight:700;color:#f87171;">DUE TODAY</div>`:`<div style="margin-top:5px;padding:3px 7px;background:rgba(248,113,113,0.06);border:1px solid rgba(248,113,113,0.2);border-radius:5px;font-family:var(--font-data);font-size:9px;color:rgba(248,113,113,0.7);">due in ${days}d</div>`)):'';
       return `
       <div class="kcard s-visible" draggable="true"
         data-id="${l.id}"
         ondragstart="onDragStart(event,'${l.id}')"
         onclick="openDrawer('${l.id}')"
-        style="${overdue?'border-color:rgba(248,113,113,0.5);background:rgba(248,113,113,0.04);':''}">
+        style="${isFollowupCol?'border-color:rgba(248,113,113,0.3);background:rgba(248,113,113,0.03);':(overdue?'border-color:rgba(248,113,113,0.5);background:rgba(248,113,113,0.04);':'')}">
         <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;min-width:0;">
           <span style="font-family:var(--font-data);font-size:12px;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0;">${l.ig_handle?'@'+escHtml(l.ig_handle):(l.full_name?escHtml(l.full_name):'Unknown')}</span>
           ${['hot','warm','cold'].includes(l.qualifier)?`<span class="q-${l.qualifier}" style="font-size:9px;padding:1px 6px;flex-shrink:0;">${l.qualifier.toUpperCase()}</span>`:''}
@@ -576,14 +616,13 @@ function renderKanban(){
         ${l.niche?`<div style="font-family:var(--font-data);font-size:10px;color:var(--text-dim);margin-bottom:4px;">${escHtml(l.niche.length>40?l.niche.slice(0,38)+'…':l.niche)}</div>`:''}
         ${l.followers?`<div style="font-family:var(--font-data);font-size:10px;color:var(--text-dim);">${escHtml(l.followers)} followers</div>`:''}
         ${l.stage_updated_at?`<div style="font-family:var(--font-data);font-size:9px;color:rgba(255,255,255,0.2);margin-top:6px;">${timeAgo(l.stage_updated_at)}</div>`:''}
-        ${followupBadgeHtml(l)}
-        ${l.next_action?`<div style="margin-top:6px;padding:4px 7px;background:rgba(79,195,247,0.06);border:1px solid rgba(79,195,247,0.15);border-radius:5px;font-family:var(--font-data);font-size:9px;color:var(--accent);">⚡ ${escHtml(l.next_action)}</div>`:''}
+        ${isFollowupCol?fuBadge:followupBadgeHtml(l)}
       </div>`;
     }).join('');
     return`<div class="kcol"
       ondragover="event.preventDefault();this.classList.add('drop-hover')"
       ondragleave="this.classList.remove('drop-hover')"
-      ondrop="onDrop(event,${col.stage})">
+      ondrop="onDrop(event,${col.stage==='followup'?1:col.stage})">
       <div class="kcol-head">
         <div style="display:flex;align-items:center;gap:7px;">
           <span class="chip-dot" style="background:${col.dot};width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0;"></span>
@@ -616,12 +655,13 @@ async function onDrop(e, newStage){
     dragPatch.followup_count=0;
     lead.next_followup_at=dragPatch.next_followup_at;
   }
-  const patchRes = await fetch(`${sb.url}/rest/v1/outreach_leads?id=eq.${dragging}`,{
-    method:'PATCH', headers:sb.hdrs,
+  const sess=JSON.parse(localStorage.getItem('sb_session')||'{}');
+  const patchRes = await fetch(`${SERVER_BASE}/api/leads/${dragging}`,{
+    method:'PATCH', headers:{'Authorization':'Bearer '+(sess.access_token||'local'),'Content-Type':'application/json'},
     body:JSON.stringify(dragPatch)
   });
   if(!patchRes.ok){
-    lead.stage=oldStage; renderKanban(); renderStats();
+    lead.stage=oldStage; renderKanban(); renderStats(); renderFilters(); renderList();
     showToast(`Save failed (${patchRes.status}) — stage not changed`);
     dragging=null; return;
   }
@@ -630,6 +670,7 @@ async function onDrop(e, newStage){
     method:'POST', headers:sb.hdrs,
     body:JSON.stringify({from_agent:'Dashboard',to_agent:'Hermes',signal_type:'stage_change',payload:{lead_id:dragging,ig_handle:lead.ig_handle,old_stage:oldStage,new_stage:newStage,intent:'manual_drag'}})
   });
+  renderKanban(); renderStats(); renderFilters(); renderList();
   showToast(`@${lead.ig_handle} → ${STAGE_LABEL[newStage]} · Hermes notified`);
   dragging=null;
 }

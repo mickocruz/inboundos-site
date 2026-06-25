@@ -542,15 +542,7 @@ async function dropTask(e,status){
   if(!dragId)return;
   const t=TASKS.find(x=>x.id===dragId);
   if(t&&t.status!==status){
-    if(status==='done'){
-      // Done = delete from DB entirely
-      const _id=dragId;
-      TASKS=TASKS.filter(x=>x.id!==_id);
-      render();updateSubtitle();
-      fetch(`${SERVER_BASE}/api/tasks/${_id}`,{method:'DELETE'}).catch(()=>{showErrToast('Task delete failed');});
-    } else {
-      t.status=status;render();updateSubtitle();await patchTask(dragId,{status});
-    }
+    t.status=status;render();updateSubtitle();await patchTask(dragId,{status});
   }
   dragId=null;
 }

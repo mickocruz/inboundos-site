@@ -27,13 +27,20 @@ const COMMENTS_PER_POST = 30;
 const ENRICH_BATCH = 30;     // profiles per enrich invocation (fits Apify sync)
 const WEEKLY_CAP = 500;      // max enrichments per rolling 7 days (cost ceiling)
 
-// ICP gates.
+// ICP gates. Pain = content burnout, so the core signal is high SOLO content
+// output, not follower size. Follower band is a sanity bound only.
 const MIN_FOLLOWERS = 1000;
-const MAX_FOLLOWERS = 100000;
+const MAX_FOLLOWERS = 80000;
+const MIN_POSTS = 150;     // content-output floor = someone actually grinding content
 const NEGATIVE = [
   "coach", "course", "mentor", "masterclass", "academy", "cohort",
   "ebook", "free guide", "free training", "link in bio for free",
-  "founder & ceo", "we are hiring", "team of",
+  "founder & ceo", "we are hiring",
+];
+// Team signals: if they already have a team, content burnout is offloaded -> off ICP.
+const TEAM_WORDS = [
+  "team of", "my team", "our team", "we're a team", "we are a team",
+  "with my team", "our agency of", "hiring", "join our team",
 ];
 const POSITIVE = [
   "dfy", "done for you", "done-for-you", "i manage", "i help", "book a call",
@@ -94,20 +101,29 @@ function isPersonalBrand(p: Profile): { ok: boolean; reason?: string } {
 
 function qualify(p: Profile): { ok: boolean; reason?: string; score: number } {
   const f = p.followersCount ?? 0;
+  const posts = p.postsCount ?? 0;
   if (p.private) return { ok: false, reason: "private account", score: 0 };
   if (f < MIN_FOLLOWERS) return { ok: false, reason: "under 1K", score: 0 };
-  if (f > MAX_FOLLOWERS) return { ok: false, reason: "over 100K", score: 0 };
+  if (f > MAX_FOLLOWERS) return { ok: false, reason: "over 80K", score: 0 };
   const bio = (p.biography ?? "").toLowerCase();
   if (!bio) return { ok: false, reason: "empty bio", score: 0 };
   if (NEGATIVE.some((w) => bio.includes(w))) {
-    return { ok: false, reason: "coach/course/team signal", score: 0 };
+    return { ok: false, reason: "coach/course signal", score: 0 };
+  }
+  if (TEAM_WORDS.some((w) => bio.includes(w))) {
+    return { ok: false, reason: "has a team (burnout offloaded)", score: 0 };
+  }
+  // Core ICP signal: high SOLO content output = feeling the burnout.
+  if (posts < MIN_POSTS) {
+    return { ok: false, reason: `low content output (${posts} posts)`, score: 0 };
   }
   const hits = POSITIVE.filter((w) => bio.includes(w)).length;
   if (hits === 0) return { ok: false, reason: "no DFY service signal", score: 0 };
   const pb = isPersonalBrand(p);
   if (!pb.ok) return { ok: false, reason: pb.reason!, score: 0 };
-  const sizeScore = f < 10000 ? 3 : f < 30000 ? 2 : 1;
-  return { ok: true, score: Math.min(10, hits + sizeScore + 3) };
+  // Score weighted toward content output (the pain), not follower size.
+  const outputScore = posts >= 800 ? 4 : posts >= 400 ? 3 : posts >= 250 ? 2 : 1;
+  return { ok: true, score: Math.min(10, hits + outputScore + 3) };
 }
 
 // ── discover ────────────────────────────────────────────────────────────────

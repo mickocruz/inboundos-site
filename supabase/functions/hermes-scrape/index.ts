@@ -57,26 +57,37 @@ const BRAND_WORDS = [
   "agence", "agncy", "agcy", "& co", "the agency", "socials", "creatives",
 ];
 
-// Personal-brand = a human's account, not a faceless brand/logo account.
+// Personal-brand = a human's account, even if they mention an agency.
+// We only reject accounts that are PURELY a faceless brand (logo, "we", no
+// person behind it). A real owner like "Sarah Chen | Chen Social" passes.
 function isPersonalBrand(p: Profile): { ok: boolean; reason?: string } {
-  const name = (p.fullName ?? "").toLowerCase();
-  const handle = (p.username ?? "").toLowerCase();
   const bio = (p.biography ?? "").toLowerCase();
-  const blob = `${handle} ${name}`;
-  if (BRAND_WORDS.some((w) => blob.includes(w))) {
-    return { ok: false, reason: "faceless: brand word in name/handle" };
-  }
+
+  // First-person voice = a human is talking.
   const firstPerson = /(^|\W)(i|i'm|im|my|me)(\W|$)|i help|i build|i grow|i run/
     .test(bio);
-  const weDominant = /(^|\W)(we|our|us|team)(\W|$)/.test(bio) && !firstPerson;
-  if (weDominant) return { ok: false, reason: "faceless: we/our bio, no first person" };
-  // Person-like display name: 2+ alpha tokens, no brand word (checked above).
-  const tokens = (p.fullName ?? "").trim().split(/\s+/).filter(Boolean);
-  const personName = tokens.length >= 2 && /^[A-Za-z][a-z]+$/.test(tokens[0]);
-  if (!firstPerson && !personName) {
-    return { ok: false, reason: "no personal-brand signal" };
+
+  // Person-like display name: take the part before any "|" / "•" / "-" separator
+  // (people write "Sarah Chen | Social Media Manager") and require 2+ name tokens
+  // that are not themselves brand words.
+  const namePart = (p.fullName ?? "").split(/[|•\-–·,]/)[0].trim();
+  const nameTokens = namePart.split(/\s+/).filter(Boolean);
+  const personName = nameTokens.length >= 2 &&
+    nameTokens.slice(0, 2).every((t) => /^[A-Za-z][A-Za-z.'’]+$/.test(t)) &&
+    !BRAND_WORDS.some((w) => namePart.toLowerCase().includes(w));
+
+  const personSignal = firstPerson || personName;
+  if (personSignal) return { ok: true }; // a human is behind it — keep, agency or not
+
+  // No person signal: decide if it's a faceless brand.
+  const blob = `${(p.username ?? "").toLowerCase()} ${(p.fullName ?? "").toLowerCase()}`;
+  if (BRAND_WORDS.some((w) => blob.includes(w))) {
+    return { ok: false, reason: "faceless: brand account, no person" };
   }
-  return { ok: true };
+  if (/(^|\W)(we|our|us|team)(\W|$)/.test(bio)) {
+    return { ok: false, reason: "faceless: we/our bio, no person" };
+  }
+  return { ok: false, reason: "no personal-brand signal" };
 }
 
 async function apify(input: unknown): Promise<any[]> {

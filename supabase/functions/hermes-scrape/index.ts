@@ -96,11 +96,11 @@ Deno.serve(async (req) => {
     if (exErr) throw exErr;
     const seen = new Set((existing ?? []).map((r) => r.ig_handle?.toLowerCase()));
 
-    // 1. Collect candidate usernames from hashtag posts
+    // 1. Collect candidate usernames from hashtag posts.
+    // Point the actor straight at the tag pages so it scrapes posts (each with
+    // ownerUsername), instead of using `search` which only returns related tags.
     const posts = await apify({
-      search: hashtags.join(" "),
-      searchType: "hashtag",
-      searchLimit: hashtags.length,
+      directUrls: hashtags.map((h) => `https://www.instagram.com/explore/tags/${h}/`),
       resultsType: "posts",
       resultsLimit: postsPerTag,
       addParentData: false,

@@ -270,7 +270,8 @@ Deno.serve(async (req) => {
     if (phase === "discover") return Response.json(await discover(sb, body));
     if (phase === "enrich") return Response.json(await enrich(sb, body));
     return Response.json({ ok: false, error: `unknown phase: ${phase}` }, { status: 400 });
-  } catch (e) {
-    return Response.json({ ok: false, error: String(e) }, { status: 500 });
+  } catch (e: any) {
+    const msg = e?.message ?? (typeof e === "string" ? e : JSON.stringify(e));
+    return Response.json({ ok: false, error: msg, detail: e }, { status: 500 });
   }
 });

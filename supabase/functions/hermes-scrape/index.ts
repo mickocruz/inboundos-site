@@ -105,9 +105,17 @@ Deno.serve(async (req) => {
       resultsLimit: postsPerTag,
       addParentData: false,
     });
+    if (body.debug) {
+      return Response.json({
+        ok: true, debug: true, postsCount: posts.length,
+        firstKeys: posts[0] ? Object.keys(posts[0]) : [],
+        sample: posts.slice(0, 3),
+      });
+    }
+
     const candidates = Array.from(
       new Set(
-        posts.map((x: any) => x.ownerUsername)
+        posts.map((x: any) => x.ownerUsername ?? x.owner?.username ?? x.username)
           .filter((u: string) => u && !seen.has(u.toLowerCase())),
       ),
     ).slice(0, target * 6); // over-scrape; most get filtered

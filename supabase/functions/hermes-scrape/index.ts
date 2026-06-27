@@ -50,6 +50,35 @@ type Profile = {
   private?: boolean;
 };
 
+// Faceless / brand-account signals in the handle or display name.
+const BRAND_WORDS = [
+  "agency", "media", "studio", "studios", "collective", "labs", "group",
+  "solutions", "systems", "consulting", "consultancy", "co.", "marketing co",
+  "agence", "agncy", "agcy", "& co", "the agency", "socials", "creatives",
+];
+
+// Personal-brand = a human's account, not a faceless brand/logo account.
+function isPersonalBrand(p: Profile): { ok: boolean; reason?: string } {
+  const name = (p.fullName ?? "").toLowerCase();
+  const handle = (p.username ?? "").toLowerCase();
+  const bio = (p.biography ?? "").toLowerCase();
+  const blob = `${handle} ${name}`;
+  if (BRAND_WORDS.some((w) => blob.includes(w))) {
+    return { ok: false, reason: "faceless: brand word in name/handle" };
+  }
+  const firstPerson = /(^|\W)(i|i'm|im|my|me)(\W|$)|i help|i build|i grow|i run/
+    .test(bio);
+  const weDominant = /(^|\W)(we|our|us|team)(\W|$)/.test(bio) && !firstPerson;
+  if (weDominant) return { ok: false, reason: "faceless: we/our bio, no first person" };
+  // Person-like display name: 2+ alpha tokens, no brand word (checked above).
+  const tokens = (p.fullName ?? "").trim().split(/\s+/).filter(Boolean);
+  const personName = tokens.length >= 2 && /^[A-Za-z][a-z]+$/.test(tokens[0]);
+  if (!firstPerson && !personName) {
+    return { ok: false, reason: "no personal-brand signal" };
+  }
+  return { ok: true };
+}
+
 async function apify(input: unknown): Promise<any[]> {
   const url =
     `https://api.apify.com/v2/acts/${APIFY_ACTOR}/run-sync-get-dataset-items` +
@@ -75,6 +104,8 @@ function qualify(p: Profile): { ok: boolean; reason?: string; score: number } {
   }
   const hits = POSITIVE.filter((w) => bio.includes(w)).length;
   if (hits === 0) return { ok: false, reason: "no DFY service signal", score: 0 };
+  const pb = isPersonalBrand(p);
+  if (!pb.ok) return { ok: false, reason: pb.reason!, score: 0 };
   // Desperation-to-sophistication: smaller accounts score higher (closer to ICP).
   const sizeScore = f < 10000 ? 3 : f < 30000 ? 2 : 1;
   return { ok: true, score: Math.min(10, hits + sizeScore + 3) };

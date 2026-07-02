@@ -5,7 +5,8 @@ InboundOS Client Provisioner
 Run this after a client completes their onboarding form.
 
 Usage:
-    python3 provision-client.py --email client@email.com --username john-smith --password their-password --sb-url https://xxx.supabase.co --sb-anon eyJ... --sb-service eyJ...
+    python3 provision-client.py --email client@email.com --username john-smith --sb-url https://xxx.supabase.co --sb-anon eyJ... --sb-service eyJ...
+    (you'll be prompted for the client's password — hidden input, never typed on the command line)
 
 What it does:
     1. Pulls their onboarding form answers from Supabase
@@ -15,7 +16,7 @@ What it does:
     5. Generates pre-filled workflow JSON files ready to hand to client
 """
 
-import argparse, json, re, os, sys, glob
+import argparse, json, re, os, sys, glob, getpass
 import urllib.request, urllib.error
 
 # ── YOUR MASTER SUPABASE ──────────────────────────────────────
@@ -80,11 +81,17 @@ def main():
     parser = argparse.ArgumentParser(description='Provision an InboundOS client')
     parser.add_argument('--email',      required=True,  help='Client email (matches onboarding table)')
     parser.add_argument('--username',   required=True,  help='Login username slug e.g. john-smith')
-    parser.add_argument('--password',   required=True,  help='Login password to set')
     parser.add_argument('--sb-url',     required=True,  help='Client Supabase Project URL')
     parser.add_argument('--sb-anon',    required=True,  help='Client Supabase anon key')
     parser.add_argument('--sb-service', required=True,  help='Client Supabase service_role key')
     args = parser.parse_args()
+
+    # Password prompted interactively (hidden) — never as a CLI flag, so it
+    # doesn't land in shell history or process lists.
+    args.password = getpass.getpass('Client login password (hidden): ')
+    if len(args.password) < 8:
+        print('ERROR: password must be at least 8 characters.')
+        sys.exit(1)
 
     client_slug = args.username.lower().replace(' ', '-')
     client_id   = client_slug.replace('-', '_')
@@ -210,7 +217,7 @@ def main():
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Dashboard URL : https://inboundos.vercel.app/login
 Username      : {client_slug}
-Password      : {args.password}
+Password      : (the one you just entered — share it with the client securely, e.g. a one-time link)
 
 Workflow files: client-workflows/{client_slug}/
 

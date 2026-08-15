@@ -302,7 +302,9 @@ img{max-width:100%;display:block;}
 .dash-tr:last-child{border-bottom:none;}
 .dash-tr .name{font-weight:600;color:rgba(255,255,255,0.85);display:flex;align-items:center;gap:9px;min-width:0;}
 .dash-tr .name span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.t-ic{flex:none;width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;background:rgba(255,255,255,0.05);border:1px solid var(--line);color:var(--label-2);}
+.t-ic{flex:none;width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;background:rgba(255,255,255,0.05);border:1px solid var(--line);color:var(--label-2);}
+.t-ic img{display:block;opacity:0.75;transition:opacity .2s var(--ease);}
+.dash-tr:hover .t-ic img{opacity:1;}
 .dash-tr .meta{font-size:11px;color:var(--label-3);}
 .status{
   justify-self:end;
@@ -723,11 +725,11 @@ footer .foot-links a:hover{color:var(--white);}
           </div>
           <div class="dash-table">
             <div class="dash-thead"><span>Source</span><span class="hide-m">Score</span><span class="hide-m">Type</span><span style="text-align:right;">Status</span></div>
-            <div class="dash-tr"><span class="name"><span class="t-ic">IG</span><span>Competitor Reel #1</span></span><span class="scorebar hide-m"><span class="bar"><i data-w="82%"></i></span><span class="n">82</span></span><span class="meta hide-m">Reel</span><span class="status st-ok">ANALYZED</span></div>
-            <div class="dash-tr"><span class="name"><span class="t-ic">IG</span><span>Competitor Reel #2</span></span><span class="scorebar hide-m"><span class="bar"><i class="a" data-w="64%"></i></span><span class="n">64</span></span><span class="meta hide-m">Reel</span><span class="status st-hot">SCANNING</span></div>
-            <div class="dash-tr"><span class="name"><span class="t-ic">RD</span><span>r/ClaudeAI · trending</span></span><span class="scorebar hide-m"><span class="bar"><i data-w="91%"></i></span><span class="n">91</span></span><span class="meta hide-m">Thread</span><span class="status st-ok">ANALYZED</span></div>
-            <div class="dash-tr"><span class="name"><span class="t-ic">X</span><span>AI platform updates</span></span><span class="scorebar hide-m"><span class="bar"><i class="g" data-w="76%"></i></span><span class="n">76</span></span><span class="meta hide-m">Feed</span><span class="status st-ok">ANALYZED</span></div>
-            <div class="dash-tr"><span class="name"><span class="t-ic">YT</span><span>Niche trend sweep</span></span><span class="scorebar hide-m"><span class="bar"><i class="a" data-w="58%"></i></span><span class="n">58</span></span><span class="meta hide-m">Video</span><span class="status st-wait">QUEUED</span></div>
+            <div class="dash-tr"><span class="name"><span class="t-ic"><img src="/logos/instagram.png" srcset="/logos/instagram@2x.png 2x" alt="Instagram" width="13" height="13" loading="lazy"></span><span>Competitor Reel #1</span></span><span class="scorebar hide-m"><span class="bar"><i data-w="82%"></i></span><span class="n">82</span></span><span class="meta hide-m">Reel</span><span class="status st-ok">ANALYZED</span></div>
+            <div class="dash-tr"><span class="name"><span class="t-ic"><img src="/logos/instagram.png" srcset="/logos/instagram@2x.png 2x" alt="Instagram" width="13" height="13" loading="lazy"></span><span>Competitor Reel #2</span></span><span class="scorebar hide-m"><span class="bar"><i class="a" data-w="64%"></i></span><span class="n">64</span></span><span class="meta hide-m">Reel</span><span class="status st-hot">SCANNING</span></div>
+            <div class="dash-tr"><span class="name"><span class="t-ic"><img src="/logos/reddit.png" srcset="/logos/reddit@2x.png 2x" alt="Reddit" width="13" height="13" loading="lazy"></span><span>r/ClaudeAI · trending</span></span><span class="scorebar hide-m"><span class="bar"><i data-w="91%"></i></span><span class="n">91</span></span><span class="meta hide-m">Thread</span><span class="status st-ok">ANALYZED</span></div>
+            <div class="dash-tr"><span class="name"><span class="t-ic"><img src="/logos/x.png" srcset="/logos/x@2x.png 2x" alt="X" width="12" height="12" loading="lazy"></span><span>AI platform updates</span></span><span class="scorebar hide-m"><span class="bar"><i class="g" data-w="76%"></i></span><span class="n">76</span></span><span class="meta hide-m">Feed</span><span class="status st-ok">ANALYZED</span></div>
+            <div class="dash-tr"><span class="name"><span class="t-ic"><img src="/logos/youtube.png" srcset="/logos/youtube@2x.png 2x" alt="YouTube" width="14" height="14" loading="lazy"></span><span>Niche trend sweep</span></span><span class="scorebar hide-m"><span class="bar"><i class="a" data-w="58%"></i></span><span class="n">58</span></span><span class="meta hide-m">Video</span><span class="status st-wait">QUEUED</span></div>
           </div>
           <div class="dash-foot">
             <div class="cell"><div class="k">Top Pattern</div><div class="v ice">3.2× reach</div></div>

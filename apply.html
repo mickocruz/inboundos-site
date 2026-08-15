@@ -3,7 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Apply — InboundOS</title>
+  <title>Apply | InboundOS</title>
+<meta name="description" content="Apply to work with Micko. Limited spots, application required. We review every application personally.">
+<link rel="canonical" href="https://inboundos.vercel.app/apply">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://inboundos.vercel.app/apply">
+<meta property="og:title" content="Apply | InboundOS">
+<meta property="og:description" content="Apply to work with Micko. Limited spots, application required. We review every application personally.">
+<meta property="og:image" content="https://inboundos.vercel.app/og-image.png">
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:title" content="Apply | InboundOS">
+<meta property="twitter:description" content="Apply to work with Micko. Limited spots, application required. We review every application personally.">
+<meta property="twitter:image" content="https://inboundos.vercel.app/og-image.png">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
   <link rel="preload" href="/NHGDisplay95Black.otf" as="font" type="font/otf" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -72,6 +87,15 @@
     }
 
     .nav-logo span { color: var(--blue); }
+
+
+    .nav-right { display: flex; align-items: center; gap: 26px; }
+    .nav-link {
+      font-size: 13px; font-weight: 500; color: var(--gray);
+      text-decoration: none; transition: color 0.2s;
+    }
+    .nav-link:hover { color: var(--white); }
+    @media (max-width: 600px) { .nav-link { display: none; } }
 
     .nav-tag {
       font-size: 11px;
@@ -148,17 +172,35 @@
       font-family: var(--font-body);
       font-size: 15px;
       font-weight: 700;
-      padding: 16px 32px;
+      padding: 17px 36px;
       border: none;
-      border-radius: 12px;
+      border-radius: 100px;
       cursor: pointer;
       letter-spacing: 0.02em;
-      transition: opacity 0.15s, transform 0.1s;
+      box-shadow: 0 0 40px rgba(79,195,247,0.30), 0 8px 24px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.4);
+      transition: transform 0.15s, box-shadow 0.25s;
       text-decoration: none;
     }
 
-    .btn-cta:hover { opacity: 0.88; }
+    .btn-cta:hover { transform: translateY(-2px); box-shadow: 0 0 56px rgba(79,195,247,0.45), 0 12px 32px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.4); }
     .btn-cta:active { transform: scale(0.98); }
+
+    /* v2 grid atmosphere */
+    .grid-bg{
+      position:fixed;inset:0;z-index:-2;pointer-events:none;
+      background-image:
+        linear-gradient(to right,rgba(255,255,255,0.028) 1px,transparent 1px),
+        linear-gradient(to bottom,rgba(255,255,255,0.028) 1px,transparent 1px);
+      background-size:72px 72px;
+      -webkit-mask-image:radial-gradient(ellipse 90% 70% at 50% 0%,black 0%,rgba(0,0,0,0.5) 55%,transparent 100%);
+      mask-image:radial-gradient(ellipse 90% 70% at 50% 0%,black 0%,rgba(0,0,0,0.5) 55%,transparent 100%);
+    }
+    .glow-bg{
+      position:fixed;inset:0;z-index:-3;pointer-events:none;
+      background:
+        radial-gradient(ellipse 60% 45% at 50% -5%,rgba(79,195,247,0.10),transparent 65%),
+        radial-gradient(ellipse 40% 30% at 85% 15%,rgba(88,86,214,0.06),transparent 70%);
+    }
 
     .btn-cta svg { width: 16px; height: 16px; }
 
@@ -382,11 +424,12 @@
       font-family: var(--font-body);
       font-size: 14px;
       font-weight: 700;
-      padding: 14px 28px;
+      padding: 14px 30px;
       border: none;
-      border-radius: 12px;
+      border-radius: 100px;
       cursor: pointer;
       letter-spacing: 0.03em;
+      box-shadow: 0 0 24px rgba(79,195,247,0.22), inset 0 1px 0 rgba(255,255,255,0.35);
       transition: opacity 0.15s, transform 0.1s;
     }
 
@@ -399,9 +442,9 @@
       font-family: var(--font-body);
       font-size: 14px;
       font-weight: 500;
-      padding: 14px 20px;
+      padding: 14px 22px;
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 100px;
       cursor: pointer;
       letter-spacing: 0.03em;
       transition: color 0.15s, border-color 0.15s;
@@ -554,10 +597,17 @@
 </head>
 <body>
 
+<div class="glow-bg" aria-hidden="true"></div>
+<div class="grid-bg" aria-hidden="true"></div>
+
 <!-- Nav -->
 <nav>
-  <a class="nav-logo" href="/"><span>Inbound</span>OS</a>
-  <span class="nav-tag">Application</span>
+  <a class="nav-logo" href="/">Inbound<span>OS</span></a>
+  <div class="nav-right">
+    <a class="nav-link" href="/client-wins">Client Wins</a>
+    <a class="nav-link" href="/about">About</a>
+    <span class="nav-tag">Application</span>
+  </div>
 </nav>
 
 <!-- 
@@ -1149,5 +1199,8 @@
     });
   });
 </script>
+<!-- Vercel Web Analytics + Speed Insights (cookieless, no consent banner needed) -->
+<script defer src="/_vercel/insights/script.js"></script>
+<script defer src="/_vercel/speed-insights/script.js"></script>
 </body>
 </html>

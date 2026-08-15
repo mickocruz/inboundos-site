@@ -3,17 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>InboundOS — The AI Operating System for Solo Agency Owners</title>
-<meta name="description" content="You're the bottleneck. We install custom AI agents and automated workflows so your agency keeps running whether you're selling, delivering, or offline.">
-<meta property="og:title" content="InboundOS — The AI Operating System for Solo Agency Owners">
-<meta property="og:description" content="You're the bottleneck. We install custom AI agents and automated workflows so your agency keeps running whether you're selling, delivering, or offline.">
+<title>InboundOS: Install Your AI Content Department</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+<meta name="description" content="You're the bottleneck. We install custom AI agents trained on your voice, your ICP, and your hooks, so your agency's content runs whether you're selling, delivering, or offline.">
+<link rel="canonical" href="https://inboundos.vercel.app/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://inboundos.vercel.app/">
+<meta property="og:title" content="InboundOS: Install Your AI Content Department">
+<meta property="og:description" content="Custom AI agents installed inside your business. 5 scripts a day in your voice. Qualified leads on your calendar. One install. You own it forever.">
 <meta property="og:image" content="https://inboundos.vercel.app/og-image.png">
 <meta property="twitter:card" content="summary_large_image">
-<meta property="twitter:title" content="InboundOS — The AI Operating System for Solo Agency Owners">
-<meta property="twitter:description" content="You're the bottleneck. We install custom AI agents and automated workflows so your agency keeps running whether you're selling, delivering, or offline.">
-<meta property="twitter:image" content="https://inboundos.vercel.app/og-image.png">
-<link rel="canonical" href="https://inboundos.vercel.app">
-<link rel="icon" href="/favicon.ico" type="image/x-icon">
 <link rel="preload" href="/NHGDisplay95Black.otf" as="font" type="font/otf" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,24 +26,26 @@
 
 :root{
   --bg:#0D1117;
+  --bg-deep:#090C10;
+  --panel:#10151C;
+  --panel-2:#0B0F14;
   --white:#ffffff;
   --ice:#4FC3F7;
-  --label-2:rgba(255,255,255,0.58);
+  --green:#4FC3F7;  /* brand-only palette: no off-brand green */
+  --amber:#FFB340;
+  --red:#FF6B6B;
+  --label-2:rgba(255,255,255,0.60);
   --label-3:rgba(255,255,255,0.38);
   --label-4:rgba(255,255,255,0.22);
-  --glass-bg:rgba(255,255,255,0.06);
-  --glass-bg-strong:rgba(255,255,255,0.09);
-  --glass-border:rgba(255,255,255,0.14);
-  --separator:rgba(255,255,255,0.08);
-  --radius-sm:10px;
-  --radius-md:14px;
-  --radius-lg:20px;
-  --radius-xl:28px;
+  --line:rgba(255,255,255,0.08);
+  --line-strong:rgba(255,255,255,0.13);
+  --card-bg:rgba(255,255,255,0.022);
   --pill:100px;
   --font-head:'NHGDisplay','DM Sans',system-ui,sans-serif;
   --font-body:'DM Sans',system-ui,sans-serif;
-  --spring:cubic-bezier(0.34,1.56,0.64,1);
+  --font-mono:ui-monospace,'SF Mono',SFMono-Regular,Menlo,monospace;
   --ease:cubic-bezier(0.4,0,0.2,1);
+  --spring:cubic-bezier(0.34,1.56,0.64,1);
 }
 
 html{scroll-behavior:smooth;}
@@ -49,959 +53,1031 @@ body{
   background:var(--bg);
   color:var(--white);
   font-family:var(--font-body);
-  font-size:16px;
-  line-height:1.6;
+  font-size:16px;line-height:1.6;
   -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
   overflow-x:hidden;
 }
 a{color:inherit;text-decoration:none;}
+img{max-width:100%;display:block;}
 
-/* ── Ambient field — gives glass something to refract ── */
-.ambient{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;}
-.orb{position:absolute;border-radius:50%;will-change:transform;transform:translateZ(0);}
-.orb-1{width:800px;height:800px;top:-280px;left:-200px;background:radial-gradient(circle at 50% 50%,rgba(79,195,247,0.18) 0%,rgba(79,195,247,0.08) 35%,rgba(79,195,247,0.02) 60%,transparent 75%);animation:drift-1 26s ease-in-out infinite alternate;}
-.orb-2{width:700px;height:700px;top:18%;right:-240px;background:radial-gradient(circle at 50% 50%,rgba(88,86,214,0.16) 0%,rgba(88,86,214,0.07) 35%,rgba(88,86,214,0.02) 60%,transparent 75%);animation:drift-2 32s ease-in-out infinite alternate;}
-.orb-3{width:900px;height:900px;bottom:-360px;left:30%;background:radial-gradient(circle at 50% 50%,rgba(79,195,247,0.10) 0%,rgba(79,195,247,0.04) 40%,rgba(79,195,247,0.01) 60%,transparent 75%);animation:drift-3 38s ease-in-out infinite alternate;}
-@keyframes drift-1{from{transform:translate(0,0);}to{transform:translate(90px,60px);}}
-@keyframes drift-2{from{transform:translate(0,0);}to{transform:translate(-70px,90px);}}
-@keyframes drift-3{from{transform:translate(0,0);}to{transform:translate(60px,-80px);}}
-
-/* ── Glass material (3-layer) ── */
-.glass{
-  position:relative;
-  isolation:isolate;
-  background:var(--glass-bg);
-  backdrop-filter:blur(20px) saturate(180%) brightness(108%);
-  -webkit-backdrop-filter:blur(20px) saturate(180%) brightness(108%);
-  border-radius:var(--radius-lg);
-  border:0.5px solid var(--glass-border);
-  box-shadow:
-    0 4px 24px rgba(0,0,0,0.18),
-    0 1px 4px rgba(0,0,0,0.12),
-    inset 0 1px 0 rgba(255,255,255,0.16),
-    inset 0 -1px 0 rgba(0,0,0,0.08);
+/* ───────────────────────── grid atmosphere ───────────────────────── */
+.grid-bg{
+  position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background-image:
+    linear-gradient(to right,rgba(255,255,255,0.028) 1px,transparent 1px),
+    linear-gradient(to bottom,rgba(255,255,255,0.028) 1px,transparent 1px);
+  background-size:72px 72px;
+  -webkit-mask-image:radial-gradient(ellipse 90% 70% at 50% 0%,black 0%,rgba(0,0,0,0.5) 55%,transparent 100%);
+  mask-image:radial-gradient(ellipse 90% 70% at 50% 0%,black 0%,rgba(0,0,0,0.5) 55%,transparent 100%);
 }
-.glass::before{
-  content:'';position:absolute;inset:0;border-radius:inherit;z-index:0;pointer-events:none;
-  background:linear-gradient(150deg,rgba(255,255,255,0.10) 0%,rgba(255,255,255,0.02) 42%,transparent 60%,rgba(255,255,255,0.04) 100%);
-}
-.glass>*{position:relative;z-index:1;}
-
-@media (prefers-reduced-transparency:reduce){
-  .glass,.glass-nav,.chip{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(28,32,38,0.97);}
+.glow-bg{
+  position:fixed;inset:0;z-index:-3;pointer-events:none;
+  background:
+    radial-gradient(ellipse 60% 45% at 50% -5%,rgba(79,195,247,0.10),transparent 65%),
+    radial-gradient(ellipse 40% 30% at 85% 15%,rgba(88,86,214,0.06),transparent 70%);
 }
 
-/* ── Floating glass nav ── */
-.glass-nav{
-  position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:100;
-  display:flex;align-items:center;gap:26px;
-  padding:10px 12px 10px 22px;
-  border-radius:var(--pill);
-  background:rgba(255,255,255,0.10);
-  backdrop-filter:blur(22px) saturate(1.2);
-  -webkit-backdrop-filter:blur(22px) saturate(1.2);
-  border:1px solid rgba(255,255,255,0.30);
-  box-shadow:0 24px 60px rgba(0,0,0,0.18),inset 0 1px 0 rgba(255,255,255,0.35);
-  transition:background .3s var(--ease),box-shadow .3s var(--ease);
-  white-space:nowrap;
+/* ───────────────────────── nav ───────────────────────── */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 40px;
+  background:transparent;
+  border-bottom:1px solid transparent;
+  transition:background .3s var(--ease),border-color .3s var(--ease),padding .3s var(--ease);
 }
-.glass-nav.scrolled{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.22);box-shadow:0 24px 60px rgba(0,0,0,0.28),inset 0 1px 0 rgba(255,255,255,0.30);}
-.logo{font-family:var(--font-head);font-weight:900;font-size:20px;letter-spacing:-0.02em;line-height:1;}
-.logo .os{color:var(--ice) !important;}
-.nav-links{display:flex;align-items:center;gap:22px;}
-.nav-link{font-size:13px;font-weight:500;color:var(--label-2);transition:color .2s var(--ease);}
-.nav-link:hover,.nav-link.active{color:var(--white);}
+.nav.scrolled{
+  background:rgba(13,17,23,0.82);
+  backdrop-filter:blur(18px) saturate(160%);
+  -webkit-backdrop-filter:blur(18px) saturate(160%);
+  border-bottom-color:var(--line);
+  padding:13px 40px;
+}
+.logo{font-family:var(--font-head);font-weight:900;font-size:21px;letter-spacing:-0.02em;line-height:1;}
+.logo .os{color:var(--ice);}
+.nav-right{display:flex;align-items:center;gap:34px;}
+.nav-link{font-size:14px;font-weight:500;color:var(--label-2);transition:color .2s var(--ease);}
+.nav-link:hover{color:var(--white);}
 .nav-cta{
-  font-size:13px;font-weight:600;color:#06121C;background:var(--ice);
-  border-radius:var(--pill);padding:9px 18px;
-  transition:opacity .15s var(--ease),transform .1s var(--ease);
+  font-size:14px;font-weight:700;color:#06121C;background:var(--ice);
+  border-radius:var(--pill);padding:11px 22px;
+  box-shadow:0 0 24px rgba(79,195,247,0.25),inset 0 1px 0 rgba(255,255,255,0.4);
+  transition:transform .15s var(--ease),box-shadow .2s var(--ease);
 }
-.nav-cta:hover{opacity:.9;}
-.nav-cta:active{transform:scale(0.96);}
+.nav-cta:hover{transform:translateY(-1px);box-shadow:0 0 32px rgba(79,195,247,0.4),inset 0 1px 0 rgba(255,255,255,0.4);}
+.nav-cta:active{transform:scale(0.97);}
 
-/* ── Buttons ── */
-.btn-filled{
-  display:inline-flex;align-items:center;justify-content:center;gap:8px;
-  padding:15px 30px;border-radius:var(--pill);
-  font-family:var(--font-body);font-size:15px;font-weight:700;
-  color:#06121C;background:var(--ice);border:none;cursor:pointer;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,0.35);
-  transition:opacity .15s var(--ease),transform .1s var(--ease);
-}
-.btn-filled:hover{opacity:.9;}
-.btn-filled:active{transform:scale(0.96);}
-.btn-ghost{
-  display:inline-flex;align-items:center;justify-content:center;gap:8px;
-  padding:15px 30px;border-radius:var(--pill);
-  font-size:15px;font-weight:600;color:var(--white);
-  border:0.5px solid var(--glass-border);
-  background:var(--glass-bg);
-  backdrop-filter:blur(16px) saturate(180%);
-  -webkit-backdrop-filter:blur(16px) saturate(180%);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,0.14);
-  transition:background .2s var(--ease),transform .1s var(--ease);
-}
-.btn-ghost:hover{background:rgba(255,255,255,0.12);}
-.btn-ghost:active{transform:scale(0.96);}
-
-/* ── Chips & labels ── */
-.chip{
-  display:inline-flex;align-items:center;gap:7px;
-  padding:6px 14px;border-radius:var(--pill);
-  font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;
-  color:var(--ice);
-  background:rgba(79,195,247,0.10);
-  border:0.5px solid rgba(79,195,247,0.28);
-  backdrop-filter:blur(8px);
-  -webkit-backdrop-filter:blur(8px);
-}
-.chip-dot{width:6px;height:6px;border-radius:50%;background:currentColor;animation:pulse 2s ease-in-out infinite;}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.35;transform:scale(.7);}}
-.section-label{
-  font-size:11px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;
-  color:var(--label-3);margin-bottom:14px;
-}
-
-/* ── Layout ── */
-.section{max-width:1080px;margin:0 auto;padding:96px 40px;}
-.section+.section{border-top:0.5px solid var(--separator);}
-h1,h2{font-family:var(--font-head);font-weight:900;letter-spacing:-0.03em;line-height:1.1;}
-h2{font-size:clamp(30px,4.4vw,52px);margin-bottom:14px;}
-.section-sub{font-size:16px;color:var(--label-2);max-width:600px;line-height:1.65;margin-bottom:44px;}
-
-/* ── Hero ── */
+/* ───────────────────────── hero ───────────────────────── */
 .hero{
-  max-width:1120px;margin:0 auto;
-  padding:150px 40px 70px;
-  display:grid;grid-template-columns:1.15fr 0.85fr;gap:64px;align-items:center;
+  max-width:1080px;margin:0 auto;
+  padding:190px 32px 90px;
+  text-align:center;
+  display:flex;flex-direction:column;align-items:center;
 }
-.hero h1{font-size:clamp(42px,5.6vw,76px);margin:22px 0 20px;}
-.hero h1 .ice{color:var(--ice);}
-.hero-sub{font-size:17px;color:var(--label-2);max-width:520px;line-height:1.65;margin-bottom:32px;}
-.hero-ctas{display:flex;gap:14px;flex-wrap:wrap;align-items:center;}
-.hero-note{font-size:13px;color:var(--label-3);margin-top:18px;}
-
-/* Agent console (signature) */
-.console{padding:0;overflow:hidden;border-radius:var(--radius-xl);}
-.console-bar{
-  display:flex;align-items:center;gap:10px;
-  padding:14px 18px;border-bottom:0.5px solid var(--separator);
+.hero h1{
+  font-family:var(--font-head);font-weight:900;
+  font-size:clamp(38px,7vw,92px);
+  line-height:1.02;letter-spacing:-0.03em;
+  max-width:1000px;
+  text-wrap:balance;
 }
-.console-avatar{
-  width:30px;height:30px;border-radius:50%;flex:none;
-  display:flex;align-items:center;justify-content:center;
-  font-family:var(--font-head);font-size:11px;color:#06121C;
-  background:var(--ice);box-shadow:0 2px 8px rgba(79,195,247,0.4);
+.hero h1 .ice{color:var(--ice);text-shadow:0 0 60px rgba(79,195,247,0.35);}
+.hero-sub{
+  font-size:clamp(16px,1.6vw,19px);color:var(--label-2);
+  max-width:620px;line-height:1.65;margin:28px auto 40px;
 }
-.console-name{font-size:13px;font-weight:600;}
-.console-status{display:flex;align-items:center;gap:5px;font-size:11px;color:#34C759;}
-.console-status::before{content:'';width:5px;height:5px;border-radius:50%;background:#34C759;animation:pulse 2s ease-in-out infinite;}
-.console-body{padding:20px 18px 22px;display:flex;flex-direction:column;gap:12px;min-height:170px;}
-.msg{
-  max-width:88%;padding:11px 15px;font-size:14px;line-height:1.5;word-break:break-word;overflow-wrap:break-word;
-  border-radius:18px;border:0.5px solid var(--separator);
-  opacity:0;transform:translateY(10px) scale(.98);
-  animation:msg-in .45s var(--spring) forwards;
+.btn-primary{
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  padding:18px 40px;border-radius:var(--pill);
+  font-family:var(--font-body);font-size:16px;font-weight:700;
+  color:#06121C;background:var(--ice);border:none;cursor:pointer;
+  box-shadow:0 0 40px rgba(79,195,247,0.30),0 8px 24px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.4);
+  transition:transform .15s var(--ease),box-shadow .25s var(--ease);
+  position:relative;overflow:hidden;
 }
-.msg-agent{align-self:flex-start;background:rgba(255,255,255,0.07);border-bottom-left-radius:6px;animation-delay:.5s;}
-.msg-user{align-self:flex-end;background:rgba(79,195,247,0.14);border:0.5px solid rgba(79,195,247,0.25);border-bottom-right-radius:6px;animation-delay:1.6s;}
-.msg-agent.second{animation-delay:2.8s;}
-@keyframes msg-in{to{opacity:1;transform:translateY(0) scale(1);}}
-.typing{display:inline-flex;gap:4px;align-items:center;}
-.typing i{width:5px;height:5px;border-radius:50%;background:var(--label-3);animation:blink 1.2s infinite;}
-.typing i:nth-child(2){animation-delay:.18s;}
-.typing i:nth-child(3){animation-delay:.36s;}
-@keyframes blink{0%,80%,100%{opacity:.25;}40%{opacity:1;}}
-
-/* ── Stagger animation for list rows ── */
-.list-row{opacity:0;transform:translateX(-20px);}
-.list-group.visible .list-row{animation:row-in .5s var(--ease) forwards;}
-.list-group.visible .list-row:nth-child(1){animation-delay:0ms;}
-.list-group.visible .list-row:nth-child(2){animation-delay:80ms;}
-.list-group.visible .list-row:nth-child(3){animation-delay:160ms;}
-.list-group.visible .list-row:nth-child(4){animation-delay:240ms;}
-.list-group.visible .list-row:nth-child(5){animation-delay:320ms;}
-.list-group.visible .list-row:nth-child(6){animation-delay:400ms;}
-@keyframes row-in{from{opacity:0;transform:translateX(-20px);}to{opacity:1;transform:translateX(0);}}
-
-/* ── Demo step progression animation ── */
-.demo-step{opacity:0;transform:translateY(10px);}
-.demo-step.s-done{animation:step-pop .4s var(--spring) forwards;}
-.demo-step.s-run{animation:step-pop .4s var(--spring) forwards;position:relative;}
-.demo-step.s-next{animation:step-fade .5s var(--ease) forwards;}
-@keyframes step-pop{to{opacity:1;transform:translateY(0);}}
-@keyframes step-fade{to{opacity:.5;transform:translateY(0);}}
-.demo-step .s.s-run::after{content:'';position:absolute;bottom:4px;left:9px;width:42px;height:2px;background:var(--ice);border-radius:1px;animation:progress-bar 2s ease-in-out infinite;}
-@keyframes progress-bar{0%{width:0;}50%{width:42px;}100%{width:0;}}
-
-/* ── Diff pair directional reveal ── */
-.diff-cell.old{opacity:0;transform:translateX(-40px);}
-.diff-cell.new{opacity:0;transform:translateX(40px);}
-.diff-pair.visible .diff-cell.old{animation:slide-in-left .5s var(--ease) forwards;}
-.diff-pair.visible .diff-cell.new{animation:slide-in-right .5s var(--ease) forwards;}
-@keyframes slide-in-left{to{opacity:1;transform:translateX(0);}}
-@keyframes slide-in-right{to{opacity:1;transform:translateX(0);}}
-
-/* ── CTA button shimmer ── */
-.btn-filled{position:relative;overflow:hidden;}
-.btn-filled::after{
+.btn-primary::after{
   content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.25),transparent);
-  animation:shimmer 4s ease-in-out infinite;
-  pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent);
+  animation:shimmer 4.5s ease-in-out infinite;pointer-events:none;
 }
-@keyframes shimmer{0%{left:-100%;}50%{left:100%;}100%{left:100%;}}
+@keyframes shimmer{0%{left:-100%;}55%{left:100%;}100%{left:100%;}}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 56px rgba(79,195,247,0.45),0 12px 32px rgba(0,0,0,0.35),inset 0 1px 0 rgba(255,255,255,0.4);}
+.btn-primary:active{transform:scale(0.97);}
+.btn-primary .arr{transition:transform .2s var(--ease);}
+.btn-primary:hover .arr{transform:translateX(4px);}
+.hero-note{font-size:13.5px;color:var(--label-3);margin-top:30px;line-height:1.7;}
 
-/* ── FAQ smooth height transition ── */
-.faq-a{max-height:0;overflow:hidden;transition:max-height .25s var(--ease),padding .25s var(--ease);}
-.faq-group details[open] .faq-a{max-height:500px;}
-
-/* ── Nav active link ── */
-.nav-link{position:relative;}
-.nav-link.active::after{
-  content:'';position:absolute;bottom:-8px;left:0;right:0;height:2px;background:var(--ice);
-  animation:underline-in .3s var(--ease) forwards;
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:14px;
+  margin-bottom:34px;
+  font-family:var(--font-mono);
+  font-size:11.5px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;
+  color:var(--label-2);
 }
-@keyframes underline-in{from{transform:scaleX(0);transform-origin:left;}to{transform:scaleX(1);}}
+.hero-eyebrow::before,.hero-eyebrow::after{
+  content:'';width:28px;height:1px;background:var(--ice);opacity:0.6;
+}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.35;transform:scale(.7);}}
 
-/* ── iOS inset grouped list ── */
-.list-group{
-  background:var(--glass-bg);
-  backdrop-filter:blur(12px) saturate(180%);
-  -webkit-backdrop-filter:blur(12px) saturate(180%);
-  border-radius:var(--radius-lg);
-  border:0.5px solid var(--glass-border);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,0.12);
+/* ───────────────────────── trust strip ───────────────────────── */
+.trust{
+  max-width:1080px;margin:0 auto;padding:10px 32px 40px;text-align:center;
+}
+.trust-label{font-size:11px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:var(--label-4);margin-bottom:22px;}
+.trust-row{display:flex;justify-content:center;align-items:center;gap:14px;flex-wrap:wrap;}
+.trust-item{
+  font-size:12.5px;font-weight:600;letter-spacing:0.04em;color:var(--label-3);
+  padding:9px 18px;border-radius:var(--pill);
+  border:1px solid var(--line);background:var(--card-bg);
+}
+
+/* ───────────────────────── section shells ───────────────────────── */
+.section-head{
+  max-width:820px;margin:0 auto;text-align:center;
+  padding:110px 32px 64px;
+}
+.badge{
+  display:inline-flex;align-items:center;gap:12px;
+  padding:0;border:none;background:none;border-radius:0;
+  font-family:var(--font-mono);
+  font-size:11px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--label-3);
+  margin-bottom:26px;
+}
+.badge::before{
+  content:'';width:24px;height:1px;background:var(--ice);opacity:0.7;
+}
+.section-head h2{
+  font-family:var(--font-head);font-weight:900;
+  font-size:clamp(34px,4.8vw,62px);
+  line-height:1.05;letter-spacing:-0.03em;
+}
+.section-head h2 .ice{color:var(--ice);}
+.section-head .sub{font-size:16.5px;color:var(--label-2);margin-top:24px;line-height:1.75;max-width:560px;margin-left:auto;margin-right:auto;}
+
+/* ───────────────────────── phase cards ───────────────────────── */
+.phases{max-width:1240px;margin:0 auto;padding:0 32px;}
+.phase{
+  display:grid;grid-template-columns:1.05fr 0.95fr;gap:64px;align-items:center;
+  background:var(--card-bg);
+  border:1px solid var(--line);
+  border-radius:28px;
+  padding:56px;
+  margin-bottom:28px;
+  position:relative;
   overflow:hidden;
 }
-.list-row{
-  display:flex;align-items:flex-start;gap:16px;
-  padding:18px 22px;min-height:44px;
-  border-bottom:0.5px solid var(--separator);
-  font-size:15px;color:rgba(255,255,255,0.82);line-height:1.55;
+.phase::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 55% 60% at 22% 30%,rgba(79,195,247,0.04),transparent 70%);
 }
-.list-row:last-child{border-bottom:none;}
-.row-icon{flex:none;width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;margin-top:1px;background:rgba(79,195,247,0.10);border:0.5px solid rgba(79,195,247,0.22);color:var(--ice);}
+.phase.flip{grid-template-columns:0.95fr 1.05fr;}
+.phase.flip::before{background:radial-gradient(ellipse 55% 60% at 78% 30%,rgba(79,195,247,0.04),transparent 70%);}
+.phase.flip .phase-demo{order:2;}
+.phase-copy{position:relative;z-index:1;}
+.phase-tags{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
+.phase-num{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:38px;height:38px;border-radius:10px;
+  font-family:var(--font-head);font-size:14px;color:var(--ice);
+  background:rgba(79,195,247,0.08);border:1px solid rgba(79,195,247,0.25);
+}
+.phase-kind{font-size:11.5px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--ice);}
+.phase-when{
+  margin-left:auto;font-size:11.5px;font-weight:600;color:var(--label-3);
+  border:1px solid var(--line);border-radius:var(--pill);padding:5px 13px;
+}
+.phase-copy h3{
+  font-family:var(--font-head);font-weight:900;
+  font-size:clamp(28px,3vw,42px);letter-spacing:-0.025em;line-height:1.06;
+  margin-bottom:16px;
+}
+.phase-myth{font-size:13.5px;font-style:italic;color:var(--label-3);line-height:1.6;margin-bottom:14px;padding-left:14px;border-left:2px solid rgba(79,195,247,0.35);}
+.phase-copy p.desc{font-size:15px;color:var(--label-2);line-height:1.7;margin-bottom:24px;}
+.checklist{list-style:none;display:flex;flex-direction:column;gap:12px;}
+.checklist li{display:flex;gap:12px;font-size:14.5px;color:rgba(255,255,255,0.80);line-height:1.5;align-items:flex-start;}
+.checklist .tick{
+  flex:none;width:14px;height:20px;margin-top:0;
+  display:flex;align-items:center;justify-content:flex-start;
+  background:none;border:none;color:var(--ice);
+}
+.checklist .tick svg{width:11px;height:11px;stroke-width:2.6;}
 
-/* ── Problem ── */
-.gap-callout{margin-top:44px;padding:32px 36px;border-radius:var(--radius-xl);}
-.gap-callout p{font-size:19px;font-weight:600;letter-spacing:-0.01em;line-height:1.5;}
-.gap-callout .ice{color:var(--ice);}
-.mini-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px;}
-.mini-stat{padding:22px 24px;border-radius:var(--radius-lg);}
-.mini-stat .v{font-family:var(--font-head);font-size:28px;color:var(--white);letter-spacing:-0.02em;line-height:1;}
-.mini-stat .l{font-size:12.5px;color:var(--label-3);margin-top:8px;line-height:1.5;}
+/* ───────────────────────── dashboard mockups ───────────────────────── */
+.phase-demo{position:relative;z-index:1;min-width:0;}
+.dash{
+  background:var(--panel-2);
+  border:1px solid var(--line-strong);
+  border-radius:18px;
+  overflow:hidden;
+  box-shadow:0 24px 64px rgba(0,0,0,0.45),0 4px 16px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.05);
+}
+.dash-bar{
+  display:flex;align-items:center;gap:8px;
+  padding:12px 16px;border-bottom:1px solid var(--line);
+  background:rgba(255,255,255,0.015);
+}
+.dash-dots{display:flex;gap:6px;}
+.dash-dots i{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,0.12);}
+.dash-title{
+  flex:1;text-align:center;
+  font-family:var(--font-mono);font-size:10.5px;letter-spacing:0.06em;
+  color:var(--label-3);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.dash-live{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:var(--font-mono);
+  font-size:9px;font-weight:600;letter-spacing:0.14em;
+  color:var(--label-2);
+  background:none;border:none;
+  padding:0;white-space:nowrap;
+}
+.dash-live::before{content:'';width:14px;height:1px;background:var(--ice);opacity:0.8;}
+.dash-live.ice{color:var(--ice);background:rgba(79,195,247,0.10);border-color:rgba(79,195,247,0.3);}
 
-/* ── Difference ── */
-.diff-head{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
-.diff-head div{font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:0 6px;}
-.diff-head .without{color:var(--label-3);}
-.diff-head .with{color:var(--ice);}
-.diff-pair{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
-.diff-cell{padding:22px 24px;border-radius:var(--radius-lg);font-size:14.5px;line-height:1.55;}
-.diff-cell.old{background:rgba(255,255,255,0.02);border:0.5px solid var(--separator);color:var(--label-3);}
-.diff-cell.new{color:rgba(255,255,255,0.88);}
+/* stat header row */
+.dash-stats{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--line);}
+.dash-stat{padding:14px 16px;border-right:1px solid var(--line);}
+.dash-stat:last-child{border-right:none;}
+.dash-stat .k{font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--label-4);margin-bottom:5px;}
+.dash-stat .v{font-family:var(--font-head);font-size:19px;letter-spacing:-0.01em;line-height:1;color:var(--white);}
+.dash-stat .v .u{font-size:11px;color:var(--label-3);}
+.dash-stat .v.warn{color:var(--red);}
+.dash-stat .v.ok{color:var(--green);}
+.dash-stat .v.ice{color:var(--ice);}
 
-/* ── Economics ── */
-.role-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
-.role-card{padding:24px;border-radius:var(--radius-lg);display:flex;flex-direction:column;gap:10px;}
-.role-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px;}
-.role-name{font-size:15px;font-weight:700;}
-.role-cost{font-family:var(--font-head);font-size:17px;color:var(--ice);letter-spacing:-0.01em;white-space:nowrap;}
-.role-desc{font-size:13px;color:var(--label-3);line-height:1.55;}
-.role-dept{align-self:flex-start;font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--label-3);border:0.5px solid var(--separator);border-radius:var(--pill);padding:3px 10px;margin-top:auto;}
-.total-card{margin-top:14px;padding:34px 36px;border-radius:var(--radius-xl);display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:center;}
-.total-big{font-family:var(--font-head);font-size:clamp(40px,5vw,60px);letter-spacing:-0.03em;line-height:1;}
-.total-big span{font-size:22px;color:var(--label-3);}
-.total-note{font-size:13px;color:var(--label-3);margin-top:12px;line-height:1.55;}
-.total-rows{display:flex;flex-direction:column;}
-.total-row{display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:0.5px solid var(--separator);font-size:14px;color:var(--label-2);}
-.total-row:last-child{border-bottom:none;}
-.total-row b{color:var(--white);font-variant-numeric:tabular-nums;}
-.econ-close{margin-top:14px;padding:32px 36px;border-radius:var(--radius-xl);background:rgba(79,195,247,0.07);border:0.5px solid rgba(79,195,247,0.22);box-shadow:inset 0 1px 0 rgba(79,195,247,0.18),0 4px 24px rgba(79,195,247,0.06);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);}
-.econ-close h3{font-size:20px;font-weight:700;letter-spacing:-0.01em;margin-bottom:10px;}
-.econ-close p{font-size:14.5px;color:var(--label-2);line-height:1.65;}
-.bls-note{font-size:11.5px;color:var(--label-4);margin-top:18px;line-height:1.5;}
+/* table */
+.dash-table{width:100%;}
+.dash-thead{
+  display:grid;grid-template-columns:1.6fr 0.8fr 0.8fr 1fr;
+  padding:9px 16px;border-bottom:1px solid var(--line);
+  font-family:var(--font-mono);font-size:8.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--label-4);
+}
+.dash-tr{
+  display:grid;grid-template-columns:1.6fr 0.8fr 0.8fr 1fr;align-items:center;
+  padding:11px 16px;border-bottom:1px solid rgba(255,255,255,0.045);
+  font-size:12px;
+}
+.dash-tr:last-child{border-bottom:none;}
+.dash-tr .name{font-weight:600;color:rgba(255,255,255,0.85);display:flex;align-items:center;gap:9px;min-width:0;}
+.dash-tr .name span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.t-ic{flex:none;width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;background:rgba(255,255,255,0.05);border:1px solid var(--line);color:var(--label-2);}
+.dash-tr .meta{font-size:11px;color:var(--label-3);}
+.status{
+  justify-self:end;
+  font-size:8.5px;font-weight:700;letter-spacing:0.09em;
+  border-radius:var(--pill);padding:4px 9px;white-space:nowrap;
+}
+.st-hot{color:var(--ice);background:rgba(79,195,247,0.10);border:1px solid rgba(79,195,247,0.3);}
+.st-ok{color:var(--ice);background:rgba(79,195,247,0.10);border:1px solid rgba(79,195,247,0.28);}
+.st-wait{color:var(--label-3);background:rgba(255,255,255,0.04);border:1px solid var(--line);}
+.st-warn{color:var(--amber);background:rgba(255,179,64,0.10);border:1px solid rgba(255,179,64,0.3);}
 
-/* ── Flywheel agents ── */
-.agent-block{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;padding:54px 0;}
-.agent-block+.agent-block{border-top:0.5px solid var(--separator);}
-.agent-block.flip .agent-demo{order:2;}
-.agent-num{font-family:var(--font-head);font-size:13px;color:var(--label-4);letter-spacing:0.08em;margin-bottom:10px;}
-.agent-kind{font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--ice);margin-bottom:14px;}
-.agent-myth{font-size:14px;font-style:italic;color:var(--label-3);line-height:1.6;margin-bottom:14px;padding-left:16px;border-left:2px solid rgba(79,195,247,0.35);}
-.agent-text h3{font-family:var(--font-head);font-size:clamp(24px,2.8vw,34px);letter-spacing:-0.02em;margin-bottom:14px;}
-.agent-text p{font-size:15px;color:var(--label-2);line-height:1.65;margin-bottom:20px;}
-.agent-points{list-style:none;display:flex;flex-direction:column;gap:10px;}
-.agent-points li{display:flex;gap:11px;font-size:14px;color:rgba(255,255,255,0.78);line-height:1.55;}
-.agent-points li::before{content:'';flex:none;width:6px;height:6px;border-radius:50%;background:var(--ice);margin-top:8px;box-shadow:0 0 8px rgba(79,195,247,0.7);}
+/* score bar inside table */
+.scorebar{display:flex;align-items:center;gap:7px;}
+.scorebar .bar{width:52px;height:3px;border-radius:2px;background:rgba(255,255,255,0.08);overflow:hidden;}
+.scorebar .bar i{display:block;height:100%;border-radius:2px;background:var(--ice);width:0;transition:width 1.2s var(--ease);}
+.scorebar .bar i.g{background:var(--green);}
+.scorebar .bar i.a{background:var(--amber);}
+.scorebar .n{font-family:var(--font-mono);font-size:10px;color:var(--label-3);}
 
-.agent-demo{padding:0;overflow:hidden;border-radius:var(--radius-xl);}
-.demo-bar{display:flex;align-items:center;gap:10px;padding:13px 18px;border-bottom:0.5px solid var(--separator);font-size:12.5px;font-weight:600;}
-.demo-bar .live{margin-left:auto;display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:0.08em;color:#34C759;background:rgba(52,199,89,0.12);border:0.5px solid rgba(52,199,89,0.3);border-radius:var(--pill);padding:3px 9px;}
-.demo-bar .live::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor;animation:pulse 2s infinite;}
-.demo-body{padding:18px;display:flex;flex-direction:column;gap:10px;}
-.demo-item{padding:13px 15px;border-radius:var(--radius-md);background:rgba(255,255,255,0.045);border:0.5px solid var(--separator);font-size:13px;line-height:1.5;color:rgba(255,255,255,0.8);}
-.demo-item .k{display:block;font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--label-3);margin-bottom:5px;}
-.demo-item.accent{background:rgba(79,195,247,0.08);border-color:rgba(79,195,247,0.22);}
-.demo-meta{display:flex;gap:8px;flex-wrap:wrap;}
-.demo-tag{font-size:10.5px;font-weight:600;color:var(--label-2);border:0.5px solid var(--separator);border-radius:var(--pill);padding:4px 11px;}
-.demo-step{display:flex;align-items:center;gap:12px;padding:12px 15px;border-radius:var(--radius-md);background:rgba(255,255,255,0.045);border:0.5px solid var(--separator);}
-.demo-step .n{flex:none;display:flex;align-items:center;font-family:var(--font-head);font-size:11px;color:var(--label-3);}
-.demo-step .t{font-size:13px;line-height:1.4;}
-.demo-step .t small{display:block;font-size:11px;color:var(--label-3);}
-.demo-step .s{margin-left:auto;font-size:9.5px;font-weight:700;letter-spacing:0.08em;border-radius:var(--pill);padding:3px 9px;}
-.s-done{color:#34C759;background:rgba(52,199,89,0.12);border:0.5px solid rgba(52,199,89,0.3);}
-.s-run{color:var(--ice);background:rgba(79,195,247,0.12);border:0.5px solid rgba(79,195,247,0.3);}
-.s-next{color:var(--label-3);background:rgba(255,255,255,0.05);border:0.5px solid var(--separator);}
-.funnel{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
-.funnel div{text-align:center;padding:14px 6px;border-radius:var(--radius-md);background:rgba(255,255,255,0.045);border:0.5px solid var(--separator);}
-.funnel .fv{font-family:var(--font-head);font-size:19px;color:var(--white);letter-spacing:-0.01em;}
-.funnel .fl{font-size:10.5px;color:var(--label-3);margin-top:3px;}
+/* dark footer strip */
+.dash-foot{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  background:#05080B;border-top:1px solid var(--line);
+}
+.dash-foot .cell{padding:13px 16px;border-right:1px solid rgba(255,255,255,0.06);}
+.dash-foot .cell:last-child{border-right:none;}
+.dash-foot .k{font-family:var(--font-mono);font-size:8.5px;letter-spacing:0.13em;text-transform:uppercase;color:var(--label-4);margin-bottom:4px;}
+.dash-foot .v{font-family:var(--font-head);font-size:15px;letter-spacing:-0.01em;}
+.dash-foot .v.ice{color:var(--ice);}
+.dash-foot .v.ok{color:var(--green);}
+.dash-foot .v.warn{color:var(--red);}
+.dash-foot .v.amber{color:var(--amber);}
 
+/* script feed (Apollo) */
+.script-feed{padding:14px;display:flex;flex-direction:column;gap:10px;}
+.script-card{
+  padding:13px 15px;border-radius:12px;
+  background:rgba(255,255,255,0.03);border:1px solid var(--line);
+  font-size:12.5px;line-height:1.55;color:rgba(255,255,255,0.82);
+}
+.script-card .k{display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--label-4);margin-bottom:6px;}
+.script-card.accent{background:rgba(79,195,247,0.06);border-color:rgba(79,195,247,0.25);}
+.script-card.accent .k{color:rgba(79,195,247,0.75);}
+.typing-line::after{content:'▍';color:var(--ice);animation:caret 1s steps(1) infinite;}
+@keyframes caret{50%{opacity:0;}}
+.queue-row{display:flex;align-items:center;gap:10px;padding:10px 15px;border-radius:12px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);font-size:12px;color:var(--label-3);}
+.queue-row .qn{font-family:var(--font-mono);font-size:10px;color:var(--label-4);}
+.queue-row .qs{margin-left:auto;}
+
+/* kanban (Hermes) */
+.kanban{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--line);border-bottom:1px solid var(--line);}
+.kcol{background:var(--panel-2);padding:12px;min-height:230px;}
+.kcol-head{display:flex;align-items:center;gap:7px;font-family:var(--font-mono);font-size:9px;letter-spacing:0.13em;text-transform:uppercase;color:var(--label-4);margin-bottom:10px;}
+.kcol-head .cnt{margin-left:auto;color:var(--label-3);}
+.kcol-head .cdot{width:14px;height:1px;border-radius:0;opacity:0.8;}
+.kcard{
+  padding:10px 12px;border-radius:10px;margin-bottom:8px;
+  background:rgba(255,255,255,0.035);border:1px solid var(--line);
+  font-size:11.5px;line-height:1.45;color:rgba(255,255,255,0.82);
+}
+.kcard .kmeta{display:flex;align-items:center;gap:7px;margin-top:8px;}
+.kcard .kav{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#06121C;background:var(--ice);}
+.kcard .ktag{font-family:var(--font-mono);font-size:8.5px;color:var(--label-4);}
+.kcard.working{border-color:rgba(79,195,247,0.3);background:rgba(79,195,247,0.05);}
+.kprog{height:3px;border-radius:2px;background:rgba(255,255,255,0.08);margin-top:9px;overflow:hidden;}
+.kprog i{display:block;height:100%;width:0;border-radius:2px;background:var(--ice);transition:width 1.4s var(--ease);}
+
+/* funnel strip */
+.funnel-strip{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--line);}
+.funnel-cell{padding:14px 16px;border-right:1px solid var(--line);}
+.funnel-cell:last-child{border-right:none;}
+.funnel-cell .k{font-family:var(--font-mono);font-size:8.5px;letter-spacing:0.12em;text-transform:uppercase;color:var(--label-4);margin-bottom:4px;}
+.funnel-cell .v{font-family:var(--font-head);font-size:18px;color:var(--white);}
+.funnel-cell:last-child .v{color:var(--ice);}
+
+/* checklist ingest (Clio) */
+.ingest{padding:14px;display:flex;flex-direction:column;gap:8px;}
+.ingest-row{
+  display:flex;align-items:center;gap:12px;
+  padding:11px 14px;border-radius:12px;
+  background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.05);
+  font-size:12.5px;color:rgba(255,255,255,0.8);
+}
+.ingest-row small{display:block;font-size:10.5px;color:var(--label-4);}
+.ingest-row .st{margin-left:auto;}
+.ingest-ic{flex:none;width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:rgba(79,195,247,0.08);border:1px solid rgba(79,195,247,0.22);color:var(--ice);}
+.ingest-ic svg{width:12px;height:12px;}
+
+/* progress footer */
+.prog-foot{
+  display:flex;align-items:center;gap:14px;
+  padding:12px 16px;background:#05080B;border-top:1px solid var(--line);
+  font-family:var(--font-mono);font-size:9.5px;letter-spacing:0.08em;color:var(--label-3);
+}
+.prog-foot .pbar{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,0.08);overflow:hidden;}
+.prog-foot .pbar i{display:block;height:100%;width:0;border-radius:2px;background:linear-gradient(90deg,var(--ice),#7DD3FC);transition:width 1.8s var(--ease);}
+.prog-foot .pr{margin-left:auto;white-space:nowrap;}
+
+/* ───────────────────────── manual interstitial ───────────────────────── */
+.manual-wrap{display:flex;flex-direction:column;align-items:center;padding:8px 32px;}
+.flow-line{width:1px;height:52px;background:linear-gradient(to bottom,transparent,rgba(79,195,247,0.5),transparent);}
 .manual-card{
-  margin:0 auto;max-width:560px;text-align:center;
-  padding:34px 38px;border-radius:var(--radius-xl);
-  background:rgba(13,17,23,0.7);
-  border:0.5px solid rgba(79,195,247,0.3);
-  box-shadow:0 0 40px rgba(79,195,247,0.06),inset 0 1px 0 rgba(255,255,255,0.1);
+  max-width:520px;text-align:center;
+  padding:36px 42px;border-radius:22px;
+  background:rgba(13,17,23,0.85);
+  border:1px solid rgba(79,195,247,0.3);
+  box-shadow:0 0 48px rgba(79,195,247,0.07),inset 0 1px 0 rgba(255,255,255,0.08);
 }
-.manual-wrap{padding:44px 0;display:flex;flex-direction:column;align-items:center;gap:0;}
-.manual-card .tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--label-3);margin-bottom:12px;}
-.manual-card h3{font-family:var(--font-head);font-size:26px;letter-spacing:-0.02em;margin-bottom:10px;}
-.manual-card p{font-size:14px;color:var(--label-2);line-height:1.6;}
-.flow-line{width:0.5px;height:44px;background:linear-gradient(to bottom,transparent,rgba(79,195,247,0.5),transparent);}
+.manual-card .tag{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--label-3);margin-bottom:12px;}
+.manual-card h3{font-family:var(--font-head);font-size:27px;letter-spacing:-0.02em;margin-bottom:10px;}
+.manual-card p{font-size:14px;color:var(--label-2);line-height:1.65;}
 
-/* ── Social Proof / Results ── */
-.proof-intro{display:grid;grid-template-columns:1.1fr 0.9fr;gap:48px;align-items:center;margin-bottom:48px;}
-.proof-client{display:flex;align-items:center;gap:16px;margin-bottom:20px;}
-.proof-avatar{width:52px;height:52px;border-radius:50%;object-fit:cover;border:0.5px solid var(--glass-border);flex:none;}
-.proof-client-info .name{font-size:15px;font-weight:700;margin-bottom:2px;}
-.proof-client-info .handle{font-size:12px;color:var(--label-3);}
-.proof-stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:20px;}
-.proof-stat{padding:16px 20px;border-radius:var(--radius-md);text-align:center;}
-.proof-stat .v{font-family:var(--font-head);font-size:24px;letter-spacing:-0.02em;line-height:1;}
-.proof-stat .l{font-size:11px;color:var(--label-3);margin-top:5px;line-height:1.4;}
+/* ───────────────────────── problem list ───────────────────────── */
+.narrow{max-width:880px;margin:0 auto;padding:0 32px;}
+.pain-list{
+  border:1px solid var(--line);border-radius:20px;overflow:hidden;
+  background:var(--card-bg);
+}
+.pain-row{
+  display:flex;gap:16px;align-items:flex-start;
+  padding:20px 26px;border-bottom:1px solid var(--line);
+  font-size:15px;color:rgba(255,255,255,0.80);line-height:1.6;
+  opacity:0;transform:translateX(-18px);
+}
+.pain-list.visible .pain-row{animation:row-in .5s var(--ease) forwards;}
+.pain-list.visible .pain-row:nth-child(1){animation-delay:0ms;}
+.pain-list.visible .pain-row:nth-child(2){animation-delay:90ms;}
+.pain-list.visible .pain-row:nth-child(3){animation-delay:180ms;}
+.pain-list.visible .pain-row:nth-child(4){animation-delay:270ms;}
+.pain-list.visible .pain-row:nth-child(5){animation-delay:360ms;}
+@keyframes row-in{to{opacity:1;transform:translateX(0);}}
+.pain-row:last-child{border-bottom:none;}
+.pain-ic{flex:none;width:28px;height:28px;border-radius:4px;display:flex;align-items:center;justify-content:center;background:none;border:1px solid var(--line-strong);color:var(--label-2);margin-top:2px;transition:color .2s var(--ease),border-color .2s var(--ease);}
+.pain-row:hover .pain-ic{color:var(--ice);border-color:rgba(79,195,247,0.4);}
+.pain-ic svg{width:14px;height:14px;}
+.gap-callout{
+  margin-top:26px;padding:34px 40px;border-radius:22px;
+  background:rgba(79,195,247,0.05);border:1px solid rgba(79,195,247,0.22);
+}
+.gap-callout p{font-size:18.5px;font-weight:600;letter-spacing:-0.01em;line-height:1.55;}
+.gap-callout .ice{color:var(--ice);}
 
-.proof-duo{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px;}
-.proof-photo{border-radius:var(--radius-lg);overflow:hidden;border:0.5px solid var(--glass-border);}
-.proof-photo img{width:100%;height:100%;object-fit:cover;display:block;}
-.proof-quote{padding:28px 32px;border-radius:var(--radius-lg);display:flex;flex-direction:column;justify-content:center;gap:14px;}
-.proof-quote blockquote{font-size:16px;font-weight:500;line-height:1.65;letter-spacing:-0.01em;}
-.proof-quote .attrib{font-size:12.5px;color:var(--label-3);}
+/* ───────────────────────── accent close card ───────────────────────── */
+.econ-close{
+  margin-top:16px;padding:34px 40px;border-radius:22px;
+  background:rgba(79,195,247,0.05);border:1px solid rgba(79,195,247,0.22);
+}
+.econ-close h3{font-size:21px;font-weight:700;letter-spacing:-0.01em;margin-bottom:12px;}
+.econ-close p{font-size:14.5px;color:var(--label-2);line-height:1.7;}
 
-/* ── Process ── */
-.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
-.step-card{padding:28px;border-radius:var(--radius-lg);}
-.step-card .s-tag{font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--ice);margin-bottom:14px;}
-.step-card h3{font-size:18px;font-weight:700;letter-spacing:-0.01em;margin-bottom:4px;}
-.step-card h4{font-size:13px;font-weight:500;color:var(--label-3);margin-bottom:12px;}
-.step-card p{font-size:13.5px;color:var(--label-2);line-height:1.6;}
-.included-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:14px;}
-.included-chip{padding:16px 18px;border-radius:var(--radius-md);font-size:13px;font-weight:600;text-align:center;color:rgba(255,255,255,0.85);}
+/* ───────────────────────── results ───────────────────────── */
+.results{max-width:1080px;margin:0 auto;padding:0 32px;}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.big-stat{
+  padding:34px 30px;border-radius:20px;text-align:center;
+  background:var(--card-bg);border:1px solid var(--line);
+}
+.big-stat .v{font-family:var(--font-head);font-size:46px;letter-spacing:-0.03em;line-height:1;color:var(--ice);}
+.big-stat .l{font-size:13px;color:var(--label-3);margin-top:14px;line-height:1.6;}
 
-/* ── ICP ── */
-.icp-grid{display:grid;grid-template-columns:1.2fr 0.8fr;gap:14px;align-items:start;}
-.icp-col-label{font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;margin-bottom:12px;}
+/* ───────────────────────── process steps ───────────────────────── */
+.steps-wrap{max-width:1080px;margin:0 auto;padding:0 32px;}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.step-card{
+  padding:32px 30px;border-radius:20px;
+  background:var(--card-bg);border:1px solid var(--line);
+  position:relative;
+}
+.step-card .s-num{
+  display:block;margin-bottom:14px;
+  font-family:var(--font-head);font-size:34px;line-height:1;
+  color:rgba(79,195,247,0.28);letter-spacing:-0.02em;
+}
+.step-card h3{font-size:19px;font-weight:700;letter-spacing:-0.01em;margin-bottom:4px;}
+.step-card h4{font-size:13px;font-weight:500;color:var(--ice);margin-bottom:12px;}
+.step-card p{font-size:13.5px;color:var(--label-2);line-height:1.65;}
+.included-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:16px;}
+.included-chip{
+  padding:18px;border-radius:14px;font-size:13px;font-weight:600;text-align:center;
+  color:rgba(255,255,255,0.85);background:var(--card-bg);border:1px solid var(--line);
+}
+
+/* ───────────────────────── ICP ───────────────────────── */
+.icp-wrap{max-width:1080px;margin:0 auto;padding:0 32px;}
+.icp-grid{display:grid;grid-template-columns:1.15fr 0.85fr;gap:16px;align-items:start;}
+.icp-col-label{font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:14px;}
 .icp-col-label.fit{color:var(--ice);}
 .icp-col-label.nofit{color:var(--label-3);}
-.row-x{background:rgba(255,255,255,0.04);border-color:var(--separator);color:var(--label-3);}
+.icp-list{border:1px solid var(--line);border-radius:20px;overflow:hidden;background:var(--card-bg);}
+.icp-row{
+  display:flex;gap:14px;align-items:flex-start;
+  padding:17px 22px;border-bottom:1px solid var(--line);
+  font-size:14.5px;color:rgba(255,255,255,0.8);line-height:1.55;
+}
+.icp-row:last-child{border-bottom:none;}
+.icp-ic{flex:none;width:14px;height:22px;display:flex;align-items:center;justify-content:flex-start;margin-top:0;background:none;border:none;color:var(--ice);}
+.icp-ic.x{background:none;border:none;color:var(--label-4);}
+.icp-ic svg{width:10px;height:10px;}
 
-/* ── Offer ── */
-.offer-card{padding:48px;border-radius:var(--radius-xl);background:var(--glass-bg-strong);}
-.offer-card .chip{margin-bottom:22px;}
-.offer-card h3{font-family:var(--font-head);font-size:clamp(26px,3.2vw,38px);letter-spacing:-0.02em;margin-bottom:8px;}
-.offer-card .offer-sub{font-size:15px;color:var(--label-2);margin-bottom:30px;}
-.offer-list{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:13px 28px;margin-bottom:34px;}
+/* ───────────────────────── offer ───────────────────────── */
+.offer-wrap{max-width:920px;margin:0 auto;padding:0 32px;}
+.offer-card{
+  padding:52px;border-radius:26px;
+  background:linear-gradient(180deg,rgba(79,195,247,0.06),rgba(255,255,255,0.015) 40%);
+  border:1px solid rgba(79,195,247,0.25);
+  box-shadow:0 0 80px rgba(79,195,247,0.06);
+}
+.offer-card .badge{margin-bottom:24px;}
+.offer-card h3{font-family:var(--font-head);font-size:clamp(28px,3.4vw,42px);letter-spacing:-0.025em;margin-bottom:8px;}
+.offer-sub{font-size:15px;color:var(--label-2);margin-bottom:32px;}
+.offer-list{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:14px 30px;margin-bottom:36px;}
 .offer-list li{display:flex;gap:11px;font-size:14px;color:rgba(255,255,255,0.82);line-height:1.5;}
-.offer-list li::before{content:'';flex:none;width:13px;height:13px;margin-top:4px;background:var(--ice);-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='5 13 9 17 19 7'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='5 13 9 17 19 7'/%3E%3C/svg%3E") center/contain no-repeat;}
-.offer-foot{font-size:13.5px;color:var(--label-3);line-height:1.6;margin-top:18px;}
-.retainer{margin-top:14px;padding:26px 30px;border-radius:var(--radius-lg);}
-.retainer .tag{font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--label-3);margin-bottom:8px;display:block;}
-.retainer p{font-size:13.5px;color:var(--label-2);line-height:1.6;}
+.offer-list .tick{flex:none;width:13px;height:20px;margin-top:0;display:flex;align-items:center;justify-content:flex-start;background:none;border:none;color:var(--ice);}
+.offer-list .tick svg{width:9px;height:9px;}
+.offer-foot{font-size:13.5px;color:var(--label-3);line-height:1.7;margin-top:28px;}
+.retainer{
+  margin-top:16px;padding:28px 34px;border-radius:18px;
+  background:var(--card-bg);border:1px solid var(--line);
+}
+.retainer .tag{font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--label-3);margin-bottom:8px;display:block;}
+.retainer p{font-size:13.5px;color:var(--label-2);line-height:1.65;}
 .retainer p+p{margin-top:10px;}
 
-/* ── FAQ ── */
-.faq-group details{border-bottom:0.5px solid var(--separator);}
+/* ───────────────────────── FAQ ───────────────────────── */
+.faq-wrap{max-width:820px;margin:0 auto;padding:0 32px;}
+.faq-group details{border-bottom:1px solid var(--line);}
 .faq-group details:last-child{border-bottom:none;}
 .faq-group summary{
   list-style:none;cursor:pointer;
   display:flex;align-items:center;justify-content:space-between;gap:16px;
-  padding:19px 22px;font-size:15px;font-weight:600;
-  transition:background .15s var(--ease);
+  padding:23px 6px;font-size:16px;font-weight:600;letter-spacing:-0.01em;
+  transition:color .2s var(--ease);
 }
+.faq-group summary:hover{color:var(--ice);}
 .faq-group summary::-webkit-details-marker{display:none;}
-.faq-group summary:hover{background:rgba(255,255,255,0.03);}
-.faq-group summary::after{content:'+';font-size:19px;font-weight:400;color:var(--label-3);transition:transform .25s var(--spring);flex:none;}
+.faq-group summary::after{
+  content:'';flex:none;width:12px;height:12px;
+  background:currentColor;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round'%3E%3Cline x1='12' y1='5' x2='12' y2='19'/%3E%3Cline x1='5' y1='12' x2='19' y2='12'/%3E%3C/svg%3E") center/contain no-repeat;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round'%3E%3Cline x1='12' y1='5' x2='12' y2='19'/%3E%3Cline x1='5' y1='12' x2='19' y2='12'/%3E%3C/svg%3E") center/contain no-repeat;
+  transition:transform .3s var(--spring);color:var(--label-3);
+}
 .faq-group details[open] summary::after{transform:rotate(45deg);}
-.faq-a{max-height:0;overflow:hidden;padding:0 22px;font-size:14px;color:var(--label-2);line-height:1.7;max-width:680px;transition:max-height .3s var(--ease),padding .3s var(--ease);}
-.faq-group details[open] .faq-a{max-height:500px;padding:20px 22px;}
+.faq-a{max-height:0;overflow:hidden;padding:0 6px;font-size:14.5px;color:var(--label-2);line-height:1.75;max-width:680px;transition:max-height .3s var(--ease),padding .3s var(--ease);}
+.faq-group details[open] .faq-a{max-height:500px;padding:0 6px 24px;}
 
-/* ── Final CTA ── */
-.final-cta{text-align:center;padding:110px 40px;}
-.final-cta h2{max-width:760px;margin:0 auto 18px;}
-.final-cta p{font-size:15.5px;color:var(--label-2);max-width:520px;margin:0 auto 34px;line-height:1.65;}
-.final-note{font-size:13px;color:var(--label-3);margin-top:18px;}
+/* ───────────────────────── final CTA ───────────────────────── */
+.final-cta{
+  max-width:920px;margin:80px auto 0;padding:0 32px 130px;text-align:center;
+}
+.final-inner{
+  padding:80px 48px 72px;border-radius:30px;position:relative;overflow:hidden;
+  background:var(--card-bg);border:1px solid var(--line);
+}
+.final-inner::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 70% 80% at 50% 110%,rgba(79,195,247,0.12),transparent 70%);
+}
+.final-inner>*{position:relative;z-index:1;}
+.final-cta h2{
+  font-family:var(--font-head);font-weight:900;
+  font-size:clamp(30px,4.2vw,52px);line-height:1.08;letter-spacing:-0.03em;
+  max-width:720px;margin:22px auto 18px;
+}
+.final-cta p{font-size:15.5px;color:var(--label-2);max-width:520px;margin:0 auto 40px;line-height:1.7;}
+.final-cta p.final-note{font-size:13px;color:var(--label-3);margin:28px auto 0;line-height:1.7;max-width:460px;}
 
 footer{
-  border-top:0.5px solid var(--separator);
-  padding:34px 40px;max-width:1080px;margin:0 auto;
+  border-top:1px solid var(--line);
+  padding:36px 40px;max-width:1240px;margin:0 auto;
   display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;
 }
 footer .copy{font-size:12.5px;color:var(--label-3);}
-footer .foot-links{display:flex;gap:20px;}
+footer .foot-links{display:flex;gap:22px;flex-wrap:wrap;}
 footer .foot-links a{font-size:12.5px;color:var(--label-3);transition:color .2s;}
 footer .foot-links a:hover{color:var(--white);}
 
-/* ── Focus visible ── */
-:focus-visible{outline:2px solid var(--ice);outline-offset:3px;border-radius:4px;}
-.btn-filled:focus-visible,.btn-ghost:focus-visible,.nav-cta:focus-visible{outline-offset:4px;border-radius:var(--pill);}
-.faq-group summary:focus-visible{outline:2px solid var(--ice);outline-offset:-2px;}
+/* ───────────────────────── reveal system ───────────────────────── */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s var(--ease),transform .7s var(--ease);}
+.reveal.visible{opacity:1;transform:translateY(0);}
+.reveal-scale{opacity:0;transform:translateY(34px) scale(.97);transition:opacity .8s var(--ease),transform .8s var(--ease);}
+.reveal-scale.visible{opacity:1;transform:translateY(0) scale(1);}
 
-/* ── Reveal ── */
-.reveal{opacity:0;transform:translateY(22px) scale(.985);transition:opacity .5s var(--spring),transform .5s var(--spring);}
-.reveal.visible{opacity:1;transform:translateY(0) scale(1);}
+:focus-visible{outline:2px solid var(--ice);outline-offset:3px;border-radius:4px;}
+.btn-primary:focus-visible,.nav-cta:focus-visible{outline-offset:4px;border-radius:var(--pill);}
+.faq-group summary:focus-visible{outline:2px solid var(--ice);outline-offset:-2px;}
 
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important;}
-  .reveal{opacity:1;transform:none;}
-  .msg{opacity:1;transform:none;}
+  .reveal,.reveal-scale,.pain-row{opacity:1;transform:none;}
 }
 
-/* ── Responsive ── */
-@media (max-width:920px){
-  .hero{grid-template-columns:1fr;gap:44px;padding:130px 24px 50px;}
-  .agent-block{grid-template-columns:1fr;gap:28px;}
-  .agent-block.flip .agent-demo{order:0;}
-  .total-card{grid-template-columns:1fr;gap:20px;}
+/* ───────────────────────── responsive ───────────────────────── */
+@media (max-width:1000px){
+  .phase,.phase.flip{grid-template-columns:1fr;gap:36px;padding:36px 28px;}
+  .phase.flip .phase-demo{order:0;}
+  .phase-when{margin-left:0;}
+  .total-card{grid-template-columns:1fr;gap:24px;padding:32px 28px;}
   .role-grid{grid-template-columns:1fr 1fr;}
   .icp-grid{grid-template-columns:1fr;}
   .steps{grid-template-columns:1fr;}
   .included-row{grid-template-columns:1fr 1fr;}
   .offer-list{grid-template-columns:1fr;}
-  .tiktok-grid{grid-template-columns:1fr;}
-  .proof-duo{grid-template-columns:1fr;}
-  .proof-stat-row{grid-template-columns:1fr 1fr;}
+  .quote-duo{grid-template-columns:1fr;}
+  .stat-row{grid-template-columns:1fr;}
 }
 @media (max-width:640px){
-  .glass-nav{gap:14px;padding:9px 10px 9px 16px;top:10px;width:calc(100% - 20px);justify-content:space-between;}
-  .nav-links{gap:13px;}
-  .nav-link{font-size:12px;}
-  .nav-link.home{display:none;}
-  .nav-cta{padding:8px 13px;font-size:12px;}
-  .logo{font-size:17px;}
-  .section{padding:64px 20px;}
-
-  .diff-pair,.diff-head{grid-template-columns:1fr;}
-  .diff-head .without{display:none;}
+  .nav{padding:14px 20px;}
+  .nav.scrolled{padding:11px 20px;}
+  .nav-right{gap:18px;}
+  .nav-link{display:none;}
+  .hero{padding:150px 20px 60px;}
+  .hero h1{font-size:clamp(30px,8.6vw,40px);}
+  .section-head{padding:80px 20px 44px;}
+  .phases,.narrow,.econ,.results,.steps-wrap,.icp-wrap,.offer-wrap,.faq-wrap{padding-left:16px;padding-right:16px;}
+  .phase,.phase.flip{padding:24px 16px;border-radius:20px;}
   .role-grid{grid-template-columns:1fr;}
-  .mini-stats{grid-template-columns:1fr;}
-  .offer-card{padding:30px 24px;}
-  .final-cta{padding:70px 20px;}
-  .hero-ctas{flex-direction:column;align-items:stretch;}
+  .offer-card{padding:32px 22px;}
+  .final-inner{padding:52px 24px;}
+  .dash-stats,.dash-foot,.funnel-strip{grid-template-columns:repeat(2,1fr);}
+  .dash-stat:nth-child(2),.dash-foot .cell:nth-child(2),.funnel-cell:nth-child(2){border-right:none;}
+  .dash-stat,.dash-foot .cell{border-bottom:1px solid rgba(255,255,255,0.05);}
+  .kanban{grid-template-columns:1fr;}
+  .kcol{min-height:0;}
+  .dash-thead{grid-template-columns:1.6fr 1fr;}
+  .dash-thead .hide-m{display:none;}
+  .dash-tr{grid-template-columns:1.6fr 1fr;}
+  .dash-tr .meta{display:none;}
+  .gap-callout{padding:26px 22px;}
+  .gap-callout p{font-size:16px;}
+  .included-row{grid-template-columns:1fr;}
+  .manual-card{padding:28px 24px;}
 }
 </style>
 </head>
 <body>
 
-<div class="ambient" aria-hidden="true">
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-  <div class="orb orb-3"></div>
-</div>
+<div class="glow-bg" aria-hidden="true"></div>
+<div class="grid-bg" aria-hidden="true"></div>
 
-<nav class="glass-nav" id="main-nav" aria-label="Main">
+<nav class="nav" id="main-nav" aria-label="Main">
   <a href="/" class="logo">Inbound<span class="os">OS</span></a>
-  <div class="nav-links">
-    <a href="/" class="nav-link home">Home</a>
+  <div class="nav-right">
+    <a href="#system" class="nav-link">The System</a>
     <a href="/client-wins" class="nav-link">Client Wins</a>
     <a href="/about" class="nav-link">About</a>
+    <a href="/apply" class="nav-cta">See If You're a Fit</a>
   </div>
-  <a href="/apply" class="nav-cta">See If You're a Fit</a>
 </nav>
 
-<!-- ── HERO ── -->
+<!-- ══════════════ HERO ══════════════ -->
 <header class="hero" id="hero">
-  <div class="hero-text">
-    <span class="chip"><span class="chip-dot"></span>90-Day Done-With-You Installation</span>
-    <h1>5 scripts a day in your voice.<br><span class="ice">Trained on your ICP. You own it.</span></h1>
-    <p class="hero-sub">Custom AI agents installed inside your business. Trained on your calls, your hooks, your audience. Scripts every morning. Qualified leads. Automated follow-ups. One install. Then it's yours forever.</p>
-    <div class="hero-ctas">
-      <a href="/apply" class="btn-filled">Apply Now</a>
-      <a href="/client-wins" class="btn-ghost">See Proof</a>
-    </div>
-    <p class="hero-note">Application required. Limited spots. No Calendly. We review every application personally.</p>
-  </div>
-  <div class="console glass" aria-hidden="true">
-    <div class="console-bar">
-      <div class="console-avatar">iO</div>
-      <div>
-        <div class="console-name">InboundOS Agent</div>
-        <div class="console-status">Online</div>
-      </div>
-    </div>
-    <div class="console-body">
-      <div class="msg msg-agent">What's your current bottleneck in content creation?</div>
-      <div class="msg msg-user">Scripting takes forever. I post maybe twice a week.</div>
-      <div class="msg msg-agent second">We'll have you writing 5 scripts a day, every day, in your voice. Trained on your ICP and hooks.</div>
-    </div>
-  </div>
+  <span class="hero-eyebrow">90-Day Done-With-You Installation</span>
+  <h1>You're the bottleneck.<br><span class="ice">We install the fix.</span></h1>
+  <p class="hero-sub">Custom AI agents trained on your voice, your ICP, and 1,000+ viral hooks. 5 scripts every morning, qualified leads on your calendar. One install, yours forever.</p>
+  <a href="/apply" class="btn-primary">Apply Now <span class="arr">→</span></a>
+  <p class="hero-note">Application required. Limited spots. We review every application personally.</p>
 </header>
 
-<!-- ── PROBLEM ── -->
-<section class="section" id="problem" aria-labelledby="problem-heading">
-  <div class="section-label">The Problem</div>
-  <h2 id="problem-heading">You hired help.<br>You got generic.</h2>
-  <p class="section-sub">VAs, SMMs, Upwork freelancers — they don't know your hooks, your ICP, or your offer. They produce content that could belong to anyone.</p>
-
-  <div class="list-group reveal">
-    <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg></span>Your VA wrote captions that felt generic. Zero voice, zero ICP targeting. Engagement tanked. You fired them and wrote it yourself.</div>
-    <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>Your Upwork SMM posted on schedule. But nothing converted. No real hooks. No targeting. Just template noise that could be anyone's.</div>
-    <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><polyline points="21 3 21 9 15 9"/></svg></span>Every hire you trained quit or ghosted. You burned weeks teaching them your voice. The cycle repeats.</div>
-    <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><polyline points="3 7 12 13 21 7"/></svg></span>ChatGPT scripts feel generic. Templates feel borrowed. Nothing sounds like you. So you write everything yourself anyway.</div>
-    <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><path d="M12 17h.01"/></svg></span>You know what converts. You just can't write 5 scripts a day AND deliver client work AND close sales.</div>
-    <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="8" x2="20" y2="8"/><circle cx="9" cy="8" r="2.5"/><line x1="4" y1="16" x2="20" y2="16"/><circle cx="15" cy="16" r="2.5"/></svg></span>Hiring good people is expensive. They quit. You need a system that doesn't need feeding, doesn't get sick, and actually remembers what works.</div>
+<!-- ══════════════ TRUST STRIP ══════════════ -->
+<div class="trust reveal">
+  <div class="trust-label">Built for solo DFY agency owners doing $5K–$12K/mo</div>
+  <div class="trust-row">
+    <span class="trust-item">SMMA</span>
+    <span class="trust-item">Content Agencies</span>
+    <span class="trust-item">Lead Gen</span>
+    <span class="trust-item">Marketing Consultants</span>
+    <span class="trust-item">Coaches w/ DFY Offers</span>
   </div>
+</div>
 
-  <div class="gap-callout glass reveal">
-    <p>The gap is <span class="ice">training depth</span>. Generic content fails because the person making it doesn't know your ICP, your hooks, or your company. InboundOS agents are trained on 1,000+ viral hooks, your exact audience, and your company database — the one source of truth.</p>
+<!-- ══════════════ PROBLEM ══════════════ -->
+<section id="problem" aria-labelledby="problem-heading">
+  <div class="section-head">
+    <span class="badge">The Problem</span>
+    <h2 id="problem-heading">You hired help.<br><span class="ice">You got generic.</span></h2>
+    <p class="sub">VAs, SMMs, Upwork freelancers. They don't know your hooks, your ICP, or your offer. They produce content that could belong to anyone.</p>
   </div>
-
-  <div class="mini-stats">
-    <div class="mini-stat glass reveal">
-      <div class="v">1,000+</div>
-      <div class="l">viral hooks the agents are trained on before writing a single script for you.</div>
+  <div class="narrow">
+    <div class="pain-list">
+      <div class="pain-row"><span class="pain-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg></span>Your VA wrote captions that felt generic. Zero voice, zero ICP targeting. Engagement tanked. You fired them and wrote it yourself.</div>
+      <div class="pain-row"><span class="pain-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>Your Upwork SMM posted on schedule. Nothing converted. No real hooks, no targeting. Just template noise that could be anyone's.</div>
+      <div class="pain-row"><span class="pain-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><polyline points="21 3 21 9 15 9"/></svg></span>Every hire you trained quit or ghosted. You burned weeks teaching them your voice. The cycle repeats.</div>
+      <div class="pain-row"><span class="pain-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><polyline points="3 7 12 13 21 7"/></svg></span>ChatGPT scripts feel generic. Templates feel borrowed. Nothing sounds like you, so you write everything yourself anyway.</div>
+      <div class="pain-row"><span class="pain-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><path d="M12 17h.01"/></svg></span>You know what converts. You just can't write 5 scripts a day AND deliver client work AND close sales.</div>
     </div>
-    <div class="mini-stat glass reveal">
-      <div class="v">5/day</div>
-      <div class="l">scripts written in your voice every morning. ICP-targeted, offer-led, ready to film.</div>
-    </div>
-    <div class="mini-stat glass reveal">
-      <div class="v">24/7</div>
-      <div class="l">runtime. Agents don't ghost, don't take sick days, and get sharper the longer they run.</div>
+    <div class="gap-callout reveal">
+      <p>The gap is <span class="ice">training depth</span>. Generic content fails because the person making it doesn't know your business. InboundOS agents are trained on 1,000+ viral hooks, your exact audience, and your company database. One source of truth.</p>
     </div>
   </div>
 </section>
 
-<!-- ── DIFFERENCE ── -->
-<section class="section" id="comparison" aria-labelledby="comparison-heading">
-  <div class="section-label">The Difference</div>
-  <h2 id="comparison-heading">Hiring humans vs.<br>installing a system.</h2>
-  <p class="section-sub">Same founder, same offer, same audience. The difference is what's producing the content.</p>
-
-  <div class="diff-head">
-    <div class="without">Hiring People</div>
-    <div class="with">Installing Systems</div>
-  </div>
-  <div class="diff-pair reveal">
-    <div class="diff-cell old">Learns your voice in weeks. If they stay long enough.</div>
-    <div class="diff-cell new glass">Trained on your voice, ICP, and hooks on day one. Never forgets.</div>
-  </div>
-  <div class="diff-pair reveal">
-    <div class="diff-cell old">Posts on schedule. Content converts nothing. Generic is generic.</div>
-    <div class="diff-cell new glass">Every script is ICP-targeted, hook-tested, and offer-led. Built on 1,000+ viral patterns.</div>
-  </div>
-  <div class="diff-pair reveal">
-    <div class="diff-cell old">Ghosts. Gets hired elsewhere. Takes 6 months to replace. Starts over.</div>
-    <div class="diff-cell new glass">Runs 24/7. Never quits. Gets smarter the longer it runs. You keep all the knowledge.</div>
-  </div>
-  <div class="diff-pair reveal">
-    <div class="diff-cell old">You manage them. Review work. Answer questions. Babysit their productivity.</div>
-    <div class="diff-cell new glass">You film. You close. Agents handle research, scripting, qualification, follow-ups. Fully automatic.</div>
-  </div>
-  <div class="diff-pair reveal">
-    <div class="diff-cell old">Costs $2K–$5K/month. Outputs disappear when they leave.</div>
-    <div class="diff-cell new glass">One install. You own the system after 90 days. Runs forever without a payroll.</div>
-  </div>
-</section>
-
-<!-- ── ECONOMICS ── -->
-<section class="section" id="shift" aria-labelledby="shift-heading">
-  <div class="section-label">The Economics</div>
-  <h2 id="shift-heading">A real content team costs $43K/month. You build one once, own it forever.</h2>
-  <p class="section-sub">Researcher, scriptwriter, video editor, SMM, DM setter, ops. That's the team behind every high-output creator. We build AI agents that fill each role — trained on your ICP, your hooks, your data.</p>
-
-  <div class="role-grid">
-    <div class="role-card glass reveal">
-      <div class="role-top"><span class="role-name">Researcher</span><span class="role-cost">$7.3K/mo</span></div>
-      <p class="role-desc">Finds market angles and competitor hooks before anything gets written.</p>
-      <span class="role-dept">Research</span>
-    </div>
-    <div class="role-card glass reveal">
-      <div class="role-top"><span class="role-name">Scriptwriter</span><span class="role-cost">$7.3K/mo</span></div>
-      <p class="role-desc">Turns research into hooks, scripts, captions, and offer-led content sequences.</p>
-      <span class="role-dept">Writing</span>
-    </div>
-    <div class="role-card glass reveal">
-      <div class="role-top"><span class="role-name">Video Editor</span><span class="role-cost">$7.4K/mo</span></div>
-      <p class="role-desc">Cuts raw footage into watchable clips, adds captions, prepares creative for each platform.</p>
-      <span class="role-dept">Production</span>
-    </div>
-    <div class="role-card glass reveal">
-      <div class="role-top"><span class="role-name">Social Media Manager</span><span class="role-cost">$6.7K/mo</span></div>
-      <p class="role-desc">Manages the content calendar, watches performance, keeps distribution consistent.</p>
-      <span class="role-dept">Distribution</span>
-    </div>
-    <div class="role-card glass reveal">
-      <div class="role-top"><span class="role-name">DM Setter</span><span class="role-cost">$3.8K/mo</span></div>
-      <p class="role-desc">Turns inbound DMs and story replies into qualified conversations and booked calls.</p>
-      <span class="role-dept">Conversion</span>
-    </div>
-    <div class="role-card glass reveal">
-      <div class="role-top"><span class="role-name">Operations Manager</span><span class="role-cost">$11.1K/mo</span></div>
-      <p class="role-desc">Owns the workflow, handoffs, quality control, and the rhythm that keeps it running.</p>
-      <span class="role-dept">Ops</span>
-    </div>
+<!-- ══════════════ THE INSTALLATION ══════════════ -->
+<section id="system" aria-labelledby="system-heading">
+  <div class="section-head">
+    <span class="badge">The Installation</span>
+    <h2 id="system-heading">Your AI Content Department</h2>
+    <p class="sub">Four agents. One system. You film, you close. Everything else runs without you.</p>
   </div>
 
-  <div class="total-card glass reveal">
-    <div>
-      <div class="section-label" style="margin-bottom:10px;">In-House Team Cost</div>
-      <div class="total-big">$43.6K<span>/mo</span></div>
-      <p class="total-note">Estimated salary-only monthly cost before benefits, software, recruiting, training, revisions, and management time.</p>
-    </div>
-    <div class="total-rows">
-      <div class="total-row"><span>Base salary stack</span><b>$43.6K/mo</b></div>
-      <div class="total-row"><span>With 25% employer burden</span><b>$54.5K/mo</b></div>
-      <div class="total-row"><span>Annualized burdened cost</span><b>$654K/yr</b></div>
-    </div>
-  </div>
+  <div class="phases">
 
-  <div class="econ-close reveal">
-    <h3>We install the team. You own it forever.</h3>
-    <p>Custom AI agents built on your voice, your hooks, your ICP, your audience. Outputs arrive ready to use — scripts, qualified leads, follow-up sequences. No code to learn. No tool access needed. One build. Then it's yours.</p>
-  </div>
-
-  <p class="bls-note">Benchmarks use rounded U.S. monthly salary equivalents from BLS OEWS occupational wage categories, mapped to comparable content team roles.</p>
-</section>
-
-<!-- ── WHAT WE BUILD ── -->
-<section class="section" id="system" aria-labelledby="system-heading">
-  <div class="section-label">What We Build</div>
-  <h2 id="system-heading">Your AI operating system,<br>installed inside your business.</h2>
-  <p class="section-sub">Four automated workflows. Two manual steps. Everything else runs without you.</p>
-
-  <!-- 01 Argus -->
-  <div class="agent-block">
-    <div class="agent-demo glass reveal">
-      <div class="demo-bar">Argus · Daily Recon<span class="live">LIVE</span></div>
-      <div class="demo-body">
-        <div class="demo-item"><span class="k">AI News Feed</span>Claude Code just dropped a new agentic feature. Trending on Reddit r/ClaudeAI.</div>
-        <div class="demo-step"><span class="n">01</span><span class="t">Reel scraped · transcribed<small>Groq Whisper · 58 sec</small></span><span class="s s-done">DONE</span></div>
-        <div class="demo-step"><span class="n">02</span><span class="t">LLaMA3 analyzing hooks<small>Winning pattern extraction</small></span><span class="s s-run">RUNNING</span></div>
-        <div class="demo-item accent"><span class="k">Weekly winner</span>Hook pattern "everyone's sleeping on X" pulled 3.2x average reach. 5 variations seeded into Apollo.</div>
+    <!-- ── 01 ARGUS ── -->
+    <div class="phase reveal-scale">
+      <div class="phase-demo">
+        <div class="dash">
+          <div class="dash-bar">
+            <span class="dash-dots"><i></i><i></i><i></i></span>
+            <span class="dash-title">argus / daily recon</span>
+            <span class="dash-live">LIVE</span>
+          </div>
+          <div class="dash-stats">
+            <div class="dash-stat"><div class="k">Scanned</div><div class="v"><span data-count="7">0</span>/7</div></div>
+            <div class="dash-stat"><div class="k">Hooks Found</div><div class="v ice"><span data-count="23">0</span></div></div>
+            <div class="dash-stat"><div class="k">Trending</div><div class="v ok"><span data-count="4">0</span></div></div>
+            <div class="dash-stat"><div class="k">Seeded</div><div class="v"><span data-count="5">0</span></div></div>
+          </div>
+          <div class="dash-table">
+            <div class="dash-thead"><span>Source</span><span class="hide-m">Score</span><span class="hide-m">Type</span><span style="text-align:right;">Status</span></div>
+            <div class="dash-tr"><span class="name"><span class="t-ic">IG</span><span>Competitor Reel #1</span></span><span class="scorebar hide-m"><span class="bar"><i data-w="82%"></i></span><span class="n">82</span></span><span class="meta hide-m">Reel</span><span class="status st-ok">ANALYZED</span></div>
+            <div class="dash-tr"><span class="name"><span class="t-ic">IG</span><span>Competitor Reel #2</span></span><span class="scorebar hide-m"><span class="bar"><i class="a" data-w="64%"></i></span><span class="n">64</span></span><span class="meta hide-m">Reel</span><span class="status st-hot">SCANNING</span></div>
+            <div class="dash-tr"><span class="name"><span class="t-ic">RD</span><span>r/ClaudeAI · trending</span></span><span class="scorebar hide-m"><span class="bar"><i data-w="91%"></i></span><span class="n">91</span></span><span class="meta hide-m">Thread</span><span class="status st-ok">ANALYZED</span></div>
+            <div class="dash-tr"><span class="name"><span class="t-ic">X</span><span>AI platform updates</span></span><span class="scorebar hide-m"><span class="bar"><i class="g" data-w="76%"></i></span><span class="n">76</span></span><span class="meta hide-m">Feed</span><span class="status st-ok">ANALYZED</span></div>
+            <div class="dash-tr"><span class="name"><span class="t-ic">YT</span><span>Niche trend sweep</span></span><span class="scorebar hide-m"><span class="bar"><i class="a" data-w="58%"></i></span><span class="n">58</span></span><span class="meta hide-m">Video</span><span class="status st-wait">QUEUED</span></div>
+          </div>
+          <div class="dash-foot">
+            <div class="cell"><div class="k">Top Pattern</div><div class="v ice">3.2× reach</div></div>
+            <div class="cell"><div class="k">Transcribed</div><div class="v">58 sec</div></div>
+            <div class="cell"><div class="k">Model</div><div class="v">LLaMA3</div></div>
+            <div class="cell"><div class="k">→ Apollo</div><div class="v ok">5 seeds</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="phase-copy">
+        <div class="phase-tags">
+          <span class="phase-num">01</span>
+          <span class="phase-kind">Research Agent</span>
+          <span class="phase-when">Runs daily</span>
+        </div>
+        <h3>Argus watches your market so you don't have to.</h3>
+        <p class="phase-myth">Argus Panoptes was the giant with 100 eyes who never slept. Always watching, always scanning.</p>
+        <p class="desc">Daily recon on your niche: fresh AI and platform updates, trending topics, and a weekly sweep of your 3 competitors' top Reels, transcribed with Groq Whisper. LLaMA3 pulls the hook patterns. Everything feeds straight into Apollo.</p>
+        <ul class="checklist">
+          <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>Pulls niche trends and platform updates daily</li>
+          <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>Scrapes competitor Reels weekly, audio transcribed</li>
+          <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>Winning hook patterns seeded into Apollo automatically</li>
+        </ul>
       </div>
     </div>
-    <div class="agent-text">
-      <div class="agent-num">01</div>
-      <div class="agent-kind">Automated · Research Agent</div>
-      <p class="agent-myth">Argus Panoptes was the giant with 100 eyes who never slept. Always watching, always scanning.</p>
-      <h3>Argus Agent</h3>
-      <p>Argus runs daily recon: it pulls fresh AI and platform updates, then scans trending topics in your client's niche, whether that's real estate, fitness, or agency growth. Every week it also scrapes your 3 competitors' top Reels, transcribes the audio with Groq Whisper, and sends each script to LLaMA3 for hook analysis. Everything it finds feeds straight into Apollo.</p>
-      <ul class="agent-points">
-        <li>Pulls fresh AI and platform updates plus niche trending topics daily</li>
-        <li>Scrapes competitor Reels weekly, audio transcribed via Groq Whisper</li>
-        <li>LLaMA3 extracts winning hook patterns, seeded into Apollo automatically</li>
-      </ul>
+
+    <!-- ── 02 APOLLO ── -->
+    <div class="phase flip reveal-scale">
+      <div class="phase-demo">
+        <div class="dash">
+          <div class="dash-bar">
+            <span class="dash-dots"><i></i><i></i><i></i></span>
+            <span class="dash-title">apollo / daily script run</span>
+            <span class="dash-live ice">WRITING</span>
+          </div>
+          <div class="script-feed">
+            <div class="script-card"><span class="k"><span>Argus → Intel Feed</span><span>06:58</span></span>Claude Code just dropped a new agentic feature. Trending on r/ClaudeAI.</div>
+            <div class="script-card accent"><span class="k"><span>Script #1 of 5 · Your Voice</span><span>07:00</span></span><span class="typed" data-text="&quot;Everyone's sleeping on this Claude update. Here's what it means for your agency. 3 ways to use it before your competitors do.&quot;"></span></div>
+            <div class="queue-row"><span class="qn">#2</span>Hook: "I fired my VA and replaced her with…"<span class="qs status st-wait">QUEUED</span></div>
+            <div class="queue-row"><span class="qn">#3</span>Hook: "Your content isn't the problem. Your…"<span class="qs status st-wait">QUEUED</span></div>
+            <div class="queue-row"><span class="qn">#4</span>Hook: "$0 content team. 5 posts a week. Here's…"<span class="qs status st-wait">QUEUED</span></div>
+          </div>
+          <div class="prog-foot"><span>SCRIPTS 1/5</span><span class="pbar"><i data-w="20%"></i></span><span class="pr">saved to supabase · 07:00 daily</span></div>
+        </div>
+      </div>
+      <div class="phase-copy">
+        <div class="phase-tags">
+          <span class="phase-num">02</span>
+          <span class="phase-kind">Content Agent</span>
+          <span class="phase-when">Every morning</span>
+        </div>
+        <h3>Apollo writes 5 scripts a day. In your voice.</h3>
+        <p class="phase-myth">Apollo was the god of poetry. The one who gave voice to what others only felt.</p>
+        <p class="desc">Apollo takes the intel Argus gathered, mixes it with your content pillars, and writes 5 ready-to-film scripts every morning. Trained on your voice, your offer, your audience. You wake up to scripts already written.</p>
+        <ul class="checklist">
+          <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>Mixes Argus intel with your content pillars daily</li>
+          <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>Hooks and scripts in your voice, for your offer</li>
+          <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>5 scripts a day, saved to your database</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- manual: film -->
+    <div class="manual-wrap">
+      <div class="flow-line" aria-hidden="true"></div>
+      <div class="manual-card reveal">
+        <span class="tag">You · Manual Step</span>
+        <h3>Film the script.</h3>
+        <p>Script is already written, reviewed, and queued. You show up and film. That's the only step that needs a human. Everything before and after is automated.</p>
+      </div>
+      <div class="flow-line" aria-hidden="true"></div>
+    </div>
+
+    <!-- ── 03 HERMES ── -->
+    <div class="phase reveal-scale">
+      <div class="phase-demo">
+        <div class="dash">
+          <div class="dash-bar">
+            <span class="dash-dots"><i></i><i></i><i></i></span>
+            <span class="dash-title">hermes / lead pipeline</span>
+            <span class="dash-live">4 ACTIVE</span>
+          </div>
+          <div class="funnel-strip">
+            <div class="funnel-cell"><div class="k">Views</div><div class="v"><span data-count="12400">0</span></div></div>
+            <div class="funnel-cell"><div class="k">DMs</div><div class="v"><span data-count="47">0</span></div></div>
+            <div class="funnel-cell"><div class="k">Calls</div><div class="v"><span data-count="8">0</span></div></div>
+            <div class="funnel-cell"><div class="k">Clients</div><div class="v"><span data-count="2">0</span></div></div>
+          </div>
+          <div class="kanban">
+            <div class="kcol">
+              <div class="kcol-head"><span class="cdot" style="background:var(--label-4);"></span>New DMs<span class="cnt">3</span></div>
+              <div class="kcard">"Saw your reel about firing VAs. How does this work?"<div class="kmeta"><span class="kav">H</span><span class="ktag">flagged · 2m ago</span></div></div>
+              <div class="kcard">Story reply · "this is exactly my problem"<div class="kmeta"><span class="kav">H</span><span class="ktag">queued</span></div></div>
+            </div>
+            <div class="kcol">
+              <div class="kcol-head"><span class="cdot" style="background:var(--ice);"></span>Qualifying<span class="cnt">1</span></div>
+              <div class="kcard working">Soft qual sent · "what's your monthly revenue right now?"<div class="kmeta"><span class="kav">H</span><span class="ktag">working</span></div><div class="kprog"><i data-w="60%"></i></div></div>
+            </div>
+            <div class="kcol">
+              <div class="kcol-head"><span class="cdot" style="background:var(--ice);"></span>Booked<span class="cnt">2</span></div>
+              <div class="kcard">Call booked Thu 2PM · context brief ready<div class="kmeta"><span class="kav">H</span><span class="ktag">calendar ✓</span></div></div>
+              <div class="kcard">48h follow-up → replied → booked<div class="kmeta"><span class="kav">H</span><span class="ktag">auto</span></div></div>
+            </div>
+          </div>
+          <div class="prog-foot"><span>QUALIFIED HANDOFF</span><span class="pbar"><i data-w="68%"></i></span><span class="pr">zero DMs touched by you</span></div>
+        </div>
+      </div>
+      <div class="phase-copy">
+        <div class="phase-tags">
+          <span class="phase-num">03</span>
+          <span class="phase-kind">Conversion Agent</span>
+          <span class="phase-when">Always on</span>
+        </div>
+        <h3>Hermes turns DMs into booked calls.</h3>
+        <p class="phase-myth">Hermes was the messenger of the gods. Fast, persuasive, the guide between worlds.</p>
+        <p class="desc">When someone DMs after seeing your content, Hermes flags the reply and runs soft qualification automatically. It handles follow-ups, drops the booking form to warm leads, and re-engages at 48 hours. Qualified prospects land on your calendar with zero back-and-forth from you.</p>
+        <ul class="checklist">
+          <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>Detects DM replies, triggers the soft qual sequence</li>
+          <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>Booking form to warm leads, follow-up at 48 hours</li>
+          <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>Qualified leads land on your calendar, untouched by you</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- manual: close -->
+    <div class="manual-wrap">
+      <div class="flow-line" aria-hidden="true"></div>
+      <div class="manual-card reveal">
+        <span class="tag">You · Manual Step</span>
+        <h3>Close the call.</h3>
+        <p>Lead is qualified, call is booked, context is ready. You show up and close. Hermes already filtered the tire-kickers. Everyone on the call wants to be there.</p>
+      </div>
+      <div class="flow-line" aria-hidden="true"></div>
+    </div>
+
+    <!-- ── 04 CLIO ── -->
+    <div class="phase flip reveal-scale">
+      <div class="phase-demo">
+        <div class="dash">
+          <div class="dash-bar">
+            <span class="dash-dots"><i></i><i></i><i></i></span>
+            <span class="dash-title">clio / client onboarding</span>
+            <span class="dash-live ice">INGESTING</span>
+          </div>
+          <div class="dash-stats">
+            <div class="dash-stat"><div class="k">Records</div><div class="v"><span data-count="1847">0</span></div></div>
+            <div class="dash-stat"><div class="k">Sources</div><div class="v"><span data-count="6">0</span></div></div>
+            <div class="dash-stat"><div class="k">Pillars</div><div class="v ice"><span data-count="4">0</span></div></div>
+            <div class="dash-stat"><div class="k">Roadmap</div><div class="v ok">90d</div></div>
+          </div>
+          <div class="ingest">
+            <div class="ingest-row"><span class="ingest-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span><span>Kickoff transcript + brand docs<small>received on payment</small></span><span class="st status st-ok">RECEIVED</span></div>
+            <div class="ingest-row"><span class="ingest-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a7 7 0 0 1 14 0v1"/></svg></span><span>ICP profile<small>built from transcript</small></span><span class="st status st-ok">DONE</span></div>
+            <div class="ingest-row"><span class="ingest-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></span><span>Brand voice profile<small>calls · posts · frameworks</small></span><span class="st status st-ok">DONE</span></div>
+            <div class="ingest-row"><span class="ingest-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span><span>Content pillars<small>4 pillars mapped</small></span><span class="st status st-ok">DONE</span></div>
+            <div class="ingest-row"><span class="ingest-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span><span>90-day roadmap + kickoff deck<small>generating…</small></span><span class="st status st-hot">RUNNING</span></div>
+          </div>
+          <div class="prog-foot"><span>DATABASE</span><span class="pbar"><i data-w="85%"></i></span><span class="pr">saved to supabase · before you open your laptop</span></div>
+        </div>
+      </div>
+      <div class="phase-copy">
+        <div class="phase-tags">
+          <span class="phase-num">04</span>
+          <span class="phase-kind">Onboarding Agent</span>
+          <span class="phase-when">On client payment</span>
+        </div>
+        <h3>Clio onboards every client before you wake up.</h3>
+        <p class="phase-myth">Clio was the muse of history. The one who recorded everything worth remembering.</p>
+        <p class="desc">Client pays and the onboarding form goes out automatically. Clio reads the kickoff transcript and brand docs, then builds the full client profile, content pillars, and a 90-day kickoff deck. Everything saved to your database before you open your laptop.</p>
+        <ul class="checklist">
+          <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>Payment triggers the onboarding form automatically</li>
+          <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>Full client profile built from the kickoff transcript</li>
+          <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>Kickoff deck and 90-day roadmap, generated automatically</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════ RESULTS ══════════════ -->
+<section id="results" aria-labelledby="results-heading">
+  <div class="section-head">
+    <span class="badge">Results</span>
+    <h2 id="results-heading">What happens when<br>the system runs.</h2>
+  </div>
+  <div class="results">
+    <div class="stat-row">
+      <div class="big-stat reveal"><div class="v"><span data-count="5">0</span></div><div class="l">scripts written in your voice every morning. Offer-led, ICP-targeted, ready to film.</div></div>
+      <div class="big-stat reveal"><div class="v"><span data-count="80">0</span>+</div><div class="l">leads per month on average. Qualified by Hermes before they hit your DMs.</div></div>
+      <div class="big-stat reveal"><div class="v"><span data-count="0">0</span></div><div class="l">Upwork hires. No training cycles. No ghosting. One system that never leaves.</div></div>
+    </div>
+    <div class="econ-close reveal" style="margin-top:16px;">
+      <h3>We install the team. You own it forever.</h3>
+      <p>Custom AI agents built on your voice, your hooks, your ICP, your audience. Outputs arrive ready to use: scripts, qualified leads, follow-up sequences. No code to learn. One build. Then it's yours. See the real client results on the <a href="/client-wins" style="color:var(--ice);">Client Wins</a> page.</p>
     </div>
   </div>
+</section>
 
-  <!-- 02 Apollo -->
-  <div class="agent-block flip">
-    <div class="agent-demo glass reveal">
-      <div class="demo-bar">Apollo · Daily Script Run<span class="live">LIVE</span></div>
-      <div class="demo-body">
-        <div class="demo-item"><span class="k">Argus → Intel Feed</span>Claude Code just dropped a new agentic feature. Trending on Reddit r/ClaudeAI.</div>
-        <div class="demo-item accent"><span class="k">Apollo Output · Script #1 of 5</span>"Everyone's sleeping on this Claude update. Here's what it means for your agency. 3 ways to use it before your competitors do."</div>
-        <div class="demo-meta">
-          <span class="demo-tag">Your voice</span>
-          <span class="demo-tag">5 scripts/day</span>
+<!-- ══════════════ PROCESS ══════════════ -->
+<section id="process" aria-labelledby="process-heading">
+  <div class="section-head">
+    <span class="badge">How We Work</span>
+    <h2 id="process-heading">Here's exactly<br>how we build it.</h2>
+    <p class="sub">We map your business first, then build the agents around it. You own everything when we're done.</p>
+  </div>
+  <div class="steps-wrap">
+    <div class="steps">
+      <div class="step-card reveal"><span class="s-num">01</span><h3>Discovery Call</h3><h4>We audit your business</h4><p>30 minutes. We map your ICP, your offer, how you create content today, and where leads are leaking. You walk away with a clear picture of what gets built.</p></div>
+      <div class="step-card reveal"><span class="s-num">02</span><h3>Database Mapping</h3><h4>We extract your brand</h4><p>Your calls, your frameworks, your clients, your voice. We build the knowledge base the agents run on. This is what makes the agents sound like you.</p></div>
+      <div class="step-card reveal"><span class="s-num">03</span><h3>Agent Build + Workflows</h3><h4>We install the system</h4><p>Custom AI agents, automated workflows, a review loop, and a dashboard to run it all. Designed around how your business runs, handed over fully operational.</p></div>
+    </div>
+    <div class="included-row">
+      <div class="included-chip reveal">4 weekly 1:1 calls/month</div>
+      <div class="included-chip reveal">Unlimited async 24/7</div>
+      <div class="included-chip reveal">Your own dashboard</div>
+      <div class="included-chip reveal">Everything done-with-you</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ ICP ══════════════ -->
+<section id="icp" aria-labelledby="icp-heading">
+  <div class="section-head">
+    <span class="badge">Who This Is For</span>
+    <h2 id="icp-heading">Built for one<br>type of person.</h2>
+    <p class="sub">The solo DFY agency owner who knows content works and has tried every way to produce it consistently. Nothing stuck.</p>
+  </div>
+  <div class="icp-wrap">
+    <div class="icp-grid">
+      <div>
+        <div class="icp-col-label fit">This is you</div>
+        <div class="icp-list reveal">
+          <div class="icp-row"><span class="icp-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>Solo or 2-person DFY agency. SMMA, content, lead gen, marketing consultant.</div>
+          <div class="icp-row"><span class="icp-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>$5K–$12K/month. The offer works. Content is the missing growth layer.</div>
+          <div class="icp-row"><span class="icp-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>You've hired a VA, SMM, or freelancer for content. Got generic output that didn't convert.</div>
+          <div class="icp-row"><span class="icp-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>You want content that sounds like you and ships without you writing every word.</div>
+          <div class="icp-row"><span class="icp-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>Ready to invest in a system you own, one that keeps running after you stop paying.</div>
+          <div class="icp-row"><span class="icp-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>Willing to film. You film, the agents handle everything else.</div>
+        </div>
+      </div>
+      <div>
+        <div class="icp-col-label nofit">This isn't</div>
+        <div class="icp-list reveal">
+          <div class="icp-row"><span class="icp-ic x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg></span>Beginners without a proven offer or paying clients yet.</div>
+          <div class="icp-row"><span class="icp-ic x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg></span>Agencies with a content team already producing at volume. You've solved it.</div>
+          <div class="icp-row"><span class="icp-ic x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg></span>Anyone looking for fully hands-off. The build is done-with-you.</div>
         </div>
       </div>
     </div>
-    <div class="agent-text">
-      <div class="agent-num">02</div>
-      <div class="agent-kind">Automated · Content Agent</div>
-      <p class="agent-myth">Apollo was the Greek god of the sun and poetry, the one who gave voice to what others only felt.</p>
-      <h3>Apollo Agent</h3>
-      <p>Apollo takes the intel Argus gathered and mixes it with your content pillars to write 5 ready-to-film scripts every morning. Trained on your voice, your offer, your audience. You wake up to scripts already written.</p>
-      <ul class="agent-points">
-        <li>Mixes Argus intel with your content pillars every morning</li>
-        <li>Writes hooks and scripts in your voice, for your specific offer</li>
-        <li>5 scripts a day, saved to Supabase</li>
+  </div>
+</section>
+
+<!-- ══════════════ OFFER ══════════════ -->
+<section id="offer" aria-labelledby="offer-heading">
+  <div class="section-head">
+    <span class="badge">The Offer</span>
+    <h2>Ready to install?</h2>
+  </div>
+  <div class="offer-wrap">
+    <div class="offer-card reveal-scale">
+      <span class="badge">90-Day Done-With-You Installation</span>
+      <h3 id="offer-heading">The InboundOS Installation</h3>
+      <p class="offer-sub">90-day done-with-you build. Your AI operating system, installed inside your business.</p>
+      <ul class="offer-list">
+        <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>5 scripts per day in your voice, ready to film every morning</li>
+        <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>Your ICP and offer baked into every script</li>
+        <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>Leads auto-qualified via DM, delivered to your calendar filtered</li>
+        <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>Weekly 1:1 strategy calls to dial in quality and performance</li>
+        <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>Unlimited async support, 24/7</li>
+        <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>Custom AI agents built specifically for your business</li>
+        <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>Everything documented so you can run it solo after 90 days</li>
+        <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>You own all agents, workflows, and prompt libraries</li>
       </ul>
+      <a href="/apply" class="btn-primary">Apply Now <span class="arr">→</span></a>
+      <p class="offer-foot">Built for solo DFY agency owners doing $5K–$12K/mo who've tried VAs and freelancers and want a content team that actually knows their ICP, their hooks, and their offer.</p>
     </div>
-  </div>
-
-  <!-- Manual: film -->
-  <div class="manual-wrap">
-    <div class="flow-line" aria-hidden="true"></div>
-    <div class="manual-card reveal">
-      <span class="tag">You · Manual</span>
-      <h3>Film the script.</h3>
-      <p>Script is already written, reviewed, and queued. You show up and film. That's the only step that needs a human. Everything before and after is automated.</p>
+    <div class="econ-close reveal" style="margin-top:16px;">
+      <h3>If the system doesn't make you more money or save you time, we keep working until it does.</h3>
+      <p>We track what's converting from week one. We adjust before problems compound. Done-with-you means we're in it with you, fully responsible for results.</p>
     </div>
-    <div class="flow-line" aria-hidden="true"></div>
-  </div>
-
-  <!-- 03 Hermes -->
-  <div class="agent-block">
-    <div class="agent-demo glass reveal">
-      <div class="demo-bar">Hermes · Lead Pipeline<span class="live">LIVE</span></div>
-      <div class="demo-body">
-        <div class="funnel">
-          <div><div class="fv">12.4K</div><div class="fl">Views</div></div>
-          <div><div class="fv">47</div><div class="fl">DMs</div></div>
-          <div><div class="fv">8</div><div class="fl">Calls</div></div>
-          <div><div class="fv">2</div><div class="fl">Clients</div></div>
-        </div>
-        <div class="demo-item">Hermes flags new DM reply · soft qual question sent</div>
-        <div class="demo-item">Hermes sends follow-up · booking form link dropped</div>
-        <div class="demo-item accent">Call booked · Clio Agent queued on payment</div>
-      </div>
-    </div>
-    <div class="agent-text">
-      <div class="agent-num">03</div>
-      <div class="agent-kind">Automated · Conversion Agents</div>
-      <p class="agent-myth">Hermes was the messenger of the gods. Fast, persuasive, and the guide between worlds.</p>
-      <h3>Hermes Agent</h3>
-      <p>When someone DMs after seeing your content, Hermes flags the reply and sends soft qualification questions automatically. It handles the follow-up sequence, sends the booking form to warm leads, and follows up at 48 hours if there's no reply. Qualified prospects land on your calendar with zero back-and-forth from you.</p>
-      <ul class="agent-points">
-        <li>Detects DM replies and triggers the soft qual sequence</li>
-        <li>Drops the booking form to warm leads, follows up at 48 hours</li>
-        <li>Qualified leads land on your calendar without you touching a DM</li>
-      </ul>
-    </div>
-  </div>
-
-  <!-- Manual: close -->
-  <div class="manual-wrap">
-    <div class="flow-line" aria-hidden="true"></div>
-    <div class="manual-card reveal">
-      <span class="tag">You · Manual</span>
-      <h3>Close the call.</h3>
-      <p>Lead is qualified, call is booked, context is ready. You show up and close. Hermes already filtered the tire-kickers, so everyone on the call wants to be there.</p>
-    </div>
-    <div class="flow-line" aria-hidden="true"></div>
-  </div>
-
-  <!-- 04 Clio -->
-  <div class="agent-block flip">
-    <div class="agent-demo glass reveal">
-      <div class="demo-bar">Clio Agent · Running<span class="live">LIVE</span></div>
-      <div class="demo-body">
-        <div class="demo-step"><span class="n"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="12" x2="20" y2="12"/><polyline points="13 5 20 12 13 19"/></svg></span><span class="t">Client Input<small>Kickoff transcript + brand docs</small></span><span class="s s-done">RECEIVED</span></div>
-        <div class="demo-step"><span class="n"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 13 9 17 19 7"/></svg></span><span class="t">ICP Profile</span><span class="s s-done">DONE</span></div>
-        <div class="demo-step"><span class="n"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 13 9 17 19 7"/></svg></span><span class="t">Brand Voice</span><span class="s s-done">DONE</span></div>
-        <div class="demo-step"><span class="n"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 13 9 17 19 7"/></svg></span><span class="t">Content Pillars</span><span class="s s-done">DONE</span></div>
-        <div class="demo-step"><span class="n"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 13 9 17 19 7"/></svg></span><span class="t">90-Day Roadmap</span><span class="s s-done">DONE</span></div>
-        <div class="demo-item accent"><span class="k">Clio Output</span>Saved to Supabase</div>
-      </div>
-    </div>
-    <div class="agent-text">
-      <div class="agent-num">04</div>
-      <div class="agent-kind">Automated · Onboarding Agent</div>
-      <p class="agent-myth">Clio was the Greek muse of history, the one who recorded everything worth remembering.</p>
-      <h3>Clio Agent</h3>
-      <p>Client pays and the onboarding form goes out automatically. They fill it in. Clio reads the kickoff transcript and brand docs, then builds a full client profile, content pillars, and a 90-day kickoff deck. Everything is saved to Supabase before you open your laptop.</p>
-      <ul class="agent-points">
-        <li>Payment triggers the onboarding form automatically</li>
-        <li>Clio reads the transcript and builds the full client profile</li>
-        <li>Kickoff deck and 90-day roadmap generated before you open your laptop</li>
-      </ul>
+    <div class="retainer reveal">
+      <span class="tag">Optional · Post 90 Days</span>
+      <p>Monthly retainer available: system maintenance, new scripts, content batching support, ongoing optimization. Month-to-month. Cancel anytime.</p>
+      <p>Every agent, workflow, prompt library, and conversion sequence goes with you, whether you continue or not. Agencies charge $3K–$10K/month and keep the system when you stop paying. We hand it over on day one.</p>
     </div>
   </div>
 </section>
 
-<!-- ── RESULTS ── -->
-<section class="section" id="results" aria-labelledby="results-heading">
-  <div class="section-label">Results</div>
-  <h2 id="results-heading">What happens when the system runs.</h2>
-
-  <div class="proof-stat-row">
-    <div class="proof-stat glass reveal">
-      <div class="v">5</div>
-      <div class="l">scripts written in your voice every morning. Offer-led, ICP-targeted, ready to film.</div>
-    </div>
-    <div class="proof-stat glass reveal">
-      <div class="v">80+</div>
-      <div class="l">leads per month on average. Qualified through Hermes agent before they hit your DMs.</div>
-    </div>
-    <div class="proof-stat glass reveal">
-      <div class="v">0</div>
-      <div class="l">Upwork hires. No training cycles. No ghosting. One system that never leaves.</div>
-    </div>
+<!-- ══════════════ FAQ ══════════════ -->
+<section id="faq" aria-labelledby="faq-heading">
+  <div class="section-head">
+    <span class="badge">FAQ</span>
+    <h2 id="faq-heading">You've got questions.<br><span class="ice">We've got answers.</span></h2>
   </div>
-
-  <div class="proof-duo">
-    <div class="proof-quote glass reveal">
-      <blockquote>"We went from posting twice a month to five times a week. Our DMs look different now. People are actually asking about the offer, not just liking the content."</blockquote>
-      <div class="attrib">Agency Owner · Philippines</div>
-    </div>
-    <div class="proof-quote glass reveal" style="background:rgba(79,195,247,0.07);border:0.5px solid rgba(79,195,247,0.22);">
-      <blockquote>"The scripts feel like they came from me. That's the crazy part. It's not some generic AI thing. I recognized my own thinking in the outputs."</blockquote>
-      <div class="attrib">Consultant · Southeast Asia</div>
-    </div>
-  </div>
-</section>
-
-<!-- ── PROCESS ── -->
-<section class="section" id="process" aria-labelledby="process-heading">
-  <div class="section-label">How We Work</div>
-  <h2 id="process-heading">Here's exactly how we build it.</h2>
-  <p class="section-sub">We map your business first. Then we build the agents and workflows around it. You own everything when we're done. And you're no longer the only one keeping it running.</p>
-
-  <div class="steps">
-    <div class="step-card glass reveal">
-      <div class="s-tag">Step 1</div>
-      <h3>Discovery Call</h3>
-      <h4>We audit your business</h4>
-      <p>30 minutes. We map your ICP, your offer, how you currently create content, and where leads are leaking. You walk away with a clear picture of what gets built before we touch anything.</p>
-    </div>
-    <div class="step-card glass reveal">
-      <div class="s-tag">Step 2</div>
-      <h3>Database Mapping</h3>
-      <h4>We extract your brand</h4>
-      <p>Your calls, your frameworks, your clients, your voice. We build the knowledge base the agents run on. Garbage in, garbage out, so we start here. This is what makes the agents sound like you.</p>
-    </div>
-    <div class="step-card glass reveal">
-      <div class="s-tag">Step 3</div>
-      <h3>Agent Build + Workflow Setup</h3>
-      <h4>We build the system</h4>
-      <p>Custom AI agents, automated workflows, a review loop, and a dashboard to run it all. Each piece is designed around how your business runs, then handed to you fully operational.</p>
-    </div>
-  </div>
-
-  <div class="included-row">
-    <div class="included-chip glass reveal">4 weekly 1:1 calls/month</div>
-    <div class="included-chip glass reveal">Unlimited async 24/7</div>
-    <div class="included-chip glass reveal">Your own dashboard</div>
-    <div class="included-chip glass reveal">Everything done-with-you</div>
-  </div>
-</section>
-
-<!-- ── ICP ── -->
-<section class="section" id="icp" aria-labelledby="icp-heading">
-  <div class="section-label">Who This Is For</div>
-  <h2 id="icp-heading">Built for one type of person.</h2>
-  <p class="section-sub">The solo DFY agency owner who knows content works — and has tried every way to produce it consistently. Nothing stuck.</p>
-
-  <div class="icp-grid">
-    <div>
-      <div class="icp-col-label fit">This is you</div>
-      <div class="list-group reveal">
-        <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 13 9 17 19 7"/></svg></span>Solo or 2-person DFY agency. SMMA, content, lead gen, marketing consultant.</div>
-        <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 13 9 17 19 7"/></svg></span>$5K–$12K/month. The offer works. Content is the missing growth layer.</div>
-        <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 13 9 17 19 7"/></svg></span>You've hired a VA, SMM, or Upwork freelancer for content. Got generic output that didn't convert.</div>
-        <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 13 9 17 19 7"/></svg></span>You want content that sounds like you, targets your ICP, and ships without you writing every word.</div>
-        <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 13 9 17 19 7"/></svg></span>Ready to invest in a system you own. One that keeps running after you stop paying for it.</div>
-        <div class="list-row"><span class="row-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 13 9 17 19 7"/></svg></span>Willing to film. You film, the agents handle everything else.</div>
-      </div>
-    </div>
-    <div>
-      <div class="icp-col-label nofit">This isn't</div>
-      <div class="list-group reveal">
-        <div class="list-row"><span class="row-icon row-x"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></span>Beginners without a proven offer or paying clients yet</div>
-        <div class="list-row"><span class="row-icon row-x"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></span>Agencies with a content team already producing at volume — you've solved it.</div>
-        <div class="list-row"><span class="row-icon row-x"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></span>Anyone looking for fully hands-off. The build is done-with-you. You show up, we build together.</div>
-      </div>
+  <div class="faq-wrap">
+    <div class="faq-group reveal">
+      <details>
+        <summary>"Do I need to film everything myself?"</summary>
+        <p class="faq-a">Yes. You film, we handle everything else: positioning, scripting, AI agents, review, strategy, and the lead conversion layer. You show up on camera, we build the machine around you.</p>
+      </details>
+      <details>
+        <summary>"How much time does this take per week?"</summary>
+        <p class="faq-a">One 60-minute 1:1 call per week, plus one monthly filming session you batch in advance. Everything else is async.</p>
+      </details>
+      <details>
+        <summary>"I'm not technical. Will I be able to use the AI agents?"</summary>
+        <p class="faq-a">They're built specifically for you. Type a one-line prompt and get a full script in your voice. We build it, we hand it over, you run it from day one.</p>
+      </details>
+      <details>
+        <summary>"We already tried ChatGPT. Why would this be different?"</summary>
+        <p class="faq-a">ChatGPT is a blank tool. We build the entire operating layer around it: your company database, your voice data, your custom agents, your batching workflow, your review process, your conversion sequences. The power is in what surrounds the AI.</p>
+      </details>
+      <details>
+        <summary>"Will the content actually sound like me?"</summary>
+        <p class="faq-a">Yes. We train the system on your calls, posts, frameworks, offers, objections, and stories. Then we review scripts and hooks before they go live, so the output sounds like you on your sharpest day.</p>
+      </details>
+      <details>
+        <summary>"What if I already have an editor or VA?"</summary>
+        <p class="faq-a">Even better. We give them a clearer machine to operate: content pillars, scripts, batching rhythm, review standards, and CTA flow. They stop guessing and start executing against a system.</p>
+      </details>
+      <details>
+        <summary>"Do I keep everything after 90 days?"</summary>
+        <p class="faq-a">Yes, all of it. The agents, workflows, prompt library, content calendar, strategy, review standards, and DM sequences. That's the whole point of an install: it lives inside your business.</p>
+      </details>
+      <details>
+        <summary>"Why not just hire a content agency?"</summary>
+        <p class="faq-a">Agencies charge $3K–$10K/month and keep the system when you leave. We build custom AI agents and workflows inside your business, and you own them after 90 days. Pay once, run forever.</p>
+      </details>
+      <details>
+        <summary>"What if it's not working?"</summary>
+        <p class="faq-a">If you don't make more money or save time, we keep working with you until you do. We track what's converting from week one and adjust before problems compound. Done-with-you means you're never figuring it out alone.</p>
+      </details>
+      <details>
+        <summary>"How much does this cost?"</summary>
+        <p class="faq-a">The 90-day build is a one-time investment. Exact cost depends on your scope: size of your database, number of agents, integration complexity. We price it on discovery. One build, you own it forever, no monthly fees.</p>
+      </details>
     </div>
   </div>
 </section>
 
-<!-- ── OFFER ── -->
-<section class="section" id="offer" aria-labelledby="offer-heading">
-  <div class="section-label">The Offer</div>
-
-  <div class="offer-card glass reveal">
-    <span class="chip"><span class="chip-dot"></span>90-Day Done-With-You Installation</span>
-    <h3 id="offer-heading">The InboundOS Installation</h3>
-    <p class="offer-sub">90-day done-with-you build. Your AI operating system, installed inside your business.</p>
-    <ul class="offer-list">
-      <li>5 scripts per day in your voice — ready to film every morning</li>
-      <li>Your ICP and offer baked into every script</li>
-      <li>Leads auto-qualified via DM. Prospects land on your calendar filtered.</li>
-      <li>Weekly 1:1 strategy calls to dial in quality and performance</li>
-      <li>Unlimited async support, 24/7</li>
-      <li>Custom AI agents built specifically for your business</li>
-      <li>Everything documented so you can run it solo after 90 days</li>
-      <li>You own all agents, workflows, and prompt libraries</li>
-      <li>No code access needed. Outputs arrive ready to use.</li>
-    </ul>
-    <a href="/apply" class="btn-filled">Apply Now</a>
-    <p class="offer-foot">Built for solo DFY agency owners doing $5K–$12K/mo who've tried VAs and freelancers and want a content team that actually knows their ICP, their hooks, and their offer.</p>
-  </div>
-
-  <div class="econ-close reveal" style="margin-top:14px;">
-    <h3>If the system doesn't make you more money or save you time, we keep working until it does.</h3>
-    <p>We track what's converting from week one. We adjust before problems compound. Done-with-you means we're in it with you, fully responsible for results.</p>
-  </div>
-
-  <div class="retainer glass reveal">
-    <span class="tag">Optional · Post 90 Days</span>
-    <p>Monthly retainer available: system maintenance, new scripts, content batching support, ongoing optimization. Month-to-month. Cancel anytime.</p>
-    <p>Every agent, workflow, prompt library, and conversion sequence we build goes with you, whether you continue or not. Agencies charge $3K–$10K/month and keep the system when you stop paying. We hand it over on day one.</p>
-  </div>
-</section>
-
-<!-- ── FAQ ── -->
-<section class="section" id="faq" aria-labelledby="faq-heading">
-  <div class="section-label">FAQ</div>
-  <h2 id="faq-heading">Common questions.</h2>
-  <p class="section-sub">Everything you're already thinking, answered directly.</p>
-
-  <div class="list-group faq-group reveal">
-    <details>
-      <summary>Do I need to film everything myself?</summary>
-      <p class="faq-a">Yes. You film, we handle everything else: positioning, scripting, AI agents, review, strategy, and the lead conversion layer. You show up on camera. We build the machine around you.</p>
-    </details>
-    <details>
-      <summary>How much time does this take per week?</summary>
-      <p class="faq-a">One 60-minute 1:1 call per week, plus one monthly filming session you batch in advance. Everything else is async.</p>
-    </details>
-    <details>
-      <summary>I'm not technical. Will I be able to use the AI agents?</summary>
-      <p class="faq-a">They're built specifically for you. Type a one-line prompt and get a full script in your voice. We build it, we hand it over, you run it from day one.</p>
-    </details>
-    <details>
-      <summary>We already tried ChatGPT. Why would this be different?</summary>
-      <p class="faq-a">ChatGPT is a blank tool. We build the entire operating layer around it: your company database, your voice data, your custom agents, your batching workflow, your review process, your conversion sequences. The power is in what surrounds the AI.</p>
-    </details>
-    <details>
-      <summary>Will the content actually sound like me?</summary>
-      <p class="faq-a">Yes. We train the system on your calls, posts, frameworks, offers, objections, and stories. Then we review scripts and hooks before they go live, so the output sounds like you on your sharpest day.</p>
-    </details>
-    <details>
-      <summary>What if I already have an editor or VA?</summary>
-      <p class="faq-a">Even better. We give them a clearer machine to operate: content pillars, scripts, batching rhythm, review standards, and CTA flow. They stop guessing and start executing against a system.</p>
-    </details>
-    <details>
-      <summary>Do I keep everything after 90 days?</summary>
-      <p class="faq-a">Yes, all of it. The agents, workflows, prompt library, content calendar, strategy, review standards, and DM sequences. That's the whole point of installation. It lives inside your business.</p>
-    </details>
-    <details>
-      <summary>Why not just hire a content agency?</summary>
-      <p class="faq-a">Agencies charge $3K–$10K/month and keep the system when you leave. We build custom AI agents and workflows inside your business, and you own them after 90 days. Pay once, run forever.</p>
-    </details>
-    <details>
-      <summary>What if it's not working?</summary>
-      <p class="faq-a">If you don't make more money or save time, we keep working with you until you do. We track what's converting from week one and adjust before problems compound. Done-with-you means you're never figuring it out alone.</p>
-    </details>
-    <details>
-      <summary>How much does this cost?</summary>
-      <p class="faq-a">The 90-day build is a one-time investment. Exact cost depends on your scope — size of your database, number of agents, integration complexity. We price it on discovery. But here's what matters: one build, you own it forever. No monthly fees. No dependency. Agencies charge $3K–$10K/month and keep the system when you leave. We do the opposite.</p>
-    </details>
-  </div>
-</section>
-
-<!-- ── FINAL CTA ── -->
+<!-- ══════════════ FINAL CTA ══════════════ -->
 <section class="final-cta" id="final-cta" aria-labelledby="final-cta-heading">
-  <span class="chip"><span class="chip-dot"></span>Ready?</span>
-  <h2 id="final-cta-heading" style="margin-top:22px;">In 90 days you'll have a system that runs your content. Or you'll still be doing it yourself.</h2>
-  <p>Apply below. We review personally and tell you if it's a fit before we waste your time. No Calendly. No pitch call until we know it's real.</p>
-  <a href="/apply" class="btn-filled">Apply Now</a>
-  <p class="final-note">Limited spots. Application required. We work with you until it works.</p>
+  <div class="final-inner reveal-scale">
+    <span class="badge">Ready?</span>
+    <h2 id="final-cta-heading">In 90 days you'll have a system that runs your content. Or you'll still be doing it yourself.</h2>
+    <p>Apply below. We review personally and tell you if it's a fit before we waste your time. No Calendly, no pitch call until we know it's real.</p>
+    <a href="/apply" class="btn-primary">Apply Now <span class="arr">→</span></a>
+    <p class="final-note">Limited spots. Application required. We work with you until it works.</p>
+  </div>
 </section>
 
 <footer>
@@ -1017,85 +1093,86 @@ footer .foot-links a:hover{color:var(--white);}
 </footer>
 
 <script>
-  const nav = document.getElementById('main-nav');
-  addEventListener('scroll', () => {
-    nav.classList.toggle('scrolled', scrollY > 24);
-  }, { passive: true });
+// ── nav scroll state ──
+const nav = document.getElementById('main-nav');
+addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', scrollY > 24);
+}, { passive: true });
 
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach((e, i) => {
-      if (e.isIntersecting) {
-        setTimeout(() => e.target.classList.add('visible'), (i % 6) * 60);
-        io.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.1, rootMargin: '0px 0px -48px 0px' });
-  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
-</script>
-<script>
-  // Set active nav link based on current pathname
-  const currentPath = window.location.pathname;
-  document.querySelectorAll('.nav-link').forEach(link => {
-    const href = link.getAttribute('href');
-    if ((href === '/' && currentPath === '/') || (href !== '/' && currentPath.startsWith(href))) {
-      link.classList.add('active');
+// ── reveal on scroll ──
+const revealIO = new IntersectionObserver((entries) => {
+  entries.forEach((e) => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      revealIO.unobserve(e.target);
     }
   });
-</script>
-<script>
-  // ── Scroll-triggered animations for list rows, demo steps, diff pairs ──
-  const scrollAnimIO = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('visible');
-        scrollAnimIO.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+}, { threshold: 0.08, rootMargin: '0px 0px -60px 0px' });
+document.querySelectorAll('.reveal, .reveal-scale, .pain-list').forEach(el => revealIO.observe(el));
 
-  document.querySelectorAll('.list-group, .diff-pair').forEach(el => {
-    scrollAnimIO.observe(el);
+// ── count-up numbers ──
+function countUp(el, target, decimals, duration = 1400) {
+  if (el.dataset.counted) return;
+  el.dataset.counted = '1';
+  const startTime = performance.now();
+  const ease = t => 1 - Math.pow(1 - t, 3);
+  const step = (now) => {
+    const p = Math.min((now - startTime) / duration, 1);
+    const val = target * ease(p);
+    el.textContent = decimals ? val.toFixed(decimals) : Math.round(val).toLocaleString();
+    if (p < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+const countIO = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const el = e.target;
+      countUp(el, parseFloat(el.dataset.count) || 0, parseInt(el.dataset.decimal) || 0);
+      countIO.unobserve(el);
+    }
   });
+}, { threshold: 0.5 });
+document.querySelectorAll('[data-count]').forEach(el => countIO.observe(el));
 
-  // ── Number counter animation ──
-  function countUp(element, target, duration = 1200) {
-    if (element.dataset.counted) return;
-    element.dataset.counted = true;
-    
-    const start = 0;
-    const startTime = performance.now();
-    const ease = (t) => t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
-    
-    const animate = (currentTime) => {
-      const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = ease(progress);
-      const current = Math.floor(start + (target - start) * eased);
-      element.textContent = current.toLocaleString();
-      if (progress < 1) requestAnimationFrame(animate);
-    };
-    requestAnimationFrame(animate);
-  }
-
-  const counterIO = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        const el = e.target;
-        let numStr = el.textContent.trim().replace(/[^0-9.]/g, '');
-        let target = parseFloat(numStr) || 0;
-        if (target > 0) {
-          if (numStr.includes('+')) countUp(el, target, 1200);
-          else countUp(el, target, 1200);
-        }
-        counterIO.unobserve(el);
-      }
-    });
-  }, { threshold: 0.5 });
-
-  document.querySelectorAll('.mini-stat .v, .total-big, .proof-stat .v, .funnel .fv').forEach(el => {
-    counterIO.observe(el);
+// ── bar fills (score bars, progress bars, kanban progress) ──
+const barIO = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('[data-w]').forEach((bar, i) => {
+        setTimeout(() => { bar.style.width = bar.dataset.w; }, 300 + i * 120);
+      });
+      barIO.unobserve(e.target);
+    }
   });
+}, { threshold: 0.25 });
+document.querySelectorAll('.dash').forEach(el => barIO.observe(el));
+
+// ── typewriter for Apollo script ──
+const typedEl = document.querySelector('.typed');
+if (typedEl) {
+  const full = typedEl.dataset.text;
+  const typeIO = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      typeIO.unobserve(e.target);
+      typedEl.classList.add('typing-line');
+      let i = 0;
+      const tick = () => {
+        typedEl.textContent = full.slice(0, i);
+        i++;
+        if (i <= full.length) setTimeout(tick, 22);
+        else typedEl.classList.remove('typing-line');
+      };
+      setTimeout(tick, 500);
+    });
+  }, { threshold: 0.4 });
+  typeIO.observe(typedEl);
+}
 </script>
 
+<!-- Vercel Web Analytics + Speed Insights (cookieless, no consent banner needed) -->
+<script defer src="/_vercel/insights/script.js"></script>
+<script defer src="/_vercel/speed-insights/script.js"></script>
 </body>
 </html>

@@ -3,258 +3,182 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>About — InboundOS</title>
+<title>About InboundOS</title>
 <meta name="description" content="Micko Cruz ran a 10-person content agency. Now AI agents do the work. He installs the same system for agency owners.">
+<link rel="canonical" href="https://inboundos.vercel.app/about">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://inboundos.vercel.app/about">
+<meta property="og:title" content="About InboundOS">
+<meta property="og:description" content="Micko Cruz ran a 10-person content agency. Now AI agents do the work. He installs the same system for agency owners.">
+<meta property="og:image" content="https://inboundos.vercel.app/og-image.png">
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:title" content="About InboundOS">
+<meta property="twitter:description" content="Micko Cruz ran a 10-person content agency. Now AI agents do the work. He installs the same system for agency owners.">
+<meta property="twitter:image" content="https://inboundos.vercel.app/og-image.png">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
 <link rel="preload" href="/NHGDisplay95Black.otf" as="font" type="font/otf" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/v2.css">
 <style>
-@font-face{font-family:'NHGDisplay';src:url('/NHGDisplay95Black.otf') format('opentype');font-weight:900;font-style:normal;font-display:block;}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-
-:root{
-  --bg:#0D1117;
-  --white:#ffffff;
-  --ice:#4FC3F7;
-  --label-2:rgba(255,255,255,0.58);
-  --label-3:rgba(255,255,255,0.38);
-  --label-4:rgba(255,255,255,0.22);
-  --glass-bg:rgba(255,255,255,0.06);
-  --glass-border:rgba(255,255,255,0.14);
-  --separator:rgba(255,255,255,0.08);
-  --radius-md:14px;
-  --radius-lg:20px;
-  --radius-xl:28px;
-  --pill:100px;
-  --font-head:'NHGDisplay','DM Sans',system-ui,sans-serif;
-  --font-body:'DM Sans',system-ui,sans-serif;
-  --spring:cubic-bezier(0.34,1.56,0.64,1);
-  --ease:cubic-bezier(0.4,0,0.2,1);
+/* ── hero ── */
+.hero{
+  max-width:1060px;margin:0 auto;
+  padding:180px 32px 60px;
+  display:grid;grid-template-columns:0.78fr 1.22fr;gap:70px;align-items:center;
 }
-
-html{scroll-behavior:smooth;}
-body{
-  background:var(--bg);color:var(--white);
-  font-family:var(--font-body);font-size:16px;line-height:1.6;
-  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
-  overflow-x:hidden;
-}
-a{color:inherit;text-decoration:none;}
-
-.ambient{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;}
-.orb{position:absolute;border-radius:50%;filter:blur(90px);will-change:transform;}
-.orb-1{width:560px;height:560px;top:-180px;left:-120px;background:radial-gradient(circle,rgba(79,195,247,0.14),transparent 65%);animation:drift-1 26s ease-in-out infinite alternate;}
-.orb-2{width:480px;height:480px;top:30%;right:-160px;background:radial-gradient(circle,rgba(88,86,214,0.12),transparent 65%);animation:drift-2 32s ease-in-out infinite alternate;}
-@keyframes drift-1{from{transform:translate(0,0);}to{transform:translate(90px,60px);}}
-@keyframes drift-2{from{transform:translate(0,0);}to{transform:translate(-70px,90px);}}
-
-.glass{
-  position:relative;isolation:isolate;
-  background:var(--glass-bg);
-  backdrop-filter:blur(20px) saturate(180%) brightness(108%);
-  -webkit-backdrop-filter:blur(20px) saturate(180%) brightness(108%);
-  border-radius:var(--radius-lg);
-  border:0.5px solid var(--glass-border);
-  box-shadow:0 4px 24px rgba(0,0,0,0.18),0 1px 4px rgba(0,0,0,0.12),inset 0 1px 0 rgba(255,255,255,0.16),inset 0 -1px 0 rgba(0,0,0,0.08);
-}
-.glass::before{
-  content:'';position:absolute;inset:0;border-radius:inherit;z-index:0;pointer-events:none;
-  background:linear-gradient(150deg,rgba(255,255,255,0.10) 0%,rgba(255,255,255,0.02) 42%,transparent 60%,rgba(255,255,255,0.04) 100%);
-}
-.glass>*{position:relative;z-index:1;}
-
-@media (prefers-reduced-transparency:reduce){
-  .glass,.glass-nav,.chip{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(28,32,38,0.97);}
-}
-
-.glass-nav{
-  position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:100;
-  display:flex;align-items:center;gap:26px;
-  padding:10px 12px 10px 22px;border-radius:var(--pill);
-  background:rgba(255,255,255,0.07);
-  backdrop-filter:blur(20px) saturate(180%);
-  -webkit-backdrop-filter:blur(20px) saturate(180%);
-  border:0.5px solid rgba(255,255,255,0.16);
-  box-shadow:0 8px 32px rgba(0,0,0,0.28),inset 0 1px 0 rgba(255,255,255,0.18);
-  transition:background .3s var(--ease),box-shadow .3s var(--ease);
-  white-space:nowrap;
-}
-.glass-nav.scrolled{background:rgba(20,25,32,0.62);box-shadow:0 12px 40px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.18);}
-.logo{font-family:var(--font-head);font-weight:900;font-size:20px;letter-spacing:-0.02em;line-height:1;}
-.logo .os{color:var(--ice) !important;}
-.nav-links{display:flex;align-items:center;gap:22px;}
-.nav-link{font-size:13px;font-weight:500;color:var(--label-2);transition:color .2s var(--ease);}
-.nav-link:hover,.nav-link.active{color:var(--white);}
-.nav-cta{
-  font-size:13px;font-weight:600;color:#06121C;background:var(--ice);
-  border-radius:var(--pill);padding:9px 18px;
-  transition:opacity .15s var(--ease),transform .1s var(--ease);
-}
-.nav-cta:hover{opacity:.9;}
-.nav-cta:active{transform:scale(0.96);}
-
-.btn-filled{
-  display:inline-flex;align-items:center;justify-content:center;gap:8px;
-  padding:15px 30px;border-radius:var(--pill);
-  font-family:var(--font-body);font-size:15px;font-weight:700;
-  color:#06121C;background:var(--ice);border:none;cursor:pointer;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,0.35);
-  transition:opacity .15s var(--ease),transform .1s var(--ease);
-}
-.btn-filled:hover{opacity:.9;}
-.btn-filled:active{transform:scale(0.96);}
-
-.chip{
-  display:inline-flex;align-items:center;gap:7px;
-  padding:6px 14px;border-radius:var(--pill);
-  font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;
-  color:var(--ice);
-  background:rgba(79,195,247,0.10);
-  border:0.5px solid rgba(79,195,247,0.28);
-  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-}
-.chip-dot{width:6px;height:6px;border-radius:50%;background:currentColor;animation:pulse 2s ease-in-out infinite;}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.35;transform:scale(.7);}}
-.section-label{font-size:11px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:var(--label-3);margin-bottom:32px;display:flex;align-items:center;gap:14px;}
-.section-label::after{content:'';flex:1;height:0.5px;background:var(--separator);}
-
-/* ── Hero ── */
-.hero{max-width:960px;margin:0 auto;padding:140px 40px 60px;display:grid;grid-template-columns:0.85fr 1.15fr;gap:56px;align-items:center;}
 .hero-photo{position:relative;}
-.hero-photo img{width:100%;border-radius:var(--radius-xl);object-fit:cover;aspect-ratio:3/4;filter:grayscale(15%);display:block;border:0.5px solid var(--glass-border);}
+.hero-photo img{width:100%;border-radius:26px;object-fit:cover;aspect-ratio:3/4;filter:grayscale(15%);border:1px solid var(--line-strong);box-shadow:0 24px 64px rgba(0,0,0,0.5);}
 .photo-badge{
-  position:absolute;bottom:-18px;right:-18px;
-  padding:14px 18px;border-radius:var(--radius-md);
-  background:rgba(20,25,32,0.6);
-  backdrop-filter:blur(20px) saturate(180%);
-  -webkit-backdrop-filter:blur(20px) saturate(180%);
-  border:0.5px solid var(--glass-border);
-  box-shadow:0 8px 32px rgba(0,0,0,0.35),inset 0 1px 0 rgba(255,255,255,0.16);
+  position:absolute;bottom:-20px;right:-20px;
+  padding:16px 20px;border-radius:16px;
+  background:var(--panel-2);
+  border:1px solid rgba(79,195,247,0.3);
+  box-shadow:0 8px 32px rgba(0,0,0,0.5),0 0 40px rgba(79,195,247,0.10);
 }
-.badge-label{font-size:9px;text-transform:uppercase;letter-spacing:0.15em;color:var(--label-3);}
-.badge-val{font-family:var(--font-head);font-size:19px;color:var(--ice);line-height:1.3;letter-spacing:-0.01em;}
-.hero-text h1{font-family:var(--font-head);font-weight:900;font-size:clamp(36px,5vw,56px);letter-spacing:-0.03em;line-height:1.02;margin:18px 0 22px;}
-.hero-text p{font-size:15px;color:var(--label-2);margin-bottom:13px;line-height:1.7;}
-.hero-text p.punch{color:var(--white);font-weight:600;}
+.photo-badge .k{font-family:var(--font-mono);font-size:9px;text-transform:uppercase;letter-spacing:0.15em;color:var(--label-3);margin-bottom:4px;}
+.photo-badge .v{font-family:var(--font-head);font-size:21px;color:var(--ice);line-height:1.2;letter-spacing:-0.01em;}
+.hero-text h1{font-family:var(--font-head);font-weight:900;font-size:clamp(40px,5.4vw,66px);letter-spacing:-0.03em;line-height:1.0;margin:22px 0 26px;}
+.hero-text h1 .ice{color:var(--ice);}
+.hero-text p{font-size:15.5px;color:var(--label-2);margin-bottom:16px;line-height:1.75;}
+.hero-text p.punch{color:var(--white);font-weight:600;font-size:17px;}
 
-/* ── Sections ── */
-.section{max-width:960px;margin:0 auto;padding:64px 40px;}
+/* ── story phase cards ── */
+.story{max-width:1060px;margin:0 auto;padding:0 32px;}
+.story-card{
+  display:grid;grid-template-columns:auto 1fr;gap:34px;align-items:start;
+  background:var(--card-bg);border:1px solid var(--line);border-radius:24px;
+  padding:44px 48px;margin-bottom:20px;position:relative;overflow:hidden;
+}
+.story-card::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 50% 70% at 12% 20%,rgba(79,195,247,0.045),transparent 70%);}
+.story-num{
+  position:relative;z-index:1;
+  display:block;
+  font-family:var(--font-head);font-size:46px;line-height:1;
+  color:rgba(79,195,247,0.26);letter-spacing:-0.03em;
+  background:none;border:none;
+}
+.story-body{position:relative;z-index:1;}
+.story-tag{display:inline-flex;align-items:center;gap:10px;font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--label-3);margin-bottom:12px;}
+.story-tag::before{content:'';width:18px;height:1px;background:var(--ice);opacity:0.7;}
+.story-body h3{font-family:var(--font-head);font-size:clamp(22px,2.6vw,30px);letter-spacing:-0.02em;line-height:1.1;margin-bottom:14px;}
+.story-body p{font-size:14.5px;color:var(--label-2);line-height:1.75;}
 
-/* Timeline as glass rail */
-.timeline{position:relative;display:flex;flex-direction:column;gap:14px;}
-.tl-item{display:grid;grid-template-columns:120px 1fr;gap:24px;padding:26px 28px;border-radius:var(--radius-lg);}
-.tl-year{font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ice);padding-top:4px;}
-.tl-content h3{font-size:17px;font-weight:700;margin-bottom:8px;letter-spacing:-0.01em;}
-.tl-content p{font-size:14px;color:var(--label-2);line-height:1.65;}
-
+/* ── quote ── */
 .quote-block{
-  margin:48px 0 0;padding:36px 40px;border-radius:var(--radius-xl);
-  background:rgba(79,195,247,0.07);
-  border:0.5px solid rgba(79,195,247,0.22);
-  backdrop-filter:blur(20px) saturate(180%);
-  -webkit-backdrop-filter:blur(20px) saturate(180%);
-  box-shadow:inset 0 1px 0 rgba(79,195,247,0.18),0 4px 24px rgba(79,195,247,0.06);
+  margin-top:20px;padding:44px 48px;border-radius:24px;
+  background:rgba(79,195,247,0.05);border:1px solid rgba(79,195,247,0.22);
 }
-.quote-text{font-size:21px;font-weight:600;letter-spacing:-0.01em;line-height:1.5;}
+.quote-text{font-size:clamp(19px,2.2vw,24px);font-weight:600;letter-spacing:-0.01em;line-height:1.55;}
 .quote-text em{color:var(--ice);font-style:normal;}
-.quote-attr{font-size:12.5px;color:var(--label-3);margin-top:16px;}
+.quote-attr{font-size:13px;color:var(--label-3);margin-top:20px;}
 
-.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:48px;}
-.stat-box{padding:26px 28px;border-radius:var(--radius-lg);}
-.stat-val{font-family:var(--font-head);font-size:30px;color:var(--ice);letter-spacing:-0.02em;line-height:1;}
-.stat-label{font-size:11.5px;color:var(--label-3);margin-top:8px;text-transform:uppercase;letter-spacing:0.08em;}
+/* ── stats ── */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px;}
+.stat-box{padding:34px 30px;border-radius:20px;background:var(--card-bg);border:1px solid var(--line);text-align:center;}
+.stat-val{font-family:var(--font-head);font-size:clamp(30px,3.4vw,42px);color:var(--ice);letter-spacing:-0.02em;line-height:1;}
+.stat-label{font-size:12px;color:var(--label-3);margin-top:14px;text-transform:uppercase;letter-spacing:0.08em;line-height:1.6;}
 
-.cta-section{text-align:center;padding:90px 40px 100px;border-top:0.5px solid var(--separator);margin-top:40px;}
-.cta-section h2{font-family:var(--font-head);font-weight:900;font-size:clamp(28px,4vw,40px);letter-spacing:-0.025em;margin:20px 0 12px;}
-.cta-section p{font-size:15px;color:var(--label-2);margin-bottom:30px;}
+/* ── principles ── */
+.prin-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.prin-card{padding:32px 34px;border-radius:20px;background:var(--card-bg);border:1px solid var(--line);}
+.prin-card .pk{display:inline-flex;align-items:center;gap:10px;font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--label-3);margin-bottom:14px;}
+.prin-card .pk::before{content:'';width:18px;height:1px;background:var(--ice);opacity:0.7;}
+.prin-card h3{font-size:18px;font-weight:700;letter-spacing:-0.01em;margin-bottom:10px;}
+.prin-card p{font-size:14px;color:var(--label-2);line-height:1.7;}
 
-.reveal{opacity:0;transform:translateY(22px) scale(.985);transition:opacity .5s var(--spring),transform .5s var(--spring);}
-.reveal.visible{opacity:1;transform:translateY(0) scale(1);}
-
-@media (prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important;}
-  .reveal{opacity:1;transform:none;}
+/* ── CTA ── */
+.cta-final{max-width:920px;margin:100px auto 0;padding:0 32px 120px;text-align:center;}
+.cta-inner{
+  padding:76px 48px;border-radius:30px;position:relative;overflow:hidden;
+  background:var(--card-bg);border:1px solid var(--line);
 }
+.cta-inner::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 70% 80% at 50% 110%,rgba(79,195,247,0.12),transparent 70%);}
+.cta-inner>*{position:relative;z-index:1;}
+.cta-inner h2{font-family:var(--font-head);font-weight:900;font-size:clamp(28px,4vw,46px);letter-spacing:-0.025em;margin:10px 0 16px;line-height:1.08;}
+.cta-inner p{font-size:15px;color:var(--label-2);margin-bottom:36px;}
+.cta-note{font-size:13px;color:var(--label-3);margin-top:30px;}
 
-@media (max-width:760px){
-  .glass-nav{gap:14px;padding:9px 10px 9px 16px;top:10px;width:calc(100% - 20px);justify-content:space-between;}
-  .nav-links{gap:13px;}
-  .nav-link{font-size:12px;}
-  .nav-link.home{display:none;}
-  .nav-cta{padding:8px 13px;font-size:12px;}
-  .logo{font-size:17px;}
-  .hero{grid-template-columns:1fr;gap:40px;padding:120px 20px 40px;}
+@media (max-width:860px){
+  .hero{grid-template-columns:1fr;gap:52px;padding:150px 20px 40px;}
   .hero-photo{max-width:300px;margin:0 auto;}
-  .section{padding:44px 20px;}
-  .tl-item{grid-template-columns:1fr;gap:8px;padding:22px;}
+  .story{padding:0 16px;}
+  .story-card{grid-template-columns:1fr;gap:20px;padding:30px 24px;}
   .stats-row{grid-template-columns:1fr;}
-  .quote-text{font-size:17px;}
-  .quote-block{padding:26px 24px;}
-  .cta-section{padding:60px 20px;}
+  .prin-grid{grid-template-columns:1fr;}
+  .quote-text{font-size:18px;}
+  .quote-block{padding:30px 24px;}
+  .cta-inner{padding:52px 24px;}
 }
 </style>
 </head>
 <body>
 
-<div class="ambient" aria-hidden="true">
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-</div>
+<div class="glow-bg" aria-hidden="true"></div>
+<div class="grid-bg" aria-hidden="true"></div>
 
-<nav class="glass-nav" id="main-nav" aria-label="Main">
+<nav class="nav" id="main-nav" aria-label="Main">
   <a href="/" class="logo">Inbound<span class="os">OS</span></a>
-  <div class="nav-links">
-    <a href="/" class="nav-link home">Home</a>
+  <div class="nav-right">
+    <a href="/" class="nav-link">Home</a>
     <a href="/client-wins" class="nav-link">Client Wins</a>
     <a href="/about" class="nav-link active">About</a>
+    <a href="/apply" class="nav-cta">See If You're a Fit</a>
   </div>
-  <a href="/apply" class="nav-cta">See If You're a Fit</a>
 </nav>
 
+<!-- ══════════════ HERO ══════════════ -->
 <header class="hero">
   <div class="hero-photo reveal">
     <img src="/micko.jpg" alt="Micko Cruz, founder of InboundOS">
     <div class="photo-badge">
-      <div class="badge-label">Content output</div>
-      <div class="badge-val">2 hrs/wk</div>
+      <div class="k">Content output</div>
+      <div class="v">2 hrs/wk</div>
     </div>
   </div>
   <div class="hero-text">
-    <span class="chip"><span class="chip-dot"></span>Founder &amp; Builder</span>
-    <h1>Hey, I'm Micko.</h1>
-    <p>Solo founder. I built InboundOS out of pure necessity.</p>
-    <p>I spent years running a done-for-you social media agency with a team of 10. VAs, video editors, graphic designers, ops managers, the whole operation. We delivered, but margins were tight, management was constant, and growth just meant more people to manage.</p>
+    <span class="badge">Founder &amp; Builder</span>
+    <h1>I fired my whole team. <span class="ice">Output went up.</span></h1>
+    <p>I'm Micko. I spent years running a done-for-you social media agency with a team of 10. VAs, video editors, graphic designers, ops managers, the whole operation.</p><p>We delivered. But margins were tight, management was constant, and growth just meant more people to manage.</p>
     <p>Now I'm a team of one. More output than I ever had with 10 people, because my team is made of AI agents that work 24/7, never miss a deadline, respond instantly, and cost a fraction of a salary.</p>
     <p class="punch">I call it an upgrade.</p>
     <p>I studied entrepreneurship for four years. When I map your business, I look at the offer, the positioning, the ICP, the sales process, and the tech stack. The system goes deeper than most AI installs because the thinking behind it does.</p>
   </div>
 </header>
 
-<section class="section">
-  <div class="section-label">The Story</div>
+<!-- ══════════════ STORY ══════════════ -->
+<div class="section-head" style="padding-top:80px;">
+  <span class="badge">The Story</span>
+  <h2>From 10-person team<br>to <span class="ice">a team of one.</span></h2>
+</div>
 
-  <div class="timeline">
-    <div class="tl-item glass reveal">
-      <div class="tl-year">Before</div>
-      <div class="tl-content">
-        <h3>Done-For-You Agency</h3>
-        <p>Started as a DFY social media agency with a team of 10. VAs, video editors, graphic designers, ops manager, the whole operation. Spent 15+ hours a week just on content. Margins were thin. Growth meant more hiring. More hiring meant more problems.</p>
-      </div>
+<section class="story">
+  <div class="story-card reveal-scale">
+    <span class="story-num">01</span>
+    <div class="story-body">
+      <div class="story-tag">Before</div>
+      <h3>Done-For-You Agency</h3>
+      <p>Started as a DFY social media agency with a team of 10. VAs, video editors, graphic designers, ops manager, the whole operation.</p><p>Spent 15+ hours a week just on content. Margins were thin. Growth meant more hiring, and more hiring meant more problems.</p>
     </div>
-    <div class="tl-item glass reveal">
-      <div class="tl-year">The shift</div>
-      <div class="tl-content">
-        <h3>The AI Moment</h3>
-        <p>"I thought AI was a hype train. Missing AI right now is like missing Bitcoin in 2011." That realization changed everything. I started replacing team members with AI agents, one by one. Argus for research. Apollo for scripts. Hermes for the pipeline. The output got better. The cost dropped. The deadlines stopped slipping. The stress disappeared.</p>
-      </div>
+  </div>
+  <div class="story-card reveal-scale">
+    <span class="story-num">02</span>
+    <div class="story-body">
+      <div class="story-tag">The Shift</div>
+      <h3>The AI Moment</h3>
+      <p>"I thought AI was a hype train. Missing AI right now is like missing Bitcoin in 2011."</p><p>That realization changed everything. I replaced team members with AI agents, one by one. Argus for research, Apollo for scripts, Hermes for the pipeline.</p><p>The output got better. The cost dropped. Deadlines stopped slipping.</p>
     </div>
-    <div class="tl-item glass reveal">
-      <div class="tl-year">Now</div>
-      <div class="tl-content">
-        <h3>The InboundOS Install</h3>
-        <p>I install the same system for agency owners still doing it manually. Done-with-you. I map your business, build your AI agents, wire up the workflows. You film and show up to calls. The system handles everything else, 24/7.</p>
-      </div>
+  </div>
+  <div class="story-card reveal-scale">
+    <span class="story-num">03</span>
+    <div class="story-body">
+      <div class="story-tag">Now</div>
+      <h3>The InboundOS Install</h3>
+      <p>I install the same system for agency owners still doing it manually. I map your business, build your AI agents, wire up the workflows.</p><p>You film and show up to calls. The system handles everything else, 24/7.</p>
     </div>
   </div>
 
@@ -264,54 +188,114 @@ a{color:inherit;text-decoration:none;}
   </div>
 
   <div class="stats-row">
-    <div class="stat-box glass reveal">
+    <div class="stat-box reveal">
       <div class="stat-val">15h → 2h</div>
       <div class="stat-label">Weekly content time</div>
     </div>
-    <div class="stat-box glass reveal">
-      <div class="stat-val">4 wks</div>
+    <div class="stat-box reveal">
+      <div class="stat-val"><span data-count="4">0</span> weeks</div>
       <div class="stat-label">Content batched in one session</div>
     </div>
-    <div class="stat-box glass reveal">
-      <div class="stat-val">4</div>
-      <div class="stat-label">AI agents running the system</div>
+    <div class="stat-box reveal">
+      <div class="stat-val"><span data-count="4">0</span> agents</div>
+      <div class="stat-label">Running the system 24/7</div>
     </div>
   </div>
 </section>
 
-<section class="cta-section">
-  <span class="chip"><span class="chip-dot"></span>Limited spots</span>
-  <h2>Ready to install your system?</h2>
-  <p>Done-with-you installation. Application required.</p>
-  <a href="/apply" class="btn-filled">Get My Content Flywheel Plan</a>
+<!-- ══════════════ HOW I WORK ══════════════ -->
+<div class="section-head">
+  <span class="badge">How I Work</span>
+  <h2>Built like an operator,<br>not a <span class="ice">prompt seller.</span></h2>
+</div>
+
+<section class="story">
+  <div class="prin-grid">
+    <div class="prin-card reveal">
+      <div class="pk">Principle 01</div>
+      <h3>Business first, AI second</h3>
+      <p>I map your offer, positioning, ICP, and sales process before a single agent gets built. AI bolted onto a broken funnel just makes noise faster.</p>
+    </div>
+    <div class="prin-card reveal">
+      <div class="pk">Principle 02</div>
+      <h3>Done-with-you, not done-to-you</h3>
+      <p>You're in the build. Weekly calls, async access, every decision explained in plain language. When we're done, you can actually run it.</p>
+    </div>
+    <div class="prin-card reveal">
+      <div class="pk">Principle 03</div>
+      <h3>You own everything</h3>
+      <p>Agents, workflows, prompt libraries, databases. It all lives inside your business. No hostage retainers. Walk away and it still runs.</p>
+    </div>
+    <div class="prin-card reveal">
+      <div class="pk">Principle 04</div>
+      <h3>Proof over promises</h3>
+      <p>I ran these systems on real client accounts before selling them. Everything on the Client Wins page happened with me operating the machine.</p>
+    </div>
+  </div>
 </section>
 
-<footer style="border-top:0.5px solid var(--separator);padding:34px 40px;max-width:960px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;">
-  <a href="/" class="logo">Inbound<span class="os">OS</span></a>
-  <div style="display:flex;gap:20px;flex-wrap:wrap;">
-    <a href="/client-wins" style="font-size:12.5px;color:var(--label-3);">Client Wins</a>
-    <a href="/apply" style="font-size:12.5px;color:var(--label-3);">Apply</a>
-    <a href="/privacy" style="font-size:12.5px;color:var(--label-3);">Privacy Policy</a>
-    <a href="/terms" style="font-size:12.5px;color:var(--label-3);">Terms of Service</a>
+<!-- ══════════════ CTA ══════════════ -->
+<section class="cta-final">
+  <div class="cta-inner reveal-scale">
+    <span class="badge">Limited Spots</span>
+    <h2>Ready to install your system?</h2>
+    <p>Done-with-you installation. Application required.</p>
+    <a href="/apply" class="btn-primary">Apply Now <span class="arr">→</span></a>
+    <p class="cta-note">We review every application personally.</p>
   </div>
-  <div style="font-size:12.5px;color:var(--label-4);">© 2026 InboundOS. All rights reserved.</div>
+</section>
+
+<footer>
+  <a href="/" class="logo">Inbound<span class="os">OS</span></a>
+  <div class="foot-links">
+    <a href="/client-wins">Client Wins</a>
+    <a href="/apply">Apply</a>
+    <a href="/privacy">Privacy Policy</a>
+    <a href="/terms">Terms of Service</a>
+  </div>
+  <div class="copy">© 2026 InboundOS. All rights reserved.</div>
 </footer>
 
 <script>
-  const nav = document.getElementById('main-nav');
-  addEventListener('scroll', () => {
-    nav.classList.toggle('scrolled', scrollY > 24);
-  }, { passive: true });
+const nav = document.getElementById('main-nav');
+addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', scrollY > 24);
+}, { passive: true });
 
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach((e, i) => {
-      if (e.isIntersecting) {
-        setTimeout(() => e.target.classList.add('visible'), (i % 6) * 60);
-        io.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.1, rootMargin: '0px 0px -48px 0px' });
-  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+const io = new IntersectionObserver((entries) => {
+  entries.forEach((e) => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      io.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -60px 0px' });
+document.querySelectorAll('.reveal, .reveal-scale').forEach(el => io.observe(el));
+
+function countUp(el, target, duration = 1200) {
+  if (el.dataset.counted) return;
+  el.dataset.counted = '1';
+  const startTime = performance.now();
+  const ease = t => 1 - Math.pow(1 - t, 3);
+  const step = (now) => {
+    const p = Math.min((now - startTime) / duration, 1);
+    el.textContent = Math.round(target * ease(p));
+    if (p < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+const countIO = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      countUp(e.target, parseFloat(e.target.dataset.count) || 0);
+      countIO.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('[data-count]').forEach(el => countIO.observe(el));
 </script>
+<!-- Vercel Web Analytics + Speed Insights (cookieless, no consent banner needed) -->
+<script defer src="/_vercel/insights/script.js"></script>
+<script defer src="/_vercel/speed-insights/script.js"></script>
 </body>
 </html>

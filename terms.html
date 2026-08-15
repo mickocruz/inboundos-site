@@ -3,55 +3,66 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Terms of Service — InboundOS</title>
+<title>Terms of Service | InboundOS</title>
+<meta name="description" content="Terms governing InboundOS services and website use.">
+<link rel="canonical" href="https://inboundos.vercel.app/terms">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://inboundos.vercel.app/terms">
+<meta property="og:title" content="Terms of Service | InboundOS">
+<meta property="og:description" content="Terms governing InboundOS services and website use.">
+<meta property="og:image" content="https://inboundos.vercel.app/og-image.png">
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:title" content="Terms of Service | InboundOS">
+<meta property="twitter:description" content="Terms governing InboundOS services and website use.">
+<meta property="twitter:image" content="https://inboundos.vercel.app/og-image.png">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/v2.css">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-:root{
-  --bg:#0D1117;
-  --white:#ffffff;
-  --ice:#4FC3F7;
-  --label-2:rgba(255,255,255,0.58);
-  --label-3:rgba(255,255,255,0.38);
-  --label-4:rgba(255,255,255,0.22);
-  --separator:rgba(255,255,255,0.08);
+body{font-size:15px;line-height:1.7;}
+main a{color:var(--ice);}
+main a:hover{text-decoration:underline;}
+
+main{max-width:760px;margin:0 auto;padding:160px 32px 80px;}
+
+.page-title{font-family:var(--font-head);font-weight:900;font-size:clamp(34px,4.5vw,52px);letter-spacing:-0.03em;line-height:1.05;margin-bottom:10px;}
+.effective{font-size:13px;color:var(--label-3);margin-bottom:52px;}
+
+main section{margin-bottom:36px;padding:30px 34px;border-radius:20px;background:var(--card-bg);border:1px solid var(--line);}
+.section-label{font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--ice);margin-bottom:12px;}
+main h2{font-size:17px;font-weight:700;margin-bottom:12px;letter-spacing:-0.01em;}
+main p{color:var(--label-2);margin-bottom:12px;}
+main ul{color:var(--label-2);padding-left:20px;margin-bottom:12px;}
+main ul li{margin-bottom:6px;}
+
+@media (max-width:640px){
+  main{padding:130px 16px 60px;}
+  main section{padding:22px 18px;}
 }
-body{background:var(--bg);color:var(--white);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.7;}
-a{color:var(--ice);text-decoration:none;}
-a:hover{text-decoration:underline;}
-
-header{border-bottom:1px solid var(--separator);padding:20px 40px;}
-header .logo{font-size:18px;font-weight:700;letter-spacing:-0.3px;}
-header .logo .os{color:var(--ice);}
-
-main{max-width:720px;margin:0 auto;padding:60px 40px 80px;}
-
-.page-title{font-size:32px;font-weight:700;letter-spacing:-0.5px;margin-bottom:8px;}
-.effective{font-size:13px;color:var(--label-3);margin-bottom:48px;}
-
-section{margin-bottom:40px;}
-.section-label{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--ice);margin-bottom:12px;}
-h2{font-size:17px;font-weight:600;margin-bottom:12px;}
-p{color:var(--label-2);margin-bottom:12px;}
-ul{color:var(--label-2);padding-left:20px;margin-bottom:12px;}
-ul li{margin-bottom:6px;}
-
-footer{border-top:1px solid var(--separator);padding:28px 40px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;max-width:100%;}
-.foot-links{display:flex;gap:20px;}
-.foot-links a{font-size:12.5px;color:var(--label-3);}
-.foot-links a:hover{color:var(--white);}
-.copy{font-size:12.5px;color:var(--label-4);}
 </style>
 </head>
 <body>
 
-<header>
+<div class="glow-bg" aria-hidden="true"></div>
+<div class="grid-bg" aria-hidden="true"></div>
+
+<nav class="nav" id="main-nav" aria-label="Main">
   <a href="/" class="logo">Inbound<span class="os">OS</span></a>
-</header>
+  <div class="nav-right">
+    <a href="/" class="nav-link">Home</a>
+    <a href="/client-wins" class="nav-link">Client Wins</a>
+    <a href="/about" class="nav-link">About</a>
+    <a href="/apply" class="nav-cta">See If You're a Fit</a>
+  </div>
+</nav>
 
 <main>
+  <span class="badge">Legal</span>
   <h1 class="page-title">Terms of Service</h1>
   <p class="effective">Effective Date: June 23, 2026</p>
 
@@ -114,7 +125,7 @@ footer{border-top:1px solid var(--separator);padding:28px 40px;display:flex;alig
   <section>
     <div class="section-label">07</div>
     <h2>Intellectual Property Rights</h2>
-    <p><strong>InboundOS Retains Framework Rights:</strong> InboundOS retains all intellectual property rights in its proprietary methodologies, training frameworks, process documentation, and strategic models. These are licensed to the client for internal business use only—not for resale, white-label, or redistribution.</p>
+    <p><strong>InboundOS Retains Framework Rights:</strong> InboundOS retains all intellectual property rights in its proprietary methodologies, training frameworks, process documentation, and strategic models. These are licensed to the client for internal business use only, not for resale, white-label, or redistribution.</p>
     <p><strong>No Rebranding or Resale:</strong> The client may not resell the InboundOS methodology, rebrand it, or position it as their own service offering without a separate commercial license agreement with InboundOS.</p>
     <p><strong>Third-Party Materials:</strong> Some deliverables may incorporate third-party libraries, templates, or tools. Those materials remain subject to their original licenses. The client may use them as included with the deliverables but cannot redistribute them separately.</p>
     <p><strong>Client Content:</strong> All brand materials, messaging, content, and assets provided by the client remain the property of the client. InboundOS may reference completed work in case studies, testimonials, or portfolios with explicit client permission.</p>
@@ -158,7 +169,7 @@ footer{border-top:1px solid var(--separator);padding:28px 40px;display:flex;alig
   <section>
     <div class="section-label">11</div>
     <h2>Limitation of Liability</h2>
-    <p><strong>Maximum Liability:</strong> InboundOS's total liability for any claim—whether in contract, tort, or otherwise—shall not exceed the amount the client paid for the service ($1,500–$9,000).</p>
+    <p><strong>Maximum Liability:</strong> InboundOS's total liability for any claim, whether in contract, tort, or otherwise, shall not exceed the amount the client paid for the service ($1,500–$9,000).</p>
     <p><strong>No Consequential Damages:</strong> InboundOS is not liable for lost profits, lost revenue, lost data, business interruption, reputational harm, or any indirect, incidental, special, or consequential damages, even if advised of the possibility.</p>
     <p><strong>Third-Party Services:</strong> InboundOS uses third-party platforms (Supabase, n8n, Meta, Google, Stripe, etc.). InboundOS is not liable for downtime, errors, or failures of these services. These services are provided "as is" under their own terms.</p>
     <p><strong>Data Loss:</strong> The client is responsible for backing up all work, data, and deliverables. InboundOS is not liable for accidental data loss, deletion, or system failures.</p>
@@ -254,13 +265,25 @@ footer{border-top:1px solid var(--separator);padding:28px 40px;display:flex;alig
 </main>
 
 <footer>
-  <a href="/" class="logo" style="font-size:16px;font-weight:700;letter-spacing:-0.3px;color:var(--white);text-decoration:none;">Inbound<span style="color:var(--ice);">OS</span></a>
+  <a href="/" class="logo">Inbound<span class="os">OS</span></a>
   <div class="foot-links">
+    <a href="/client-wins">Client Wins</a>
+    <a href="/about">About</a>
+    <a href="/apply">Apply</a>
     <a href="/privacy">Privacy Policy</a>
     <a href="/terms">Terms of Service</a>
   </div>
   <div class="copy">© 2026 InboundOS. All rights reserved.</div>
 </footer>
 
+<script>
+const nav = document.getElementById('main-nav');
+addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', scrollY > 24);
+}, { passive: true });
+</script>
+<!-- Vercel Web Analytics + Speed Insights (cookieless, no consent banner needed) -->
+<script defer src="/_vercel/insights/script.js"></script>
+<script defer src="/_vercel/speed-insights/script.js"></script>
 </body>
 </html>

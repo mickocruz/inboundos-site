@@ -33,6 +33,51 @@
   ],
   "redirects": [
     {
+      "source": "/landing.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/landing",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/index.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/about.html",
+      "destination": "/about",
+      "permanent": true
+    },
+    {
+      "source": "/client-wins.html",
+      "destination": "/client-wins",
+      "permanent": true
+    },
+    {
+      "source": "/privacy.html",
+      "destination": "/privacy",
+      "permanent": true
+    },
+    {
+      "source": "/terms.html",
+      "destination": "/terms",
+      "permanent": true
+    },
+    {
+      "source": "/login.html",
+      "destination": "/login",
+      "permanent": true
+    },
+    {
+      "source": "/onboarding.html",
+      "destination": "/onboarding",
+      "permanent": true
+    },
+    {
       "source": "/apply.html",
       "destination": "/apply",
       "permanent": true
@@ -54,10 +99,6 @@
     {
       "source": "/apply",
       "destination": "/apply.html"
-    },
-    {
-      "source": "/landing",
-      "destination": "/landing.html"
     },
     {
       "source": "/client-wins",

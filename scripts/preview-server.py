@@ -24,6 +24,28 @@ class Handler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=ROOT, **kwargs)
 
+    # mirror vercel.json redirects: /foo.html -> /foo (and landing -> /)
+    REDIRECTS = {
+        '/landing.html': '/', '/landing': '/', '/index.html': '/',
+        '/about.html': '/about', '/client-wins.html': '/client-wins',
+        '/privacy.html': '/privacy', '/terms.html': '/terms',
+        '/login.html': '/login', '/apply.html': '/apply',
+        '/onboarding.html': '/onboarding',
+    }
+
+    def do_GET(self):
+        base = self.path.split('?')[0]
+        target = self.REDIRECTS.get(base)
+        if target:
+            qs = self.path[len(base):]
+            self.send_response(308)
+            self.send_header('Location', target + qs)
+            # keep-alive needs an explicit length or the client waits for a body
+            self.send_header('Content-Length', '0')
+            self.end_headers()
+            return
+        return super().do_GET()
+
     def translate_path(self, path):
         local = super().translate_path(path)
         # Extensionless URL with no matching file/dir -> try the .html sibling

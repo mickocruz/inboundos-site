@@ -115,6 +115,16 @@
   .cta-inner{padding:52px 24px;}
 }
 </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://inboundos.vercel.app/" },
+    { "@type": "ListItem", "position": 2, "name": "About", "item": "https://inboundos.vercel.app/about" }
+  ]
+}
+</script>
 </head>
 <body>
 
@@ -129,6 +139,12 @@
     <a href="/about" class="nav-link active">About</a>
     <a href="/apply" class="nav-cta">See If You're a Fit</a>
   </div>
+</nav>
+
+<nav class="crumbs" aria-label="Breadcrumb">
+  <a href="/">Home</a>
+  <span class="sep" aria-hidden="true">/</span>
+  <span aria-current="page">About</span>
 </nav>
 
 <!-- ══════════════ HERO ══════════════ -->
@@ -229,7 +245,7 @@
     <div class="prin-card reveal">
       <div class="pk">Principle 04</div>
       <h3>Proof over promises</h3>
-      <p>I ran these systems on real client accounts before selling them. Everything on the Client Wins page happened with me operating the machine.</p>
+      <p>I ran these systems on real client accounts before selling them. Everything on the <a href="/client-wins" style="color:var(--ice);">Client Wins</a> page happened with me operating the machine.</p>
     </div>
   </div>
 </section>
@@ -297,5 +313,10 @@ document.querySelectorAll('[data-count]').forEach(el => countIO.observe(el));
 <!-- Vercel Web Analytics + Speed Insights (cookieless, no consent banner needed) -->
 <script defer src="/_vercel/insights/script.js"></script>
 <script defer src="/_vercel/speed-insights/script.js"></script>
+
+<div class="sticky-cta">
+  <span class="sc-note">Reply within 24 hours</span>
+  <a href="/apply" class="btn-primary">Apply <span class="arr">&rarr;</span></a>
+</div>
 </body>
 </html>

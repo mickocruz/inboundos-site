@@ -594,7 +594,30 @@
 
     /*  Other blocker textarea  */
     #other-wrap { margin-top: 8px; display: none; }
+
+    /*  Breadcrumbs  */
+    .crumbs{
+      max-width:1240px;margin:0 auto;padding:88px 40px 0;
+      display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+      font-size:12.5px;color:var(--gray);
+    }
+    .crumbs a{color:var(--gray);text-decoration:none;transition:color .2s;}
+    .crumbs a:hover{color:var(--blue);}
+    .crumbs [aria-current="page"]{color:var(--gray);}
+    .crumbs .sep{color:var(--muted);}
+    .crumbs + .hero-wrap{min-height:0;padding-top:48px;}
+    @media (max-width:640px){ .crumbs{padding:76px 20px 0;} }
   </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://inboundos.vercel.app/" },
+    { "@type": "ListItem", "position": 2, "name": "Apply", "item": "https://inboundos.vercel.app/apply" }
+  ]
+}
+</script>
 </head>
 <body>
 
@@ -615,6 +638,12 @@
      SCREEN: INTRO
  -->
 <div class="screen active" id="screen-intro">
+
+  <nav class="crumbs" aria-label="Breadcrumb">
+    <a href="/">Home</a>
+    <span class="sep" aria-hidden="true">/</span>
+    <span aria-current="page">Apply</span>
+  </nav>
 
   <div class="hero-wrap">
     <div class="eyebrow">Limited Spots</div>
@@ -1160,12 +1189,22 @@
         biggest_problem: biggestProblem
       })
     }).then(r => r.json()).then(data => {
-      if (data.qualify_score === 'hot') {
-        document.getElementById('calendly-link').style.display = 'inline-flex';
-      }
-    }).catch(() => {});
+      const hot = data.qualify_score === 'hot';
+      if (hot) document.getElementById('calendly-link').style.display = 'inline-flex';
+      finish(hot);
+    }).catch(() => finish(false));
 
+    // Immediate feedback; stays put if navigation is blocked for any reason.
     show('screen-success');
+
+    // Land on /thank-you so the conversion is a real pageview analytics can see.
+    let navigated = false;
+    function finish(hot) {
+      if (navigated) return;
+      navigated = true;
+      window.location.href = hot ? '/thank-you?hot=1' : '/thank-you';
+    }
+    setTimeout(() => finish(false), 2500);
   }
 
   function v(id) {

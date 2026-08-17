@@ -81,9 +81,18 @@
       "source": "/apply.html",
       "destination": "/apply",
       "permanent": true
+    },
+    {
+      "source": "/thank-you.html",
+      "destination": "/thank-you",
+      "permanent": true
     }
   ],
   "rewrites": [
+    {
+      "source": "/thank-you",
+      "destination": "/thank-you.html"
+    },
     {
       "source": "/",
       "destination": "/landing.html"

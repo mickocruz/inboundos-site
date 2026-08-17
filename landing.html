@@ -738,7 +738,211 @@ p,li,.phase-copy p.desc,.step-card p,.prin-card p,
     hyphens:auto;-webkit-hyphens:auto;
   }
 }
+
+/* ───────────────────────── breadcrumbs ───────────────────────── */
+.crumbs{
+  max-width:1240px;margin:0 auto;
+  padding:98px 40px 0;
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  font-size:12.5px;color:var(--label-3);
+}
+.crumbs a{color:var(--label-3);transition:color .2s var(--ease);}
+.crumbs a:hover{color:var(--ice);}
+.crumbs [aria-current="page"]{color:var(--label-2);}
+.crumbs .sep{color:var(--label-4);}
+
+/* ───────────────────────── response time promise ───────────────────────── */
+.reply-promise{
+  display:inline-flex;align-items:center;gap:9px;
+  padding:8px 17px;border-radius:var(--pill);
+  background:rgba(79,195,247,0.06);border:1px solid rgba(79,195,247,0.22);
+  font-size:12.5px;font-weight:600;color:var(--ice);
+  margin-top:22px;
+}
+.reply-promise::before{
+  content:'';flex:none;width:6px;height:6px;border-radius:50%;
+  background:var(--ice);animation:pulse 2s var(--ease) infinite;
+}
+
+/* ───────────────────────── sticky mobile CTA ───────────────────────── */
+.sticky-cta{display:none;}
+@media (max-width:768px){
+  .sticky-cta{
+    display:flex;position:fixed;left:0;right:0;bottom:0;z-index:120;
+    align-items:center;gap:14px;
+    padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));
+    background:rgba(13,17,23,0.92);
+    backdrop-filter:blur(18px) saturate(160%);
+    -webkit-backdrop-filter:blur(18px) saturate(160%);
+    border-top:1px solid var(--line);
+  }
+  .sticky-cta .sc-note{flex:1;min-width:0;font-size:11.5px;color:var(--label-3);line-height:1.35;}
+  .sticky-cta .btn-primary{
+    padding:13px 24px;font-size:14px;white-space:nowrap;
+    box-shadow:0 0 24px rgba(79,195,247,0.25),inset 0 1px 0 rgba(255,255,255,0.4);
+  }
+  .sticky-cta .btn-primary::after{display:none;}
+  body{padding-bottom:78px;}
+  .crumbs{padding-top:82px;}
+}
+
+/* ───────────────────────── case studies ───────────────────────── */
+.cases-wrap{max-width:1080px;margin:0 auto;padding:0 32px;}
+.cases{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.case-card{
+  display:block;padding:36px 34px;border-radius:22px;
+  background:var(--card-bg);border:1px solid var(--line);
+  transition:border-color .25s var(--ease),transform .25s var(--ease);
+}
+.case-card:hover{border-color:rgba(79,195,247,0.35);transform:translateY(-3px);}
+.case-kind{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:var(--font-mono);font-size:10px;font-weight:600;
+  letter-spacing:0.18em;text-transform:uppercase;color:var(--label-3);margin-bottom:14px;
+}
+.case-kind::before{content:'';width:18px;height:1px;background:var(--ice);opacity:0.7;}
+.case-card h3{
+  font-family:var(--font-head);font-weight:900;
+  font-size:clamp(21px,2.3vw,27px);letter-spacing:-0.02em;line-height:1.12;margin-bottom:12px;
+}
+.case-card>p{font-size:14px;color:var(--label-2);line-height:1.7;margin-bottom:24px;}
+.case-figs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:22px;}
+.case-figs span{font-size:11px;color:var(--label-3);line-height:1.4;}
+.case-figs i{
+  display:block;font-style:normal;
+  font-family:var(--font-head);font-size:24px;letter-spacing:-0.02em;
+  color:var(--ice);margin-bottom:6px;
+}
+.case-handle{
+  display:block;font-family:var(--font-mono);font-size:11px;
+  color:var(--label-4);margin-bottom:18px;
+}
+.case-more{font-size:13.5px;font-weight:600;color:var(--ice);}
+.case-card:hover .case-more .arr{display:inline-block;transform:translateX(4px);}
+.case-more .arr{transition:transform .2s var(--ease);}
+@media (max-width:860px){
+  .cases{grid-template-columns:1fr;}
+  .case-card{padding:28px 24px;}
+}
 </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "name": "InboundOS",
+  "url": "https://inboundos.vercel.app/",
+  "logo": "https://inboundos.vercel.app/icons/icon-512.png",
+  "image": "https://inboundos.vercel.app/og-image.png",
+  "description": "InboundOS installs custom AI content agents inside solo done-for-you agencies. The agents research the niche, write five scripts a day in the owner's voice, and qualify inbound DMs into booked calls.",
+  "founder": {
+    "@type": "Person",
+    "name": "Micko Cruz",
+    "jobTitle": "Founder",
+    "image": "https://inboundos.vercel.app/micko.jpg"
+  },
+  "serviceType": "AI content system installation",
+  "areaServed": {
+    "@type": "Place",
+    "name": "Worldwide"
+  },
+  "availableChannel": {
+    "@type": "ServiceChannel",
+    "serviceUrl": "https://inboundos.vercel.app/apply"
+  },
+  "audience": {
+    "@type": "BusinessAudience",
+    "name": "Solo done-for-you agency owners doing $5K to $12K a month"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Do I need to film everything myself?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. You film, we handle everything else: positioning, scripting, AI agents, review, strategy, and the lead conversion layer. You show up on camera, we build the machine around you."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much time does this take per week?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "One 60-minute 1:1 call per week, plus one monthly filming session you batch in advance. Everything else is async."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "I'm not technical. Will I be able to use the AI agents?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "They're built specifically for you. Type a one-line prompt and get a full script in your voice. We build it, we hand it over, you run it from day one."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "We already tried ChatGPT. Why would this be different?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "ChatGPT is a blank tool. We build the entire operating layer around it: your company database, your voice data, your custom agents, your batching workflow, your review process, your conversion sequences. The power is in what surrounds the AI."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Will the content actually sound like me?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. We train the system on your calls, posts, frameworks, offers, objections, and stories. Then we review scripts and hooks before they go live, so the output sounds like you on your sharpest day."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What if I already have an editor or VA?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Even better. We give them a clearer machine to operate: content pillars, scripts, batching rhythm, review standards, and CTA flow. They stop guessing and start executing against a system."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I keep everything after 90 days?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, all of it. The agents, workflows, prompt library, content calendar, strategy, review standards, and DM sequences. That's the whole point of an install: it lives inside your business."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why not just hire a content agency?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Agencies charge $3K\u2013$10K/month and keep the system when you leave. We build custom AI agents and workflows inside your business, and you own them after 90 days. Pay once, run forever."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What if it's not working?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "If you don't make more money or save time, we keep working with you until you do. We track what's converting from week one and adjust before problems compound. Done-with-you means you're never figuring it out alone."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much does this cost?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The 90-day build is a one-time investment. Exact cost depends on your scope: size of your database, number of agents, integration complexity. We price it on discovery. One build, you own it forever, no monthly fees."
+      }
+    }
+  ]
+}
+</script>
 </head>
 <body>
 
@@ -761,6 +965,7 @@ p,li,.phase-copy p.desc,.step-card p,.prin-card p,
   <h1>You're the bottleneck.<br><span class="ice">We install the fix.</span></h1>
   <p class="hero-sub">Custom AI agents trained on your voice, your ICP, and 1,000+ viral hooks. 5 scripts every morning, qualified leads on your calendar. One install, yours forever.</p>
   <a href="/apply" class="btn-primary">Apply Now <span class="arr">→</span></a>
+  <p class="reply-promise">Every application answered within 24 hours</p>
   <p class="hero-note">Application required. Limited spots. We review every application personally.</p>
 </header>
 
@@ -1028,6 +1233,47 @@ p,li,.phase-copy p.desc,.step-card p,.prin-card p,
   </div>
 </section>
 
+
+<!-- ══════════════ CASE STUDIES ══════════════ -->
+<section id="case-studies" aria-labelledby="case-studies-heading">
+  <div class="section-head">
+    <span class="badge">Case Studies</span>
+    <h2 id="case-studies-heading">Two accounts,<br><span class="ice">run by hand first.</span></h2>
+    <p class="sub">Micko ran both of these himself before InboundOS existed as a product. The system automates the process that produced them.</p>
+  </div>
+  <div class="cases-wrap">
+    <div class="cases">
+
+      <a class="case-card reveal" href="/client-wins">
+        <span class="case-kind">Telehealth Dermatology</span>
+        <h3>7 followers to 4,565 in a couple of months</h3>
+        <span class="case-handle">@skinnovate_derm &middot; TikTok</span>
+        <p>Dr. Meenal Kheterpal had never posted on TikTok. One video reached 3.3M views, the account passed 7M in total, and a Yale MD with 485K followers found it and followed on her own.</p>
+        <div class="case-figs">
+          <span><i>3.3M</i>views, top video</span>
+          <span><i>296.6K</i>total likes</span>
+          <span><i>$0</i>ad spend</span>
+        </div>
+        <span class="case-more">Read the full case <span class="arr">&rarr;</span></span>
+      </a>
+
+      <a class="case-card reveal" href="/client-wins">
+        <span class="case-kind">Off-Market Real Estate</span>
+        <h3>A 600-person buyer list built from TikTok</h3>
+        <span class="case-handle">@creativerealestatedeals &middot; TikTok</span>
+        <p>Christian Pombo sources and closes his own deals. The content is what put the properties in front of people holding cash, and the WhatsApp group it filled now sits at 597 buyers.</p>
+        <div class="case-figs">
+          <span><i>$20M+</i>deal volume</span>
+          <span><i>597</i>buyers in group</span>
+          <span><i>$0</i>ad spend</span>
+        </div>
+        <span class="case-more">Read the full case <span class="arr">&rarr;</span></span>
+      </a>
+
+    </div>
+  </div>
+</section>
+
 <!-- ══════════════ PROCESS ══════════════ -->
 <section id="process" aria-labelledby="process-heading">
   <div class="section-head">
@@ -1178,6 +1424,7 @@ p,li,.phase-copy p.desc,.step-card p,.prin-card p,
     <h2 id="final-cta-heading">In 90 days you'll have a system that runs your content. Or you'll still be doing it yourself.</h2>
     <p>Apply below. We review personally and tell you if it's a fit before we waste your time. No Calendly, no pitch call until we know it's real.</p>
     <a href="/apply" class="btn-primary">Apply Now <span class="arr">→</span></a>
+    <p class="reply-promise">Every application answered within 24 hours</p>
     <p class="final-note">Limited spots. Application required. We work with you until it works.</p>
   </div>
 </section>
@@ -1276,5 +1523,10 @@ if (typedEl) {
 <!-- Vercel Web Analytics + Speed Insights (cookieless, no consent banner needed) -->
 <script defer src="/_vercel/insights/script.js"></script>
 <script defer src="/_vercel/speed-insights/script.js"></script>
+
+<div class="sticky-cta">
+  <span class="sc-note">Reply within 24 hours</span>
+  <a href="/apply" class="btn-primary">Apply <span class="arr">&rarr;</span></a>
+</div>
 </body>
 </html>

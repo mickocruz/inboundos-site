@@ -1,8 +1,8 @@
 {
   "name": "InboundOS",
   "short_name": "InboundOS",
-  "description": "InboundOS Agency Dashboard",
-  "start_url": "/dashboard/pipeline.html",
+  "description": "InboundOS installs custom AI content agents inside solo done-for-you agencies.",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#0D1117",
   "theme_color": "#0D1117",

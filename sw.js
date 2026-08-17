@@ -1,13 +1,18 @@
-const CACHE = 'inboundos-v2';
+const CACHE = 'inboundos-v3';
 const PRECACHE = [
-  '/dashboard/pipeline.html',
-  '/dashboard/crm.html',
-  '/dashboard/performance.html',
+  '/',
+  '/client-wins',
+  '/about',
+  '/apply',
+  '/v2.css',
   '/NHGDisplay95Black.otf'
 ];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(PRECACHE)).then(() => self.skipWaiting()));
+  // addAll rejects the whole install if any single URL 404s, so cache leniently.
+  e.waitUntil(caches.open(CACHE).then(c =>
+    Promise.all(PRECACHE.map(u => c.add(u).catch(() => {})))
+  ).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', e => {

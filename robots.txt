@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+
+# Private and transactional areas: no value in search, and some are gated.
+Disallow: /login
+Disallow: /login.html
+Disallow: /onboarding
+Disallow: /onboarding.html
+Disallow: /admin/
+Disallow: /client-onboarding/
+Disallow: /api/
+Disallow: /thank-you
+Disallow: /thank-you.html
+
+Sitemap: https://inboundos.vercel.app/sitemap.xml

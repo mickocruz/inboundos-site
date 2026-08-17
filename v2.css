@@ -152,6 +152,27 @@ footer .foot-links{display:flex;gap:22px;flex-wrap:wrap;}
 footer .foot-links a{font-size:12.5px;color:var(--label-3);transition:color .2s;}
 footer .foot-links a:hover{color:var(--white);}
 
+
+/* ── line-breaking: no orphan words ──
+   balance = even line lengths (headings, short blurbs, centered text)
+   pretty  = prevents a lone last word (longer body copy)
+   Both degrade gracefully in older browsers. */
+h1,h2,h3,h4,
+.section-head .sub,.hero-sub,.hero-note,.final-note,
+.big-stat .l,.step-card h4,.included-chip,
+.badge,.g-label,.case-kind,.story-tag,.prin-card .pk,
+.quote-text,.flow-quote,.guarantee p,.gap-callout p,
+.manual-card p,.cta-inner p,.case-sub,.offer-foot{
+  text-wrap:balance;
+}
+p,li,.phase-copy p.desc,.step-card p,.prin-card p,
+.story-body p,.honest-inner p,.econ-close p,.faq-a,
+.win-card .cap,.pain-row,.icp-row,.checklist li,.offer-list li{
+  /* balance beats pretty here: pretty only protects the very last line in
+     some engines, balance evens every line so no fragment is left alone */
+  text-wrap:balance;
+}
+
 /* reveal system */
 .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s var(--ease),transform .7s var(--ease);}
 .reveal.visible{opacity:1;transform:translateY(0);}
@@ -172,4 +193,12 @@ footer .foot-links a:hover{color:var(--white);}
   .nav-right{gap:18px;}
   .nav-link{display:none;}
   .section-head{padding:80px 20px 44px;}
+}
+
+/* narrow screens: allow hyphenation so long words don't strand a fragment */
+@media (max-width:640px){
+  p,li,.sub,.cap,.big-stat .l,.faq-a,.phase-copy p.desc,
+  .story-body p,.prin-card p,.case-sub,.honest-inner p{
+    hyphens:auto;-webkit-hyphens:auto;
+  }
 }

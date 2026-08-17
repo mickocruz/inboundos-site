@@ -448,6 +448,27 @@ img{max-width:100%;display:block;}
 .gap-callout .ice{color:var(--ice);}
 
 /* ───────────────────────── accent close card ───────────────────────── */
+/* guarantee: a statement, not a card. Rule + display type carries it. */
+.guarantee{
+  margin:96px auto 0;padding:0 8px;max-width:900px;
+  border-top:1px solid var(--line);padding-top:56px;
+}
+.guarantee .g-label{
+  display:inline-flex;align-items:center;gap:12px;
+  font-family:var(--font-mono);font-size:11px;font-weight:600;
+  letter-spacing:0.2em;text-transform:uppercase;color:var(--label-3);
+  margin-bottom:24px;
+}
+.guarantee .g-label::before{content:'';width:24px;height:1px;background:var(--ice);opacity:0.7;}
+.guarantee h3{
+  font-family:var(--font-head);font-weight:900;
+  font-size:clamp(28px,3.9vw,50px);line-height:1.08;letter-spacing:-0.03em;
+  margin-bottom:22px;max-width:880px;
+}
+.guarantee h3 .ice{color:var(--ice);}
+.guarantee p{font-size:16px;color:var(--label-2);line-height:1.75;max-width:640px;}
+
+/* accent close card (kept for the 'we install the team' block) */
 .econ-close{
   margin-top:16px;padding:34px 40px;border-radius:22px;
   background:rgba(79,195,247,0.05);border:1px solid rgba(79,195,247,0.22);
@@ -457,15 +478,26 @@ img{max-width:100%;display:block;}
 
 /* ───────────────────────── results ───────────────────────── */
 .results{max-width:1080px;margin:0 auto;padding:0 32px;}
-.stat-row{display:grid;grid-template-columns:1.35fr 1fr 1fr;gap:16px;}
-.stat-row .big-stat:first-child{padding:44px 34px;}
-.stat-row .big-stat:first-child .v{font-size:66px;}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;align-items:stretch;}
 .big-stat{
-  padding:34px 30px;border-radius:20px;text-align:center;
+  padding:44px 34px;border-radius:20px;text-align:center;
   background:var(--card-bg);border:1px solid var(--line);
+  display:flex;flex-direction:column;align-items:center;
+  transition:border-color .3s var(--ease),transform .3s var(--ease),background .3s var(--ease);
 }
-.big-stat .v{font-family:var(--font-head);font-size:46px;letter-spacing:-0.03em;line-height:1;color:var(--ice);}
-.big-stat .l{font-size:13px;color:var(--label-3);margin-top:14px;line-height:1.6;}
+.big-stat:hover{
+  border-color:rgba(79,195,247,0.32);
+  background:rgba(255,255,255,0.035);
+  transform:translateY(-4px);
+}
+/* number block is a fixed height so all three baselines line up
+   regardless of glyph count (5 vs 80+ vs 0) */
+.big-stat .v{
+  font-family:var(--font-head);font-size:66px;letter-spacing:-0.03em;
+  line-height:1;color:var(--ice);
+  height:66px;display:flex;align-items:center;justify-content:center;
+}
+.big-stat .l{font-size:13.5px;color:var(--label-3);margin-top:22px;line-height:1.65;max-width:270px;}
 
 /* ───────────────────────── process steps ───────────────────────── */
 .steps-wrap{max-width:1080px;margin:0 auto;padding:0 32px;}
@@ -476,20 +508,42 @@ img{max-width:100%;display:block;}
   padding:32px 30px;border-radius:20px;
   background:var(--card-bg);border:1px solid var(--line);
   position:relative;
+  transition:border-color .3s var(--ease),transform .3s var(--ease),background .3s var(--ease);
+}
+.step-card:hover{
+  border-color:rgba(79,195,247,0.32);
+  background:rgba(255,255,255,0.035);
+  transform:translateY(-4px);
 }
 .step-card .s-num{
   display:block;margin-bottom:14px;
   font-family:var(--font-head);font-size:34px;line-height:1;
   color:rgba(79,195,247,0.28);letter-spacing:-0.02em;
+  transition:color .3s var(--ease);
 }
+.step-card:hover .s-num{color:rgba(79,195,247,0.62);}
 .step-card h3{font-size:19px;font-weight:700;letter-spacing:-0.01em;margin-bottom:4px;}
 .step-card h4{font-size:13px;font-weight:500;color:var(--ice);margin-bottom:12px;}
 .step-card p{font-size:13.5px;color:var(--label-2);line-height:1.65;}
-.included-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:16px;}
-.included-chip{
-  padding:18px;border-radius:14px;font-size:13px;font-weight:600;text-align:center;
-  color:rgba(255,255,255,0.85);background:var(--card-bg);border:1px solid var(--line);
+
+/* "what's included" strip — deliberately NOT a card. Flat ruled row so it
+   reads as a footnote to the 3 steps, not a fourth tier of them. */
+.included-row{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:0;margin-top:72px;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
 }
+.included-chip{
+  padding:26px 22px;border-radius:0;
+  font-family:var(--font-mono);
+  font-size:11.5px;font-weight:600;letter-spacing:0.09em;text-transform:uppercase;
+  text-align:center;color:var(--label-2);
+  background:none;border:none;border-right:1px solid var(--line);
+  transition:color .25s var(--ease),background .25s var(--ease);
+}
+.included-chip:last-child{border-right:none;}
+.included-chip:hover{color:var(--white);background:rgba(255,255,255,0.02);}
 
 /* ───────────────────────── ICP ───────────────────────── */
 .icp-wrap{max-width:1080px;margin:0 auto;padding:0 32px;}
@@ -589,6 +643,27 @@ footer .foot-links{display:flex;gap:22px;flex-wrap:wrap;}
 footer .foot-links a{font-size:12.5px;color:var(--label-3);transition:color .2s;}
 footer .foot-links a:hover{color:var(--white);}
 
+
+/* ── line-breaking: no orphan words ──
+   balance = even line lengths (headings, short blurbs, centered text)
+   pretty  = prevents a lone last word (longer body copy)
+   Both degrade gracefully in older browsers. */
+h1,h2,h3,h4,
+.section-head .sub,.hero-sub,.hero-note,.final-note,
+.big-stat .l,.step-card h4,.included-chip,
+.badge,.g-label,.case-kind,.story-tag,.prin-card .pk,
+.quote-text,.flow-quote,.guarantee p,.gap-callout p,
+.manual-card p,.cta-inner p,.case-sub,.offer-foot{
+  text-wrap:balance;
+}
+p,li,.phase-copy p.desc,.step-card p,.prin-card p,
+.story-body p,.honest-inner p,.econ-close p,.faq-a,
+.win-card .cap,.pain-row,.icp-row,.checklist li,.offer-list li{
+  /* balance beats pretty here: pretty only protects the very last line in
+     some engines, balance evens every line so no fragment is left alone */
+  text-wrap:balance;
+}
+
 /* ───────────────────────── reveal system ───────────────────────── */
 .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s var(--ease),transform .7s var(--ease);}
 .reveal.visible{opacity:1;transform:translateY(0);}
@@ -613,12 +688,15 @@ footer .foot-links a:hover{color:var(--white);}
   .role-grid{grid-template-columns:1fr 1fr;}
   .icp-grid{grid-template-columns:1fr;}
   .steps{grid-template-columns:1fr;}
-  .included-row{grid-template-columns:1fr 1fr;}
+  .included-row{grid-template-columns:1fr 1fr;margin-top:52px;}
+  .included-chip:nth-child(2){border-right:none;}
+  .included-chip:nth-child(-n+2){border-bottom:1px solid var(--line);}
   .offer-list{grid-template-columns:1fr;}
   .quote-duo{grid-template-columns:1fr;}
   .stat-row{grid-template-columns:1fr;}
-  .stat-row .big-stat:first-child{padding:34px 30px;}
-  .stat-row .big-stat:first-child .v{font-size:46px;}
+  .big-stat{padding:34px 28px;}
+  .big-stat .v{font-size:52px;height:52px;}
+  .big-stat .l{margin-top:16px;}
   .steps .step-card:nth-child(2),.steps .step-card:nth-child(3){margin-top:0;}
 }
 @media (max-width:640px){
@@ -634,6 +712,8 @@ footer .foot-links a:hover{color:var(--white);}
   .role-grid{grid-template-columns:1fr;}
   .offer-card{padding:32px 22px;}
   .final-inner{padding:52px 24px;}
+  .guarantee{margin-top:64px;padding-top:40px;}
+  .guarantee p{font-size:15px;}
   .dash-stats,.dash-foot,.funnel-strip{grid-template-columns:repeat(2,1fr);}
   .dash-stat:nth-child(2),.dash-foot .cell:nth-child(2),.funnel-cell:nth-child(2){border-right:none;}
   .dash-stat,.dash-foot .cell{border-bottom:1px solid rgba(255,255,255,0.05);}
@@ -645,8 +725,18 @@ footer .foot-links a:hover{color:var(--white);}
   .dash-tr .meta{display:none;}
   .gap-callout{padding:26px 22px;}
   .gap-callout p{font-size:16px;}
-  .included-row{grid-template-columns:1fr;}
+  .included-row{grid-template-columns:1fr;margin-top:44px;}
+  .included-chip{border-right:none;border-bottom:1px solid var(--line);padding:20px;}
+  .included-chip:last-child{border-bottom:none;}
   .manual-card{padding:28px 24px;}
+}
+
+/* narrow screens: allow hyphenation so long words don't strand a fragment */
+@media (max-width:640px){
+  p,li,.sub,.cap,.big-stat .l,.faq-a,.phase-copy p.desc,
+  .story-body p,.prin-card p,.case-sub,.honest-inner p{
+    hyphens:auto;-webkit-hyphens:auto;
+  }
 }
 </style>
 </head>
@@ -712,7 +802,7 @@ footer .foot-links a:hover{color:var(--white);}
   <div class="section-head">
     <span class="badge">The Installation</span>
     <h2 id="system-heading">Your AI Content Department</h2>
-    <p class="sub">Four agents. One system. You film, you close. Everything else runs without you.</p>
+    <p class="sub">Four agents, one system. You film and close. Everything else runs without you.</p>
   </div>
 
   <div class="phases">
@@ -1016,9 +1106,10 @@ footer .foot-links a:hover{color:var(--white);}
       <a href="/apply" class="btn-primary">Apply Now <span class="arr">→</span></a>
       <p class="offer-foot">Built for solo DFY agency owners doing $5K–$12K/mo who've tried VAs and freelancers and want a content team that actually knows their ICP, their hooks, and their offer.</p>
     </div>
-    <div class="econ-close reveal" style="margin-top:16px;">
-      <h3>If the system doesn't make you more money or save you time, we keep working until it does.</h3>
-      <p>We track what's converting from week one. We adjust before problems compound. Done-with-you means we're in it with you, fully responsible for results.</p>
+    <div class="guarantee reveal">
+      <span class="g-label">The Guarantee</span>
+      <h3>If the system doesn't make you more money or save you time, <span class="ice">we keep working until it does.</span></h3>
+      <p>We track what's converting from week one and adjust before problems compound. Done-with-you means we're in it with you, fully responsible for results.</p>
     </div>
     <div class="retainer reveal">
       <span class="tag">Optional · Post 90 Days</span>

@@ -8,44 +8,47 @@
 <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
-<meta name="description" content="You're the bottleneck. We install custom AI agents trained on your voice, your ICP, and your hooks, so your agency's content runs whether you're selling, delivering, or offline.">
+<meta name="description" content="We build AI agents on your own voice data and hook library, so your agency keeps posting while you are on calls, delivering work, or off for the week.">
 <link rel="canonical" href="https://inboundos.vercel.app/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://inboundos.vercel.app/">
 <meta property="og:title" content="InboundOS: Install Your AI Content Department">
-<meta property="og:description" content="Custom AI agents installed inside your business. 5 scripts a day in your voice. Qualified leads on your calendar. One install. You own it forever.">
+<meta property="og:description" content="AI agents built inside your business. Five scripts a day in your voice, and DMs qualified before they reach you. Built once, and you keep it.">
 <meta property="og:image" content="https://inboundos.vercel.app/og-image.png">
 <meta property="twitter:card" content="summary_large_image">
 <link rel="preload" href="/NHGDisplay95Black.otf" as="font" type="font/otf" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <style>
 @font-face{font-family:'NHGDisplay';src:url('/NHGDisplay95Black.otf') format('opentype');font-weight:900;font-style:normal;font-display:block;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 
 :root{
-  --bg:#0D1117;
-  --bg-deep:#090C10;
-  --panel:#10151C;
-  --panel-2:#0B0F14;
-  --white:#ffffff;
-  --ice:#4FC3F7;
-  --green:#4FC3F7;  /* brand-only palette: no off-brand green */
-  --amber:#FFB340;
-  --red:#FF6B6B;
-  --label-2:rgba(255,255,255,0.60);
-  --label-3:rgba(255,255,255,0.38);
-  --label-4:rgba(255,255,255,0.22);
-  --line:rgba(255,255,255,0.08);
-  --line-strong:rgba(255,255,255,0.13);
-  --card-bg:rgba(255,255,255,0.022);
-  --pill:100px;
+  --bg:#0B0D10;
+  --bg-deep:#07090B;
+  --panel:#0F1216;
+  --panel-2:#0A0C0F;
+  --white:#F1EFEA;
+  --ice:#4FB3E4;
+  --green:#4FB3E4;
+  --amber:#D9A24B;
+  --red:#D97070;
+  --label-2:rgba(241,239,234,0.62);
+  --label-3:rgba(241,239,234,0.40);
+  --label-4:rgba(241,239,234,0.24);
+  --line:rgba(241,239,234,0.10);
+  --line-strong:rgba(241,239,234,0.16);
+  --card-bg:rgba(241,239,234,0.015);
+  --pill:3px;
+  --r:3px;
+  --gutter:40px;
+  --wide:1240px;
   --font-head:'NHGDisplay','DM Sans',system-ui,sans-serif;
   --font-body:'DM Sans',system-ui,sans-serif;
+  --font-serif:'Instrument Serif',Georgia,'Times New Roman',serif;
   --font-mono:ui-monospace,'SF Mono',SFMono-Regular,Menlo,monospace;
   --ease:cubic-bezier(0.4,0,0.2,1);
-  --spring:cubic-bezier(0.34,1.56,0.64,1);
 }
 
 html{scroll-behavior:smooth;}
@@ -60,228 +63,192 @@ body{
 a{color:inherit;text-decoration:none;}
 img{max-width:100%;display:block;}
 
-/* ───────────────────────── grid atmosphere ───────────────────────── */
+/* ───────────────────────── column rules (print grid, not a dot grid) ───────────────────────── */
 .grid-bg{
   position:fixed;inset:0;z-index:-2;pointer-events:none;
-  background-image:
-    linear-gradient(to right,rgba(255,255,255,0.028) 1px,transparent 1px),
-    linear-gradient(to bottom,rgba(255,255,255,0.028) 1px,transparent 1px);
-  background-size:72px 72px;
-  -webkit-mask-image:radial-gradient(ellipse 90% 70% at 50% 0%,black 0%,rgba(0,0,0,0.5) 55%,transparent 100%);
-  mask-image:radial-gradient(ellipse 90% 70% at 50% 0%,black 0%,rgba(0,0,0,0.5) 55%,transparent 100%);
+  max-width:var(--wide);margin:0 auto;
+  border-left:1px solid rgba(241,239,234,0.045);
+  border-right:1px solid rgba(241,239,234,0.045);
 }
-.glow-bg{
-  position:fixed;inset:0;z-index:-3;pointer-events:none;
-  background:
-    radial-gradient(ellipse 60% 45% at 50% -5%,rgba(79,195,247,0.10),transparent 65%),
-    radial-gradient(ellipse 40% 30% at 85% 15%,rgba(88,86,214,0.06),transparent 70%);
-}
+.glow-bg{display:none;}
 
 /* ───────────────────────── nav ───────────────────────── */
 .nav{
   position:fixed;top:0;left:0;right:0;z-index:100;
   display:flex;align-items:center;justify-content:space-between;
-  padding:18px 40px;
+  padding:20px var(--gutter);
   background:transparent;
   border-bottom:1px solid transparent;
-  transition:background .3s var(--ease),border-color .3s var(--ease),padding .3s var(--ease);
+  transition:background .2s var(--ease),border-color .2s var(--ease);
 }
 .nav.scrolled{
-  background:rgba(13,17,23,0.82);
-  backdrop-filter:blur(18px) saturate(160%);
-  -webkit-backdrop-filter:blur(18px) saturate(160%);
+  background:var(--bg);
   border-bottom-color:var(--line);
-  padding:13px 40px;
 }
-.logo{font-family:var(--font-head);font-weight:900;font-size:21px;letter-spacing:-0.02em;line-height:1;}
+.logo{font-family:var(--font-head);font-weight:900;font-size:20px;letter-spacing:-0.02em;line-height:1;}
 .logo .os{color:var(--ice);}
-.nav-right{display:flex;align-items:center;gap:34px;}
-.nav-link{font-size:14px;font-weight:500;color:var(--label-2);transition:color .2s var(--ease);}
-.nav-link:hover{color:var(--white);}
+.nav-right{display:flex;align-items:center;gap:30px;}
+.nav-link{font-size:14px;font-weight:500;color:var(--label-2);transition:color .15s var(--ease);}
+.nav-link:hover,.nav-link.active{color:var(--white);}
 .nav-cta{
-  font-size:14px;font-weight:700;color:#06121C;background:var(--ice);
-  border-radius:var(--pill);padding:11px 22px;
-  box-shadow:0 0 24px rgba(79,195,247,0.25),inset 0 1px 0 rgba(255,255,255,0.4);
-  transition:transform .15s var(--ease),box-shadow .2s var(--ease);
+  font-size:13.5px;font-weight:600;color:var(--bg);background:var(--ice);
+  border-radius:var(--r);padding:10px 18px;
 }
-.nav-cta:hover{transform:translateY(-1px);box-shadow:0 0 32px rgba(79,195,247,0.4),inset 0 1px 0 rgba(255,255,255,0.4);}
-.nav-cta:active{transform:scale(0.97);}
+.nav-cta:hover{background:#6FC4EE;}
 
 /* ───────────────────────── hero ───────────────────────── */
 .hero{
-  max-width:1080px;margin:0 auto;
-  padding:190px 32px 90px;
-  text-align:center;
-  display:flex;flex-direction:column;align-items:center;
+  max-width:var(--wide);margin:0 auto;
+  padding:180px var(--gutter) 96px;
+  display:flex;flex-direction:column;align-items:flex-start;text-align:left;
 }
 .hero h1{
   font-family:var(--font-head);font-weight:900;
-  font-size:clamp(38px,7vw,92px);
-  line-height:1.02;letter-spacing:-0.03em;
-  max-width:1000px;
-  text-wrap:balance;
+  font-size:clamp(40px,7.4vw,96px);
+  line-height:0.98;letter-spacing:-0.035em;
+  max-width:14ch;
 }
-.hero h1 .ice{color:var(--ice);text-shadow:0 0 60px rgba(79,195,247,0.35);}
+.hero h1 .ice{color:var(--ice);}
 .hero-sub{
-  font-size:clamp(16px,1.6vw,19px);color:var(--label-2);
-  max-width:620px;line-height:1.65;margin:28px auto 40px;
+  font-size:clamp(16px,1.5vw,19px);color:var(--label-2);
+  max-width:52ch;line-height:1.6;margin:30px 0 38px;
 }
 .btn-primary{
   display:inline-flex;align-items:center;justify-content:center;gap:10px;
-  padding:18px 40px;border-radius:var(--pill);
-  font-family:var(--font-body);font-size:16px;font-weight:700;
-  color:#06121C;background:var(--ice);border:none;cursor:pointer;
-  box-shadow:0 0 40px rgba(79,195,247,0.30),0 8px 24px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.4);
-  transition:transform .15s var(--ease),box-shadow .25s var(--ease);
-  position:relative;overflow:hidden;
+  padding:16px 30px;border-radius:var(--r);
+  font-family:var(--font-body);font-size:15.5px;font-weight:600;
+  color:var(--bg);background:var(--ice);border:none;cursor:pointer;
+  transition:background .15s var(--ease);
 }
-.btn-primary::after{
-  content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent);
-  animation:shimmer 4.5s ease-in-out infinite;pointer-events:none;
-}
-@keyframes shimmer{0%{left:-100%;}55%{left:100%;}100%{left:100%;}}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 56px rgba(79,195,247,0.45),0 12px 32px rgba(0,0,0,0.35),inset 0 1px 0 rgba(255,255,255,0.4);}
-.btn-primary:active{transform:scale(0.97);}
-.btn-primary .arr{transition:transform .2s var(--ease);}
-.btn-primary:hover .arr{transform:translateX(4px);}
-.hero-note{font-size:13.5px;color:var(--label-3);margin-top:30px;line-height:1.7;}
+.btn-primary:hover{background:#6FC4EE;}
+.btn-primary .arr{font-family:var(--font-mono);font-size:14px;}
+.hero-note{font-size:13px;color:var(--label-3);margin-top:24px;line-height:1.7;}
 
 .hero-eyebrow{
-  display:inline-flex;align-items:center;gap:14px;
-  margin-bottom:34px;
+  display:block;margin-bottom:26px;
   font-family:var(--font-mono);
-  font-size:11.5px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;
-  color:var(--label-2);
+  font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--label-3);
 }
-.hero-eyebrow::before,.hero-eyebrow::after{
-  content:'';width:28px;height:1px;background:var(--ice);opacity:0.6;
-}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.35;transform:scale(.7);}}
 
 /* ───────────────────────── trust strip ───────────────────────── */
 .trust{
-  max-width:1080px;margin:0 auto;padding:10px 32px 40px;text-align:center;
+  max-width:var(--wide);margin:0 auto;padding:0 var(--gutter) 24px;
 }
-.trust-label{font-size:11px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:var(--label-4);margin-bottom:22px;}
-.trust-row{display:flex;justify-content:center;align-items:center;gap:14px;flex-wrap:wrap;}
+.trust-label{font-family:var(--font-mono);font-size:10.5px;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;color:var(--label-4);padding-bottom:14px;border-bottom:1px solid var(--line);margin-bottom:16px;}
+.trust-row{display:flex;align-items:center;gap:8px 26px;flex-wrap:wrap;}
 .trust-item{
-  font-size:12.5px;font-weight:600;letter-spacing:0.04em;color:var(--label-3);
-  padding:9px 18px;border-radius:var(--pill);
-  border:1px solid var(--line);background:var(--card-bg);
+  font-size:13px;font-weight:500;color:var(--label-3);
+  padding:0;border:none;background:none;
 }
 
 /* ───────────────────────── section shells ───────────────────────── */
 .section-head{
-  max-width:820px;margin:0 auto;text-align:center;
-  padding:110px 32px 64px;
+  max-width:var(--wide);margin:0 auto;text-align:left;
+  padding:104px var(--gutter) 48px;
 }
+.section-head>.badge{border-top:1px solid var(--line);}
 .badge{
-  display:inline-flex;align-items:center;gap:12px;
-  padding:0;border:none;background:none;border-radius:0;
+  display:block;
+  padding:16px 0 0;border:none;background:none;border-radius:0;
   font-family:var(--font-mono);
-  font-size:11px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;
+  font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;
   color:var(--label-3);
-  margin-bottom:26px;
+  margin-bottom:24px;
 }
-.badge::before{
-  content:'';width:24px;height:1px;background:var(--ice);opacity:0.7;
-}
+.badge::before{content:none;}
 .section-head h2{
   font-family:var(--font-head);font-weight:900;
-  font-size:clamp(34px,4.8vw,62px);
-  line-height:1.05;letter-spacing:-0.03em;
+  font-size:clamp(32px,4.4vw,58px);
+  line-height:1.02;letter-spacing:-0.035em;
+  max-width:18ch;
 }
 .section-head h2 .ice{color:var(--ice);}
-.section-head .sub{font-size:16.5px;color:var(--label-2);margin-top:24px;line-height:1.75;max-width:560px;margin-left:auto;margin-right:auto;}
+.section-head .sub{font-size:16px;color:var(--label-2);margin-top:20px;line-height:1.7;max-width:56ch;}
 
-/* ───────────────────────── phase cards ───────────────────────── */
-.phases{max-width:1240px;margin:0 auto;padding:0 32px;}
+/* ───────────────────────── phase blocks ───────────────────────── */
+.phases{max-width:var(--wide);margin:0 auto;padding:0 var(--gutter);}
 .phase{
-  display:grid;grid-template-columns:1.05fr 0.95fr;gap:64px;align-items:center;
-  background:var(--card-bg);
-  border:1px solid var(--line);
-  border-radius:28px;
-  padding:56px;
-  margin-bottom:28px;
+  display:grid;grid-template-columns:1.05fr 0.95fr;gap:56px;align-items:start;
+  background:none;
+  border:none;
+  border-top:1px solid var(--line);
+  border-radius:0;
+  padding:52px 0;
+  margin-bottom:0;
   position:relative;
-  overflow:hidden;
 }
-.phase::before{
-  content:'';position:absolute;inset:0;pointer-events:none;
-  background:radial-gradient(ellipse 55% 60% at 22% 30%,rgba(79,195,247,0.04),transparent 70%);
-}
+.phase::before{content:none;}
 .phase.flip{grid-template-columns:0.95fr 1.05fr;}
-.phase.flip::before{background:radial-gradient(ellipse 55% 60% at 78% 30%,rgba(79,195,247,0.04),transparent 70%);}
 .phase.flip .phase-demo{order:2;}
-.phase-copy{position:relative;z-index:1;}
-.phase-tags{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
+.phase-copy{position:relative;z-index:1;padding-top:4px;}
+.phase-tags{display:flex;align-items:baseline;gap:14px;margin-bottom:18px;flex-wrap:wrap;}
 .phase-num{
-  display:inline-flex;align-items:center;justify-content:center;
-  width:38px;height:38px;border-radius:10px;
-  font-family:var(--font-head);font-size:14px;color:var(--ice);
-  background:rgba(79,195,247,0.08);border:1px solid rgba(79,195,247,0.25);
+  display:inline-block;
+  width:auto;height:auto;border-radius:0;
+  font-family:var(--font-mono);font-size:11px;letter-spacing:0.1em;color:var(--ice);
+  background:none;border:none;
 }
-.phase-kind{font-size:11.5px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--ice);}
+.phase-kind{font-family:var(--font-mono);font-size:11px;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;color:var(--label-3);}
 .phase-when{
-  margin-left:auto;font-size:11.5px;font-weight:600;color:var(--label-3);
-  border:1px solid var(--line);border-radius:var(--pill);padding:5px 13px;
+  margin-left:auto;font-family:var(--font-mono);font-size:11px;font-weight:500;color:var(--label-4);
+  border:none;border-radius:0;padding:0;letter-spacing:0.08em;
 }
 .phase-copy h3{
   font-family:var(--font-head);font-weight:900;
-  font-size:clamp(28px,3vw,42px);letter-spacing:-0.025em;line-height:1.06;
-  margin-bottom:16px;
+  font-size:clamp(26px,2.7vw,38px);letter-spacing:-0.03em;line-height:1.04;
+  margin-bottom:16px;max-width:20ch;
 }
-.phase-myth{font-size:13.5px;font-style:italic;color:var(--label-3);line-height:1.6;margin-bottom:14px;padding-left:14px;border-left:2px solid rgba(79,195,247,0.35);}
-.phase-copy p.desc{font-size:15px;color:var(--label-2);line-height:1.7;margin-bottom:24px;}
-.checklist{list-style:none;display:flex;flex-direction:column;gap:12px;}
-.checklist li{display:flex;gap:12px;font-size:14.5px;color:rgba(255,255,255,0.80);line-height:1.5;align-items:flex-start;}
-.checklist .tick{
-  flex:none;width:14px;height:20px;margin-top:0;
-  display:flex;align-items:center;justify-content:flex-start;
-  background:none;border:none;color:var(--ice);
+.phase-myth{
+  font-family:var(--font-serif);font-size:19px;font-style:italic;line-height:1.45;
+  color:var(--label-2);margin-bottom:18px;padding-left:0;border-left:none;max-width:44ch;
 }
-.checklist .tick svg{width:11px;height:11px;stroke-width:2.6;}
+.phase-copy p.desc{font-size:15px;color:var(--label-2);line-height:1.7;margin-bottom:26px;max-width:52ch;}
+
+/* spec list: hairline rows, no checkmark bullets */
+.checklist{list-style:none;display:block;border-top:1px solid var(--line);}
+.checklist li{
+  display:block;padding:12px 0;border-bottom:1px solid var(--line);
+  font-size:14px;color:rgba(241,239,234,0.78);line-height:1.5;
+}
+.checklist .tick{display:none;}
 
 /* ───────────────────────── dashboard mockups ───────────────────────── */
 .phase-demo{position:relative;z-index:1;min-width:0;}
 .dash{
   background:var(--panel-2);
   border:1px solid var(--line-strong);
-  border-radius:18px;
+  border-radius:var(--r);
   overflow:hidden;
-  box-shadow:0 24px 64px rgba(0,0,0,0.45),0 4px 16px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.05);
 }
 .dash-bar{
-  display:flex;align-items:center;gap:8px;
-  padding:12px 16px;border-bottom:1px solid var(--line);
-  background:rgba(255,255,255,0.015);
+  display:flex;align-items:center;gap:12px;
+  padding:11px 14px;border-bottom:1px solid var(--line);
+  background:rgba(241,239,234,0.02);
 }
-.dash-dots{display:flex;gap:6px;}
-.dash-dots i{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,0.12);}
 .dash-title{
-  flex:1;text-align:center;
-  font-family:var(--font-mono);font-size:10.5px;letter-spacing:0.06em;
+  flex:1;text-align:left;
+  font-family:var(--font-mono);font-size:10.5px;letter-spacing:0.04em;
   color:var(--label-3);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
 .dash-live{
   display:inline-flex;align-items:center;gap:6px;
   font-family:var(--font-mono);
-  font-size:9px;font-weight:600;letter-spacing:0.14em;
-  color:var(--label-2);
+  font-size:9px;font-weight:500;letter-spacing:0.14em;
+  color:var(--label-3);
   background:none;border:none;
   padding:0;white-space:nowrap;
 }
-.dash-live::before{content:'';width:14px;height:1px;background:var(--ice);opacity:0.8;}
-.dash-live.ice{color:var(--ice);background:rgba(79,195,247,0.10);border-color:rgba(79,195,247,0.3);}
+.dash-live::before{content:'';width:12px;height:1px;background:var(--ice);opacity:0.8;}
+.dash-live.ice{color:var(--ice);background:none;border:none;}
 
 /* stat header row */
 .dash-stats{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--line);}
-.dash-stat{padding:14px 16px;border-right:1px solid var(--line);}
+.dash-stat{padding:14px;border-right:1px solid var(--line);}
 .dash-stat:last-child{border-right:none;}
-.dash-stat .k{font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--label-4);margin-bottom:5px;}
-.dash-stat .v{font-family:var(--font-head);font-size:19px;letter-spacing:-0.01em;line-height:1;color:var(--white);}
+.dash-stat .k{font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--label-4);margin-bottom:6px;}
+.dash-stat .v{font-family:var(--font-mono);font-size:17px;font-weight:500;letter-spacing:-0.01em;line-height:1;color:var(--white);}
 .dash-stat .v .u{font-size:11px;color:var(--label-3);}
 .dash-stat .v.warn{color:var(--red);}
 .dash-stat .v.ok{color:var(--green);}
@@ -291,35 +258,35 @@ img{max-width:100%;display:block;}
 .dash-table{width:100%;}
 .dash-thead{
   display:grid;grid-template-columns:1.6fr 0.8fr 0.8fr 1fr;
-  padding:9px 16px;border-bottom:1px solid var(--line);
+  padding:9px 14px;border-bottom:1px solid var(--line);
   font-family:var(--font-mono);font-size:8.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--label-4);
 }
 .dash-tr{
   display:grid;grid-template-columns:1.6fr 0.8fr 0.8fr 1fr;align-items:center;
-  padding:11px 16px;border-bottom:1px solid rgba(255,255,255,0.045);
+  padding:11px 14px;border-bottom:1px solid rgba(241,239,234,0.05);
   font-size:12px;
 }
 .dash-tr:last-child{border-bottom:none;}
-.dash-tr .name{font-weight:600;color:rgba(255,255,255,0.85);display:flex;align-items:center;gap:9px;min-width:0;}
+.dash-tr .name{font-weight:500;color:rgba(241,239,234,0.85);display:flex;align-items:center;gap:9px;min-width:0;}
 .dash-tr .name span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.t-ic{flex:none;width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;background:rgba(255,255,255,0.05);border:1px solid var(--line);color:var(--label-2);}
-.t-ic img{display:block;opacity:0.75;transition:opacity .2s var(--ease);}
-.dash-tr:hover .t-ic img{opacity:1;}
+.t-ic{flex:none;width:22px;height:22px;border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;background:rgba(241,239,234,0.05);border:1px solid var(--line);color:var(--label-2);}
+.t-ic img{display:block;opacity:0.8;}
 .dash-tr .meta{font-size:11px;color:var(--label-3);}
 .status{
   justify-self:end;
-  font-size:8.5px;font-weight:700;letter-spacing:0.09em;
-  border-radius:var(--pill);padding:4px 9px;white-space:nowrap;
+  font-family:var(--font-mono);
+  font-size:8.5px;font-weight:500;letter-spacing:0.1em;
+  border-radius:2px;padding:3px 7px;white-space:nowrap;
 }
-.st-hot{color:var(--ice);background:rgba(79,195,247,0.10);border:1px solid rgba(79,195,247,0.3);}
-.st-ok{color:var(--ice);background:rgba(79,195,247,0.10);border:1px solid rgba(79,195,247,0.28);}
-.st-wait{color:var(--label-3);background:rgba(255,255,255,0.04);border:1px solid var(--line);}
-.st-warn{color:var(--amber);background:rgba(255,179,64,0.10);border:1px solid rgba(255,179,64,0.3);}
+.st-hot{color:var(--ice);background:rgba(79,179,228,0.10);border:1px solid rgba(79,179,228,0.28);}
+.st-ok{color:var(--label-2);background:none;border:1px solid var(--line-strong);}
+.st-wait{color:var(--label-4);background:none;border:1px solid var(--line);}
+.st-warn{color:var(--amber);background:rgba(217,162,75,0.10);border:1px solid rgba(217,162,75,0.28);}
 
 /* score bar inside table */
 .scorebar{display:flex;align-items:center;gap:7px;}
-.scorebar .bar{width:52px;height:3px;border-radius:2px;background:rgba(255,255,255,0.08);overflow:hidden;}
-.scorebar .bar i{display:block;height:100%;border-radius:2px;background:var(--ice);width:0;transition:width 1.2s var(--ease);}
+.scorebar .bar{width:48px;height:2px;border-radius:0;background:rgba(241,239,234,0.09);overflow:hidden;}
+.scorebar .bar i{display:block;height:100%;border-radius:0;background:var(--ice);width:0;transition:width 1s var(--ease);}
 .scorebar .bar i.g{background:var(--green);}
 .scorebar .bar i.a{background:var(--amber);}
 .scorebar .n{font-family:var(--font-mono);font-size:10px;color:var(--label-3);}
@@ -327,30 +294,30 @@ img{max-width:100%;display:block;}
 /* dark footer strip */
 .dash-foot{
   display:grid;grid-template-columns:repeat(4,1fr);
-  background:#05080B;border-top:1px solid var(--line);
+  background:var(--bg-deep);border-top:1px solid var(--line);
 }
-.dash-foot .cell{padding:13px 16px;border-right:1px solid rgba(255,255,255,0.06);}
+.dash-foot .cell{padding:13px 14px;border-right:1px solid rgba(241,239,234,0.06);}
 .dash-foot .cell:last-child{border-right:none;}
-.dash-foot .k{font-family:var(--font-mono);font-size:8.5px;letter-spacing:0.13em;text-transform:uppercase;color:var(--label-4);margin-bottom:4px;}
-.dash-foot .v{font-family:var(--font-head);font-size:15px;letter-spacing:-0.01em;}
+.dash-foot .k{font-family:var(--font-mono);font-size:8.5px;letter-spacing:0.13em;text-transform:uppercase;color:var(--label-4);margin-bottom:5px;}
+.dash-foot .v{font-family:var(--font-mono);font-size:13.5px;font-weight:500;letter-spacing:-0.01em;}
 .dash-foot .v.ice{color:var(--ice);}
 .dash-foot .v.ok{color:var(--green);}
 .dash-foot .v.warn{color:var(--red);}
 .dash-foot .v.amber{color:var(--amber);}
 
 /* script feed (Apollo) */
-.script-feed{padding:14px;display:flex;flex-direction:column;gap:10px;}
+.script-feed{padding:14px;display:flex;flex-direction:column;gap:8px;}
 .script-card{
-  padding:13px 15px;border-radius:12px;
-  background:rgba(255,255,255,0.03);border:1px solid var(--line);
-  font-size:12.5px;line-height:1.55;color:rgba(255,255,255,0.82);
+  padding:12px 14px;border-radius:2px;
+  background:rgba(241,239,234,0.03);border:1px solid var(--line);
+  font-size:12.5px;line-height:1.55;color:rgba(241,239,234,0.82);
 }
-.script-card .k{display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--label-4);margin-bottom:6px;}
-.script-card.accent{background:rgba(79,195,247,0.06);border-color:rgba(79,195,247,0.25);}
-.script-card.accent .k{color:rgba(79,195,247,0.75);}
+.script-card .k{display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:var(--font-mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--label-4);margin-bottom:7px;}
+.script-card.accent{background:rgba(79,179,228,0.05);border-color:rgba(79,179,228,0.22);}
+.script-card.accent .k{color:rgba(79,179,228,0.8);}
 .typing-line::after{content:'▍';color:var(--ice);animation:caret 1s steps(1) infinite;}
 @keyframes caret{50%{opacity:0;}}
-.queue-row{display:flex;align-items:center;gap:10px;padding:10px 15px;border-radius:12px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);font-size:12px;color:var(--label-3);}
+.queue-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:2px;background:none;border:1px solid rgba(241,239,234,0.06);font-size:12px;color:var(--label-3);}
 .queue-row .qn{font-family:var(--font-mono);font-size:10px;color:var(--label-4);}
 .queue-row .qs{margin-left:auto;}
 
@@ -359,285 +326,282 @@ img{max-width:100%;display:block;}
 .kcol{background:var(--panel-2);padding:12px;min-height:230px;}
 .kcol-head{display:flex;align-items:center;gap:7px;font-family:var(--font-mono);font-size:9px;letter-spacing:0.13em;text-transform:uppercase;color:var(--label-4);margin-bottom:10px;}
 .kcol-head .cnt{margin-left:auto;color:var(--label-3);}
-.kcol-head .cdot{width:14px;height:1px;border-radius:0;opacity:0.8;}
+.kcol-head .cdot{width:12px;height:1px;border-radius:0;opacity:0.8;}
 .kcard{
-  padding:10px 12px;border-radius:10px;margin-bottom:8px;
-  background:rgba(255,255,255,0.035);border:1px solid var(--line);
-  font-size:11.5px;line-height:1.45;color:rgba(255,255,255,0.82);
+  padding:10px 12px;border-radius:2px;margin-bottom:8px;
+  background:rgba(241,239,234,0.035);border:1px solid var(--line);
+  font-size:11.5px;line-height:1.45;color:rgba(241,239,234,0.82);
 }
 .kcard .kmeta{display:flex;align-items:center;gap:7px;margin-top:8px;}
-.kcard .kav{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#06121C;background:var(--ice);}
+.kcard .kav{width:16px;height:16px;border-radius:2px;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:8px;font-weight:600;color:var(--bg);background:var(--ice);}
 .kcard .ktag{font-family:var(--font-mono);font-size:8.5px;color:var(--label-4);}
-.kcard.working{border-color:rgba(79,195,247,0.3);background:rgba(79,195,247,0.05);}
-.kprog{height:3px;border-radius:2px;background:rgba(255,255,255,0.08);margin-top:9px;overflow:hidden;}
-.kprog i{display:block;height:100%;width:0;border-radius:2px;background:var(--ice);transition:width 1.4s var(--ease);}
+.kcard.working{border-color:rgba(79,179,228,0.28);background:rgba(79,179,228,0.05);}
+.kprog{height:2px;border-radius:0;background:rgba(241,239,234,0.09);margin-top:9px;overflow:hidden;}
+.kprog i{display:block;height:100%;width:0;border-radius:0;background:var(--ice);transition:width 1.2s var(--ease);}
 
 /* funnel strip */
 .funnel-strip{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--line);}
-.funnel-cell{padding:14px 16px;border-right:1px solid var(--line);}
+.funnel-cell{padding:14px;border-right:1px solid var(--line);}
 .funnel-cell:last-child{border-right:none;}
-.funnel-cell .k{font-family:var(--font-mono);font-size:8.5px;letter-spacing:0.12em;text-transform:uppercase;color:var(--label-4);margin-bottom:4px;}
-.funnel-cell .v{font-family:var(--font-head);font-size:18px;color:var(--white);}
+.funnel-cell .k{font-family:var(--font-mono);font-size:8.5px;letter-spacing:0.12em;text-transform:uppercase;color:var(--label-4);margin-bottom:5px;}
+.funnel-cell .v{font-family:var(--font-mono);font-size:16px;font-weight:500;color:var(--white);}
 .funnel-cell:last-child .v{color:var(--ice);}
 
 /* checklist ingest (Clio) */
-.ingest{padding:14px;display:flex;flex-direction:column;gap:8px;}
+.ingest{padding:14px;display:flex;flex-direction:column;gap:6px;}
 .ingest-row{
   display:flex;align-items:center;gap:12px;
-  padding:11px 14px;border-radius:12px;
-  background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.05);
-  font-size:12.5px;color:rgba(255,255,255,0.8);
+  padding:11px 12px;border-radius:2px;
+  background:none;border:1px solid rgba(241,239,234,0.06);
+  font-size:12.5px;color:rgba(241,239,234,0.8);
 }
 .ingest-row small{display:block;font-size:10.5px;color:var(--label-4);}
 .ingest-row .st{margin-left:auto;}
-.ingest-ic{flex:none;width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:rgba(79,195,247,0.08);border:1px solid rgba(79,195,247,0.22);color:var(--ice);}
+.ingest-ic{flex:none;width:24px;height:24px;border-radius:2px;display:flex;align-items:center;justify-content:center;background:none;border:1px solid var(--line-strong);color:var(--label-2);}
 .ingest-ic svg{width:12px;height:12px;}
 
 /* progress footer */
 .prog-foot{
   display:flex;align-items:center;gap:14px;
-  padding:12px 16px;background:#05080B;border-top:1px solid var(--line);
+  padding:12px 14px;background:var(--bg-deep);border-top:1px solid var(--line);
   font-family:var(--font-mono);font-size:9.5px;letter-spacing:0.08em;color:var(--label-3);
 }
-.prog-foot .pbar{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,0.08);overflow:hidden;}
-.prog-foot .pbar i{display:block;height:100%;width:0;border-radius:2px;background:linear-gradient(90deg,var(--ice),#7DD3FC);transition:width 1.8s var(--ease);}
+.prog-foot .pbar{flex:1;height:2px;border-radius:0;background:rgba(241,239,234,0.09);overflow:hidden;}
+.prog-foot .pbar i{display:block;height:100%;width:0;border-radius:0;background:var(--ice);transition:width 1.4s var(--ease);}
 .prog-foot .pr{margin-left:auto;white-space:nowrap;}
 
 /* ───────────────────────── manual interstitial ───────────────────────── */
-.manual-wrap{display:flex;flex-direction:column;align-items:center;padding:8px 32px;}
-.flow-line{width:1px;height:52px;background:linear-gradient(to bottom,transparent,rgba(79,195,247,0.5),transparent);}
+.manual-wrap{display:flex;flex-direction:column;align-items:flex-start;padding:0;}
+.flow-line{width:1px;height:40px;background:var(--line-strong);margin-left:1px;}
 .manual-card{
-  max-width:520px;text-align:center;
-  padding:36px 42px;border-radius:22px;
-  background:rgba(13,17,23,0.85);
-  border:1px solid rgba(79,195,247,0.3);
-  box-shadow:0 0 48px rgba(79,195,247,0.07),inset 0 1px 0 rgba(255,255,255,0.08);
+  max-width:560px;text-align:left;
+  padding:0 0 0 22px;border-radius:0;
+  background:none;
+  border:none;border-left:1px solid var(--line-strong);
+  box-shadow:none;
 }
-.manual-card .tag{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--label-3);margin-bottom:12px;}
-.manual-card h3{font-family:var(--font-head);font-size:27px;letter-spacing:-0.02em;margin-bottom:10px;}
-.manual-card p{font-size:14px;color:var(--label-2);line-height:1.65;}
+.manual-card .tag{display:block;font-family:var(--font-mono);font-size:10.5px;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;color:var(--label-4);margin-bottom:10px;}
+.manual-card h3{font-family:var(--font-head);font-size:26px;letter-spacing:-0.03em;margin-bottom:10px;}
+.manual-card p{font-size:14.5px;color:var(--label-2);line-height:1.65;}
 
 /* ───────────────────────── problem list ───────────────────────── */
-.narrow{max-width:880px;margin:0 auto;padding:0 32px;}
+.narrow{max-width:var(--wide);margin:0 auto;padding:0 var(--gutter);}
 .pain-list{
-  border:1px solid var(--line);border-radius:20px;overflow:hidden;
-  background:var(--card-bg);
+  border:none;border-top:1px solid var(--line);border-radius:0;overflow:visible;
+  background:none;
+  max-width:76ch;
 }
 .pain-row{
-  display:flex;gap:16px;align-items:flex-start;
-  padding:20px 26px;border-bottom:1px solid var(--line);
-  font-size:15px;color:rgba(255,255,255,0.80);line-height:1.6;
-  opacity:0;transform:translateX(-18px);
+  display:block;
+  padding:20px 0;border-bottom:1px solid var(--line);
+  font-size:15.5px;color:rgba(241,239,234,0.80);line-height:1.6;
+  opacity:1;transform:none;
 }
-.pain-list.visible .pain-row{animation:row-in .5s var(--ease) forwards;}
-.pain-list.visible .pain-row:nth-child(1){animation-delay:0ms;}
-.pain-list.visible .pain-row:nth-child(2){animation-delay:90ms;}
-.pain-list.visible .pain-row:nth-child(3){animation-delay:180ms;}
-.pain-list.visible .pain-row:nth-child(4){animation-delay:270ms;}
-.pain-list.visible .pain-row:nth-child(5){animation-delay:360ms;}
-@keyframes row-in{to{opacity:1;transform:translateX(0);}}
-.pain-row:last-child{border-bottom:none;}
-.pain-ic{flex:none;width:28px;height:28px;border-radius:4px;display:flex;align-items:center;justify-content:center;background:none;border:1px solid var(--line-strong);color:var(--label-2);margin-top:2px;transition:color .2s var(--ease),border-color .2s var(--ease);}
-.pain-row:hover .pain-ic{color:var(--ice);border-color:rgba(79,195,247,0.4);}
-.pain-ic svg{width:14px;height:14px;}
+.pain-ic{display:none;}
 .gap-callout{
-  margin-top:26px;padding:34px 40px;border-radius:22px;
-  background:rgba(79,195,247,0.05);border:1px solid rgba(79,195,247,0.22);
+  margin-top:40px;padding:0;border-radius:0;
+  background:none;border:none;
+  max-width:60ch;
 }
-.gap-callout p{font-size:18.5px;font-weight:600;letter-spacing:-0.01em;line-height:1.55;}
+.gap-callout p{font-size:19px;font-weight:500;letter-spacing:-0.015em;line-height:1.55;}
 .gap-callout .ice{color:var(--ice);}
 
-/* ───────────────────────── accent close card ───────────────────────── */
+/* ───────────────────────── accent close block ───────────────────────── */
 .econ-close{
-  margin-top:16px;padding:34px 40px;border-radius:22px;
-  background:rgba(79,195,247,0.05);border:1px solid rgba(79,195,247,0.22);
+  margin-top:0;padding:32px 0 0;border-radius:0;
+  background:none;border:none;border-top:1px solid var(--line);
+  max-width:70ch;
 }
-.econ-close h3{font-size:21px;font-weight:700;letter-spacing:-0.01em;margin-bottom:12px;}
+.econ-close h3{font-family:var(--font-head);font-size:24px;font-weight:900;letter-spacing:-0.025em;margin-bottom:12px;max-width:24ch;}
 .econ-close p{font-size:14.5px;color:var(--label-2);line-height:1.7;}
+.econ-close a{color:var(--ice);border-bottom:1px solid rgba(79,179,228,0.4);}
 
 /* ───────────────────────── results ───────────────────────── */
-.results{max-width:1080px;margin:0 auto;padding:0 32px;}
-.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
-.big-stat{
-  padding:34px 30px;border-radius:20px;text-align:center;
-  background:var(--card-bg);border:1px solid var(--line);
+.results{max-width:var(--wide);margin:0 auto;padding:0 var(--gutter);}
+.stat-row{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:0;
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  margin-bottom:56px;
 }
-.big-stat .v{font-family:var(--font-head);font-size:46px;letter-spacing:-0.03em;line-height:1;color:var(--ice);}
-.big-stat .l{font-size:13px;color:var(--label-3);margin-top:14px;line-height:1.6;}
+.big-stat{
+  padding:34px 32px 34px 0;border-radius:0;text-align:left;
+  background:none;border:none;border-right:1px solid var(--line);
+}
+.big-stat:last-child{border-right:none;}
+.big-stat:not(:first-child){padding-left:32px;}
+.big-stat .v{font-family:var(--font-head);font-size:52px;letter-spacing:-0.04em;line-height:1;color:var(--ice);}
+.big-stat .l{font-size:13.5px;color:var(--label-3);margin-top:16px;line-height:1.6;max-width:34ch;}
 
-/* ───────────────────────── process steps ───────────────────────── */
-.steps-wrap{max-width:1080px;margin:0 auto;padding:0 32px;}
-.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+/* ───────────────────────── process steps (list, not cards) ───────────────────────── */
+.steps-wrap{max-width:var(--wide);margin:0 auto;padding:0 var(--gutter);}
+.steps{display:block;border-top:1px solid var(--line);}
 .step-card{
-  padding:32px 30px;border-radius:20px;
-  background:var(--card-bg);border:1px solid var(--line);
+  display:grid;
+  grid-template-columns:56px minmax(0,1fr) minmax(0,1.5fr);
+  grid-template-rows:auto auto;
+  gap:6px 36px;align-items:start;
+  padding:30px 0;border-bottom:1px solid var(--line);
+  background:none;border-radius:0;
   position:relative;
 }
 .step-card .s-num{
-  display:block;margin-bottom:14px;
-  font-family:var(--font-head);font-size:34px;line-height:1;
-  color:rgba(79,195,247,0.28);letter-spacing:-0.02em;
+  display:block;margin-bottom:0;grid-column:1;grid-row:1 / span 2;
+  font-family:var(--font-mono);font-size:12px;line-height:1.7;
+  color:var(--label-4);letter-spacing:0.1em;
 }
-.step-card h3{font-size:19px;font-weight:700;letter-spacing:-0.01em;margin-bottom:4px;}
-.step-card h4{font-size:13px;font-weight:500;color:var(--ice);margin-bottom:12px;}
-.step-card p{font-size:13.5px;color:var(--label-2);line-height:1.65;}
-.included-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:16px;}
+.step-card h3{grid-column:2;grid-row:1;}
+.step-card h4{grid-column:2;grid-row:2;}
+.step-card p{grid-column:3;grid-row:1 / span 2;}
+.step-card h3{font-family:var(--font-head);font-size:22px;font-weight:900;letter-spacing:-0.025em;margin-bottom:6px;}
+.step-card h4{font-family:var(--font-mono);font-size:11px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--ice);margin-bottom:0;}
+.step-card p{font-size:14.5px;color:var(--label-2);line-height:1.7;}
+.included-row{
+  display:flex;flex-wrap:wrap;gap:10px 28px;margin-top:26px;
+  font-family:var(--font-mono);font-size:11.5px;letter-spacing:0.1em;text-transform:uppercase;
+}
 .included-chip{
-  padding:18px;border-radius:14px;font-size:13px;font-weight:600;text-align:center;
-  color:rgba(255,255,255,0.85);background:var(--card-bg);border:1px solid var(--line);
+  padding:0;border-radius:0;font-weight:500;text-align:left;
+  color:var(--label-3);background:none;border:none;
 }
 
 /* ───────────────────────── ICP ───────────────────────── */
-.icp-wrap{max-width:1080px;margin:0 auto;padding:0 32px;}
-.icp-grid{display:grid;grid-template-columns:1.15fr 0.85fr;gap:16px;align-items:start;}
-.icp-col-label{font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:14px;}
+.icp-wrap{max-width:var(--wide);margin:0 auto;padding:0 var(--gutter);}
+.icp-grid{display:grid;grid-template-columns:1.2fr 0.8fr;gap:56px;align-items:start;}
+.icp-col-label{font-family:var(--font-mono);font-size:11px;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;padding-bottom:14px;border-bottom:1px solid var(--line);margin-bottom:0;}
 .icp-col-label.fit{color:var(--ice);}
-.icp-col-label.nofit{color:var(--label-3);}
-.icp-list{border:1px solid var(--line);border-radius:20px;overflow:hidden;background:var(--card-bg);}
+.icp-col-label.nofit{color:var(--label-4);}
+.icp-list{border:none;border-radius:0;overflow:visible;background:none;}
 .icp-row{
-  display:flex;gap:14px;align-items:flex-start;
-  padding:17px 22px;border-bottom:1px solid var(--line);
-  font-size:14.5px;color:rgba(255,255,255,0.8);line-height:1.55;
+  display:block;
+  padding:16px 0;border-bottom:1px solid var(--line);
+  font-size:14.5px;color:rgba(241,239,234,0.8);line-height:1.55;
 }
-.icp-row:last-child{border-bottom:none;}
-.icp-ic{flex:none;width:14px;height:22px;display:flex;align-items:center;justify-content:flex-start;margin-top:0;background:none;border:none;color:var(--ice);}
-.icp-ic.x{background:none;border:none;color:var(--label-4);}
-.icp-ic svg{width:10px;height:10px;}
+.icp-list.out .icp-row{color:var(--label-3);}
+.icp-ic{display:none;}
 
 /* ───────────────────────── offer ───────────────────────── */
-.offer-wrap{max-width:920px;margin:0 auto;padding:0 32px;}
+.offer-wrap{max-width:var(--wide);margin:0 auto;padding:0 var(--gutter);}
 .offer-card{
-  padding:52px;border-radius:26px;
-  background:linear-gradient(180deg,rgba(79,195,247,0.06),rgba(255,255,255,0.015) 40%);
-  border:1px solid rgba(79,195,247,0.25);
-  box-shadow:0 0 80px rgba(79,195,247,0.06);
+  padding:0;border-radius:0;
+  background:none;
+  border:none;border-top:1px solid var(--line-strong);
+  padding-top:40px;
 }
-.offer-card .badge{margin-bottom:24px;}
-.offer-card h3{font-family:var(--font-head);font-size:clamp(28px,3.4vw,42px);letter-spacing:-0.025em;margin-bottom:8px;}
-.offer-sub{font-size:15px;color:var(--label-2);margin-bottom:32px;}
-.offer-list{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:14px 30px;margin-bottom:36px;}
-.offer-list li{display:flex;gap:11px;font-size:14px;color:rgba(255,255,255,0.82);line-height:1.5;}
-.offer-list .tick{flex:none;width:13px;height:20px;margin-top:0;display:flex;align-items:center;justify-content:flex-start;background:none;border:none;color:var(--ice);}
-.offer-list .tick svg{width:9px;height:9px;}
-.offer-foot{font-size:13.5px;color:var(--label-3);line-height:1.7;margin-top:28px;}
+.offer-card .badge{margin-bottom:22px;border-top:none;padding-top:0;}
+.offer-card h3{font-family:var(--font-head);font-size:clamp(28px,3.2vw,44px);font-weight:900;letter-spacing:-0.035em;margin-bottom:10px;}
+.offer-sub{font-size:15.5px;color:var(--label-2);margin-bottom:36px;max-width:52ch;}
+.offer-list{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:0 56px;margin-bottom:36px;border-top:1px solid var(--line);}
+.offer-list li{display:block;padding:13px 0;border-bottom:1px solid var(--line);font-size:14px;color:rgba(241,239,234,0.82);line-height:1.5;}
+.offer-list .tick{display:none;}
+.offer-foot{font-size:13.5px;color:var(--label-3);line-height:1.7;margin-top:26px;max-width:64ch;}
 .retainer{
-  margin-top:16px;padding:28px 34px;border-radius:18px;
-  background:var(--card-bg);border:1px solid var(--line);
+  margin-top:0;padding:30px 0 0;border-radius:0;
+  background:none;border:none;border-top:1px solid var(--line);
+  max-width:70ch;
 }
-.retainer .tag{font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--label-3);margin-bottom:8px;display:block;}
-.retainer p{font-size:13.5px;color:var(--label-2);line-height:1.65;}
-.retainer p+p{margin-top:10px;}
+.retainer .tag{font-family:var(--font-mono);font-size:10.5px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--label-4);margin-bottom:12px;display:block;}
+.retainer p{font-size:14px;color:var(--label-2);line-height:1.7;}
+.retainer p+p{margin-top:12px;}
 
 /* ───────────────────────── FAQ ───────────────────────── */
-.faq-wrap{max-width:820px;margin:0 auto;padding:0 32px;}
+.faq-wrap{max-width:var(--wide);margin:0 auto;padding:0 var(--gutter);}
+.faq-group{border-top:1px solid var(--line);max-width:80ch;}
 .faq-group details{border-bottom:1px solid var(--line);}
-.faq-group details:last-child{border-bottom:none;}
+.faq-group details:last-child{border-bottom:1px solid var(--line);}
 .faq-group summary{
   list-style:none;cursor:pointer;
   display:flex;align-items:center;justify-content:space-between;gap:16px;
-  padding:23px 6px;font-size:16px;font-weight:600;letter-spacing:-0.01em;
-  transition:color .2s var(--ease);
+  padding:22px 0;font-size:16.5px;font-weight:500;letter-spacing:-0.01em;
+  transition:color .15s var(--ease);
 }
 .faq-group summary:hover{color:var(--ice);}
 .faq-group summary::-webkit-details-marker{display:none;}
 .faq-group summary::after{
-  content:'';flex:none;width:12px;height:12px;
-  background:currentColor;
-  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round'%3E%3Cline x1='12' y1='5' x2='12' y2='19'/%3E%3Cline x1='5' y1='12' x2='19' y2='12'/%3E%3C/svg%3E") center/contain no-repeat;
-  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round'%3E%3Cline x1='12' y1='5' x2='12' y2='19'/%3E%3Cline x1='5' y1='12' x2='19' y2='12'/%3E%3C/svg%3E") center/contain no-repeat;
-  transition:transform .3s var(--spring);color:var(--label-3);
+  content:'+';flex:none;
+  font-family:var(--font-mono);font-size:16px;line-height:1;
+  color:var(--label-4);
+  background:none;-webkit-mask:none;mask:none;width:auto;height:auto;
 }
-.faq-group details[open] summary::after{transform:rotate(45deg);}
-.faq-a{max-height:0;overflow:hidden;padding:0 6px;font-size:14.5px;color:var(--label-2);line-height:1.75;max-width:680px;transition:max-height .3s var(--ease),padding .3s var(--ease);}
-.faq-group details[open] .faq-a{max-height:500px;padding:0 6px 24px;}
+.faq-group details[open] summary::after{content:'–';}
+.faq-a{max-height:0;overflow:hidden;padding:0;font-size:14.5px;color:var(--label-2);line-height:1.75;max-width:66ch;transition:max-height .25s var(--ease),padding .25s var(--ease);}
+.faq-group details[open] .faq-a{max-height:520px;padding:0 0 24px;}
 
 /* ───────────────────────── final CTA ───────────────────────── */
 .final-cta{
-  max-width:920px;margin:80px auto 0;padding:0 32px 130px;text-align:center;
+  max-width:var(--wide);margin:96px auto 0;padding:0 var(--gutter) 120px;text-align:left;
 }
 .final-inner{
-  padding:80px 48px 72px;border-radius:30px;position:relative;overflow:hidden;
-  background:var(--card-bg);border:1px solid var(--line);
+  padding:56px 0 0;border-radius:0;position:relative;overflow:visible;
+  background:none;border:none;border-top:1px solid var(--line-strong);
 }
-.final-inner::before{
-  content:'';position:absolute;inset:0;pointer-events:none;
-  background:
-    radial-gradient(ellipse 70% 80% at 50% 110%,rgba(79,195,247,0.12),transparent 70%);
-}
+.final-inner::before{content:none;}
 .final-inner>*{position:relative;z-index:1;}
+.final-inner>.badge{border-top:none;padding-top:0;}
 .final-cta h2{
   font-family:var(--font-head);font-weight:900;
-  font-size:clamp(30px,4.2vw,52px);line-height:1.08;letter-spacing:-0.03em;
-  max-width:720px;margin:22px auto 18px;
+  font-size:clamp(30px,4.2vw,54px);line-height:1.03;letter-spacing:-0.035em;
+  max-width:20ch;margin:0 0 20px;
 }
-.final-cta p{font-size:15.5px;color:var(--label-2);max-width:520px;margin:0 auto 40px;line-height:1.7;}
-.final-cta p.final-note{font-size:13px;color:var(--label-3);margin:28px auto 0;line-height:1.7;max-width:460px;}
+.final-cta p{font-size:16px;color:var(--label-2);max-width:54ch;margin:0 0 36px;line-height:1.7;}
+.final-cta p.final-note{font-size:13px;color:var(--label-3);margin:24px 0 0;line-height:1.7;max-width:50ch;}
 
 footer{
   border-top:1px solid var(--line);
-  padding:36px 40px;max-width:1240px;margin:0 auto;
+  padding:32px var(--gutter);max-width:var(--wide);margin:0 auto;
   display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;
 }
-footer .copy{font-size:12.5px;color:var(--label-3);}
+footer .copy{font-size:12.5px;color:var(--label-4);}
 footer .foot-links{display:flex;gap:22px;flex-wrap:wrap;}
-footer .foot-links a{font-size:12.5px;color:var(--label-3);transition:color .2s;}
+footer .foot-links a{font-size:12.5px;color:var(--label-3);transition:color .15s;}
 footer .foot-links a:hover{color:var(--white);}
 
-/* ───────────────────────── reveal system ───────────────────────── */
-.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s var(--ease),transform .7s var(--ease);}
-.reveal.visible{opacity:1;transform:translateY(0);}
-.reveal-scale{opacity:0;transform:translateY(34px) scale(.97);transition:opacity .8s var(--ease),transform .8s var(--ease);}
-.reveal-scale.visible{opacity:1;transform:translateY(0) scale(1);}
+/* ───────────────────────── no scroll-reveal theatrics ───────────────────────── */
+.reveal,.reveal-scale{opacity:1;transform:none;}
 
-:focus-visible{outline:2px solid var(--ice);outline-offset:3px;border-radius:4px;}
-.btn-primary:focus-visible,.nav-cta:focus-visible{outline-offset:4px;border-radius:var(--pill);}
+:focus-visible{outline:2px solid var(--ice);outline-offset:3px;border-radius:2px;}
 .faq-group summary:focus-visible{outline:2px solid var(--ice);outline-offset:-2px;}
 
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important;}
-  .reveal,.reveal-scale,.pain-row{opacity:1;transform:none;}
 }
 
 /* ───────────────────────── responsive ───────────────────────── */
 @media (max-width:1000px){
-  .phase,.phase.flip{grid-template-columns:1fr;gap:36px;padding:36px 28px;}
+  :root{--gutter:28px;}
+  .phase,.phase.flip{grid-template-columns:1fr;gap:32px;padding:40px 0;}
   .phase.flip .phase-demo{order:0;}
   .phase-when{margin-left:0;}
-  .total-card{grid-template-columns:1fr;gap:24px;padding:32px 28px;}
-  .role-grid{grid-template-columns:1fr 1fr;}
-  .icp-grid{grid-template-columns:1fr;}
-  .steps{grid-template-columns:1fr;}
-  .included-row{grid-template-columns:1fr 1fr;}
-  .offer-list{grid-template-columns:1fr;}
-  .quote-duo{grid-template-columns:1fr;}
+  .icp-grid{grid-template-columns:1fr;gap:36px;}
+  .step-card{grid-template-columns:44px minmax(0,1fr);grid-template-rows:auto auto auto;gap:4px 20px;}
+  .step-card .s-num{grid-row:1 / span 3;}
+  .step-card p{grid-column:2;grid-row:3;margin-top:10px;}
+  .offer-list{grid-template-columns:1fr;gap:0;}
   .stat-row{grid-template-columns:1fr;}
+  .big-stat{border-right:none;border-bottom:1px solid var(--line);padding:26px 0;}
+  .big-stat:last-child{border-bottom:none;}
+  .big-stat:not(:first-child){padding-left:0;}
 }
 @media (max-width:640px){
-  .nav{padding:14px 20px;}
-  .nav.scrolled{padding:11px 20px;}
-  .nav-right{gap:18px;}
+  :root{--gutter:20px;}
+  .nav{padding:14px var(--gutter);}
+  .nav-right{gap:16px;}
   .nav-link{display:none;}
-  .hero{padding:150px 20px 60px;}
-  .hero h1{font-size:clamp(30px,8.6vw,40px);}
-  .section-head{padding:80px 20px 44px;}
-  .phases,.narrow,.econ,.results,.steps-wrap,.icp-wrap,.offer-wrap,.faq-wrap{padding-left:16px;padding-right:16px;}
-  .phase,.phase.flip{padding:24px 16px;border-radius:20px;}
-  .role-grid{grid-template-columns:1fr;}
-  .offer-card{padding:32px 22px;}
-  .final-inner{padding:52px 24px;}
+  .hero{padding:130px var(--gutter) 56px;}
+  .hero h1{font-size:clamp(32px,9vw,44px);max-width:none;}
+  .section-head{padding:72px var(--gutter) 36px;}
+  .section-head h2{max-width:none;}
+  .final-cta{padding-bottom:88px;margin-top:64px;}
   .dash-stats,.dash-foot,.funnel-strip{grid-template-columns:repeat(2,1fr);}
   .dash-stat:nth-child(2),.dash-foot .cell:nth-child(2),.funnel-cell:nth-child(2){border-right:none;}
-  .dash-stat,.dash-foot .cell{border-bottom:1px solid rgba(255,255,255,0.05);}
+  .dash-stat,.dash-foot .cell{border-bottom:1px solid rgba(241,239,234,0.05);}
   .kanban{grid-template-columns:1fr;}
   .kcol{min-height:0;}
   .dash-thead{grid-template-columns:1.6fr 1fr;}
   .dash-thead .hide-m{display:none;}
   .dash-tr{grid-template-columns:1.6fr 1fr;}
   .dash-tr .meta{display:none;}
-  .gap-callout{padding:26px 22px;}
-  .gap-callout p{font-size:16px;}
-  .included-row{grid-template-columns:1fr;}
-  .manual-card{padding:28px 24px;}
+  .gap-callout p{font-size:17px;}
+  .manual-card h3{font-size:22px;}
 }
 </style>
 </head>
@@ -660,20 +624,20 @@ footer .foot-links a:hover{color:var(--white);}
 <header class="hero" id="hero">
   <span class="hero-eyebrow">90-Day Done-With-You Installation</span>
   <h1>You're the bottleneck.<br><span class="ice">We install the fix.</span></h1>
-  <p class="hero-sub">Custom AI agents trained on your voice, your ICP, and 1,000+ viral hooks. 5 scripts every morning, qualified leads on your calendar. One install, yours forever.</p>
+  <p class="hero-sub">AI agents trained on how you actually talk and who you actually sell to. They write five scripts before you are up and qualify the DMs that come in overnight. We build it once, inside your business, and you keep it.</p>
   <a href="/apply" class="btn-primary">Apply Now <span class="arr">→</span></a>
-  <p class="hero-note">Application required. Limited spots. We review every application personally.</p>
+  <p class="hero-note">Applications only. Micko reads every one of them himself.</p>
 </header>
 
 <!-- ══════════════ TRUST STRIP ══════════════ -->
 <div class="trust reveal">
-  <div class="trust-label">Built for solo DFY agency owners doing $5K–$12K/mo</div>
+  <div class="trust-label">Built for solo DFY agency owners doing $5K to $12K a month</div>
   <div class="trust-row">
     <span class="trust-item">SMMA</span>
     <span class="trust-item">Content Agencies</span>
     <span class="trust-item">Lead Gen</span>
     <span class="trust-item">Marketing Consultants</span>
-    <span class="trust-item">Coaches w/ DFY Offers</span>
+    <span class="trust-item">Coaches with DFY offers</span>
   </div>
 </div>
 
@@ -682,18 +646,18 @@ footer .foot-links a:hover{color:var(--white);}
   <div class="section-head">
     <span class="badge">The Problem</span>
     <h2 id="problem-heading">You hired help.<br><span class="ice">You got generic.</span></h2>
-    <p class="sub">VAs, SMMs, Upwork freelancers. They don't know your hooks, your ICP, or your offer. They produce content that could belong to anyone.</p>
+    <p class="sub">VAs, agency SMMs, Upwork freelancers. None of them know the offer well enough to write about it, so what comes back could belong to anybody.</p>
   </div>
   <div class="narrow">
     <div class="pain-list">
-      <div class="pain-row"><span class="pain-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg></span>Your VA wrote captions that felt generic. Zero voice, zero ICP targeting. Engagement tanked. You fired them and wrote it yourself.</div>
-      <div class="pain-row"><span class="pain-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>Your Upwork SMM posted on schedule. Nothing converted. No real hooks, no targeting. Just template noise that could be anyone's.</div>
-      <div class="pain-row"><span class="pain-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><polyline points="21 3 21 9 15 9"/></svg></span>Every hire you trained quit or ghosted. You burned weeks teaching them your voice. The cycle repeats.</div>
-      <div class="pain-row"><span class="pain-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><polyline points="3 7 12 13 21 7"/></svg></span>ChatGPT scripts feel generic. Templates feel borrowed. Nothing sounds like you, so you write everything yourself anyway.</div>
-      <div class="pain-row"><span class="pain-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><path d="M12 17h.01"/></svg></span>You know what converts. You just can't write 5 scripts a day AND deliver client work AND close sales.</div>
+      <div class="pain-row">Your VA wrote captions that could have been for any agency. Engagement dropped, you stopped trusting the output, and inside a month you were writing them yourself again.</div>
+      <div class="pain-row">The Upwork SMM hit every posting deadline for four months straight and it never produced a single call.</div>
+      <div class="pain-row">You spent weeks teaching someone your voice. They left. Then you started the whole process again with the next hire.</div>
+      <div class="pain-row">ChatGPT hands you something that reads like everybody else's post, so you rewrite it, which takes longer than writing it would have.</div>
+      <div class="pain-row">You already know what converts in your niche. There is just no version of your week that fits five scripts, client delivery, and sales calls into it.</div>
     </div>
     <div class="gap-callout reveal">
-      <p>The gap is <span class="ice">training depth</span>. Generic content fails because the person making it doesn't know your business. InboundOS agents are trained on 1,000+ viral hooks, your exact audience, and your company database. One source of truth.</p>
+      <p>The missing piece is <span class="ice">depth</span>. Content goes generic when whoever writes it does not know the business well enough to have an opinion about it. InboundOS agents get your hook library, your audience research, and your company data loaded in before they write a word.</p>
     </div>
   </div>
 </section>
@@ -703,7 +667,7 @@ footer .foot-links a:hover{color:var(--white);}
   <div class="section-head">
     <span class="badge">The Installation</span>
     <h2 id="system-heading">Your AI Content Department</h2>
-    <p class="sub">Four agents. One system. You film, you close. Everything else runs without you.</p>
+    <p class="sub">Four agents that hand work to each other. You film and you close. The rest of it runs whether you are at your desk or not.</p>
   </div>
 
   <div class="phases">
@@ -713,7 +677,6 @@ footer .foot-links a:hover{color:var(--white);}
       <div class="phase-demo">
         <div class="dash">
           <div class="dash-bar">
-            <span class="dash-dots"><i></i><i></i><i></i></span>
             <span class="dash-title">argus / daily recon</span>
             <span class="dash-live">LIVE</span>
           </div>
@@ -745,13 +708,13 @@ footer .foot-links a:hover{color:var(--white);}
           <span class="phase-kind">Research Agent</span>
           <span class="phase-when">Runs daily</span>
         </div>
-        <h3>Argus watches your market so you don't have to.</h3>
-        <p class="phase-myth">Argus Panoptes was the giant with 100 eyes who never slept. Always watching, always scanning.</p>
-        <p class="desc">Daily recon on your niche: fresh AI and platform updates, trending topics, and a weekly sweep of your 3 competitors' top Reels, transcribed with Groq Whisper. LLaMA3 pulls the hook patterns. Everything feeds straight into Apollo.</p>
+        <h3>Argus reads your market every morning.</h3>
+        <p class="phase-myth">Argus Panoptes was the giant with a hundred eyes. Only half of them slept at a time.</p>
+        <p class="desc">Every morning it pulls what moved in your niche overnight. Once a week it takes your three closest competitors' best performing Reels, runs the audio through Groq Whisper, and has LLaMA3 work out why the hooks landed. That goes to Apollo before you open your laptop.</p>
         <ul class="checklist">
-          <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>Pulls niche trends and platform updates daily</li>
-          <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>Scrapes competitor Reels weekly, audio transcribed</li>
-          <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>Winning hook patterns seeded into Apollo automatically</li>
+          <li>Pulls niche trends and platform changes daily</li>
+          <li>Scrapes and transcribes competitor Reels weekly</li>
+          <li>Sends the hook patterns that worked into Apollo</li>
         </ul>
       </div>
     </div>
@@ -761,7 +724,6 @@ footer .foot-links a:hover{color:var(--white);}
       <div class="phase-demo">
         <div class="dash">
           <div class="dash-bar">
-            <span class="dash-dots"><i></i><i></i><i></i></span>
             <span class="dash-title">apollo / daily script run</span>
             <span class="dash-live ice">WRITING</span>
           </div>
@@ -781,13 +743,13 @@ footer .foot-links a:hover{color:var(--white);}
           <span class="phase-kind">Content Agent</span>
           <span class="phase-when">Every morning</span>
         </div>
-        <h3>Apollo writes 5 scripts a day. In your voice.</h3>
-        <p class="phase-myth">Apollo was the god of poetry. The one who gave voice to what others only felt.</p>
-        <p class="desc">Apollo takes the intel Argus gathered, mixes it with your content pillars, and writes 5 ready-to-film scripts every morning. Trained on your voice, your offer, your audience. You wake up to scripts already written.</p>
+        <h3>Apollo writes five scripts before you're up.</h3>
+        <p class="phase-myth">Apollo was the god of poetry, which the Greeks filed closer to prophecy than to art.</p>
+        <p class="desc">Apollo takes what Argus found overnight, runs it against your content pillars, and has five scripts written by seven in the morning. It has read your calls and your posts, so the scripts come out sounding like you rather than like a prompt.</p>
         <ul class="checklist">
-          <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>Mixes Argus intel with your content pillars daily</li>
-          <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>Hooks and scripts in your voice, for your offer</li>
-          <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>5 scripts a day, saved to your database</li>
+          <li>Runs Argus findings against your content pillars daily</li>
+          <li>Writes hooks and scripts against your offer, in your voice</li>
+          <li>Five scripts a day, saved into your own database</li>
         </ul>
       </div>
     </div>
@@ -798,7 +760,7 @@ footer .foot-links a:hover{color:var(--white);}
       <div class="manual-card reveal">
         <span class="tag">You · Manual Step</span>
         <h3>Film the script.</h3>
-        <p>Script is already written, reviewed, and queued. You show up and film. That's the only step that needs a human. Everything before and after is automated.</p>
+        <p>The script is written and queued by the time you read it. You point a camera at yourself and say it. This is the one part of the whole system that needs an actual person.</p>
       </div>
       <div class="flow-line" aria-hidden="true"></div>
     </div>
@@ -808,7 +770,6 @@ footer .foot-links a:hover{color:var(--white);}
       <div class="phase-demo">
         <div class="dash">
           <div class="dash-bar">
-            <span class="dash-dots"><i></i><i></i><i></i></span>
             <span class="dash-title">hermes / lead pipeline</span>
             <span class="dash-live">4 ACTIVE</span>
           </div>
@@ -830,7 +791,7 @@ footer .foot-links a:hover{color:var(--white);}
             </div>
             <div class="kcol">
               <div class="kcol-head"><span class="cdot" style="background:var(--ice);"></span>Booked<span class="cnt">2</span></div>
-              <div class="kcard">Call booked Thu 2PM · context brief ready<div class="kmeta"><span class="kav">H</span><span class="ktag">calendar ✓</span></div></div>
+              <div class="kcard">Call booked Thu 2PM · context brief ready<div class="kmeta"><span class="kav">H</span><span class="ktag">booked</span></div></div>
               <div class="kcard">48h follow-up → replied → booked<div class="kmeta"><span class="kav">H</span><span class="ktag">auto</span></div></div>
             </div>
           </div>
@@ -844,12 +805,12 @@ footer .foot-links a:hover{color:var(--white);}
           <span class="phase-when">Always on</span>
         </div>
         <h3>Hermes turns DMs into booked calls.</h3>
-        <p class="phase-myth">Hermes was the messenger of the gods. Fast, persuasive, the guide between worlds.</p>
-        <p class="desc">When someone DMs after seeing your content, Hermes flags the reply and runs soft qualification automatically. It handles follow-ups, drops the booking form to warm leads, and re-engages at 48 hours. Qualified prospects land on your calendar with zero back-and-forth from you.</p>
+        <p class="phase-myth">Hermes carried messages between the gods and everybody else. He was the only one allowed to make the trip.</p>
+        <p class="desc">Someone watches a video and sends a DM. Hermes picks it up, asks the qualifying questions the way you would ask them, and sends the booking link once the answers check out. If they go quiet it follows up at 48 hours. You find the call already on your calendar.</p>
         <ul class="checklist">
-          <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>Detects DM replies, triggers the soft qual sequence</li>
-          <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>Booking form to warm leads, follow-up at 48 hours</li>
-          <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>Qualified leads land on your calendar, untouched by you</li>
+          <li>Picks up DM replies and starts qualifying</li>
+          <li>Sends the booking link, follows up at 48 hours</li>
+          <li>Books qualified leads without you opening the app</li>
         </ul>
       </div>
     </div>
@@ -860,7 +821,7 @@ footer .foot-links a:hover{color:var(--white);}
       <div class="manual-card reveal">
         <span class="tag">You · Manual Step</span>
         <h3>Close the call.</h3>
-        <p>Lead is qualified, call is booked, context is ready. You show up and close. Hermes already filtered the tire-kickers. Everyone on the call wants to be there.</p>
+        <p>By the time the call starts, Hermes has already asked what they do, what they earn, and what is broken. The people who could not answer never got the link.</p>
       </div>
       <div class="flow-line" aria-hidden="true"></div>
     </div>
@@ -870,7 +831,6 @@ footer .foot-links a:hover{color:var(--white);}
       <div class="phase-demo">
         <div class="dash">
           <div class="dash-bar">
-            <span class="dash-dots"><i></i><i></i><i></i></span>
             <span class="dash-title">clio / client onboarding</span>
             <span class="dash-live ice">INGESTING</span>
           </div>
@@ -897,12 +857,12 @@ footer .foot-links a:hover{color:var(--white);}
           <span class="phase-when">On client payment</span>
         </div>
         <h3>Clio onboards every client before you wake up.</h3>
-        <p class="phase-myth">Clio was the muse of history. The one who recorded everything worth remembering.</p>
-        <p class="desc">Client pays and the onboarding form goes out automatically. Clio reads the kickoff transcript and brand docs, then builds the full client profile, content pillars, and a 90-day kickoff deck. Everything saved to your database before you open your laptop.</p>
+        <p class="phase-myth">Clio was the muse of history, and the Greeks credited her with bringing the alphabet to Greece.</p>
+        <p class="desc">The payment clears and the onboarding form goes out on its own. Clio reads the kickoff transcript and whatever brand material they send, then writes up the client profile, the content pillars, and a 90-day deck. It is all in your database before you have opened your laptop.</p>
         <ul class="checklist">
-          <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>Payment triggers the onboarding form automatically</li>
-          <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>Full client profile built from the kickoff transcript</li>
-          <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>Kickoff deck and 90-day roadmap, generated automatically</li>
+          <li>Payment sends the onboarding form on its own</li>
+          <li>Builds the client profile from the kickoff transcript</li>
+          <li>Writes the kickoff deck and the 90-day roadmap</li>
         </ul>
       </div>
     </div>
@@ -914,17 +874,17 @@ footer .foot-links a:hover{color:var(--white);}
 <section id="results" aria-labelledby="results-heading">
   <div class="section-head">
     <span class="badge">Results</span>
-    <h2 id="results-heading">What happens when<br>the system runs.</h2>
+    <h2 id="results-heading">What it looks like<br>once it's running.</h2>
   </div>
   <div class="results">
     <div class="stat-row">
-      <div class="big-stat reveal"><div class="v"><span data-count="5">0</span></div><div class="l">scripts written in your voice every morning. Offer-led, ICP-targeted, ready to film.</div></div>
-      <div class="big-stat reveal"><div class="v"><span data-count="80">0</span>+</div><div class="l">leads per month on average. Qualified by Hermes before they hit your DMs.</div></div>
-      <div class="big-stat reveal"><div class="v"><span data-count="0">0</span></div><div class="l">Upwork hires. No training cycles. No ghosting. One system that never leaves.</div></div>
+      <div class="big-stat reveal"><div class="v"><span data-count="5">0</span></div><div class="l">scripts in your voice every morning, written against your offer and ready to film.</div></div>
+      <div class="big-stat reveal"><div class="v"><span data-count="80">0</span>+</div><div class="l">leads a month on average, qualified by Hermes before you see them.</div></div>
+      <div class="big-stat reveal"><div class="v"><span data-count="0">0</span></div><div class="l">Upwork hires to onboard, retrain, or replace when they stop answering.</div></div>
     </div>
     <div class="econ-close reveal" style="margin-top:16px;">
-      <h3>We install the team. You own it forever.</h3>
-      <p>Custom AI agents built on your voice, your hooks, your ICP, your audience. Outputs arrive ready to use: scripts, qualified leads, follow-up sequences. No code to learn. One build. Then it's yours. See the real client results on the <a href="/client-wins" style="color:var(--ice);">Client Wins</a> page.</p>
+      <h3>We build it inside your business, then it belongs to you.</h3>
+      <p>The agents are built on your own voice data and hook library, and what they produce is usable as it comes out: scripts you can film, leads you can call, follow-ups already sent. There is nothing to code and nothing to license. Real numbers from real accounts are on the <a href="/client-wins">Client Wins</a> page.</p>
     </div>
   </div>
 </section>
@@ -934,19 +894,19 @@ footer .foot-links a:hover{color:var(--white);}
   <div class="section-head">
     <span class="badge">How We Work</span>
     <h2 id="process-heading">Here's exactly<br>how we build it.</h2>
-    <p class="sub">We map your business first, then build the agents around it. You own everything when we're done.</p>
+    <p class="sub">We map the business before we build anything. Everything we build is yours when we finish.</p>
   </div>
   <div class="steps-wrap">
     <div class="steps">
-      <div class="step-card reveal"><span class="s-num">01</span><h3>Discovery Call</h3><h4>We audit your business</h4><p>30 minutes. We map your ICP, your offer, how you create content today, and where leads are leaking. You walk away with a clear picture of what gets built.</p></div>
-      <div class="step-card reveal"><span class="s-num">02</span><h3>Database Mapping</h3><h4>We extract your brand</h4><p>Your calls, your frameworks, your clients, your voice. We build the knowledge base the agents run on. This is what makes the agents sound like you.</p></div>
-      <div class="step-card reveal"><span class="s-num">03</span><h3>Agent Build + Workflows</h3><h4>We install the system</h4><p>Custom AI agents, automated workflows, a review loop, and a dashboard to run it all. Designed around how your business runs, handed over fully operational.</p></div>
+      <div class="step-card reveal"><span class="s-num">01</span><h3>Discovery Call</h3><h4>We audit your business</h4><p>Thirty minutes on who you sell to, what you sell, how content gets made right now, and where leads are going missing. You leave knowing what we would build.</p></div>
+      <div class="step-card reveal"><span class="s-num">02</span><h3>Database Mapping</h3><h4>We extract your brand</h4><p>We pull your sales calls, your frameworks, your client history, and your existing posts into one knowledge base. This is the part that makes the output sound like you and not like a chatbot.</p></div>
+      <div class="step-card reveal"><span class="s-num">03</span><h3>Agent Build + Workflows</h3><h4>We install the system</h4><p>The agents, the workflows between them, a review step you control, and a dashboard to run the whole thing. We hand it over working, not as a set of instructions.</p></div>
     </div>
     <div class="included-row">
-      <div class="included-chip reveal">4 weekly 1:1 calls/month</div>
-      <div class="included-chip reveal">Unlimited async 24/7</div>
+      <div class="included-chip reveal">Four 1:1 calls a month</div>
+      <div class="included-chip reveal">Async access, no cap</div>
       <div class="included-chip reveal">Your own dashboard</div>
-      <div class="included-chip reveal">Everything done-with-you</div>
+      <div class="included-chip reveal">You sit in the build</div>
     </div>
   </div>
 </section>
@@ -956,27 +916,27 @@ footer .foot-links a:hover{color:var(--white);}
   <div class="section-head">
     <span class="badge">Who This Is For</span>
     <h2 id="icp-heading">Built for one<br>type of person.</h2>
-    <p class="sub">The solo DFY agency owner who knows content works and has tried every way to produce it consistently. Nothing stuck.</p>
+    <p class="sub">The solo DFY agency owner who already believes content works, has tried four ways to produce it consistently, and watched all four fall over.</p>
   </div>
   <div class="icp-wrap">
     <div class="icp-grid">
       <div>
         <div class="icp-col-label fit">This is you</div>
         <div class="icp-list reveal">
-          <div class="icp-row"><span class="icp-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>Solo or 2-person DFY agency. SMMA, content, lead gen, marketing consultant.</div>
-          <div class="icp-row"><span class="icp-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>$5K–$12K/month. The offer works. Content is the missing growth layer.</div>
-          <div class="icp-row"><span class="icp-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>You've hired a VA, SMM, or freelancer for content. Got generic output that didn't convert.</div>
-          <div class="icp-row"><span class="icp-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>You want content that sounds like you and ships without you writing every word.</div>
-          <div class="icp-row"><span class="icp-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>Ready to invest in a system you own, one that keeps running after you stop paying.</div>
-          <div class="icp-row"><span class="icp-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>Willing to film. You film, the agents handle everything else.</div>
+          <div class="icp-row">Solo or 2-person DFY agency. SMMA, content, lead gen, marketing consultant.</div>
+          <div class="icp-row">Doing $5K to $12K a month. The offer already converts. Content is what you have not solved.</div>
+          <div class="icp-row">You have paid a VA, an SMM, or a freelancer to make content and got back something that did not convert.</div>
+          <div class="icp-row">You want content that sounds like you without having to write every word of it.</div>
+          <div class="icp-row">You would rather own the thing than rent it from an agency.</div>
+          <div class="icp-row">You are willing to get on camera. That part cannot be automated.</div>
         </div>
       </div>
       <div>
         <div class="icp-col-label nofit">This isn't</div>
-        <div class="icp-list reveal">
-          <div class="icp-row"><span class="icp-ic x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg></span>Beginners without a proven offer or paying clients yet.</div>
-          <div class="icp-row"><span class="icp-ic x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg></span>Agencies with a content team already producing at volume. You've solved it.</div>
-          <div class="icp-row"><span class="icp-ic x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg></span>Anyone looking for fully hands-off. The build is done-with-you.</div>
+        <div class="icp-list out reveal">
+          <div class="icp-row">Beginners without a proven offer or paying clients yet.</div>
+          <div class="icp-row">Agencies already running a content team at volume. You have solved this.</div>
+          <div class="icp-row">Anyone wanting it fully hands off. You sit in the build with us.</div>
         </div>
       </div>
     </div>
@@ -993,28 +953,28 @@ footer .foot-links a:hover{color:var(--white);}
     <div class="offer-card reveal-scale">
       <span class="badge">90-Day Done-With-You Installation</span>
       <h3 id="offer-heading">The InboundOS Installation</h3>
-      <p class="offer-sub">90-day done-with-you build. Your AI operating system, installed inside your business.</p>
+      <p class="offer-sub">A 90-day build you sit inside. At the end of it the system lives in your business, not ours.</p>
       <ul class="offer-list">
-        <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>5 scripts per day in your voice, ready to film every morning</li>
-        <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>Your ICP and offer baked into every script</li>
-        <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>Leads auto-qualified via DM, delivered to your calendar filtered</li>
-        <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>Weekly 1:1 strategy calls to dial in quality and performance</li>
-        <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>Unlimited async support, 24/7</li>
-        <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>Custom AI agents built specifically for your business</li>
-        <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>Everything documented so you can run it solo after 90 days</li>
-        <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter"><polyline points="4 12 10 18 20 5"/></svg></span>You own all agents, workflows, and prompt libraries</li>
+        <li>Five scripts a day in your voice, ready to film</li>
+        <li>Your buyer and your offer written into every script</li>
+        <li>Leads qualified over DM and booked straight to your calendar</li>
+        <li>Weekly 1:1 calls to tune quality and output</li>
+        <li>Async support with no cap on messages</li>
+        <li>Agents built for your business specifically, not configured from a template</li>
+        <li>Documentation good enough to run it without us after day 90</li>
+        <li>You own the agents, the workflows, and the prompt libraries</li>
       </ul>
       <a href="/apply" class="btn-primary">Apply Now <span class="arr">→</span></a>
-      <p class="offer-foot">Built for solo DFY agency owners doing $5K–$12K/mo who've tried VAs and freelancers and want a content team that actually knows their ICP, their hooks, and their offer.</p>
+      <p class="offer-foot">For solo DFY agency owners doing $5K to $12K a month who have already tried VAs and freelancers and want something that knows the business well enough to write about it.</p>
     </div>
     <div class="econ-close reveal" style="margin-top:16px;">
       <h3>If the system doesn't make you more money or save you time, we keep working until it does.</h3>
-      <p>We track what's converting from week one. We adjust before problems compound. Done-with-you means we're in it with you, fully responsible for results.</p>
+      <p>We watch what converts from the first week and change it while it is still cheap to change. You are not handed a login and left with it.</p>
     </div>
     <div class="retainer reveal">
       <span class="tag">Optional · Post 90 Days</span>
-      <p>Monthly retainer available: system maintenance, new scripts, content batching support, ongoing optimization. Month-to-month. Cancel anytime.</p>
-      <p>Every agent, workflow, prompt library, and conversion sequence goes with you, whether you continue or not. Agencies charge $3K–$10K/month and keep the system when you stop paying. We hand it over on day one.</p>
+      <p>There is a monthly retainer if you want one. Maintenance, new scripts, batching help, and tuning. Month to month, cancel whenever.</p>
+      <p>Every agent, workflow, prompt library, and DM sequence goes with you either way. Agencies charge $3K to $10K a month and keep the machine when you leave. We hand ours over at the start.</p>
     </div>
   </div>
 </section>
@@ -1023,49 +983,49 @@ footer .foot-links a:hover{color:var(--white);}
 <section id="faq" aria-labelledby="faq-heading">
   <div class="section-head">
     <span class="badge">FAQ</span>
-    <h2 id="faq-heading">You've got questions.<br><span class="ice">We've got answers.</span></h2>
+    <h2 id="faq-heading">Questions we get<br><span class="ice">asked a lot.</span></h2>
   </div>
   <div class="faq-wrap">
     <div class="faq-group reveal">
       <details>
         <summary>"Do I need to film everything myself?"</summary>
-        <p class="faq-a">Yes. You film, we handle everything else: positioning, scripting, AI agents, review, strategy, and the lead conversion layer. You show up on camera, we build the machine around you.</p>
+        <p class="faq-a">Yes. Positioning, scripting, the agents, the review step, and the DM conversion sequence are ours. The camera is yours. Nobody has worked out how to outsource being the person on screen.</p>
       </details>
       <details>
         <summary>"How much time does this take per week?"</summary>
-        <p class="faq-a">One 60-minute 1:1 call per week, plus one monthly filming session you batch in advance. Everything else is async.</p>
+        <p class="faq-a">One 60-minute call a week and one filming session a month that you batch in advance. Everything else happens in messages.</p>
       </details>
       <details>
         <summary>"I'm not technical. Will I be able to use the AI agents?"</summary>
-        <p class="faq-a">They're built specifically for you. Type a one-line prompt and get a full script in your voice. We build it, we hand it over, you run it from day one.</p>
+        <p class="faq-a">They are built for you, so there is nothing to configure. You type one line and a full script comes back in your voice. If you can send a DM you can run this.</p>
       </details>
       <details>
         <summary>"We already tried ChatGPT. Why would this be different?"</summary>
-        <p class="faq-a">ChatGPT is a blank tool. We build the entire operating layer around it: your company database, your voice data, your custom agents, your batching workflow, your review process, your conversion sequences. The power is in what surrounds the AI.</p>
+        <p class="faq-a">ChatGPT starts empty every time you open it. What we build is everything that has to exist around a model before it is useful: your company database, your voice data, the agents, the batching workflow, the review step, and the DM sequences. The model is the cheapest part of that list.</p>
       </details>
       <details>
         <summary>"Will the content actually sound like me?"</summary>
-        <p class="faq-a">Yes. We train the system on your calls, posts, frameworks, offers, objections, and stories. Then we review scripts and hooks before they go live, so the output sounds like you on your sharpest day.</p>
+        <p class="faq-a">We train it on your calls, posts, frameworks, offers, objections, and the stories you already tell on sales calls. Then you review the hooks before anything goes out. Clients usually tell us it sounds like them after about two weeks of corrections.</p>
       </details>
       <details>
         <summary>"What if I already have an editor or VA?"</summary>
-        <p class="faq-a">Even better. We give them a clearer machine to operate: content pillars, scripts, batching rhythm, review standards, and CTA flow. They stop guessing and start executing against a system.</p>
+        <p class="faq-a">Good, keep them. They get content pillars, scripts, a batching rhythm, review standards, and a CTA flow to work from, which means they spend their time executing instead of guessing what you wanted.</p>
       </details>
       <details>
         <summary>"Do I keep everything after 90 days?"</summary>
-        <p class="faq-a">Yes, all of it. The agents, workflows, prompt library, content calendar, strategy, review standards, and DM sequences. That's the whole point of an install: it lives inside your business.</p>
+        <p class="faq-a">All of it. The agents, the workflows, the prompt library, the content calendar, the review standards, and the DM sequences. That is what makes it an install rather than a subscription.</p>
       </details>
       <details>
         <summary>"Why not just hire a content agency?"</summary>
-        <p class="faq-a">Agencies charge $3K–$10K/month and keep the system when you leave. We build custom AI agents and workflows inside your business, and you own them after 90 days. Pay once, run forever.</p>
+        <p class="faq-a">An agency charges $3K to $10K a month and takes the system with them when the relationship ends. We build inside your business and leave it there after 90 days. You pay for the build once.</p>
       </details>
       <details>
         <summary>"What if it's not working?"</summary>
-        <p class="faq-a">If you don't make more money or save time, we keep working with you until you do. We track what's converting from week one and adjust before problems compound. Done-with-you means you're never figuring it out alone.</p>
+        <p class="faq-a">Then we keep working until it does. We are watching what converts from the first week, so problems surface early enough to fix cheaply. You will not be left staring at a dashboard trying to work out what went wrong.</p>
       </details>
       <details>
         <summary>"How much does this cost?"</summary>
-        <p class="faq-a">The 90-day build is a one-time investment. Exact cost depends on your scope: size of your database, number of agents, integration complexity. We price it on discovery. One build, you own it forever, no monthly fees.</p>
+        <p class="faq-a">The 90-day build is a one-time cost. What it comes to depends on how much data we are ingesting, how many agents you need, and how messy the integrations are. We price it on the discovery call. There is no monthly fee attached to it.</p>
       </details>
     </div>
   </div>
@@ -1076,9 +1036,9 @@ footer .foot-links a:hover{color:var(--white);}
   <div class="final-inner reveal-scale">
     <span class="badge">Ready?</span>
     <h2 id="final-cta-heading">In 90 days you'll have a system that runs your content. Or you'll still be doing it yourself.</h2>
-    <p>Apply below. We review personally and tell you if it's a fit before we waste your time. No Calendly, no pitch call until we know it's real.</p>
+    <p>Apply below and Micko will tell you straight whether it is a fit. There is no Calendly link until we both know there is something here worth a call.</p>
     <a href="/apply" class="btn-primary">Apply Now <span class="arr">→</span></a>
-    <p class="final-note">Limited spots. Application required. We work with you until it works.</p>
+    <p class="final-note">Spots are limited because the build is hands on. We stay until it works.</p>
   </div>
 </section>
 
@@ -1100,17 +1060,6 @@ const nav = document.getElementById('main-nav');
 addEventListener('scroll', () => {
   nav.classList.toggle('scrolled', scrollY > 24);
 }, { passive: true });
-
-// ── reveal on scroll ──
-const revealIO = new IntersectionObserver((entries) => {
-  entries.forEach((e) => {
-    if (e.isIntersecting) {
-      e.target.classList.add('visible');
-      revealIO.unobserve(e.target);
-    }
-  });
-}, { threshold: 0.08, rootMargin: '0px 0px -60px 0px' });
-document.querySelectorAll('.reveal, .reveal-scale, .pain-list').forEach(el => revealIO.observe(el));
 
 // ── count-up numbers ──
 function countUp(el, target, decimals, duration = 1400) {

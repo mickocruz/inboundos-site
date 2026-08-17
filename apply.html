@@ -36,16 +36,16 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:        #0D1117;
-      --surface:   #1C2C3B;
-      --card:      #111820;
-      --border:    rgba(255,255,255,0.08);
-      --border-hi: rgba(79,195,247,0.5);
-      --white:     #FFFFFF;
-      --blue:      #4FC3F7;
-      --gray:      #8899A6;
-      --muted:     #3D4F5E;
-      --error:     #F85149;
+      --bg:        #0B0D10;
+      --surface:   #16232E;
+      --card:      #0F1216;
+      --border:    rgba(241,239,234,0.10);
+      --border-hi: rgba(79,179,228,0.5);
+      --white:     #F1EFEA;
+      --blue:      #4FB3E4;
+      --gray:      rgba(241,239,234,0.44);
+      --muted:     rgba(241,239,234,0.24);
+      --error:     #D97070;
       --font-display: 'NHG Display', 'Arial Black', 'Helvetica Neue', sans-serif;
       --font-body:    'DM Sans', system-ui, sans-serif;
     }
@@ -73,8 +73,8 @@
       padding: 0 40px;
       height: 56px;
       border-bottom: 1px solid var(--border);
-      background: rgba(13,17,23,0.92);
-      backdrop-filter: blur(12px);
+      background: var(--bg);
+      
     }
 
     .nav-logo {
@@ -114,10 +114,13 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
-      text-align: center;
-      padding: 120px 24px 80px;
+      text-align: left;
+      padding: 120px 40px 80px;
+      max-width: 1240px;
+      margin: 0 auto;
+      width: 100%;
     }
 
     .eyebrow {
@@ -128,17 +131,11 @@
       font-weight: 600;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: var(--blue);
-      margin-bottom: 32px;
+      color: var(--gray);
+      margin-bottom: 28px;
     }
 
-    .eyebrow::before, .eyebrow::after {
-      content: '';
-      width: 24px;
-      height: 1px;
-      background: var(--blue);
-      opacity: 0.5;
-    }
+    .eyebrow::before, .eyebrow::after { content: none; }
 
     h1.hero-title {
       font-family: var(--font-display);
@@ -174,33 +171,19 @@
       font-weight: 700;
       padding: 17px 36px;
       border: none;
-      border-radius: 100px;
+      border-radius: 3px;
       cursor: pointer;
       letter-spacing: 0.02em;
-      box-shadow: 0 0 40px rgba(79,195,247,0.30), 0 8px 24px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.4);
-      transition: transform 0.15s, box-shadow 0.25s;
+      transition: background 0.15s;
       text-decoration: none;
     }
 
-    .btn-cta:hover { transform: translateY(-2px); box-shadow: 0 0 56px rgba(79,195,247,0.45), 0 12px 32px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.4); }
-    .btn-cta:active { transform: scale(0.98); }
+    .btn-cta:hover { background: #6FC4EE; }
+    .btn-cta:active {  }
 
     /* v2 grid atmosphere */
-    .grid-bg{
-      position:fixed;inset:0;z-index:-2;pointer-events:none;
-      background-image:
-        linear-gradient(to right,rgba(255,255,255,0.028) 1px,transparent 1px),
-        linear-gradient(to bottom,rgba(255,255,255,0.028) 1px,transparent 1px);
-      background-size:72px 72px;
-      -webkit-mask-image:radial-gradient(ellipse 90% 70% at 50% 0%,black 0%,rgba(0,0,0,0.5) 55%,transparent 100%);
-      mask-image:radial-gradient(ellipse 90% 70% at 50% 0%,black 0%,rgba(0,0,0,0.5) 55%,transparent 100%);
-    }
-    .glow-bg{
-      position:fixed;inset:0;z-index:-3;pointer-events:none;
-      background:
-        radial-gradient(ellipse 60% 45% at 50% -5%,rgba(79,195,247,0.10),transparent 65%),
-        radial-gradient(ellipse 40% 30% at 85% 15%,rgba(88,86,214,0.06),transparent 70%);
-    }
+    .grid-bg{position:fixed;inset:0;z-index:-2;pointer-events:none;max-width:1240px;margin:0 auto;border-left:1px solid rgba(241,239,234,0.045);border-right:1px solid rgba(241,239,234,0.045);}
+    .glow-bg{display:none;}
 
     .btn-cta svg { width: 16px; height: 16px; }
 
@@ -339,7 +322,7 @@
       width: 100%;
       background: transparent;
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 3px;
       color: var(--white);
       font-family: var(--font-body);
       font-size: 15px;
@@ -367,7 +350,7 @@
       align-items: flex-start;
       gap: 16px;
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 3px;
       padding: 18px 20px;
       cursor: pointer;
       transition: border-color 0.15s, background 0.15s;
@@ -426,15 +409,14 @@
       font-weight: 700;
       padding: 14px 30px;
       border: none;
-      border-radius: 100px;
+      border-radius: 3px;
       cursor: pointer;
       letter-spacing: 0.03em;
-      box-shadow: 0 0 24px rgba(79,195,247,0.22), inset 0 1px 0 rgba(255,255,255,0.35);
       transition: opacity 0.15s, transform 0.1s;
     }
 
     .btn-next:hover, .btn-submit:hover { opacity: 0.88; }
-    .btn-next:active, .btn-submit:active { transform: scale(0.98); }
+    .btn-next:active, .btn-submit:active {  }
 
     .btn-back {
       background: transparent;
@@ -444,7 +426,7 @@
       font-weight: 500;
       padding: 14px 22px;
       border: 1px solid var(--border);
-      border-radius: 100px;
+      border-radius: 3px;
       cursor: pointer;
       letter-spacing: 0.03em;
       transition: color 0.15s, border-color 0.15s;
@@ -623,8 +605,8 @@
     </h1>
 
     <p class="hero-sub">
-      I take on a small number of agency owners at a time.
-      Answer honestly. If we're a fit, I'll reach out.
+      I only take on a few agency owners at a time. Answer these honestly
+      and I will tell you either way.
     </p>
 
     <button class="btn-cta" onclick="startForm()">
@@ -667,7 +649,7 @@
       <div class="step active" id="step-1">
         <div class="step-eyebrow">Who you are</div>
         <div class="step-question">Name &amp; Instagram handle.</div>
-        <p class="step-hint">First name is fine. IG so I can check your content before the call.</p>
+        <p class="step-hint">First name is fine. The handle is so I can look at what you are already posting before we talk.</p>
 
         <div class="field-group">
           <div class="field-wrap">
@@ -689,9 +671,9 @@
       <div class="step" id="step-2">
         <div class="step-eyebrow">Your business</div>
         <div class="step-question">What do you do<br>&amp; who do you help?</div>
-        <p class="step-hint">"I help roofing companies get leads via Facebook ads" beats "I run a marketing agency."</p>
+        <p class="step-hint">Specific beats broad here. "I get roofing companies leads with Facebook ads" tells me more than "I run a marketing agency."</p>
 
-        <textarea id="what-you-do" placeholder="Describe in 1–2 sentences..."></textarea>
+        <textarea id="what-you-do" placeholder="Describe it in a sentence or two..."></textarea>
         <div class="field-error" id="biz-error">Required.</div>
 
         <div class="btn-row">
@@ -704,42 +686,42 @@
       <div class="step" id="step-3">
         <div class="step-eyebrow">Where you're at</div>
         <div class="step-question">Current monthly revenue.</div>
-        <p class="step-hint">Approximate is fine. Helps me understand your context.</p>
+        <p class="step-hint">Rough number is fine. It changes what I would build.</p>
 
         <div class="options-list">
           <label class="opt">
             <input type="radio" name="revenue" value="pre-revenue" />
             <div class="opt-body">
               <span class="opt-title">$0 (Pre-revenue)</span>
-              <span class="opt-desc">Still building. Haven't landed a client yet.</span>
+              <span class="opt-desc">Still building. No paying client yet.</span>
             </div>
           </label>
           <label class="opt">
             <input type="radio" name="revenue" value="1k-3k" />
             <div class="opt-body">
-              <span class="opt-title">$1K – $3K / mo</span>
-              <span class="opt-desc">Early traction. 1–2 clients.</span>
+              <span class="opt-title">$1K to $3K a month</span>
+              <span class="opt-desc">One or two clients in.</span>
             </div>
           </label>
           <label class="opt">
             <input type="radio" name="revenue" value="3k-7k" />
             <div class="opt-body">
-              <span class="opt-title">$3K – $7K / mo</span>
-              <span class="opt-desc">Consistent income but hitting a ceiling.</span>
+              <span class="opt-title">$3K to $7K a month</span>
+              <span class="opt-desc">Money comes in every month. It stopped going up.</span>
             </div>
           </label>
           <label class="opt">
             <input type="radio" name="revenue" value="7k-15k" />
             <div class="opt-body">
-              <span class="opt-title">$7K – $15K / mo</span>
-              <span class="opt-desc">Scaling. Need systems to keep up.</span>
+              <span class="opt-title">$7K to $15K a month</span>
+              <span class="opt-desc">Growing, and the systems are behind.</span>
             </div>
           </label>
           <label class="opt">
             <input type="radio" name="revenue" value="15k+" />
             <div class="opt-body">
-              <span class="opt-title">$15K+ / mo</span>
-              <span class="opt-desc">Already here. Optimizing.</span>
+              <span class="opt-title">$15K a month or more</span>
+              <span class="opt-desc">Past the hard part. Tuning now.</span>
             </div>
           </label>
         </div>
@@ -755,35 +737,35 @@
       <div class="step" id="step-4">
         <div class="step-eyebrow">The real problem</div>
         <div class="step-question">What's the #1 thing<br>blocking you right now?</div>
-        <p class="step-hint">Not what sounds good. What actually keeps you stuck.</p>
+        <p class="step-hint">Not the one that sounds best. The one you think about on Sunday night.</p>
 
         <div class="options-list">
           <label class="opt">
             <input type="radio" name="blocker" value="generic-content" />
             <div class="opt-body">
               <span class="opt-title">Content is too generic</span>
-              <span class="opt-desc">VA or freelancer posts consistently. Nothing converts. Doesn't sound like me.</span>
+              <span class="opt-desc">Someone posts for you on schedule and none of it sounds like you or brings anyone in.</span>
             </div>
           </label>
           <label class="opt">
             <input type="radio" name="blocker" value="no-system" />
             <div class="opt-body">
               <span class="opt-title">No content system</span>
-              <span class="opt-desc">Know I should post. No hooks, no ICP targeting, no reliable output.</span>
+              <span class="opt-desc">You know you should be posting. There is no hook library, no target, and no reliable way to produce it.</span>
             </div>
           </label>
           <label class="opt">
             <input type="radio" name="blocker" value="bad-hires" />
             <div class="opt-body">
               <span class="opt-title">Hires keep failing</span>
-              <span class="opt-desc">VA, SMM, Upwork. Trained them on my voice. They left or underdelivered.</span>
+              <span class="opt-desc">You trained a VA or an SMM on your voice and they left or never got there.</span>
             </div>
           </label>
           <label class="opt">
             <input type="radio" name="blocker" value="no-time" />
             <div class="opt-body">
               <span class="opt-title">No time to produce</span>
-              <span class="opt-desc">Heads-down on delivery. Content keeps getting pushed. Pipeline suffers.</span>
+              <span class="opt-desc">Delivery eats the week, content slips, and the pipeline goes quiet a month later.</span>
             </div>
           </label>
           <label class="opt">
@@ -810,35 +792,35 @@
       <div class="step" id="step-5">
         <div class="step-eyebrow">Urgency check</div>
         <div class="step-question">How long has this<br>been a problem?</div>
-        <p class="step-hint">I work with people ready to move. If you're still deciding whether you have a problem, this isn't the moment.</p>
+        <p class="step-hint">I work with people who are ready to move on it. If you are still deciding whether this is even a problem, come back when you know.</p>
 
         <div class="options-list">
           <label class="opt">
             <input type="radio" name="duration" value="just-started" />
             <div class="opt-body">
               <span class="opt-title">Just starting out</span>
-              <span class="opt-desc">Brand new. Still figuring things out.</span>
+              <span class="opt-desc">Brand new. Still working it out.</span>
             </div>
           </label>
           <label class="opt">
             <input type="radio" name="duration" value="few-months" />
             <div class="opt-body">
               <span class="opt-title">A few months</span>
-              <span class="opt-desc">Made some moves. Not seeing results yet.</span>
+              <span class="opt-desc">Tried a few things. Nothing has landed yet.</span>
             </div>
           </label>
           <label class="opt">
             <input type="radio" name="duration" value="6-12-months" />
             <div class="opt-body">
-              <span class="opt-title">6 – 12 months</span>
-              <span class="opt-desc">Been at it. Hit a wall I can't break through alone.</span>
+              <span class="opt-title">6 to 12 months</span>
+              <span class="opt-desc">Long enough to hit a wall I cannot get past on my own.</span>
             </div>
           </label>
           <label class="opt">
             <input type="radio" name="duration" value="1yr+" />
             <div class="opt-body">
-              <span class="opt-title">1+ year</span>
-              <span class="opt-desc">Long time. Tried things. Need a different approach.</span>
+              <span class="opt-title">Over a year</span>
+              <span class="opt-desc">Tried plenty. Need a different approach.</span>
             </div>
           </label>
         </div>
@@ -854,21 +836,21 @@
       <div class="step" id="step-6">
         <div class="step-eyebrow">Investment</div>
         <div class="step-question">Are you prepared to<br>invest in solving this?</div>
-        <p class="step-hint">This is a serious investment. No judgment for being honest.</p>
+        <p class="step-hint">This costs real money. Saying no here does not offend me.</p>
 
         <div class="options-list">
           <label class="opt">
             <input type="radio" name="investment" value="yes-ready" />
             <div class="opt-body">
               <span class="opt-title">Yes, I'm ready</span>
-              <span class="opt-desc">If it's the right fit, I'm in.</span>
+              <span class="opt-desc">If it is the right fit, I am in.</span>
             </div>
           </label>
           <label class="opt">
             <input type="radio" name="investment" value="need-to-check" />
             <div class="opt-body">
               <span class="opt-title">Need to check finances first</span>
-              <span class="opt-desc">Want to look at what's possible before committing.</span>
+              <span class="opt-desc">I want to see what it involves before I commit.</span>
             </div>
           </label>
           <label class="opt">
@@ -1107,7 +1089,7 @@
       console.error('Submit error:', e);
     }
 
-    // Trigger Clio webhook — fire and cliot, non-blocking
+    // Trigger Clio webhook: fire and forget, non-blocking
     if (applicationId) {
       fetch('/api/webhook/clio-apply', {
         method: 'POST',
@@ -1129,7 +1111,7 @@
       }).catch(() => {});
     }
 
-    // Inbound Lead Capture — POST to n8n qualify + Supabase inbound_leads
+    // Inbound Lead Capture: POST to n8n qualify + Supabase inbound_leads
     const revenueMap = {
       'pre-revenue': '$0-2K',
       '1k-3k': '$0-2K',

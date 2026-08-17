@@ -4,16 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>About InboundOS</title>
-<meta name="description" content="Micko Cruz ran a 10-person content agency. Now AI agents do the work. He installs the same system for agency owners.">
+<meta name="description" content="Micko Cruz ran a ten-person content agency and replaced the roles with AI agents one at a time. He now installs the same setup for other agency owners.">
 <link rel="canonical" href="https://inboundos.vercel.app/about">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://inboundos.vercel.app/about">
 <meta property="og:title" content="About InboundOS">
-<meta property="og:description" content="Micko Cruz ran a 10-person content agency. Now AI agents do the work. He installs the same system for agency owners.">
+<meta property="og:description" content="Micko Cruz ran a ten-person content agency and replaced the roles with AI agents one at a time. He now installs the same setup for other agency owners.">
 <meta property="og:image" content="https://inboundos.vercel.app/og-image.png">
 <meta property="twitter:card" content="summary_large_image">
 <meta property="twitter:title" content="About InboundOS">
-<meta property="twitter:description" content="Micko Cruz ran a 10-person content agency. Now AI agents do the work. He installs the same system for agency owners.">
+<meta property="twitter:description" content="Micko Cruz ran a ten-person content agency and replaced the roles with AI agents one at a time. He now installs the same setup for other agency owners.">
 <meta property="twitter:image" content="https://inboundos.vercel.app/og-image.png">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
@@ -22,97 +22,111 @@
 <link rel="preload" href="/NHGDisplay95Black.otf" as="font" type="font/otf" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/v2.css">
 <style>
 /* ── hero ── */
 .hero{
-  max-width:1060px;margin:0 auto;
-  padding:180px 32px 60px;
-  display:grid;grid-template-columns:0.78fr 1.22fr;gap:70px;align-items:center;
+  max-width:var(--wide);margin:0 auto;
+  padding:170px var(--gutter) 56px;
+  display:grid;grid-template-columns:0.62fr 1.38fr;gap:64px;align-items:start;
 }
-.hero-photo{position:relative;}
-.hero-photo img{width:100%;border-radius:26px;object-fit:cover;aspect-ratio:3/4;filter:grayscale(15%);border:1px solid var(--line-strong);box-shadow:0 24px 64px rgba(0,0,0,0.5);}
+.hero-photo{position:relative;padding-top:8px;}
+.hero-photo img{width:100%;border-radius:var(--r);object-fit:cover;aspect-ratio:3/4;filter:grayscale(35%) contrast(1.05);border:1px solid var(--line-strong);}
 .photo-badge{
-  position:absolute;bottom:-20px;right:-20px;
-  padding:16px 20px;border-radius:16px;
-  background:var(--panel-2);
-  border:1px solid rgba(79,195,247,0.3);
-  box-shadow:0 8px 32px rgba(0,0,0,0.5),0 0 40px rgba(79,195,247,0.10);
+  position:static;margin-top:14px;
+  padding:12px 0 0;border-radius:0;
+  background:none;
+  border:none;border-top:1px solid var(--line);
 }
-.photo-badge .k{font-family:var(--font-mono);font-size:9px;text-transform:uppercase;letter-spacing:0.15em;color:var(--label-3);margin-bottom:4px;}
-.photo-badge .v{font-family:var(--font-head);font-size:21px;color:var(--ice);line-height:1.2;letter-spacing:-0.01em;}
-.hero-text h1{font-family:var(--font-head);font-weight:900;font-size:clamp(40px,5.4vw,66px);letter-spacing:-0.03em;line-height:1.0;margin:22px 0 26px;}
+.photo-badge .k{font-family:var(--font-mono);font-size:9.5px;text-transform:uppercase;letter-spacing:0.15em;color:var(--label-4);margin-bottom:5px;}
+.photo-badge .v{font-family:var(--font-mono);font-size:15px;color:var(--ice);line-height:1.2;}
+.hero-text .badge{border-top:1px solid var(--line);}
+.hero-text h1{font-family:var(--font-head);font-weight:900;font-size:clamp(38px,5vw,62px);letter-spacing:-0.035em;line-height:0.99;margin:0 0 28px;max-width:15ch;}
 .hero-text h1 .ice{color:var(--ice);}
-.hero-text p{font-size:15.5px;color:var(--label-2);margin-bottom:16px;line-height:1.75;}
-.hero-text p.punch{color:var(--white);font-weight:600;font-size:17px;}
+.hero-text p{font-size:16px;color:var(--label-2);margin-bottom:18px;line-height:1.75;max-width:60ch;}
+.hero-text p.punch{font-family:var(--font-serif);font-style:italic;color:var(--white);font-weight:400;font-size:24px;line-height:1.4;margin:26px 0;}
 
-/* ── story phase cards ── */
-.story{max-width:1060px;margin:0 auto;padding:0 32px;}
+/* ── story: numbered rows, no cards ── */
+.story{max-width:var(--wide);margin:0 auto;padding:0 var(--gutter);}
 .story-card{
-  display:grid;grid-template-columns:auto 1fr;gap:34px;align-items:start;
-  background:var(--card-bg);border:1px solid var(--line);border-radius:24px;
-  padding:44px 48px;margin-bottom:20px;position:relative;overflow:hidden;
+  display:grid;grid-template-columns:56px minmax(0,1fr) minmax(0,1.5fr);gap:6px 36px;align-items:start;
+  background:none;border:none;border-top:1px solid var(--line);border-radius:0;
+  padding:32px 0;margin-bottom:0;position:relative;overflow:visible;
 }
-.story-card::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 50% 70% at 12% 20%,rgba(79,195,247,0.045),transparent 70%);}
+.story-card::before{content:none;}
+.story-card:last-of-type{border-bottom:1px solid var(--line);}
 .story-num{
-  position:relative;z-index:1;
+  position:relative;z-index:1;grid-column:1;grid-row:1 / span 2;
   display:block;
-  font-family:var(--font-head);font-size:46px;line-height:1;
-  color:rgba(79,195,247,0.26);letter-spacing:-0.03em;
+  font-family:var(--font-mono);font-size:12px;line-height:1.7;letter-spacing:0.1em;
+  color:var(--label-4);
   background:none;border:none;
 }
-.story-body{position:relative;z-index:1;}
-.story-tag{display:inline-flex;align-items:center;gap:10px;font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--label-3);margin-bottom:12px;}
-.story-tag::before{content:'';width:18px;height:1px;background:var(--ice);opacity:0.7;}
-.story-body h3{font-family:var(--font-head);font-size:clamp(22px,2.6vw,30px);letter-spacing:-0.02em;line-height:1.1;margin-bottom:14px;}
-.story-body p{font-size:14.5px;color:var(--label-2);line-height:1.75;}
+.story-body{position:relative;z-index:1;grid-column:2;grid-row:1 / span 2;}
+.story-card>.story-body{grid-column:2 / span 2;}
+.story-tag{display:block;font-family:var(--font-mono);font-size:10.5px;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;color:var(--label-4);margin-bottom:10px;}
+.story-tag::before{content:none;}
+.story-body h3{font-family:var(--font-head);font-weight:900;font-size:clamp(22px,2.4vw,28px);letter-spacing:-0.03em;line-height:1.06;margin-bottom:14px;max-width:22ch;}
+.story-body p{font-size:15px;color:var(--label-2);line-height:1.75;max-width:64ch;}
+.story-body p+p{margin-top:12px;}
 
 /* ── quote ── */
 .quote-block{
-  margin-top:20px;padding:44px 48px;border-radius:24px;
-  background:rgba(79,195,247,0.05);border:1px solid rgba(79,195,247,0.22);
+  margin-top:56px;padding:0;border-radius:0;
+  background:none;border:none;
+  max-width:66ch;
 }
-.quote-text{font-size:clamp(19px,2.2vw,24px);font-weight:600;letter-spacing:-0.01em;line-height:1.55;}
-.quote-text em{color:var(--ice);font-style:normal;}
-.quote-attr{font-size:13px;color:var(--label-3);margin-top:20px;}
+.quote-text{font-family:var(--font-serif);font-size:clamp(23px,2.6vw,31px);font-weight:400;letter-spacing:0;line-height:1.4;}
+.quote-text em{color:var(--ice);font-style:italic;}
+.quote-attr{font-family:var(--font-mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--label-4);margin-top:22px;}
 
 /* ── stats ── */
-.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px;}
-.stat-box{padding:34px 30px;border-radius:20px;background:var(--card-bg);border:1px solid var(--line);text-align:center;}
-.stat-val{font-family:var(--font-head);font-size:clamp(30px,3.4vw,42px);color:var(--ice);letter-spacing:-0.02em;line-height:1;}
-.stat-label{font-size:12px;color:var(--label-3);margin-top:14px;text-transform:uppercase;letter-spacing:0.08em;line-height:1.6;}
+.stats-row{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:56px;
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+}
+.stat-box{padding:30px 30px 30px 0;border-radius:0;background:none;border:none;border-right:1px solid var(--line);text-align:left;}
+.stat-box:last-child{border-right:none;}
+.stat-box:not(:first-child){padding-left:30px;}
+.stat-val{font-family:var(--font-head);font-weight:900;font-size:clamp(28px,3.2vw,40px);color:var(--ice);letter-spacing:-0.035em;line-height:1;}
+.stat-label{font-size:13px;color:var(--label-3);margin-top:14px;text-transform:none;letter-spacing:0;line-height:1.6;max-width:26ch;}
 
-/* ── principles ── */
-.prin-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-.prin-card{padding:32px 34px;border-radius:20px;background:var(--card-bg);border:1px solid var(--line);}
-.prin-card .pk{display:inline-flex;align-items:center;gap:10px;font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--label-3);margin-bottom:14px;}
-.prin-card .pk::before{content:'';width:18px;height:1px;background:var(--ice);opacity:0.7;}
-.prin-card h3{font-size:18px;font-weight:700;letter-spacing:-0.01em;margin-bottom:10px;}
-.prin-card p{font-size:14px;color:var(--label-2);line-height:1.7;}
+/* ── principles: list, not a 2x2 bento ── */
+.prin-grid{display:block;border-top:1px solid var(--line);}
+.prin-card{
+  display:grid;grid-template-columns:130px minmax(0,1fr) minmax(0,1.4fr);gap:36px;align-items:start;
+  padding:28px 0;border-radius:0;background:none;border:none;border-bottom:1px solid var(--line);
+}
+.prin-card .pk{display:block;font-family:var(--font-mono);font-size:11px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--label-4);margin-bottom:0;line-height:1.7;}
+.prin-card .pk::before{content:none;}
+.prin-card h3{font-family:var(--font-head);font-weight:900;font-size:21px;letter-spacing:-0.025em;margin-bottom:0;}
+.prin-card p{font-size:14.5px;color:var(--label-2);line-height:1.7;}
 
 /* ── CTA ── */
-.cta-final{max-width:920px;margin:100px auto 0;padding:0 32px 120px;text-align:center;}
+.cta-final{max-width:var(--wide);margin:88px auto 0;padding:0 var(--gutter) 112px;text-align:left;}
 .cta-inner{
-  padding:76px 48px;border-radius:30px;position:relative;overflow:hidden;
-  background:var(--card-bg);border:1px solid var(--line);
+  padding:52px 0 0;border-radius:0;position:relative;overflow:visible;
+  background:none;border:none;border-top:1px solid var(--line-strong);
 }
-.cta-inner::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 70% 80% at 50% 110%,rgba(79,195,247,0.12),transparent 70%);}
+.cta-inner::before{content:none;}
 .cta-inner>*{position:relative;z-index:1;}
-.cta-inner h2{font-family:var(--font-head);font-weight:900;font-size:clamp(28px,4vw,46px);letter-spacing:-0.025em;margin:10px 0 16px;line-height:1.08;}
-.cta-inner p{font-size:15px;color:var(--label-2);margin-bottom:36px;}
-.cta-note{font-size:13px;color:var(--label-3);margin-top:30px;}
+.cta-inner>.badge{border-top:none;padding-top:0;}
+.cta-inner h2{font-family:var(--font-head);font-weight:900;font-size:clamp(28px,4vw,48px);letter-spacing:-0.035em;margin:0 0 18px;line-height:1.03;max-width:20ch;}
+.cta-inner p{font-size:16px;color:var(--label-2);margin-bottom:34px;max-width:54ch;line-height:1.7;}
+.cta-note{font-size:13px;color:var(--label-3);margin-top:24px;}
 
 @media (max-width:860px){
-  .hero{grid-template-columns:1fr;gap:52px;padding:150px 20px 40px;}
-  .hero-photo{max-width:300px;margin:0 auto;}
-  .story{padding:0 16px;}
-  .story-card{grid-template-columns:1fr;gap:20px;padding:30px 24px;}
+  .hero{grid-template-columns:1fr;gap:40px;padding:130px var(--gutter) 36px;}
+  .hero-photo{max-width:260px;}
+  .story-card{grid-template-columns:44px minmax(0,1fr);gap:4px 20px;}
+  .story-card>.story-body{grid-column:2;}
   .stats-row{grid-template-columns:1fr;}
-  .prin-grid{grid-template-columns:1fr;}
-  .quote-text{font-size:18px;}
-  .quote-block{padding:30px 24px;}
-  .cta-inner{padding:52px 24px;}
+  .stat-box{border-right:none;border-bottom:1px solid var(--line);padding:24px 0;}
+  .stat-box:last-child{border-bottom:none;}
+  .stat-box:not(:first-child){padding-left:0;}
+  .prin-card{grid-template-columns:1fr;gap:10px;}
+  .quote-text{font-size:21px;}
 }
 </style>
 </head>
@@ -143,10 +157,10 @@
   <div class="hero-text">
     <span class="badge">Founder &amp; Builder</span>
     <h1>I fired my whole team. <span class="ice">Output went up.</span></h1>
-    <p>I'm Micko. I spent years running a done-for-you social media agency with a team of 10. VAs, video editors, graphic designers, ops managers, the whole operation.</p><p>We delivered. But margins were tight, management was constant, and growth just meant more people to manage.</p>
-    <p>Now I'm a team of one. More output than I ever had with 10 people, because my team is made of AI agents that work 24/7, never miss a deadline, respond instantly, and cost a fraction of a salary.</p>
-    <p class="punch">I call it an upgrade.</p>
-    <p>I studied entrepreneurship for four years. When I map your business, I look at the offer, the positioning, the ICP, the sales process, and the tech stack. The system goes deeper than most AI installs because the thinking behind it does.</p>
+    <p>I'm Micko. For years I ran a done-for-you social media agency with ten people on payroll: VAs, editors, designers, and an ops manager to keep the rest of them pointed in the right direction.</p><p>The work went out on time. The problem was that every new client needed another person, and every new person needed me.</p>
+    <p>Today it is just me. The output is higher than it was with ten people, because the work is done by agents that do not need to be onboarded, do not have Mondays, and cost less per month than one part-time VA did.</p>
+    <p class="punch">Nobody has quit in a year.</p>
+    <p>I studied entrepreneurship for four years before any of this. So when I map your business I am looking at the offer, the positioning, who you sell to, how the sales process actually runs, and what software it runs on. Most AI installs skip that part and start at the prompt.</p>
   </div>
 </header>
 
@@ -162,7 +176,7 @@
     <div class="story-body">
       <div class="story-tag">Before</div>
       <h3>Done-For-You Agency</h3>
-      <p>Started as a DFY social media agency with a team of 10. VAs, video editors, graphic designers, ops manager, the whole operation.</p><p>Spent 15+ hours a week just on content. Margins were thin. Growth meant more hiring, and more hiring meant more problems.</p>
+      <p>Ten people, a client roster, and a delivery process that worked as long as I was standing over it.</p><p>I was losing fifteen hours a week to content alone. Margins were thin enough that adding a client meant adding a salary, which put the margins back where they started.</p>
     </div>
   </div>
   <div class="story-card reveal-scale">
@@ -170,7 +184,7 @@
     <div class="story-body">
       <div class="story-tag">The Shift</div>
       <h3>The AI Moment</h3>
-      <p>"I thought AI was a hype train. Missing AI right now is like missing Bitcoin in 2011."</p><p>That realization changed everything. I replaced team members with AI agents, one by one. Argus for research, Apollo for scripts, Hermes for the pipeline.</p><p>The output got better. The cost dropped. Deadlines stopped slipping.</p>
+      <p>"I thought AI was a hype train. Missing AI right now is like missing Bitcoin in 2011."</p><p>I started replacing roles with agents one at a time. Argus took the research, Apollo took scripting, Hermes took the DM pipeline.</p><p>Cost went down, and nothing has been late since.</p>
     </div>
   </div>
   <div class="story-card reveal-scale">
@@ -178,12 +192,12 @@
     <div class="story-body">
       <div class="story-tag">Now</div>
       <h3>The InboundOS Install</h3>
-      <p>I install the same system for agency owners still doing it manually. I map your business, build your AI agents, wire up the workflows.</p><p>You film and show up to calls. The system handles everything else, 24/7.</p>
+      <p>Now I install the same setup for agency owners who are still doing all of it by hand. I map the business, build the agents around it, and wire the workflows together.</p><p>You film, and you take the calls. The rest of it keeps running at three in the morning.</p>
     </div>
   </div>
 
   <div class="quote-block reveal">
-    <div class="quote-text">"Before the system, I was spending <em>15+ hours a week</em> on content. After? <em>2 hours.</em> Same output, better quality, no team to manage."</div>
+    <div class="quote-text">"I was giving up <em>fifteen hours a week</em> to content. It is <em>two hours</em> now, and the work that comes out of it is better than what I was paying ten people for."</div>
     <div class="quote-attr">Micko Cruz, Founder of InboundOS</div>
   </div>
 
@@ -206,30 +220,30 @@
 <!-- ══════════════ HOW I WORK ══════════════ -->
 <div class="section-head">
   <span class="badge">How I Work</span>
-  <h2>Built like an operator,<br>not a <span class="ice">prompt seller.</span></h2>
+  <h2>The four rules<br>I <span class="ice">build by.</span></h2>
 </div>
 
 <section class="story">
   <div class="prin-grid">
     <div class="prin-card reveal">
       <div class="pk">Principle 01</div>
-      <h3>Business first, AI second</h3>
-      <p>I map your offer, positioning, ICP, and sales process before a single agent gets built. AI bolted onto a broken funnel just makes noise faster.</p>
+      <h3>The business comes before the agents</h3>
+      <p>I map your offer, your positioning, who you sell to, and how the sales process runs before anything gets built. AI bolted onto a broken funnel just makes noise faster.</p>
     </div>
     <div class="prin-card reveal">
       <div class="pk">Principle 02</div>
-      <h3>Done-with-you, not done-to-you</h3>
-      <p>You're in the build. Weekly calls, async access, every decision explained in plain language. When we're done, you can actually run it.</p>
+      <h3>You are in the room for the build</h3>
+      <p>Weekly calls, async access, and every decision explained in language you can repeat to somebody else. You should be able to run this without me at the end of it.</p>
     </div>
     <div class="prin-card reveal">
       <div class="pk">Principle 03</div>
       <h3>You own everything</h3>
-      <p>Agents, workflows, prompt libraries, databases. It all lives inside your business. No hostage retainers. Walk away and it still runs.</p>
+      <p>Agents, workflows, prompt libraries, and databases all sit inside your business under your accounts. There is no retainer holding it hostage. Walk away and it keeps running.</p>
     </div>
     <div class="prin-card reveal">
       <div class="pk">Principle 04</div>
-      <h3>Proof over promises</h3>
-      <p>I ran these systems on real client accounts before selling them. Everything on the Client Wins page happened with me operating the machine.</p>
+      <h3>I ran this before I sold it</h3>
+      <p>Every number on the Client Wins page came off an account I was personally running. None of it is a projection.</p>
     </div>
   </div>
 </section>
@@ -238,10 +252,10 @@
 <section class="cta-final">
   <div class="cta-inner reveal-scale">
     <span class="badge">Limited Spots</span>
-    <h2>Ready to install your system?</h2>
-    <p>Done-with-you installation. Application required.</p>
+    <h2>Want this installed in your business?</h2>
+    <p>A 90-day build you sit inside. Applications only.</p>
     <a href="/apply" class="btn-primary">Apply Now <span class="arr">→</span></a>
-    <p class="cta-note">We review every application personally.</p>
+    <p class="cta-note">Micko reads every one of them himself.</p>
   </div>
 </section>
 

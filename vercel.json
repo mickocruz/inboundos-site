@@ -40,6 +40,10 @@
   ],
   "rewrites": [
     {
+      "source": "/",
+      "destination": "/landing.html"
+    },
+    {
       "source": "/client-onboarding/:client/form",
       "destination": "/client-onboarding/:client/form.html"
     },

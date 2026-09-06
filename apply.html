@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Apply | InboundOS</title>
-<meta name="description" content="Apply to work with Micko. Limited spots, application required. We review every application personally.">
+  <title>Book a Systems Audit | InboundOS</title>
+<meta name="description" content="One week, $500. We map every manual process in your business and what it costs you. Credits toward your build.">
 <link rel="canonical" href="https://inboundos.vercel.app/apply">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://inboundos.vercel.app/apply">
-<meta property="og:title" content="Apply | InboundOS">
-<meta property="og:description" content="Apply to work with Micko. Limited spots, application required. We review every application personally.">
+<meta property="og:title" content="Book a Systems Audit | InboundOS">
+<meta property="og:description" content="One week, $500. We map every manual process in your business and what it costs you. Credits toward your build.">
 <meta property="og:image" content="https://inboundos.vercel.app/og-image.png">
 <meta property="twitter:card" content="summary_large_image">
-<meta property="twitter:title" content="Apply | InboundOS">
-<meta property="twitter:description" content="Apply to work with Micko. Limited spots, application required. We review every application personally.">
+<meta property="twitter:title" content="Book a Systems Audit | InboundOS">
+<meta property="twitter:description" content="One week, $500. We map every manual process in your business and what it costs you. Credits toward your build.">
 <meta property="twitter:image" content="https://inboundos.vercel.app/og-image.png">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
@@ -607,7 +607,7 @@
   <div class="nav-right">
     <a class="nav-link" href="/client-wins">Client Wins</a>
     <a class="nav-link" href="/about">About</a>
-    <span class="nav-tag">Application</span>
+    <span class="nav-tag">Audit Request</span>
   </div>
 </nav>
 
@@ -617,18 +617,18 @@
 <div class="screen active" id="screen-intro">
 
   <div class="hero-wrap">
-    <div class="eyebrow">Limited Spots</div>
+    <div class="eyebrow">One Week · $500</div>
 
     <h1 class="hero-title">
-      Apply to work<br>with <span class="accent">Micko.</span>
+      Book your<br><span class="accent">systems audit.</span>
     </h1>
 
     <p class="hero-sub">
-      I take on a small number of agency owners at a time. Answer honestly, and if we're a fit I'll reach out.
+      Seven questions, about two minutes. If your business is a fit, I'll come back with a free blueprint of what could be automated — before you spend anything.
     </p>
 
     <button class="btn-cta" onclick="startForm()">
-      Start Application
+      Start
       <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
@@ -666,8 +666,8 @@
       <!--  Step 1: Identity  -->
       <div class="step active" id="step-1">
         <div class="step-eyebrow">Who you are</div>
-        <div class="step-question">Name &amp; Instagram handle.</div>
-        <p class="step-hint">First name is fine. IG so I can check your content before the call.</p>
+        <div class="step-question">Name &amp; company.</div>
+        <p class="step-hint">First name is fine. Company name or website so I can look you up before we talk.</p>
 
         <div class="field-group">
           <div class="field-wrap">
@@ -675,8 +675,8 @@
             <div class="field-error" id="name-error">Name required.</div>
           </div>
           <div class="field-wrap">
-            <input type="text" id="instagram" placeholder="@yourhandle" />
-            <div class="field-error" id="ig-error">Instagram handle required.</div>
+            <input type="text" id="instagram" placeholder="Company name or website" />
+            <div class="field-error" id="ig-error">Company name required.</div>
           </div>
         </div>
 
@@ -688,8 +688,8 @@
       <!--  Step 2: Business  -->
       <div class="step" id="step-2">
         <div class="step-eyebrow">Your business</div>
-        <div class="step-question">What do you do<br>&amp; who do you help?</div>
-        <p class="step-hint">"I help roofing companies get leads via Facebook ads" beats "I run a marketing agency."</p>
+        <div class="step-question">What does your<br>business do?</div>
+        <p class="step-hint">"We manufacture custom stone surfaces for designers and architects" beats "we're in construction."</p>
 
         <textarea id="what-you-do" placeholder="Describe in 1–2 sentences..."></textarea>
         <div class="field-error" id="biz-error">Required.</div>
@@ -703,43 +703,43 @@
       <!--  Step 3: Revenue  -->
       <div class="step" id="step-3">
         <div class="step-eyebrow">Where you're at</div>
-        <div class="step-question">Current monthly revenue.</div>
-        <p class="step-hint">Approximate is fine. Helps me understand your context.</p>
+        <div class="step-question">Annual revenue.</div>
+        <p class="step-hint">Approximate is fine. It tells me what scale of system makes sense.</p>
 
         <div class="options-list">
           <label class="opt">
             <input type="radio" name="revenue" value="pre-revenue" />
             <div class="opt-body">
-              <span class="opt-title">$0 (Pre-revenue)</span>
-              <span class="opt-desc">Still building. Haven't landed a client yet.</span>
+              <span class="opt-title">Pre-revenue</span>
+              <span class="opt-desc">Still building. No paying customers yet.</span>
             </div>
           </label>
           <label class="opt">
             <input type="radio" name="revenue" value="1k-3k" />
             <div class="opt-body">
-              <span class="opt-title">$1K – $3K / mo</span>
-              <span class="opt-desc">Early traction. 1–2 clients.</span>
+              <span class="opt-title">Under $100K / year</span>
+              <span class="opt-desc">Early. Still finding the process.</span>
             </div>
           </label>
           <label class="opt">
             <input type="radio" name="revenue" value="3k-7k" />
             <div class="opt-body">
-              <span class="opt-title">$3K – $7K / mo</span>
-              <span class="opt-desc">Consistent income but hitting a ceiling.</span>
+              <span class="opt-title">$100K – $500K / year</span>
+              <span class="opt-desc">Steady work. Admin load is growing.</span>
             </div>
           </label>
           <label class="opt">
             <input type="radio" name="revenue" value="7k-15k" />
             <div class="opt-body">
-              <span class="opt-title">$7K – $15K / mo</span>
-              <span class="opt-desc">Scaling. Need systems to keep up.</span>
+              <span class="opt-title">$500K – $2M / year</span>
+              <span class="opt-desc">Growing. The manual work is starting to hurt.</span>
             </div>
           </label>
           <label class="opt">
             <input type="radio" name="revenue" value="15k+" />
             <div class="opt-body">
-              <span class="opt-title">$15K+ / mo</span>
-              <span class="opt-desc">Already here. Optimizing.</span>
+              <span class="opt-title">$2M+ / year</span>
+              <span class="opt-desc">Established. Looking to run leaner.</span>
             </div>
           </label>
         </div>
@@ -753,37 +753,37 @@
 
       <!--  Step 4: Blocker  -->
       <div class="step" id="step-4">
-        <div class="step-eyebrow">The real problem</div>
-        <div class="step-question">What's the #1 thing<br>blocking you right now?</div>
-        <p class="step-hint">Not what sounds good. What actually keeps you stuck.</p>
+        <div class="step-eyebrow">The bottleneck</div>
+        <div class="step-question">Where does the most<br>time get wasted?</div>
+        <p class="step-hint">Not what sounds good. The thing that actually eats hours every week.</p>
 
         <div class="options-list">
           <label class="opt">
             <input type="radio" name="blocker" value="generic-content" />
             <div class="opt-body">
-              <span class="opt-title">Content is too generic</span>
-              <span class="opt-desc">VA or freelancer posts consistently. Nothing converts. Doesn't sound like me.</span>
+              <span class="opt-title">Same data entered twice</span>
+              <span class="opt-desc">Information gets retyped between our CRM, project tool, and spreadsheets.</span>
             </div>
           </label>
           <label class="opt">
             <input type="radio" name="blocker" value="no-system" />
             <div class="opt-body">
-              <span class="opt-title">No content system</span>
-              <span class="opt-desc">Know I should post. Hooks are guesswork and output is unpredictable.</span>
+              <span class="opt-title">Follow-ups fall through</span>
+              <span class="opt-desc">Leads and deals go quiet. Nobody notices until they're gone.</span>
             </div>
           </label>
           <label class="opt">
             <input type="radio" name="blocker" value="bad-hires" />
             <div class="opt-body">
-              <span class="opt-title">Hires keep failing</span>
-              <span class="opt-desc">VA, SMM, Upwork. Trained them on my voice. They left or underdelivered.</span>
+              <span class="opt-title">Admin is eating the team</span>
+              <span class="opt-desc">People I pay for skilled work spend hours on copy-paste and paperwork.</span>
             </div>
           </label>
           <label class="opt">
             <input type="radio" name="blocker" value="no-time" />
             <div class="opt-body">
-              <span class="opt-title">No time to produce</span>
-              <span class="opt-desc">Heads-down on delivery. Content keeps getting pushed. Pipeline suffers.</span>
+              <span class="opt-title">No clear view of the business</span>
+              <span class="opt-desc">Getting a straight answer means pulling reports and building a spreadsheet.</span>
             </div>
           </label>
           <label class="opt">
@@ -853,29 +853,29 @@
       <!--  Step 6: Investment  -->
       <div class="step" id="step-6">
         <div class="step-eyebrow">Investment</div>
-        <div class="step-question">Are you prepared to<br>invest in solving this?</div>
-        <p class="step-hint">This is a serious investment. No judgment for being honest.</p>
+        <div class="step-question">Ready to start with<br>a $500 audit?</div>
+        <p class="step-hint">One week, and it credits toward the build if you go ahead. The build runs $3,500 with payment plans available. No judgment for being honest.</p>
 
         <div class="options-list">
           <label class="opt">
             <input type="radio" name="investment" value="yes-ready" />
             <div class="opt-body">
               <span class="opt-title">Yes, I'm ready</span>
-              <span class="opt-desc">If it's the right fit, I'm in.</span>
+              <span class="opt-desc">If it's the right fit, I'll start with the audit.</span>
             </div>
           </label>
           <label class="opt">
             <input type="radio" name="investment" value="need-to-check" />
             <div class="opt-body">
-              <span class="opt-title">Need to check finances first</span>
-              <span class="opt-desc">Want to look at what's possible before committing.</span>
+              <span class="opt-title">Need to run it past someone</span>
+              <span class="opt-desc">A partner, a board, or accounting has to sign off first.</span>
             </div>
           </label>
           <label class="opt">
             <input type="radio" name="investment" value="not-right-now" />
             <div class="opt-body">
-              <span class="opt-title">Not financially ready right now</span>
-              <span class="opt-desc">Honest answer: budget isn't there yet.</span>
+              <span class="opt-title">Not right now</span>
+              <span class="opt-desc">Honest answer: the budget isn't there yet.</span>
             </div>
           </label>
         </div>
@@ -889,11 +889,11 @@
 
       <!--  Step 7: Why now + email  -->
       <div class="step" id="step-7">
-        <div class="step-eyebrow">Final question</div>
-        <div class="step-question">Why are you<br>applying right now?</div>
-        <p class="step-hint">Why today? What made you fill this out right now?</p>
+        <div class="step-eyebrow">Your stack</div>
+        <div class="step-question">Which tools do you<br>run the business on?</div>
+        <p class="step-hint">CRM, project management, accounting, anything else. This is where the audit starts.</p>
 
-        <textarea id="why-now" placeholder="Be real. A sentence or two is fine."></textarea>
+        <textarea id="why-now" placeholder="e.g. Insightly, ClickUp, QuickBooks, a few spreadsheets..."></textarea>
         <div class="field-error" id="why-error">Required.</div>
 
         <hr class="divider" />
@@ -908,9 +908,9 @@
 
         <div class="btn-row">
           <button type="button" class="btn-back" onclick="prevStep(7)">← Back</button>
-          <button type="button" class="btn-submit" onclick="submitForm()">Submit Application →</button>
+          <button type="button" class="btn-submit" onclick="submitForm()">Send it →</button>
         </div>
-        <p class="form-note">I review every application personally.</p>
+        <p class="form-note">I read every one of these personally.</p>
       </div>
 
     </form>
@@ -931,14 +931,14 @@
  -->
 <div class="screen" id="screen-disqualify">
   <div class="end-wrap">
-    <div class="end-label muted">Application reviewed</div>
+    <div class="end-label muted">Reviewed</div>
     <h2 class="end-title">Not the right time. Yet.</h2>
     <p class="end-body">
-      Based on what you shared, now might not be the right moment. That's just honest.<br><br>
-      Best move: <strong>follow the content, implement what you can, come back when you're ready.</strong>
+      Based on what you shared, this probably isn't worth your money right now. That's just honest.<br><br>
+      A system pays off when there's a real process eating real hours. <strong>Come back when the manual work starts costing you more than the fix would.</strong>
     </p>
-    <a class="end-link" href="https://www.instagram.com/inboundos" target="_blank" rel="noopener">
-      Follow on Instagram →
+    <a class="end-link" href="/">
+      Back to the site →
     </a>
   </div>
   <footer>
@@ -956,10 +956,10 @@
  -->
 <div class="screen" id="screen-success">
   <div class="end-wrap">
-    <div class="end-label blue">Application received</div>
-    <h2 class="end-title">You're in<br>the queue.</h2>
+    <div class="end-label blue">Received</div>
+    <h2 class="end-title">Got it.</h2>
     <p class="end-body">
-      Got it. Micko reviews every application personally. You'll hear back within <strong>24 hours</strong>.
+      Micko reads every one of these personally. You'll hear back within <strong>24 hours</strong> — and if it looks like a fit, with a blueprint of what could be automated in your business. No charge for that part.
     </p>
     <a id="calendly-link" class="end-link" href="https://calendly.com/inboundos/discovery-call" target="_blank" rel="noopener" style="display:none;">
       Book a call now →

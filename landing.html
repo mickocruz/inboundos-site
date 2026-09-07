@@ -20,6 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+<script>document.documentElement.classList.add("js");</script>
 <style>
 @font-face{font-family:'NHGDisplay';src:url('/NHGDisplay95Black.otf') format('opentype');font-weight:900;font-style:normal;font-display:block;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -471,6 +472,124 @@ img{max-width:100%;display:block;}
 }
 @media(max-width:640px){.walk-step{padding:28px 24px;}}
 
+/* ── walkthrough demos ── */
+.walk-demo{margin-top:26px;}
+.wd{
+  background:var(--panel-2);border:1px solid var(--line);border-radius:14px;
+  overflow:hidden;font-family:var(--font-mono);
+}
+.wd-bar{
+  display:flex;align-items:center;gap:10px;padding:10px 14px;
+  border-bottom:1px solid var(--line);background:rgba(255,255,255,0.02);
+}
+.wd-dots{display:flex;gap:5px;}
+.wd-dots i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.12);}
+.wd-title{font-size:10.5px;letter-spacing:0.1em;text-transform:uppercase;color:var(--label-3);}
+.wd-live{
+  margin-left:auto;display:inline-flex;align-items:center;gap:6px;
+  font-size:9px;letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--ice);background:rgba(79,195,247,0.10);
+  border:1px solid rgba(79,195,247,0.3);border-radius:var(--pill);padding:3px 9px;
+}
+.wd-live i{width:5px;height:5px;border-radius:50%;background:var(--ice);animation:wd-pulse 1.6s ease-in-out infinite;}
+@keyframes wd-pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.35;transform:scale(.7);}}
+.wd-body{padding:14px;}
+
+/* scan rows (step 1) */
+.wd-row{
+  display:flex;align-items:center;gap:10px;padding:9px 11px;margin-bottom:7px;
+  border:1px solid var(--line);border-radius:9px;background:rgba(255,255,255,0.015);
+  font-size:11.5px;color:var(--label-2);
+  opacity:0;transform:translateX(-8px);
+}
+.wd.run .wd-row{animation:wd-in .5s var(--ease) forwards;}
+.wd-row:nth-child(1){animation-delay:.15s;} .wd-row:nth-child(2){animation-delay:.5s;}
+.wd-row:nth-child(3){animation-delay:.85s;} .wd-row:nth-child(4){animation-delay:1.2s;}
+.wd-row:nth-child(5){animation-delay:1.55s;}
+@keyframes wd-in{to{opacity:1;transform:none;}}
+.wd-row .nm{color:rgba(255,255,255,0.82);}
+.wd-row .hrs{margin-left:auto;color:var(--label-3);white-space:nowrap;}
+.wd-pill{
+  font-size:8.5px;letter-spacing:0.1em;text-transform:uppercase;
+  padding:3px 8px;border-radius:var(--pill);white-space:nowrap;
+}
+.wd-pill.yes{color:var(--ice);background:rgba(79,195,247,0.10);border:1px solid rgba(79,195,247,0.32);}
+.wd-pill.no{color:var(--label-3);background:rgba(255,255,255,0.03);border:1px solid var(--line);}
+.wd-scan{
+  height:2px;background:linear-gradient(90deg,transparent,var(--ice),transparent);
+  opacity:0;margin-bottom:12px;
+}
+.wd.run .wd-scan{animation:wd-scan 2s var(--ease) infinite;}
+@keyframes wd-scan{0%{opacity:0;transform:translateX(-100%);}50%{opacity:.9;}100%{opacity:0;transform:translateX(100%);}}
+
+/* deploy (step 2) */
+.wd-agents{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px;}
+.wd-agent{
+  border:1px solid var(--line);border-radius:10px;padding:12px;
+  background:rgba(255,255,255,0.015);opacity:0;transform:translateY(10px);
+}
+.wd.run .wd-agent{animation:wd-up .55s var(--ease) forwards;}
+.wd-agent:nth-child(1){animation-delay:.2s;} .wd-agent:nth-child(2){animation-delay:.55s;}
+.wd-agent:nth-child(3){animation-delay:.9s;} .wd-agent:nth-child(4){animation-delay:1.25s;}
+@keyframes wd-up{to{opacity:1;transform:none;}}
+.wd-agent .an{font-size:11px;color:rgba(255,255,255,0.86);margin-bottom:8px;line-height:1.4;}
+.wd-agent .ab{height:3px;border-radius:2px;background:rgba(255,255,255,0.07);overflow:hidden;}
+.wd-agent .ab i{display:block;height:100%;width:0;background:var(--ice);border-radius:2px;}
+.wd.run .wd-agent .ab i{animation:wd-fill 1.1s var(--ease) forwards;}
+.wd-agent:nth-child(1) .ab i{animation-delay:.35s;} .wd-agent:nth-child(2) .ab i{animation-delay:.7s;}
+.wd-agent:nth-child(3) .ab i{animation-delay:1.05s;} .wd-agent:nth-child(4) .ab i{animation-delay:1.4s;}
+@keyframes wd-fill{to{width:100%;}}
+.wd-agent .as{
+  display:block;margin-top:8px;font-size:8.5px;letter-spacing:0.12em;
+  text-transform:uppercase;color:var(--label-4);
+}
+.wd.run .wd-agent .as{animation:wd-done .3s var(--ease) forwards;}
+.wd-agent:nth-child(1) .as{animation-delay:1.45s;} .wd-agent:nth-child(2) .as{animation-delay:1.8s;}
+.wd-agent:nth-child(3) .as{animation-delay:2.15s;} .wd-agent:nth-child(4) .as{animation-delay:2.5s;}
+@keyframes wd-done{to{color:var(--ice);}}
+
+/* command center (step 3) */
+.wd-kpis{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--line);}
+.wd-kpi{padding:12px 13px;border-right:1px solid var(--line);}
+.wd-kpi:last-child{border-right:none;}
+.wd-kpi .k{font-size:8.5px;letter-spacing:0.11em;text-transform:uppercase;color:var(--label-4);margin-bottom:6px;}
+.wd-kpi .v{font-family:var(--font-head);font-size:18px;line-height:1;color:var(--white);}
+.wd-kpi .v.ice{color:var(--ice);}
+.wd-feed{padding:12px 14px;}
+.wd-ev{
+  display:flex;align-items:center;gap:9px;padding:8px 0;
+  border-bottom:1px solid var(--line);font-size:11px;color:var(--label-2);
+  opacity:0;transform:translateY(6px);
+}
+.wd-ev:last-child{border-bottom:none;}
+.wd.run .wd-ev{animation:wd-up .5s var(--ease) forwards;}
+.wd-ev:nth-child(1){animation-delay:.3s;} .wd-ev:nth-child(2){animation-delay:.9s;}
+.wd-ev:nth-child(3){animation-delay:1.5s;} .wd-ev:nth-child(4){animation-delay:2.1s;}
+.wd-ev .dot{width:6px;height:6px;border-radius:50%;background:var(--ice);flex:none;}
+.wd-ev .dot.wait{background:var(--amber);}
+.wd-ev .t{margin-left:auto;font-size:9px;color:var(--label-4);white-space:nowrap;}
+.wd-ask{
+  margin:12px 14px 14px;padding:11px 13px;border-radius:10px;
+  border:1px solid rgba(79,195,247,0.25);background:rgba(79,195,247,0.05);
+  font-size:11.5px;color:rgba(255,255,255,0.86);line-height:1.6;
+}
+.wd-ask .q{color:var(--ice);}
+.wd-ask .a{display:block;margin-top:6px;color:var(--label-2);}
+.wd-cursor{display:inline-block;width:6px;height:11px;background:var(--ice);vertical-align:-1px;animation:wd-blink 1s step-end infinite;}
+@keyframes wd-blink{50%{opacity:0;}}
+/* fallback: if JS never runs, show demos fully rather than blank */
+html:not(.js) .wd .wd-row,
+html:not(.js) .wd .wd-agent,
+html:not(.js) .wd .wd-ev{opacity:1;transform:none;}
+html:not(.js) .wd .wd-agent .ab i{width:100%;}
+
+@media(prefers-reduced-motion:reduce){
+  .wd .wd-row,.wd .wd-agent,.wd .wd-ev{opacity:1;transform:none;animation:none;}
+  .wd .wd-agent .ab i{width:100%;animation:none;}
+  .wd .wd-scan,.wd-cursor,.wd-live i{animation:none;}
+}
+
+
 .gap-callout{
   margin-top:26px;padding:34px 40px;border-radius:22px;
   background:rgba(79,195,247,0.05);border:1px solid rgba(79,195,247,0.22);
@@ -847,6 +966,19 @@ p,li,.phase-copy p.desc,.step-card p,.prin-card p,
       <h3>We audit every workflow you run.</h3>
       <p>We map how work actually moves through your business, from the first inquiry to the invoice being paid. Every hand-off, every place the same information gets typed twice, every point where everything waits on one person.</p>
       <p>Then we tell you plainly which parts a machine should handle, and which parts it should never touch. That second list matters as much as the first, and most people selling you AI will never give it to you.</p>
+            <div class="walk-demo">
+        <div class="wd" data-wd>
+          <div class="wd-bar"><span class="wd-dots"><i></i><i></i><i></i></span><span class="wd-title">workflow audit</span><span class="wd-live"><i></i>scanning</span></div>
+          <div class="wd-body">
+            <div class="wd-scan"></div>
+            <div class="wd-row"><span class="nm">Inquiry retyped into 3 tools</span><span class="wd-pill yes">automate</span><span class="hrs">6 hrs/wk</span></div>
+            <div class="wd-row"><span class="nm">Quote drafted from scratch</span><span class="wd-pill yes">automate</span><span class="hrs">5 hrs/wk</span></div>
+            <div class="wd-row"><span class="nm">Follow-ups chased by memory</span><span class="wd-pill yes">automate</span><span class="hrs">4 hrs/wk</span></div>
+            <div class="wd-row"><span class="nm">Weekly report assembled by hand</span><span class="wd-pill yes">automate</span><span class="hrs">3 hrs/wk</span></div>
+            <div class="wd-row"><span class="nm">Final pricing approval</span><span class="wd-pill no">keep human</span><span class="hrs">judgement</span></div>
+          </div>
+        </div>
+      </div>
       <div class="walk-out">You get a written map of your business, the hours each manual step costs you, and a fixed price to fix it.</div>
     </div>
 
@@ -859,6 +991,19 @@ p,li,.phase-copy p.desc,.step-card p,.prin-card p,
       <h3>We build and deploy your agents.</h3>
       <p>Custom agents built for the specific work the audit found, connected to the tools you already run. They pull from your own data, so they know your clients, your projects, and how your business talks.</p>
       <p>Your existing tools keep running the whole time. Nothing gets switched off until you have confirmed everything carried across. And nothing an agent produces reaches a client until a person on your team approves it.</p>
+            <div class="walk-demo">
+        <div class="wd" data-wd>
+          <div class="wd-bar"><span class="wd-dots"><i></i><i></i><i></i></span><span class="wd-title">deploying agents</span><span class="wd-live"><i></i>building</span></div>
+          <div class="wd-body">
+            <div class="wd-agents">
+              <div class="wd-agent"><div class="an">Intake &amp; project setup</div><div class="ab"><i></i></div><span class="as">live</span></div>
+              <div class="wd-agent"><div class="an">Quote drafting</div><div class="ab"><i></i></div><span class="as">live</span></div>
+              <div class="wd-agent"><div class="an">Follow-up &amp; pipeline</div><div class="ab"><i></i></div><span class="as">live</span></div>
+              <div class="wd-agent"><div class="an">Weekly reporting</div><div class="ab"><i></i></div><span class="as">live</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="walk-out">Three to five agents doing the manual work, live inside your business in four weeks.</div>
     </div>
 
@@ -871,6 +1016,27 @@ p,li,.phase-copy p.desc,.step-card p,.prin-card p,
       <h3>You get one screen for everything.</h3>
       <p>A dashboard built for your business, on your accounts, open on your phone. Your live pipeline, every job and its stage, what each agent did today, and what is waiting on a person.</p>
       <p>Ask it a question in plain English and it answers from your real data. Nobody has to interrupt you to find out where something stands, because it is already on the screen.</p>
+            <div class="walk-demo">
+        <div class="wd" data-wd>
+          <div class="wd-bar"><span class="wd-dots"><i></i><i></i><i></i></span><span class="wd-title">command center</span><span class="wd-live"><i></i>live</span></div>
+          <div class="wd-kpis">
+            <div class="wd-kpi"><div class="k">Open jobs</div><div class="v"><span data-count="18">0</span></div></div>
+            <div class="wd-kpi"><div class="k">Awaiting you</div><div class="v ice"><span data-count="3">0</span></div></div>
+            <div class="wd-kpi"><div class="k">Gone quiet</div><div class="v"><span data-count="2">0</span></div></div>
+            <div class="wd-kpi"><div class="k">Hrs saved</div><div class="v ice"><span data-count="17">0</span></div></div>
+          </div>
+          <div class="wd-feed">
+            <div class="wd-ev"><span class="dot"></span>New inquiry captured and routed<span class="t">08:04</span></div>
+            <div class="wd-ev"><span class="dot"></span>Quote drafted for Meridian<span class="t">09:17</span></div>
+            <div class="wd-ev"><span class="dot wait"></span>2 drafts waiting on your approval<span class="t">10:02</span></div>
+            <div class="wd-ev"><span class="dot"></span>Hartley flagged, quiet 6 days<span class="t">11:30</span></div>
+          </div>
+          <div class="wd-ask">
+            <span class="q">"Where is the Meridian job?"</span>
+            <span class="a" data-wd-type="Production, week 2 of 4. Strike-off approved Tuesday. On track for the 14th."></span><span class="wd-cursor"></span>
+          </div>
+        </div>
+      </div>
       <div class="walk-out">You stop being the place your team goes for answers.</div>
     </div>
 
@@ -1159,6 +1325,35 @@ if (typedEl) {
 
 <!-- Vercel Web Analytics + Speed Insights (cookieless, no consent banner needed) -->
 <script defer src="/_vercel/insights/script.js"></script>
-<script defer src="/_vercel/speed-insights/script.js"></script>
+<script defer src="/_vercel/speed-insights/script.js">
+// ── walkthrough demos: run animations when scrolled into view ──
+(function(){
+  const demos = document.querySelectorAll('[data-wd]');
+  if(!demos.length) return;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function typeAnswer(el){
+    const full = el.getAttribute('data-wd-type') || '';
+    if(reduce){ el.textContent = full; return; }
+    let i = 0;
+    (function tick(){
+      el.textContent = full.slice(0, i++);
+      if(i <= full.length) setTimeout(tick, 26);
+    })();
+  }
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(!e.isIntersecting || e.target.classList.contains('run')) return;
+      e.target.classList.add('run');
+      const typed = e.target.querySelector('[data-wd-type]');
+      if(typed) setTimeout(() => typeAnswer(typed), reduce ? 0 : 2600);
+      io.unobserve(e.target);
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+
+  demos.forEach(d => io.observe(d));
+})();
+</script>
 </body>
 </html>
